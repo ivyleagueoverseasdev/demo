@@ -8,6 +8,8 @@ import type { SiteEvent, EventType } from '@/lib/types';
 import EventRegisterButton from './EventRegisterButton';
 import EventBodyRenderer from './EventBodyRenderer';
 
+export const runtime = 'edge';
+
 // Revalidate every 60 s so KV edits surface quickly
 export const revalidate = 3600;
 

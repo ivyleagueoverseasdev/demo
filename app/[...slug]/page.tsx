@@ -5,6 +5,7 @@ import { getPage, resolveRedirect } from '@/lib/kv';
 
 interface Props { params: Promise<{ slug: string[] }> }
 
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic'; // Always check KV at runtime
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
