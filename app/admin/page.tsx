@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, EventType, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
@@ -10,7 +10,7 @@ import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
 // ── Design tokens ─────────────────────────────────────────────────────────
 const BLUE  = '#1A365D';
 const AMBER = '#D97706';
-type Tab = 'overview' | 'pages' | 'create' | 'events' | 'stories' | 'enquiries' | 'news' | 'country-pages' | 'routes' | 'countries' | 'homepage' | 'general' | 'global' | 'settings';
+type Tab = 'overview' | 'pages' | 'create' | 'events' | 'stories' | 'enquiries' | 'news' | 'country-pages' | 'routes' | 'countries' | 'homepage' | 'general' | 'global' | 'settings' | 'partners' | 'analytics' | 'media-library';
 
 // ── Shared style strings ──────────────────────────────────────────────────
 const blueBtn  = 'font-jakarta font-semibold text-sm px-5 py-2.5 rounded-xl text-white transition-all hover:opacity-90 active:scale-95';
@@ -488,7 +488,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const [uploading, setUploading] = useState(false);
 
   // ── Tab definitions ───────────────────────────────────────────────────
-  const TABS: { id: Tab | 'partners' | 'analytics' | 'media-library'; icon: string; label: string }[] = [
+  const TABS: { id: Tab; icon: string; label: string }[] = [
     { id:'overview',  icon:'📊', label:'Overview'        },
     { id:'analytics', icon:'📈', label:'Analytics'       },
     { id:'pages',     icon:'📄', label:'Pages'           },
@@ -630,7 +630,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
             {TABS.map(t => (
-              <button key={t.id} onClick={() => setTab(t.id as any)}
+              <button key={t.id} onClick={() => setTab(t.id)}
                 className={`flex items-center gap-1.5 font-jakarta font-medium text-xs px-4 py-3.5 border-b-2 whitespace-nowrap transition-all ${
                   tab === t.id ? 'border-amber-500 text-amber-600' : 'border-transparent text-slate-500 hover:text-slate-700'
                 }`}>
