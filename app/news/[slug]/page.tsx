@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getNews } from '@/lib/kv';
 
+export const runtime = 'edge';
 export const revalidate = 3600;
 
 interface Props {

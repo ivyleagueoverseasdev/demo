@@ -9,6 +9,7 @@ import {
   SECTION_SLUGS,
 } from '@/lib/countrySubpages';
 
+export const runtime = 'edge';
 export const revalidate = 3600;
 
 interface Props {
