@@ -12,7 +12,7 @@
     "cf-build": "npx @cloudflare/next-on-pages",
     "clean:build": "node -e \"try{require('fs').rmSync('.next',{recursive:true,force:true})}catch(e){}\" && next build",
     "type-check": "tsc --noEmit",
-    "deploy": "npx wrangler pages deploy .vercel/output/static"
+    "deploy": "echo 'Deployment handled internally by Cloudflare'"
   },
   "dependencies": {
     "framer-motion": "^11.0.0",
