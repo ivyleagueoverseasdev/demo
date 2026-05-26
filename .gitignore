@@ -1,0 +1,46 @@
+# ── Next.js ─────────────────────────────────────────────────────────────────
+.next/
+out/
+
+# ── Node ──────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── Cloudflare Pages build output ────────────────────────────────────────────
+.vercel/
+.wrangler/
+.cloudflare/
+dist/
+
+# ── Environment files ─────────────────────────────────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ── Editor / OS ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/settings.json
+.idea/
+
+# ── TypeScript ────────────────────────────────────────────────────────────────
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ── WhatsApp bot runtime (keep source, ignore runtime artifacts) ──────────────
+whatsapp-bot/node_modules/
+whatsapp-bot/.wwebjs_auth/
+whatsapp-bot/.wwebjs_cache/
+whatsapp-bot/session*/
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.log
+coverage/
+.cache/

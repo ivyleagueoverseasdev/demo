@@ -1,0 +1,184 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { COMPANY, COUNTRIES } from '@/lib/data';
+
+export default function ContactPage() {
+  const [f,    setF]    = useState({ name:'', email:'', phone:'', country:'', program:'', msg:'' });
+  const [ok,   setOk]   = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err,  setErr]  = useState('');
+
+  const chg = (k: keyof typeof f, v: string) => setF(p => ({ ...p, [k]: v }));
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!f.name.trim() || !f.phone.trim() || !f.country || !f.program) {
+      setErr('Please fill all required fields.');
+      return;
+    }
+    setErr('');
+    setBusy(true);
+
+    try {
+      await fetch('/api/leads', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:    f.name,
+          phone:   f.phone,
+          email:   f.email,
+          country: f.country,
+          program: f.program,
+          message: f.msg,
+          source:  'contact-page',
+        }),
+      });
+    } catch {
+      // Silent — don't block the user experience if KV is unavailable
+    }
+
+    setBusy(false);
+    setOk(true);
+
+    // Open WhatsApp with pre-filled message after showing success state briefly
+    const waMsg = encodeURIComponent(
+      `Hi Rajib Sir! I just submitted a counselling request on your website.\n\nName: ${f.name}\nPhone: ${f.phone}\nCountry: ${f.country}\nProgram: ${f.program}${f.msg ? `\n\n${f.msg}` : ''}`
+    );
+    setTimeout(() => {
+      window.open(`https://wa.me/919158577707?text=${waMsg}`, '_blank');
+    }, 1200);
+  };
+
+  const inp = 'input text-sm';
+
+  return (
+    <div className="bg-white">
+      {/* Hero */}
+      <section className="bg-gradient-to-br from-primary-800 to-primary-600 text-white py-20">
+        <div className="container-xl">
+          <nav className="flex items-center gap-2 text-xs text-white/50 font-jakarta mb-8">
+            <Link href="/" className="hover:text-white">Home</Link>
+            <span>›</span><span className="text-white/80">Contact</span>
+          </nav>
+          <h1 className="font-jakarta font-extrabold text-white mb-4" style={{ fontSize: 'clamp(2.2rem,5vw,4rem)' }}>
+            Get in touch.
+          </h1>
+          <p className="font-jakarta text-white/70 text-lg max-w-lg">
+            Book a free counselling session or send us a message. We'll respond within 24 hours.
+          </p>
+        </div>
+      </section>
+
+      <section className="section bg-white">
+        <div className="container-xl">
+          <div className="grid lg:grid-cols-[1fr_1.3fr] gap-12 lg:gap-16 items-start">
+            {/* Info */}
+            <div>
+              <div className="divider-amber mb-4" />
+              <h2 className="font-jakarta font-extrabold text-primary-600 mb-6" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)' }}>
+                Talk to our counsellor directly.
+              </h2>
+              <div className="space-y-4 mb-8">
+                {[
+                  { icon:'📞', label:'Phone',         value: COMPANY.phone,   href:`tel:${COMPANY.phone}` },
+                  { icon:'✉',  label:'Email',         value: COMPANY.email,   href:`mailto:${COMPANY.email}` },
+                  { icon:'📍', label:'Office',        value: COMPANY.address, href: COMPANY.mapsLink },
+                  { icon:'⏰', label:'Response Time', value:'Within 24 hours', href: null },
+                ].map(item => (
+                  <div key={item.label} className="flex items-start gap-4 card p-4">
+                    <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center text-base flex-shrink-0">{item.icon}</div>
+                    <div>
+                      <div className="font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-0.5">{item.label}</div>
+                      {item.href
+                        ? <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined}
+                             rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                             className="font-jakarta text-sm text-slate-700 hover:text-amber-500 transition-colors">{item.value}</a>
+                        : <div className="font-jakarta text-sm text-slate-700">{item.value}</div>
+                      }
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 font-jakarta font-bold text-sm py-3.5 rounded-xl text-white"
+                style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
+                💬 Instant Response on WhatsApp
+              </a>
+            </div>
+
+            {/* Form */}
+            <div className="card p-7 sm:p-9">
+              {!ok ? (
+                <form onSubmit={submit} noValidate className="space-y-4">
+                  <h3 className="font-jakarta font-extrabold text-primary-600 text-xl mb-1">Book Free Session</h3>
+                  <p className="font-jakarta text-xs text-slate-400 mb-4">30 min · Zero pressure · Personalised roadmap</p>
+
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 mb-1.5">Full Name *</label>
+                      <input value={f.name} onChange={e=>chg('name',e.target.value)} className={inp} placeholder="Your full name" />
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 mb-1.5">Phone / WhatsApp *</label>
+                      <input value={f.phone} onChange={e=>chg('phone',e.target.value)} type="tel" className={inp} placeholder="+91 98765 43210" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 mb-1.5">Email Address</label>
+                    <input value={f.email} onChange={e=>chg('email',e.target.value)} type="email" className={inp} placeholder="you@example.com" />
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 mb-1.5">Target Country *</label>
+                      <select value={f.country} onChange={e=>chg('country',e.target.value)} className={`${inp} cursor-pointer`}>
+                        <option value="">Select country</option>
+                        {COUNTRIES.map(c=><option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
+                        {['Germany','Singapore','Other'].map(c=><option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 mb-1.5">Program Level *</label>
+                      <select value={f.program} onChange={e=>chg('program',e.target.value)} className={`${inp} cursor-pointer`}>
+                        <option value="">Select level</option>
+                        {["Undergraduate","Postgraduate (Master's)","PhD","Diploma","Not sure"].map(p=><option key={p} value={p}>{p}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 mb-1.5">Message (optional)</label>
+                    <textarea value={f.msg} onChange={e=>chg('msg',e.target.value)} rows={3}
+                      className={`${inp} resize-none`} placeholder="Tell us about your goals or any specific questions..." />
+                  </div>
+                  {err && <p className="font-jakarta text-xs text-red-500">{err}</p>}
+                  <button type="submit" disabled={busy}
+                    className="w-full btn-primary text-sm py-3.5 rounded-xl justify-center disabled:opacity-60 disabled:cursor-not-allowed">
+                    {busy ? 'Syncing to CRM…' : 'Submit Request →'}
+                  </button>
+                  <p className="font-jakarta text-center text-xs text-slate-400">
+                    Our counsellor will contact you within 24 hours.
+                  </p>
+                </form>
+              ) : (
+                <div className="py-10 text-center">
+                  <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center text-4xl mx-auto mb-5">🎉</div>
+                  <h3 className="font-jakarta font-bold text-primary-600 text-xl mb-2">We've received your request!</h3>
+                  <p className="font-jakarta text-slate-500 text-sm mb-6 leading-relaxed">
+                    Our counsellor will call you at <strong>{f.phone}</strong> within 24 hours.
+                    {f.country && <> We'll prepare a personalised plan for <strong className="text-amber-600">{f.country}</strong>.</>}
+                  </p>
+                  <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-white"
+                    style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
+                    💬 Connect on WhatsApp for instant help
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

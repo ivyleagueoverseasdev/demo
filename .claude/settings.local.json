@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(cd \"c:\\\\Users\\\\vamsi\\\\Downloads\\\\files \\(8\\)\" && mkdir -p app/about app/services app/contact app/destinations app/admin \"app/api/content\" \"app/api/pages\" \"app/api/admin/login\" \"app/[...slug]\" \"app/destinations/[country]\" components/shared components/home components/ui components/admin lib && echo \"dirs created\")",
+      "Bash(npm run *)",
+      "Bash(node -e \"require\\('lucide-react'\\)\")",
+      "Bash(npx tsc *)",
+      "Bash(node -e \"require\\('lenis'\\); console.log\\('lenis ok'\\)\")",
+      "Bash(node -e \"require\\('cobe'\\); console.log\\('cobe ok'\\)\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\vamsi\\Downloads\\files (8)\\app"
+    ]
+  }
+}
