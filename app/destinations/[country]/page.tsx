@@ -4,12 +4,9 @@ import type { Metadata } from 'next';
 import { COUNTRIES_MAP } from '@/lib/data';
 
 export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 interface Props { params: Promise<{ country: string }> }
-
-export function generateStaticParams() {
-  return Object.keys(COUNTRIES_MAP).map(code => ({ country: code }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { country } = await params;

@@ -5,15 +5,10 @@ import Image from 'next/image';
 import { getNews } from '@/lib/kv';
 
 export const runtime = 'edge';
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 interface Props {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const news = await getNews().catch(() => []);
-  return news.filter(n => n.published).map(n => ({ slug: n.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

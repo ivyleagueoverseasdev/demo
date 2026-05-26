@@ -10,20 +10,10 @@ import {
 } from '@/lib/countrySubpages';
 
 export const runtime = 'edge';
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 interface Props {
   params: Promise<{ country: string; section: string }>;
-}
-
-export function generateStaticParams() {
-  const params: { country: string; section: string }[] = [];
-  for (const country of Object.keys(COUNTRIES_MAP)) {
-    for (const section of SECTION_SLUGS) {
-      params.push({ country, section });
-    }
-  }
-  return params;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
