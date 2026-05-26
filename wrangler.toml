@@ -1,6 +1,7 @@
 name = "iloc-web"
-compatibility_date = "2024-03-20"
 pages_build_output_dir = ".vercel/output/static"
+compatibility_date = "2024-05-26"
+compatibility_flags = ["nodejs_compat"]
 
 # Your KV Database (Text & Settings)
 [[kv_namespaces]]
