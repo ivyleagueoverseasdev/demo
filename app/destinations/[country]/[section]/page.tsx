@@ -38,8 +38,14 @@ export default async function SectionPage({ params }: Props) {
   if (!COUNTRIES_MAP[country]) notFound();
   if (!isValidSection(section)) notFound();
 
-  const kvHtml    = await getCountryContent(country, section).catch(() => null);
-  const html      = kvHtml ?? getSubpageContent(country, section);
+  let html: string | null = null;
+  try {
+    const kvHtml = await getCountryContent(country, section);
+    html = kvHtml ?? getSubpageContent(country, section);
+  } catch (e) {
+    console.error(`[SectionPage] KV fetch failed for ${country}/${section}:`, e);
+    html = getSubpageContent(country, section);
+  }
   if (!html) notFound();
 
   const c     = COUNTRIES_MAP[country];

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getNews } from '@/lib/kv';
+import type { NewsItem } from '@/lib/types';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
@@ -27,18 +28,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NewsArticlePage({ params }: Props) {
   const { slug } = await params;
-  const news = await getNews().catch(() => []);
-  const item = news.find(n => n.slug === slug && n.published);
+
+  let item: NewsItem | undefined;
+  try {
+    const news = await getNews();
+    item = news.find(n => n.slug === slug && n.published);
+  } catch (e) {
+    console.error(`[NewsArticlePage] KV fetch failed for slug "${slug}":`, e);
+  }
   if (!item) notFound();
+  const article = item as NewsItem;
 
   return (
     <main className="bg-white min-h-screen">
       {/* ── Hero Image ── */}
-      {item.imageUrl && (
+      {article.imageUrl && (
         <div className="relative h-[40vh] min-h-[280px] bg-slate-800 overflow-hidden">
           <Image
-            src={item.imageUrl}
-            alt={item.title}
+            src={article.imageUrl}
+            alt={article.title}
             fill
             className="object-cover opacity-70"
             sizes="100vw"
@@ -59,23 +67,23 @@ export default async function NewsArticlePage({ params }: Props) {
               <span>›</span>
               <Link href="/news" className="hover:text-slate-600 transition-colors">News</Link>
               <span>›</span>
-              <span className="text-slate-600 line-clamp-1">{item.title}</span>
+              <span className="text-slate-600 line-clamp-1">{article.title}</span>
             </nav>
 
             {/* Header */}
             <div className="mb-8">
               <div className="divider-amber mb-4" />
               <time className="font-jakarta text-[11px] text-amber-600 font-semibold uppercase tracking-wide mb-3 block">
-                {new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {new Date(article.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
               </time>
               <h1
                 className="font-jakarta font-extrabold text-primary-600 leading-tight mb-4"
                 style={{ fontSize: 'clamp(1.7rem,3.5vw,2.6rem)' }}
               >
-                {item.title}
+                {article.title}
               </h1>
               <p className="font-jakarta text-slate-500 text-base leading-relaxed border-l-4 border-amber-400 pl-4 bg-amber-50 py-3 rounded-r-xl">
-                {item.excerpt}
+                {article.excerpt}
               </p>
             </div>
 
@@ -94,7 +102,7 @@ export default async function NewsArticlePage({ params }: Props) {
                 prose-blockquote:bg-amber-50 prose-blockquote:rounded-r-xl prose-blockquote:px-5 prose-blockquote:py-3
                 prose-blockquote:not-italic prose-blockquote:text-slate-700
               "
-              dangerouslySetInnerHTML={{ __html: item.content }}
+              dangerouslySetInnerHTML={{ __html: article.content }}
             />
 
             {/* CTA */}
