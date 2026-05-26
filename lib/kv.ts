@@ -17,9 +17,13 @@ const DEV_STORE = new Map<string, string>();
 
 function getKV(): KVNamespace | null {
   try {
-    // @ts-ignore — Cloudflare bindings available at runtime
-    const { env } = (globalThis as any).__CLOUDFLARE__ ?? {};
-    return env?.CONTENT_KV ?? null;
+    // @cloudflare/next-on-pages stores bindings under this well-known symbol
+    const sym = Symbol.for('__cloudflare-request-context__');
+    const ctx = (globalThis as Record<symbol, unknown>)[sym] as
+      { env?: Record<string, unknown> } | undefined;
+    const kv = ctx?.env?.CONTENT_KV;
+    if (kv) return kv as KVNamespace;
+    return null;
   } catch {
     return null;
   }
