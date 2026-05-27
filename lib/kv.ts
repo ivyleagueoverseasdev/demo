@@ -3,6 +3,8 @@
  * KV Namespace binding expected: CONTENT_KV
  */
 
+/// <reference path="../env.d.ts" />
+
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia } from './types';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 

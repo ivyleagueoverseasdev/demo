@@ -37,4 +37,7 @@ declare global {
   }
 }
 
-export {};
+// No `export {}` here — keeping this file as a pure ambient script (no
+// imports/exports) ensures TypeScript treats it as a global declaration file.
+// Adding export {} would turn it into a module, scoping all declarations to
+// that module and making KVNamespace/R2Bucket invisible to other files.
