@@ -17,6 +17,17 @@ const nextConfig = {
   },
   // Prevents Pages Router conflict with App Router
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
+  // Stub out async_hooks for the Edge runtime — Cloudflare's esbuild step
+  // crashes otherwise because @next/request-context references it internally.
+  webpack: (config, { nextRuntime }) => {
+    if (nextRuntime === 'edge') {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'async_hooks': false,
+      };
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig;
