@@ -4,15 +4,21 @@
  */
 
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
-import type { KVNamespace } from '@cloudflare/workers-types';
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia } from './types';
+
+// Minimal KV shape — avoids requiring @cloudflare/workers-types as a dep.
+interface CfKVNamespace {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string): Promise<void>;
+  delete(key: string): Promise<void>;
+}
 
 // ── In-memory fallback for local dev ─────────────────────────────────────
 const DEV_STORE = new Map<string, string>();
 
-function getKV(): KVNamespace | null {
+function getKV(): CfKVNamespace | null {
   try {
-    return (getOptionalRequestContext()?.env?.CONTENT_KV as KVNamespace) || null;
+    return (getOptionalRequestContext()?.env?.CONTENT_KV as CfKVNamespace) || null;
   } catch {
     return null;
   }
