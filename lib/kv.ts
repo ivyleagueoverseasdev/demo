@@ -17,10 +17,13 @@ const DEV_STORE = new Map<string, string>();
 
 function getKV(): CfKVNamespace | null {
   try {
-    // OpenNext for Cloudflare exposes bindings via process.env at runtime.
-    // At build time / local dev the binding is absent → fall through to DEV_STORE.
-    const kv = (process.env as unknown as Record<string, unknown>)['CONTENT_KV'];
-    if (kv) return kv as unknown as CfKVNamespace;
+    // @opennextjs/cloudflare sets bindings under Symbol.for("__cloudflare-context__")
+    // Shape: { env: { CONTENT_KV: KVNamespace, ... }, cf: IncomingRequestCfProperties, ctx: ExecutionContext }
+    const sym = Symbol.for('__cloudflare-context__');
+    const ctx = (globalThis as Record<symbol, unknown>)[sym] as
+      { env?: Record<string, unknown> } | undefined;
+    const kv = ctx?.env?.CONTENT_KV;
+    if (kv) return kv as CfKVNamespace;
     return null;
   } catch {
     return null;
