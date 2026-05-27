@@ -9,9 +9,7 @@ import EventRegisterButton from './EventRegisterButton';
 import EventBodyRenderer from './EventBodyRenderer';
 
 export const runtime = 'edge';
-
-// Revalidate every 60 s so KV edits surface quickly
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 // ── Type config ────────────────────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
