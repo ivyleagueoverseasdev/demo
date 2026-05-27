@@ -264,6 +264,11 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const [cpLoading,  setCpLoading]  = useState(false);
   const [cpSaving,   setCpSaving]   = useState(false);
 
+  const [partnerSection, setPartnerSection] = useState('partners:institutions');
+  const [partnerHtml,    setPartnerHtml]    = useState('');
+  const [partnerLoading, setPartnerLoading] = useState(false);
+  const [partnerSaving,  setPartnerSaving]  = useState(false);
+
   // ── New page form ─────────────────────────────────────────────────────
   const [np, setNp] = useState({
     slug: '', title: '', metaTitle: '', metaDescription: '', category: '',
@@ -298,32 +303,31 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       fetch('/api/leads',   { headers: hdrs }).catch(() => null),
       fetch('/api/news').catch(() => null),
     ]);
+    const contentData = cRes?.ok ? await cRes.json() : null;
     if (pRes?.ok)  { const d = await pRes.json(); setPages(d.pages || []); }
-    if (cRes?.ok)  { const d = await cRes.json(); setRedirects(d.redirects || []); }
+    if (contentData)  { setRedirects(contentData.redirects || []); }
     if (eRes?.ok)  { const d = await eRes.json(); setEvents(d.events || []); }
     if (mRes?.ok)  {
       const d = await mRes.json();
       if (d.heroImages?.length) setHeroUrls(d.heroImages.concat(['','','']).slice(0,3));
       if (d.countryImages)      setCountryImgs(d.countryImages);
     }
-    if (cRes?.ok) {
-      const d = await cRes.json();
-      if (d.siteContent?.services?.length)      setServices(d.siteContent.services);
-      if (d.siteContent?.processSteps?.length)  setProcessSteps(d.siteContent.processSteps);
-      if (d.siteContent?.testimonials?.length)  setTestimonials(d.siteContent.testimonials);
+    if (contentData?.siteContent) {
+      if ('services' in contentData.siteContent)      setServices(contentData.siteContent.services || []);
+      if ('processSteps' in contentData.siteContent)  setProcessSteps(contentData.siteContent.processSteps || []);
+      if ('testimonials' in contentData.siteContent)  setTestimonials(contentData.siteContent.testimonials || []);
     }
     if (lRes?.ok) { const d = await lRes.json(); setLeads(d.leads || []); }
     if (nRes?.ok) { const d = await nRes.json(); setNews(d.news || []); }
-    if (cRes?.ok) {
-      const d = await cRes.json();
-      if (d.companyDetails)  setCompanyDetails(d.companyDetails);
-      if (d.globalSettings)  setGs({
-        brandName:    d.globalSettings.brandName    || COMPANY.short,
-        heroImages:   (d.globalSettings.heroImages  || ['','','']).concat(['','','']).slice(0,3),
-        noticeBanner: d.globalSettings.noticeBanner || '',
-        linkedIn:     d.globalSettings.linkedIn     || '',
-        instagram:    d.globalSettings.instagram    || '',
-        whatsappUrl:  d.globalSettings.whatsappUrl  || COMPANY.wa,
+    if (contentData) {
+      if (contentData.companyDetails)  setCompanyDetails(contentData.companyDetails);
+      if (contentData.globalSettings)  setGs({
+        brandName:    contentData.globalSettings.brandName    || COMPANY.short,
+        heroImages:   (contentData.globalSettings.heroImages  || ['','','']).concat(['','','']).slice(0,3),
+        noticeBanner: contentData.globalSettings.noticeBanner || '',
+        linkedIn:     contentData.globalSettings.linkedIn     || '',
+        instagram:    contentData.globalSettings.instagram    || '',
+        whatsappUrl:  contentData.globalSettings.whatsappUrl  || COMPANY.wa,
       });
     }
   }, [token]);
@@ -412,6 +416,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const saveTestimonials = async (list: Testimonial[]) => {
     await fetch('/api/content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ testimonials: list }) }).catch(() => null);
     setTestimonials(list);
+    await fetchAll();
   };
 
   const submitTestimonial = async (publishedOverride?: boolean) => {
@@ -466,16 +471,33 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   // ── Lead helpers ──────────────────────────────────────────────────────
   const updateLeadStatus = async (id: string, status: Lead['status']) => {
     setLeadsBusy(true);
-    await fetch('/api/leads', { method: 'PUT', headers: hdrs, body: JSON.stringify({ id, status }) }).catch(() => null);
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-    flash('Status updated.'); setLeadsBusy(false);
+    try {
+      const res = await fetch('/api/leads', { method: 'PUT', headers: hdrs, body: JSON.stringify({ id, status }) }).catch(() => null);
+      if (res?.ok) {
+        await fetchAll();
+        flash('Status updated.');
+      } else {
+        flash('Failed to update status.');
+      }
+    } finally {
+      setLeadsBusy(false);
+    }
   };
 
   const deleteLead = async (id: string) => {
     if (!confirm('Delete this lead permanently?')) return;
-    await fetch('/api/leads', { method: 'PUT', headers: hdrs, body: JSON.stringify({ id, delete: true }) }).catch(() => null);
-    setLeads(prev => prev.filter(l => l.id !== id));
-    flash('Lead deleted.');
+    setLeadsBusy(true);
+    try {
+      const res = await fetch('/api/leads', { method: 'PUT', headers: hdrs, body: JSON.stringify({ id, delete: true }) }).catch(() => null);
+      if (res?.ok) {
+        await fetchAll();
+        flash('Lead deleted.');
+      } else {
+        flash('Failed to delete lead.');
+      }
+    } finally {
+      setLeadsBusy(false);
+    }
   };
 
   // ── Company details helpers ───────────────────────────────────────────
@@ -535,30 +557,87 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const deleteNewsItem = async (id: string) => {
     if (!confirm('Delete this article permanently?')) return;
     await fetch('/api/news', { method: 'PUT', headers: hdrs, body: JSON.stringify({ id, delete: true }) }).catch(() => null);
-    setNews(prev => prev.filter(n => n.id !== id));
+    await fetchAll();
     flash('Article deleted.');
   };
 
   const toggleNewsPublished = async (item: NewsItem) => {
-    await fetch('/api/news', { method: 'PUT', headers: hdrs, body: JSON.stringify({ ...item, published: !item.published }) }).catch(() => null);
-    setNews(prev => prev.map(n => n.id === item.id ? { ...n, published: !n.published } : n));
-    flash('Visibility updated.');
+    const res = await fetch('/api/news', { method: 'PUT', headers: hdrs, body: JSON.stringify({ ...item, published: !item.published }) }).catch(() => null);
+    if (res?.ok) {
+      await fetchAll();
+      flash('Visibility updated.');
+    } else {
+      flash('Failed to update visibility.');
+    }
   };
 
   // ── Country pages helpers ─────────────────────────────────────────────
-  const loadCountrySection = async (country: string, section: string) => {
+  const loadCountrySection = useCallback(async (country: string, section: string) => {
     setCpLoading(true); setCpHtml('');
     const res = await fetch(`/api/country-content?country=${country}&section=${section}`).catch(() => null);
     if (res?.ok) { const d = await res.json(); setCpHtml(d.html || ''); }
     setCpLoading(false);
-  };
+  }, [token]);
 
-  const saveCountrySection = async () => {
+  const saveCountrySection = async (country?: string) => {
+    const targetCountry = country ?? cpCountry;
+    if (!targetCountry || !cpSection) {
+      flash('Please select a country and section before saving.');
+      return;
+    }
     setCpSaving(true);
-    await fetch('/api/country-content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ country: cpCountry, section: cpSection, html: cpHtml }) }).catch(() => null);
-    flash('✓ Country section saved — live on next page load.');
+    const res = await fetch('/api/country-content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ country: targetCountry, section: cpSection, html: cpHtml }) }).catch(() => null);
+    if (res?.ok) {
+      flash('✓ Country section saved — live on next page load.');
+      await loadCountrySection(targetCountry, cpSection);
+    } else {
+      flash('Failed to save content.');
+    }
     setCpSaving(false);
   };
+
+  const loadPartnerSection = useCallback(async (section: string) => {
+    setPartnerLoading(true); setPartnerHtml('');
+    const res = await fetch(`/api/country-content?country=global&section=${section}`).catch(() => null);
+    if (res?.ok) { const d = await res.json(); setPartnerHtml(d.html || ''); }
+    setPartnerLoading(false);
+  }, [token]);
+
+  const savePartnerSection = async () => {
+    if (!partnerSection) {
+      flash('Please select a partner page before saving.');
+      return;
+    }
+    setPartnerSaving(true);
+    const res = await fetch('/api/country-content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ country: 'global', section: partnerSection, html: partnerHtml }) }).catch(() => null);
+    if (res?.ok) {
+      flash('✓ Partners content saved — live on next page load.');
+      await loadPartnerSection(partnerSection);
+    } else {
+      flash('Failed to save content.');
+    }
+    setPartnerSaving(false);
+  };
+
+  useEffect(() => {
+    if (tab === 'partners') {
+      if (partnerSection) {
+        loadPartnerSection(partnerSection);
+      } else {
+        setPartnerHtml('');
+      }
+    }
+  }, [tab, partnerSection, loadPartnerSection]);
+
+  useEffect(() => {
+    if (tab === 'country-pages') {
+      if (cpCountry && cpSection) {
+        loadCountrySection(cpCountry, cpSection);
+      } else {
+        setCpHtml('');
+      }
+    }
+  }, [tab, cpCountry, cpSection, loadCountrySection]);
 
   // ── Event helpers ─────────────────────────────────────────────────────
   const saveEvents = async (evs: SiteEvent[]) => {
@@ -587,6 +666,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       ? (validatedEvent.published ? '✓ Event updated & published.' : '✓ Event draft saved.')
       : (validatedEvent.published ? '✓ Event created & published.' : '✓ Event draft saved.'));
     setNe(emptyEvent()); setEditEvId(null); setShowEvForm(false);
+    await fetchAll();
     setBusy(false);
   };
 
@@ -605,12 +685,14 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const deleteEvent = async (id: string) => {
     if (!confirm('Delete this event?')) return;
     await saveEvents(events.filter(e => e.id !== id));
+    await fetchAll();
     flash('Event deleted.');
   };
 
   const toggleEventPublished = async (id: string) => {
     const evs = events.map(e => e.id === id ? { ...e, published: !e.published } : e);
     await saveEvents(evs);
+    await fetchAll();
     flash('Visibility updated.');
   };
 
@@ -933,52 +1015,55 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                  <div>
                     <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Select Partner Page</label>
                     <select
-                      value={cpSection}
-                      onChange={e => { setCpSection(e.target.value); setCpHtml(''); }}
+                      value={partnerSection}
+                      onChange={e => { setPartnerSection(e.target.value); setPartnerHtml(''); }}
                       className={`${inp} cursor-pointer`}
                     >
-                      <option value="partners:institutions">🏛️ Institutions</option>
-                      <option value="partners:agent">🤝 Agents</option>
-                      <option value="partners:referral">🎁 Referral</option>
-                    </select>
-                  </div>
+                    <option value="">Select a partner page</option>
+                    <option value="partners:institutions">🏛️ Institutions</option>
+                    <option value="partners:agent">🤝 Agents</option>
+                    <option value="partners:referral">🎁 Referral</option>
+                  </select>
+                </div>
               </div>
 
-              <button
-                onClick={async () => {
-                  setCpLoading(true); setCpHtml('');
-                  const res = await fetch(`/api/country-content?country=global&section=${cpSection}`).catch(() => null);
-                  if (res?.ok) { const d = await res.json(); setCpHtml(d.html || ''); }
-                  setCpLoading(false);
-                }}
-                disabled={cpLoading}
-                className={`${ghostBtn} text-xs mb-4`}
-              >
-                {cpLoading ? 'Loading…' : '↓ Load Current Content'}
-              </button>
+              <div className="mb-4 text-slate-500 text-xs flex items-center gap-2">
+                {partnerLoading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full border-2 border-slate-300 border-t-amber-500 animate-spin" />
+                    Loading content automatically...
+                  </span>
+                ) : partnerSection ? (
+                  <span>Content loads automatically when you select a partner page.</span>
+                ) : (
+                  <span>Select a partner page to begin.</span>
+                )}
+              </div>
 
               <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
                 Page Content
               </label>
               <RichTextEditor
-                value={cpHtml}
-                onChange={setCpHtml}
-                placeholder="Load current content first, then edit here."
+                value={partnerHtml}
+                onChange={setPartnerHtml}
+                placeholder="The editor will fill automatically after selecting a partner page."
                 rows={12}
               />
+              {!partnerLoading && partnerHtml.trim() === '' && (
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 text-sm mt-3">
+                  {partnerSection
+                    ? 'No content found for this section. You can start typing to create it.'
+                    : 'Select a partner page to begin editing.'}
+                </div>
+              )}
 
               <button
-                onClick={async () => {
-                  setCpSaving(true);
-                  await fetch('/api/country-content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ country: 'global', section: cpSection, html: cpHtml }) });
-                  flash('✓ Partners content saved.');
-                  setCpSaving(false);
-                }}
-                disabled={cpSaving}
+                onClick={() => { void savePartnerSection(); }}
+                disabled={!partnerSection || partnerSaving}
                 className={`${amberBtn} mt-4 disabled:opacity-50`}
                 style={{ background: `linear-gradient(135deg,#D97706,#F59E0B)` }}
               >
-                {cpSaving ? 'Saving…' : 'Save to KV →'}
+                {partnerSaving ? 'Saving…' : 'Save to KV →'}
               </button>
             </div>
           </div>
@@ -1661,6 +1746,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                     onChange={e => { setCpCountry(e.target.value); setCpHtml(''); }}
                     className={`${inp} cursor-pointer`}
                   >
+                    <option value="">Select a country</option>
                     {Object.values(COUNTRIES_MAP).map(c => (
                       <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
                     ))}
@@ -1673,6 +1759,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                     onChange={e => { setCpSection(e.target.value); setCpHtml(''); }}
                     className={`${inp} cursor-pointer`}
                   >
+                    <option value="">Select section</option>
                     {SECTION_SLUGS.map(s => (
                       <option key={s} value={s}>{SECTION_LABELS[s]}</option>
                     ))}
@@ -1680,13 +1767,18 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                 </div>
               </div>
 
-              <button
-                onClick={() => loadCountrySection(cpCountry, cpSection)}
-                disabled={cpLoading}
-                className={`${ghostBtn} text-xs mb-4`}
-              >
-                {cpLoading ? 'Loading…' : '↓ Load Current Content'}
-              </button>
+              <div className="mb-4 text-slate-500 text-xs flex items-center gap-2">
+                {cpLoading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full border-2 border-slate-300 border-t-amber-500 animate-spin" />
+                    Loading section content automatically...
+                  </span>
+                ) : cpCountry && cpSection ? (
+                  <span>Content loads automatically when you select a country or section.</span>
+                ) : (
+                  <span>Select a country and section to begin.</span>
+                )}
+              </div>
 
               <div>
                 <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
@@ -1695,26 +1787,33 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                 <RichTextEditor
                   value={cpHtml}
                   onChange={setCpHtml}
-                  placeholder="Load current content first, then edit here. Leave empty to revert to the default bundled content."
+                  placeholder="Selected section content will appear here once loaded. Leave empty to revert to default content."
                   rows={18}
                 />
+                {!cpLoading && cpHtml.trim() === '' && (
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 text-sm mt-3">
+                    {cpCountry && cpSection
+                      ? 'No content found for this selection. You can start typing to create it.'
+                      : 'Select a country and section to begin editing.'}
+                  </div>
+                )}
                 <p className="font-jakarta text-[10px] text-slate-400 mt-1 text-right">{cpHtml.length} chars</p>
               </div>
 
               <div className="flex gap-3 mt-4">
                 <button
-                  onClick={saveCountrySection}
-                  disabled={cpSaving}
+                  onClick={() => { void saveCountrySection(); }}
+                  disabled={!cpCountry || !cpSection || cpSaving}
                   className={`${amberBtn} px-8 disabled:opacity-50`}
                   style={{ background: `linear-gradient(135deg,${AMBER},#F59E0B)` }}
                 >
                   {cpSaving ? 'Saving…' : 'Save to KV →'}
                 </button>
                 <a
-                  href={`/destinations/${cpCountry}/${cpSection}`}
+                  href={cpCountry && cpSection ? `/destinations/${cpCountry}/${cpSection}` : '#'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={ghostBtn}
+                  className={`${ghostBtn} ${!(cpCountry && cpSection) ? 'opacity-40 pointer-events-none' : ''}`}
                 >
                   Preview ↗
                 </a>
@@ -2105,14 +2204,16 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                         <select
                           value={lead.status}
                           onChange={e => updateLeadStatus(lead.id, e.target.value as Lead['status'])}
-                          className="font-jakarta text-xs border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-blue-400 text-slate-700 cursor-pointer"
+                          disabled={leadsBusy}
+                          className="font-jakarta text-xs border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-blue-400 text-slate-700 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-100"
                         >
                           <option value="new">New</option>
                           <option value="contacted">Contacted</option>
                           <option value="closed">Closed</option>
                         </select>
                         <button onClick={() => deleteLead(lead.id)}
-                          className="font-jakarta text-xs font-semibold px-3 py-2 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
+                          disabled={leadsBusy}
+                          className="font-jakarta text-xs font-semibold px-3 py-2 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                           Delete
                         </button>
                       </div>
