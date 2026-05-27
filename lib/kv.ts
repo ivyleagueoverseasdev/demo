@@ -6,13 +6,6 @@
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia } from './types';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 
-// Minimal type shim — replaced by the real Cloudflare KVNamespace at runtime
-interface KVNamespace {
-  get(key: string): Promise<string | null>;
-  put(key: string, value: string): Promise<void>;
-  delete(key: string): Promise<void>;
-}
-
 // ── In-memory fallback for local dev ─────────────────────────────────────
 const DEV_STORE = new Map<string, string>();
 
@@ -22,9 +15,7 @@ function getKV(): KVNamespace | null {
     // getOptionalRequestContext() returns undefined outside a Worker request
     // (e.g. during Next.js local dev), so we fall through to DEV_STORE safely.
     const ctx = getOptionalRequestContext();
-    const kv = ctx?.env?.CONTENT_KV;
-    if (kv) return kv as unknown as KVNamespace;
-    return null;
+    return ctx?.env?.CONTENT_KV ?? null;
   } catch {
     return null;
   }
