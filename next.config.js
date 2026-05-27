@@ -15,6 +15,22 @@ const nextConfig = {
   experimental: {
     // Ensures edge runtime pages (api routes) are built correctly
   },
+  webpack: (config, { nextRuntime }) => {
+    if (nextRuntime === 'edge') {
+      // async_hooks is a Node.js built-in that @cloudflare/next-on-pages cannot
+      // bundle for the edge. Stub it out so the bundler doesn't crash trying to
+      // resolve it as a local file.
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        async_hooks: false,
+      };
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        async_hooks: false,
+      };
+    }
+    return config;
+  },
   // Prevents Pages Router conflict with App Router
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
 };
