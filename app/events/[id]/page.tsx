@@ -8,7 +8,6 @@ import type { SiteEvent, EventType } from '@/lib/types';
 import EventRegisterButton from './EventRegisterButton';
 import EventBodyRenderer from './EventBodyRenderer';
 
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 // ── Type config ────────────────────────────────────────────────────────────

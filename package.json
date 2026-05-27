@@ -14,9 +14,6 @@
     "type-check": "tsc --noEmit",
     "deploy": "echo 'Deployment handled internally by Cloudflare'"
   },
-  "browser": {
-    "async_hooks": false
-  },
   "dependencies": {
     "framer-motion": "^11.0.0",
     "lucide-react": "^1.16.0",

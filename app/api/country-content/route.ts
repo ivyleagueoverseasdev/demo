@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCountryContent, setCountryContent, validateAdminToken } from '@/lib/kv';
 
-export const runtime = 'edge';
-
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
   'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',
