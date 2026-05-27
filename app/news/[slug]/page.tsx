@@ -9,11 +9,11 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
   const news = await getNews().catch(() => []);
   const item = news.find(n => n.slug === slug);
   if (!item) return { title: 'Article Not Found | ILOC' };
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function NewsArticlePage({ params }: Props) {
-  const { slug } = await params;
+  const { slug } = params;
 
   let item: NewsItem | undefined;
   try {

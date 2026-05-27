@@ -36,8 +36,8 @@ async function getEvent(id: string): Promise<SiteEvent | null> {
   return all.find(e => e.id === id) ?? null;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-  const { id } = await params;
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const { id } = params;
   const event = await getEvent(id);
   if (!event) return { title: 'Event Not Found | ILOC' };
   return {
@@ -63,8 +63,8 @@ function daysUntil(iso: string) {
   return Math.ceil((target.getTime() - today.getTime()) / 86_400_000);
 }
 
-export default async function EventDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function EventDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const event = await getEvent(id);
   if (!event || !event.published) notFound();
 

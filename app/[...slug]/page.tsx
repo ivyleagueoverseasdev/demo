@@ -3,13 +3,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPage, resolveRedirect } from '@/lib/kv';
 
-interface Props { params: Promise<{ slug: string[] }> }
+interface Props { params: { slug: string[] } }
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic'; // Always check KV at runtime
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = params;
   const page = await getPage(slug.join('/'));
   if (!page) return { title: 'Page Not Found' };
   return {
@@ -43,7 +43,7 @@ function asCta(p:  Record<string, unknown>):  CtaProps   { return p as CtaProps;
 function asStats(p: Record<string, unknown>): StatsProps { return p as StatsProps; }
 
 export default async function DynamicPage({ params }: Props) {
-  const { slug: slugArr } = await params;
+  const { slug: slugArr } = params;
   const slug = slugArr.join('/');
 
   // Check for redirect rule first

@@ -6,10 +6,10 @@ import { COUNTRIES_MAP } from '@/lib/data';
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
-interface Props { params: Promise<{ country: string }> }
+interface Props { params: { country: string } }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { country } = await params;
+  const { country } = params;
   const c = COUNTRIES_MAP[country];
   if (!c) return { title: 'Destination Not Found' };
   return {
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CountryPage({ params }: Props) {
-  const { country } = await params;
+  const { country } = params;
   if (!COUNTRIES_MAP[country]) notFound();
   redirect(`/destinations/${country}/why-study`);
 }
