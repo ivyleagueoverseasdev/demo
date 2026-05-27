@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAllPages, getCompanyDetails, getGlobalSettings, getRedirects, getSiteContent, setCompanyDetails, setGlobalSettings, setRedirects, setSiteContent, validateAdminToken } from '@/lib/kv';
 import type { CompanyDetails, GlobalSettings, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
 
-export const runtime = 'edge';
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',

@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateAdminToken } from '@/lib/kv';
-import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
-
-export const runtime = 'edge';
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -34,9 +31,8 @@ export async function POST(req: NextRequest) {
     const ext = file.name.split('.').pop() || 'png';
     const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
 
-    // Access R2 bucket via the official @cloudflare/next-on-pages API
-    const cfCtx = getOptionalRequestContext();
-    const bucket = cfCtx?.env?.['R2_BUCKET' as keyof typeof cfCtx.env] as
+    // OpenNext exposes R2 bindings via process.env at runtime
+    const bucket = (process.env as unknown as Record<string, unknown>)['R2_BUCKET'] as
       | { put(k: string, v: unknown, opts?: { httpMetadata?: { contentType?: string } }): Promise<void> }
       | undefined;
 

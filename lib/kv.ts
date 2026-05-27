@@ -4,10 +4,8 @@
  */
 
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia } from './types';
-import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 
-// Minimal local interface — avoids any dependency on @cloudflare/workers-types
-// or global ambient declarations that are unreliable in Next.js strict mode.
+// Minimal KV shape — avoids requiring @cloudflare/workers-types as a dep.
 interface CfKVNamespace {
   get(key: string): Promise<string | null>;
   put(key: string, value: string): Promise<void>;
@@ -19,12 +17,11 @@ const DEV_STORE = new Map<string, string>();
 
 function getKV(): CfKVNamespace | null {
   try {
-    // Use the official @cloudflare/next-on-pages v1.x API to access bindings.
-    // getOptionalRequestContext() returns undefined outside a Worker request
-    // (e.g. during Next.js local dev), so we fall through to DEV_STORE safely.
-    const ctx = getOptionalRequestContext();
-    const kv = ctx?.env?.['CONTENT_KV' as keyof typeof ctx.env];
-    return (kv as unknown as CfKVNamespace) ?? null;
+    // OpenNext for Cloudflare exposes bindings via process.env at runtime.
+    // At build time / local dev the binding is absent → fall through to DEV_STORE.
+    const kv = (process.env as unknown as Record<string, unknown>)['CONTENT_KV'];
+    if (kv) return kv as unknown as CfKVNamespace;
+    return null;
   } catch {
     return null;
   }

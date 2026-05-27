@@ -9,7 +9,6 @@ import {
   SECTION_SLUGS,
 } from '@/lib/countrySubpages';
 
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 interface Props {

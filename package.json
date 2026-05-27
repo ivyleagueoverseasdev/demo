@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "opennextjs-cloudflare build",
+    "next-build": "next build",
     "prebuild": "node -e \"try{require('fs').rmSync('.next',{recursive:true,force:true})}catch(e){}\"",
     "start": "next start",
     "lint": "next lint",
     "clean": "node -e \"try{require('fs').rmSync('.next',{recursive:true,force:true})}catch(e){}\"",
-    "cf-build": "npx @cloudflare/next-on-pages",
+    "cf-build": "opennextjs-cloudflare build",
     "clean:build": "node -e \"try{require('fs').rmSync('.next',{recursive:true,force:true})}catch(e){}\" && next build",
     "type-check": "tsc --noEmit",
     "deploy": "echo 'Deployment handled internally by Cloudflare'"
@@ -22,9 +23,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.11.3",
-    "@emnapi/core": "^1.10.0",
-    "@emnapi/runtime": "^1.10.0",
+    "@opennextjs/cloudflare": "^1",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",

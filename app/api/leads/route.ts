@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getLeads, upsertLead, deleteLead, validateAdminToken } from '@/lib/kv';
 import type { Lead } from '@/lib/types';
 
-export const runtime = 'edge';
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
