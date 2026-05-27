@@ -35,13 +35,13 @@ function RichTextEditor({ value, onChange, placeholder, rows = 12 }: {
   const [showSource, setShowSource] = useState(false);
   const [sourceVal, setSourceVal] = useState(value);
 
-  // Sync external value into the editor on first mount only
+  // Sync external value into the editor whenever the value changes
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setSourceVal(value);
+  }, [value]);
 
   const exec = (cmd: string, val?: string) => {
     editorRef.current?.focus();
