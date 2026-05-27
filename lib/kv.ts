@@ -18,7 +18,10 @@ const DEV_STORE = new Map<string, string>();
 
 function getKV(): CfKVNamespace | null {
   try {
-    return (getOptionalRequestContext()?.env?.CONTENT_KV as CfKVNamespace) || null;
+    // Cast env to `any` — CONTENT_KV is bound at runtime via wrangler.toml
+    // but not declared in @cloudflare/next-on-pages' CloudflareEnv type.
+    const ctx = getOptionalRequestContext();
+    return (ctx?.env as any)?.CONTENT_KV || null;
   } catch {
     return null;
   }
