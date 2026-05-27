@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, EventType, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
 import { DEFAULT_SERVICES, DEFAULT_PROCESS_STEPS, DEFAULT_TESTIMONIALS, COUNTRIES_MAP, COMPANY } from '@/lib/data';
-import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
+import { SECTION_SLUGS, SECTION_LABELS, SectionSlug, getSubpageContent } from '@/lib/countrySubpages';
 import { NewsSchema, EventSchema, TestimonialSchema } from '@/lib/schemas';
 import type { AuditEntry } from '@/lib/schemas';
 
@@ -332,7 +332,24 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     }
   }, [token]);
 
+  const fetchLeads = useCallback(async () => {
+    const res = await fetch('/api/leads', { headers: hdrs }).catch(() => null);
+    if (res?.ok) {
+      const d = await res.json();
+      setLeads(d.leads || []);
+    }
+  }, [token]);
+
   useEffect(() => { fetchAll(); }, [fetchAll]);
+
+  useEffect(() => {
+    if (tab === 'enquiries') {
+      fetchLeads();
+      const interval = setInterval(fetchLeads, 20000);
+      return () => clearInterval(interval);
+    }
+    return undefined;
+  }, [tab, fetchLeads]);
 
   // ── Page helpers ──────────────────────────────────────────────────────
   const buildBlocks = () => {
@@ -575,7 +592,15 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const loadCountrySection = useCallback(async (country: string, section: string) => {
     setCpLoading(true); setCpHtml('');
     const res = await fetch(`/api/country-content?country=${country}&section=${section}`).catch(() => null);
-    if (res?.ok) { const d = await res.json(); setCpHtml(d.html || ''); }
+    let html = '';
+    if (res?.ok) {
+      const d = await res.json();
+      html = d.html || '';
+    }
+    if (!html) {
+      html = getSubpageContent(country, section as SectionSlug) || '';
+    }
+    setCpHtml(html);
     setCpLoading(false);
   }, [token]);
 
