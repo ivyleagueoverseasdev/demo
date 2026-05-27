@@ -294,11 +294,29 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const hdrs  = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
   // ── Fetch data ────────────────────────────────────────────────────────
+  const fetchEvents = useCallback(async () => {
+    console.log('Admin Events Fetching: requesting /api/events');
+    const res = await fetch('/api/events').catch((err) => {
+      console.log('Admin Events fetch error:', err);
+      return null;
+    });
+    if (!res?.ok) {
+      console.log('Admin Events response not ok:', res?.status, res?.statusText);
+      setEvents([]);
+      return;
+    }
+    const data = await res.json().catch((err) => {
+      console.log('Admin Events JSON parse failed:', err);
+      return null;
+    });
+    console.log('KV Data Received in Admin:', data);
+    setEvents(data?.events || []);
+  }, [token]);
+
   const fetchAll = useCallback(async () => {
-    const [pRes, cRes, eRes, mRes, lRes, nRes] = await Promise.all([
+    const [pRes, cRes, mRes, lRes, nRes] = await Promise.all([
       fetch('/api/pages',   { headers: hdrs }).catch(() => null),
       fetch('/api/content').catch(() => null),
-      fetch('/api/events').catch(() => null),
       fetch('/api/media').catch(() => null),
       fetch('/api/leads',   { headers: hdrs }).catch(() => null),
       fetch('/api/news').catch(() => null),
@@ -306,7 +324,6 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     const contentData = cRes?.ok ? await cRes.json() : null;
     if (pRes?.ok)  { const d = await pRes.json(); setPages(d.pages || []); }
     if (contentData)  { setRedirects(contentData.redirects || []); }
-    if (eRes?.ok)  { const d = await eRes.json(); setEvents(d.events || []); }
     if (mRes?.ok)  {
       const d = await mRes.json();
       if (d.heroImages?.length) setHeroUrls(d.heroImages.concat(['','','']).slice(0,3));
@@ -330,7 +347,8 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         whatsappUrl:  contentData.globalSettings.whatsappUrl  || COMPANY.wa,
       });
     }
-  }, [token]);
+    await fetchEvents();
+  }, [fetchEvents, token]);
 
   const fetchLeads = useCallback(async () => {
     const res = await fetch('/api/leads', { headers: hdrs }).catch(() => null);
@@ -341,6 +359,12 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   }, [token]);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
+
+  useEffect(() => {
+    if (tab === 'events') {
+      fetchEvents();
+    }
+  }, [tab, fetchEvents]);
 
   useEffect(() => {
     if (tab === 'enquiries') {
@@ -666,7 +690,16 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
 
   // ── Event helpers ─────────────────────────────────────────────────────
   const saveEvents = async (evs: SiteEvent[]) => {
-    await fetch('/api/events', { method: 'PUT', headers: hdrs, body: JSON.stringify({ events: evs }) }).catch(() => null);
+    console.log('Admin Events Saving:', evs.length, 'events');
+    const res = await fetch('/api/events', { method: 'PUT', headers: hdrs, body: JSON.stringify({ events: evs }) }).catch((err) => {
+      console.log('Admin Events save error:', err);
+      return null;
+    });
+    if (res?.ok) {
+      await fetchEvents();
+    } else {
+      console.log('Admin Events save failed:', res?.status, res?.statusText);
+    }
     setEvents(evs);
   };
 
