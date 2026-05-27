@@ -1,12 +1,32 @@
 /**
- * Cloudflare bindings type augmentation.
+ * Cloudflare bindings type declarations.
  *
- * @cloudflare/next-on-pages declares a global `CloudflareEnv` interface that
- * is intentionally empty — projects extend it here via declaration merging so
- * that `getRequestContext().env` is correctly typed everywhere.
+ * @cloudflare/workers-types is NOT installed as a direct dependency (it lives
+ * inside wrangler's own node_modules and is not reachable by tsc). We define
+ * the minimal shapes for the bindings this project uses so the compiler is
+ * satisfied without adding a new dependency.
  *
- * These types are provided by @cloudflare/workers-types (bundled with wrangler).
+ * @cloudflare/next-on-pages declares `CloudflareEnv` as an empty global
+ * interface — we augment it here via declaration merging.
  */
+
+/** Minimal KV namespace shape used by this project. */
+interface KVNamespace {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string): Promise<void>;
+  delete(key: string): Promise<void>;
+}
+
+/** Minimal R2 bucket shape used by this project. */
+interface R2Bucket {
+  put(
+    key: string,
+    value: ReadableStream | ArrayBuffer | ArrayBufferView | string | Blob | null,
+    options?: { httpMetadata?: { contentType?: string } }
+  ): Promise<void>;
+  get(key: string): Promise<{ body: ReadableStream; httpMetadata?: { contentType?: string } } | null>;
+  delete(key: string): Promise<void>;
+}
 
 declare global {
   interface CloudflareEnv {
