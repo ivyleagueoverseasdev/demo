@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { upsertPage, deletePage, getAllPages, validateAdminToken } from '@/lib/kv';
 import type { DynamicPage } from '@/lib/types';

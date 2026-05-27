@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getSiteMedia, setSiteMedia, validateAdminToken } from '@/lib/kv';
 import { DEFAULT_MEDIA } from '@/lib/data';

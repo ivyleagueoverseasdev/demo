@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { COUNTRIES_MAP } from '@/lib/data';
 
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 interface Props { params: Promise<{ country: string }> }

@@ -3,28 +3,16 @@
  * KV Namespace binding expected: CONTENT_KV
  */
 
+import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
+import type { KVNamespace } from '@cloudflare/workers-types';
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia } from './types';
-
-// Minimal KV shape — avoids requiring @cloudflare/workers-types as a dep.
-interface CfKVNamespace {
-  get(key: string): Promise<string | null>;
-  put(key: string, value: string): Promise<void>;
-  delete(key: string): Promise<void>;
-}
 
 // ── In-memory fallback for local dev ─────────────────────────────────────
 const DEV_STORE = new Map<string, string>();
 
-function getKV(): CfKVNamespace | null {
+function getKV(): KVNamespace | null {
   try {
-    // @opennextjs/cloudflare sets bindings under Symbol.for("__cloudflare-context__")
-    // Shape: { env: { CONTENT_KV: KVNamespace, ... }, cf: IncomingRequestCfProperties, ctx: ExecutionContext }
-    const sym = Symbol.for('__cloudflare-context__');
-    const ctx = (globalThis as Record<symbol, unknown>)[sym] as
-      { env?: Record<string, unknown> } | undefined;
-    const kv = ctx?.env?.CONTENT_KV;
-    if (kv) return kv as CfKVNamespace;
-    return null;
+    return (getOptionalRequestContext()?.env?.CONTENT_KV as KVNamespace) || null;
   } catch {
     return null;
   }

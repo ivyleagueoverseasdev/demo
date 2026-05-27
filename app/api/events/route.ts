@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getEvents, setEvents, validateAdminToken } from '@/lib/kv';
 import type { SiteEvent } from '@/lib/types';
