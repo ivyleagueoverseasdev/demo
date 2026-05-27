@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSiteMedia, setSiteMedia, validateAdminToken } from '@/lib/kv';
 import { DEFAULT_MEDIA } from '@/lib/data';
 
+export const runtime = 'edge';
+
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
   'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',

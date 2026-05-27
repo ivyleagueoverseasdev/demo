@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getEvents, setEvents, validateAdminToken } from '@/lib/kv';
 import type { SiteEvent } from '@/lib/types';
 
+export const runtime = 'edge';
+
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
   'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',

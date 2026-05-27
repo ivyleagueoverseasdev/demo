@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { getNews } from '@/lib/kv';
 import type { NewsItem } from '@/lib/types';
 
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 interface Props {

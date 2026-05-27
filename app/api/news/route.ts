@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getNews, upsertNews, deleteNews, validateAdminToken } from '@/lib/kv';
 import type { NewsItem } from '@/lib/types';
 
+export const runtime = 'edge';
+
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
   'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',

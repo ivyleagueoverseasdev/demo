@@ -4,6 +4,7 @@
  */
 
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia } from './types';
+import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 
 // Minimal type shim — replaced by the real Cloudflare KVNamespace at runtime
 interface KVNamespace {
@@ -17,12 +18,12 @@ const DEV_STORE = new Map<string, string>();
 
 function getKV(): KVNamespace | null {
   try {
-    // @cloudflare/next-on-pages stores bindings under this well-known symbol
-    const sym = Symbol.for('__cloudflare-request-context__');
-    const ctx = (globalThis as Record<symbol, unknown>)[sym] as
-      { env?: Record<string, unknown> } | undefined;
+    // Use the official @cloudflare/next-on-pages v1.x API to access bindings.
+    // getOptionalRequestContext() returns undefined outside a Worker request
+    // (e.g. during Next.js local dev), so we fall through to DEV_STORE safely.
+    const ctx = getOptionalRequestContext();
     const kv = ctx?.env?.CONTENT_KV;
-    if (kv) return kv as KVNamespace;
+    if (kv) return kv as unknown as KVNamespace;
     return null;
   } catch {
     return null;
