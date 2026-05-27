@@ -8,11 +8,11 @@ import type { NewsItem } from '@/lib/types';
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const news = await getNews().catch(() => []);
   const item = news.find(n => n.slug === slug);
   if (!item) return { title: 'Article Not Found | ILOC' };
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function NewsArticlePage({ params }: Props) {
-  const { slug } = params;
+  const { slug } = await params;
 
   let item: NewsItem | undefined;
   try {

@@ -12,11 +12,11 @@ import {
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: { country: string; section: string };
+  params: Promise<{ country: string; section: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { country, section } = params;
+  const { country, section } = await params;
   const c = COUNTRIES_MAP[country];
   if (!c || !isValidSection(section)) return { title: 'Page Not Found | ILOC' };
 
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function SectionPage({ params }: Props) {
-  const { country, section } = params;
+  const { country, section } = await params;
 
   if (!COUNTRIES_MAP[country]) notFound();
   if (!isValidSection(section)) notFound();

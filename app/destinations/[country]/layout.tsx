@@ -8,11 +8,11 @@ import SubNav from './SubNav';
 
 interface Props {
   children: React.ReactNode;
-  params:   { country: string };
+  params:   Promise<{ country: string }>;
 }
 
 export default async function CountryLayout({ children, params }: Props) {
-  const { country } = params;
+  const { country } = await params;
   const c = COUNTRIES_MAP[country];
   if (!c) notFound();
 
