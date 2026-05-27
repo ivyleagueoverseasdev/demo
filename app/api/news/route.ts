@@ -2,6 +2,7 @@ export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getNews, upsertNews, deleteNews, validateAdminToken } from '@/lib/kv';
+import { appendAuditLog } from '@/lib/audit';
 import type { NewsItem } from '@/lib/types';
 
 
@@ -18,7 +19,7 @@ export async function OPTIONS() {
 export async function GET() {
   const news = await getNews();
   return NextResponse.json({ news }, {
-    headers: { ...CORS, 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=300' },
+    headers: { ...CORS, 'Cache-Control': 'no-store' },
   });
 }
 
@@ -46,6 +47,15 @@ export async function POST(req: NextRequest) {
   };
 
   await upsertNews(item);
+  await appendAuditLog({
+    action:     item.published ? 'Published News Article' : 'Saved Draft News Article',
+    entity:     'news',
+    entityId:   item.id,
+    entityName: item.title,
+    before:     null,
+    after:      item,
+    published:  item.published,
+  });
   return NextResponse.json({ ok: true, item }, { headers: CORS });
 }
 
@@ -59,7 +69,20 @@ export async function PUT(req: NextRequest) {
   if (!body.id) return NextResponse.json({ error: 'id required' }, { status: 400, headers: CORS });
 
   if (body.delete) {
+    const news = await getNews();
+    const toDelete = news.find(n => n.id === body.id);
     await deleteNews(body.id);
+    if (toDelete) {
+      await appendAuditLog({
+        action:     'Deleted News Article',
+        entity:     'news',
+        entityId:   body.id,
+        entityName: toDelete.title,
+        before:     toDelete,
+        after:      null,
+        published:  false,
+      });
+    }
     return NextResponse.json({ ok: true, deleted: body.id }, { headers: CORS });
   }
 
@@ -67,6 +90,16 @@ export async function PUT(req: NextRequest) {
   const existing = news.find(n => n.id === body.id);
   if (!existing) return NextResponse.json({ error: 'not found' }, { status: 404, headers: CORS });
 
-  await upsertNews({ ...existing, ...body, id: existing.id, createdAt: existing.createdAt });
+  const updated = { ...existing, ...body, id: existing.id, createdAt: existing.createdAt };
+  await upsertNews(updated);
+  await appendAuditLog({
+    action:     updated.published ? 'Updated News Article' : 'Saved Draft News Article',
+    entity:     'news',
+    entityId:   updated.id,
+    entityName: updated.title,
+    before:     existing,
+    after:      updated,
+    published:  updated.published,
+  });
   return NextResponse.json({ ok: true }, { headers: CORS });
 }

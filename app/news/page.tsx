@@ -1,9 +1,11 @@
+// ── Edge runtime required: page calls getOptionalRequestContext() via lib/kv ──
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getNews } from '@/lib/kv';
-
-export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'News & Updates 2026 | ILOC — Overseas Education from Pune',

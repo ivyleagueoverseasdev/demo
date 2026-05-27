@@ -6,11 +6,116 @@ import Image from 'next/image';
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, EventType, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
 import { DEFAULT_SERVICES, DEFAULT_PROCESS_STEPS, DEFAULT_TESTIMONIALS, COUNTRIES_MAP, COMPANY } from '@/lib/data';
 import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
+import { NewsSchema, EventSchema, TestimonialSchema } from '@/lib/schemas';
+import type { AuditEntry } from '@/lib/schemas';
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const BLUE  = '#1A365D';
 const AMBER = '#D97706';
-type Tab = 'overview' | 'pages' | 'create' | 'events' | 'stories' | 'enquiries' | 'news' | 'country-pages' | 'routes' | 'countries' | 'homepage' | 'general' | 'global' | 'settings' | 'partners' | 'analytics' | 'media-library';
+
+// ── Slug utility ──────────────────────────────────────────────────────────
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 80);
+}
+
+// ── Simple Rich Text Editor ───────────────────────────────────────────────
+function RichTextEditor({ value, onChange, placeholder, rows = 12 }: {
+  value: string;
+  onChange: (html: string) => void;
+  placeholder?: string;
+  rows?: number;
+}) {
+  const editorRef = useRef<HTMLDivElement>(null);
+  const [showSource, setShowSource] = useState(false);
+  const [sourceVal, setSourceVal] = useState(value);
+
+  // Sync external value into the editor on first mount only
+  useEffect(() => {
+    if (editorRef.current && editorRef.current.innerHTML !== value) {
+      editorRef.current.innerHTML = value;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const exec = (cmd: string, val?: string) => {
+    editorRef.current?.focus();
+    document.execCommand(cmd, false, val);
+    onChange(editorRef.current?.innerHTML ?? '');
+  };
+
+  const toolbarBtns: { label: string; title: string; action: () => void }[] = [
+    { label: 'B',     title: 'Bold',          action: () => exec('bold') },
+    { label: 'I',     title: 'Italic',        action: () => exec('italic') },
+    { label: 'H2',    title: 'Heading 2',     action: () => exec('formatBlock', '<h2>') },
+    { label: 'H3',    title: 'Heading 3',     action: () => exec('formatBlock', '<h3>') },
+    { label: '¶',     title: 'Paragraph',     action: () => exec('formatBlock', '<p>') },
+    { label: '• List',title: 'Bullet List',   action: () => exec('insertUnorderedList') },
+    { label: '❝',     title: 'Blockquote',    action: () => exec('formatBlock', '<blockquote>') },
+    { label: '—',     title: 'Divider',       action: () => exec('insertHTML', '<hr/>') },
+  ];
+
+  return (
+    <div className="border border-slate-200 rounded-xl overflow-hidden focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50">
+      {/* Toolbar */}
+      <div className="flex items-center gap-1 flex-wrap px-3 py-2 bg-slate-50 border-b border-slate-200">
+        {toolbarBtns.map(b => (
+          <button key={b.label} type="button" title={b.title}
+            onMouseDown={e => { e.preventDefault(); b.action(); }}
+            className="font-jakarta text-xs font-bold px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-300 transition-colors text-slate-700">
+            {b.label}
+          </button>
+        ))}
+        <div className="ml-auto">
+          <button type="button"
+            onClick={() => {
+              if (!showSource) {
+                setSourceVal(editorRef.current?.innerHTML ?? value);
+              } else {
+                if (editorRef.current) editorRef.current.innerHTML = sourceVal;
+                onChange(sourceVal);
+              }
+              setShowSource(s => !s);
+            }}
+            className="font-jakarta text-[10px] font-semibold px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-500 transition-colors">
+            {showSource ? 'Visual ←' : '→ HTML'}
+          </button>
+        </div>
+      </div>
+      {/* Content area */}
+      {showSource ? (
+        <textarea
+          value={sourceVal}
+          onChange={e => { setSourceVal(e.target.value); onChange(e.target.value); }}
+          rows={rows}
+          className="w-full font-mono text-xs px-4 py-3 outline-none resize-none text-slate-800 bg-white"
+          placeholder={placeholder}
+        />
+      ) : (
+        <div
+          ref={editorRef}
+          contentEditable
+          suppressContentEditableWarning
+          onInput={() => onChange(editorRef.current?.innerHTML ?? '')}
+          style={{ minHeight: `${rows * 1.5}rem` }}
+          className="px-4 py-3 text-sm text-slate-800 outline-none prose prose-sm max-w-none [&_h2]:font-bold [&_h2]:text-base [&_h3]:font-semibold [&_h3]:text-sm [&_blockquote]:border-l-4 [&_blockquote]:border-amber-400 [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-slate-600 [&_ul]:list-disc [&_ul]:pl-5"
+          data-placeholder={placeholder}
+        />
+      )}
+    </div>
+  );
+}
+type Tab = 'overview' | 'pages' | 'create' | 'events' | 'stories' | 'enquiries' | 'news' | 'country-pages' | 'routes' | 'countries' | 'homepage' | 'general' | 'global' | 'settings' | 'partners' | 'analytics' | 'media-library' | 'history';
+
+// ── Zod error formatter ───────────────────────────────────────────────────
+function formatZodErrors(issues: { message: string }[]): string {
+  return issues.map(i => i.message).join(' · ');
+}
 
 // ── Shared style strings ──────────────────────────────────────────────────
 const blueBtn  = 'font-jakarta font-semibold text-sm px-5 py-2.5 rounded-xl text-white transition-all hover:opacity-90 active:scale-95';
@@ -237,7 +342,8 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   };
 
   const createPage = async () => {
-    if (!np.slug || !np.title) { flash('Slug and title are required.'); return; }
+    if (!np.title) { flash('Page title is required.'); return; }
+    if (!np.slug) { flash('Could not generate URL — please enter a title.'); return; }
     setBusy(true);
     const page: Partial<DynamicPage> = {
       id: crypto.randomUUID(),
@@ -308,14 +414,20 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     setTestimonials(list);
   };
 
-  const submitTestimonial = async () => {
-    if (!nt.name.trim() || !nt.quote.trim()) { flash('Name and quote are required.'); return; }
+  const submitTestimonial = async (publishedOverride?: boolean) => {
+    const payload = publishedOverride !== undefined ? { ...nt, published: publishedOverride } : nt;
+    const result = TestimonialSchema.safeParse(payload);
+    if (!result.success) {
+      flash(formatZodErrors(result.error.issues));
+      return;
+    }
+    const validatedT = result.data;
     setTBusy(true);
     let list: Testimonial[];
     if (editTId) {
-      list = testimonials.map(t => t.id === editTId ? { ...t, ...nt } : t);
+      list = testimonials.map(t => t.id === editTId ? { ...t, ...validatedT } : t);
     } else {
-      list = [...testimonials, { ...nt, id: crypto.randomUUID() }];
+      list = [...testimonials, { ...validatedT, id: crypto.randomUUID() }];
     }
     await saveTestimonials(list);
     flash(editTId ? '✓ Testimonial updated.' : '✓ Testimonial added.');
@@ -387,16 +499,24 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   };
 
   // ── News helpers ──────────────────────────────────────────────────────
-  const submitNews = async () => {
-    if (!nn.title.trim() || !nn.slug.trim()) { flash('Title and slug are required.'); return; }
+  const submitNews = async (publishedOverride?: boolean) => {
+    const payload = publishedOverride !== undefined ? { ...nn, published: publishedOverride } : nn;
+    const result = NewsSchema.safeParse(payload);
+    if (!result.success) {
+      flash(formatZodErrors(result.error.issues));
+      return;
+    }
+    const validatedNews = result.data;
     setNewsBusy(true);
     const method = editNewsId ? 'PUT' : 'POST';
     const body = editNewsId
-      ? { ...nn, id: editNewsId }
-      : { ...nn, id: `news_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, createdAt: new Date().toISOString() };
+      ? { ...validatedNews, id: editNewsId }
+      : { ...validatedNews, id: `news_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, createdAt: new Date().toISOString() };
     const res = await fetch('/api/news', { method, headers: hdrs, body: JSON.stringify(body) }).catch(() => null);
     if (res?.ok) {
-      flash(editNewsId ? '✓ Article updated.' : '✓ Article published.');
+      flash(editNewsId
+        ? (validatedNews.published ? '✓ Article updated & published.' : '✓ Draft saved.')
+        : (validatedNews.published ? '✓ Article published.' : '✓ Draft saved.'));
       setNn(emptyNews()); setEditNewsId(null); setShowNewsForm(false);
       fetchAll();
     } else flash('Failed to save article.');
@@ -404,9 +524,12 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   };
 
   const editNewsItem = (item: NewsItem) => {
+    // Keep original slug when editing — only auto-generate on new articles
     setNn({ title: item.title, slug: item.slug, date: item.date, excerpt: item.excerpt,
       content: item.content, imageUrl: item.imageUrl, published: item.published });
     setEditNewsId(item.id); setShowNewsForm(true);
+    // Scroll to form
+    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
   };
 
   const deleteNewsItem = async (id: string) => {
@@ -443,18 +566,26 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     setEvents(evs);
   };
 
-  const submitEvent = async () => {
-    if (!ne.title || !ne.date) { flash('Title and date are required.'); return; }
+  const submitEvent = async (publishedOverride?: boolean) => {
+    const payload = publishedOverride !== undefined ? { ...ne, published: publishedOverride } : ne;
+    const result = EventSchema.safeParse(payload);
+    if (!result.success) {
+      flash(formatZodErrors(result.error.issues));
+      return;
+    }
+    const validatedEvent = result.data;
     setBusy(true);
     let evs: SiteEvent[];
     if (editEvId) {
-      evs = events.map(e => e.id === editEvId ? { ...e, ...ne } : e);
+      evs = events.map(e => e.id === editEvId ? { ...e, ...validatedEvent } : e);
     } else {
-      const newEv: SiteEvent = { ...ne, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+      const newEv: SiteEvent = { ...validatedEvent, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
       evs = [...events, newEv];
     }
     await saveEvents(evs);
-    flash(editEvId ? '✓ Event updated.' : '✓ Event created.');
+    flash(editEvId
+      ? (validatedEvent.published ? '✓ Event updated & published.' : '✓ Event draft saved.')
+      : (validatedEvent.published ? '✓ Event created & published.' : '✓ Event draft saved.'));
     setNe(emptyEvent()); setEditEvId(null); setShowEvForm(false);
     setBusy(false);
   };
@@ -487,6 +618,11 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const [mediaLib, setMediaLib] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
+  // ── Audit log / History state ─────────────────────────────────────────
+  const [auditLog,     setAuditLog]     = useState<AuditEntry[]>([]);
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [auditRestoring, setAuditRestoring] = useState<string | null>(null);
+
   // ── Tab definitions ───────────────────────────────────────────────────
   const TABS: { id: Tab; icon: string; label: string }[] = [
     { id:'overview',  icon:'📊', label:'Overview'        },
@@ -506,6 +642,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     { id:'global',    icon:'⚙️', label:'Global Settings' },
     { id:'settings',  icon:'🖼', label:'Hero & BG'  },
     { id:'media-library', icon:'🖼️', label:'Media Library' },
+    { id:'history',   icon:'🕒', label:'History'         },
   ];
 
   // ── Media Library helpers ─────────────────────────────────────────────
@@ -522,6 +659,52 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   useEffect(() => {
     if (tab === 'media-library') fetchMediaLib();
   }, [tab, fetchMediaLib]);
+
+  // ── Audit log helpers ─────────────────────────────────────────────────
+  const fetchAuditLog = useCallback(async () => {
+    setAuditLoading(true);
+    const res = await fetch('/api/admin/audit', { headers: hdrs }).catch(() => null);
+    if (res?.ok) { const d = await res.json(); setAuditLog(d.log || []); }
+    setAuditLoading(false);
+  }, [token]);
+
+  useEffect(() => {
+    if (tab === 'history') fetchAuditLog();
+  }, [tab, fetchAuditLog]);
+
+  const clearHistory = async () => {
+    if (!confirm('Clear all audit history? This cannot be undone.')) return;
+    await fetch('/api/admin/audit', { method: 'DELETE', headers: hdrs }).catch(() => null);
+    setAuditLog([]); flash('History cleared.');
+  };
+
+  const restoreSnapshot = async (entry: AuditEntry) => {
+    if (!entry.before) { flash('No previous snapshot to restore.'); return; }
+    if (!confirm(`Restore "${entry.entityName}" to its state before this action?`)) return;
+    setAuditRestoring(entry.id);
+    try {
+      let res: Response | null = null;
+      const snapshot = entry.before as Record<string, unknown>;
+      if (entry.entity === 'news') {
+        res = await fetch('/api/news', { method: 'PUT', headers: hdrs, body: JSON.stringify(snapshot) }).catch(() => null);
+      } else if (entry.entity === 'event') {
+        const allEvents = events.map(e => e.id === entry.entityId ? snapshot : e) as SiteEvent[];
+        res = await fetch('/api/events', { method: 'PUT', headers: hdrs, body: JSON.stringify({ events: allEvents }) }).catch(() => null);
+      } else if (entry.entity === 'testimonials') {
+        res = await fetch('/api/content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ testimonials: snapshot }) }).catch(() => null);
+      } else if (entry.entity === 'services') {
+        res = await fetch('/api/content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ services: snapshot }) }).catch(() => null);
+      }
+      if (res?.ok) {
+        flash(`✓ Restored "${entry.entityName}" to previous state.`);
+        fetchAll(); fetchAuditLog();
+      } else {
+        flash('Restore failed — please try again.');
+      }
+    } finally {
+      setAuditRestoring(null);
+    }
+  };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -775,14 +958,13 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
               </button>
 
               <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
-                HTML Content
+                Page Content
               </label>
-              <textarea
+              <RichTextEditor
                 value={cpHtml}
-                onChange={e => setCpHtml(e.target.value)}
+                onChange={setCpHtml}
+                placeholder="Load current content first, then edit here."
                 rows={12}
-                className={`${inp} resize-y font-mono text-xs`}
-                placeholder="Paste full HTML here to override the static page content."
               />
 
               <button
@@ -849,21 +1031,18 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
             <h2 className="font-jakarta font-extrabold text-slate-800 text-2xl mb-6">Create New Page</h2>
             <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-7 sm:p-9 space-y-5">
 
-              {/* Slug + Title */}
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">URL Slug *</label>
-                  <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-50">
-                    <span className="px-3 font-jakarta text-sm text-slate-400 bg-slate-50 border-r border-slate-200 py-2.5">/</span>
-                    <input value={np.slug}
-                      onChange={e => setNp(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-/]/g, '-') }))}
-                      className="flex-1 px-3 py-2.5 text-sm outline-none text-slate-800" placeholder="my-new-page" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Page Title *</label>
-                  <input value={np.title} onChange={e => setNp(p => ({ ...p, title: e.target.value }))} className={inp} placeholder="e.g. Scholarship Guide 2026" />
-                </div>
+              {/* Title (slug auto-generated) */}
+              <div>
+                <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Page Title *</label>
+                <input value={np.title} onChange={e => {
+                  const title = e.target.value;
+                  setNp(p => ({ ...p, title, slug: slugify(title) }));
+                }} className={inp} placeholder="e.g. Scholarship Guide 2026" />
+                {np.slug && (
+                  <p className="font-jakarta text-[10px] text-slate-400 mt-1">
+                    Page URL: <code className="bg-slate-100 px-1 rounded">/{np.slug}</code>
+                  </p>
+                )}
               </div>
 
               {/* SEO */}
@@ -945,13 +1124,13 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
               )}
 
               <div className="flex gap-3 pt-2">
-                <button onClick={createPage} disabled={busy || !np.slug || !np.title}
+                <button onClick={createPage} disabled={busy || !np.title}
                   className={`${amberBtn} px-7 py-3 disabled:opacity-50`}
                   style={{ background: `linear-gradient(135deg,${AMBER},#F59E0B)` }}>
                   {busy ? 'Publishing…' : np.published ? 'Publish Page' : 'Save Draft'}
                 </button>
                 <button onClick={() => setNp({ slug:'',title:'',metaTitle:'',metaDescription:'',category:'',description:'',body:'',heroImageUrl:'',layout:'default',published:true })}
-                  className={ghostBtn}>Reset</button>
+                  className={ghostBtn}>Clear Form</button>
               </div>
             </div>
           </div>
@@ -1070,11 +1249,15 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                     <span className="font-jakarta text-sm text-slate-700">{ne.published ? 'Published' : 'Draft'}</span>
                   </div>
                 </div>
-                <div className="flex gap-3 mt-5">
-                  <button onClick={submitEvent} disabled={busy || !ne.title || !ne.date}
+                <div className="flex gap-3 mt-5 flex-wrap">
+                  <button onClick={() => submitEvent(true)} disabled={busy}
                     className={`${amberBtn} px-6 disabled:opacity-50`}
                     style={{ background: `linear-gradient(135deg,${AMBER},#F59E0B)` }}>
-                    {busy ? 'Saving…' : editEvId ? 'Save Changes' : 'Create Event'}
+                    {busy ? 'Saving…' : editEvId ? '🚀 Update & Publish' : '🚀 Publish Event'}
+                  </button>
+                  <button onClick={() => submitEvent(false)} disabled={busy}
+                    className={`${ghostBtn} disabled:opacity-50`}>
+                    {busy ? 'Saving…' : '💾 Save as Draft'}
                   </button>
                   <button onClick={() => { setShowEvForm(false); setNe(emptyEvent()); setEditEvId(null); }}
                     className={ghostBtn}>Cancel</button>
@@ -1239,11 +1422,15 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                     <span className="font-jakarta text-sm text-slate-700">{nt.published ? 'Published' : 'Draft'}</span>
                   </div>
                 </div>
-                <div className="flex gap-3 mt-5">
-                  <button onClick={submitTestimonial} disabled={tBusy || !nt.name.trim() || !nt.quote.trim()}
+                <div className="flex gap-3 mt-5 flex-wrap">
+                  <button onClick={() => submitTestimonial(true)} disabled={tBusy}
                     className={`${amberBtn} px-6 disabled:opacity-50`}
                     style={{ background: `linear-gradient(135deg,${AMBER},#F59E0B)` }}>
-                    {tBusy ? 'Saving…' : editTId ? 'Save Changes' : 'Add Testimonial'}
+                    {tBusy ? 'Saving…' : editTId ? '🚀 Update & Publish' : '🚀 Publish Testimonial'}
+                  </button>
+                  <button onClick={() => submitTestimonial(false)} disabled={tBusy}
+                    className={`${ghostBtn} disabled:opacity-50`}>
+                    {tBusy ? 'Saving…' : '💾 Save as Draft'}
                   </button>
                   <button onClick={() => { setShowTForm(false); setNt(emptyTestimonial()); setEditTId(null); }}
                     className={ghostBtn}>Cancel</button>
@@ -1356,15 +1543,19 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                 </h3>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
-                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Title *</label>
-                    <input value={nn.title} onChange={e => setNn(p => ({ ...p, title: e.target.value }))} className={inp} placeholder="e.g. Canada IRCC Cap Updates 2026" />
+                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Article Title *</label>
+                    <input value={nn.title} onChange={e => {
+                      const title = e.target.value;
+                      setNn(p => ({ ...p, title, slug: editNewsId ? p.slug : slugify(title) }));
+                    }} className={inp} placeholder="e.g. Canada IRCC Cap Updates 2026" />
+                    {nn.slug && (
+                      <p className="font-jakarta text-[10px] text-slate-400 mt-1">
+                        URL: <code className="bg-slate-100 px-1 rounded">/news/{nn.slug}</code>
+                      </p>
+                    )}
                   </div>
                   <div>
-                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">URL Slug *</label>
-                    <input value={nn.slug} onChange={e => setNn(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') }))} className={inp} placeholder="canada-ircc-cap-2026" />
-                  </div>
-                  <div>
-                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">Date</label>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">Publish Date</label>
                     <input type="date" value={nn.date} onChange={e => setNn(p => ({ ...p, date: e.target.value }))} className={inp} />
                   </div>
                   <div className="sm:col-span-2">
@@ -1377,13 +1568,13 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                     <input value={nn.imageUrl} onChange={e => setNn(p => ({ ...p, imageUrl: e.target.value }))} className={inp} placeholder="https://images.unsplash.com/..." />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Body Content (HTML)</label>
-                    <div className="bg-slate-50 rounded-xl p-3 mb-2 border border-slate-200">
-                      <p className="font-jakarta text-[11px] text-slate-500">Supported: <strong>&lt;h2&gt;</strong> · <strong>&lt;h3&gt;</strong> · <strong>&lt;p&gt;</strong> · <strong>&lt;ul&gt;&lt;li&gt;</strong> · <strong>&lt;blockquote&gt;</strong> · <strong>&lt;strong&gt;</strong></p>
-                    </div>
-                    <textarea value={nn.content} onChange={e => setNn(p => ({ ...p, content: e.target.value }))} rows={14}
-                      className={`${inp} resize-none font-mono text-xs`}
-                      placeholder={'<h2>Section Heading</h2>\n<p>Content paragraph here.</p>\n<ul><li>Point one</li><li>Point two</li></ul>'} />
+                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Article Body</label>
+                    <RichTextEditor
+                      value={nn.content}
+                      onChange={html => setNn(p => ({ ...p, content: html }))}
+                      placeholder="Start writing your article here. Use the toolbar above for formatting."
+                      rows={14}
+                    />
                   </div>
                   <div className="flex items-center gap-3">
                     <button onClick={() => setNn(p => ({ ...p, published: !p.published }))}
@@ -1393,11 +1584,15 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                     <span className="font-jakarta text-sm text-slate-700">{nn.published ? 'Published' : 'Draft'}</span>
                   </div>
                 </div>
-                <div className="flex gap-3 mt-5">
-                  <button onClick={submitNews} disabled={newsBusy || !nn.title.trim() || !nn.slug.trim()}
+                <div className="flex gap-3 mt-5 flex-wrap">
+                  <button onClick={() => submitNews(true)} disabled={newsBusy}
                     className={`${amberBtn} px-6 disabled:opacity-50`}
                     style={{ background: `linear-gradient(135deg,${AMBER},#F59E0B)` }}>
-                    {newsBusy ? 'Saving…' : editNewsId ? 'Save Changes' : 'Publish Article'}
+                    {newsBusy ? 'Saving…' : editNewsId ? '🚀 Update & Publish' : '🚀 Publish Now'}
+                  </button>
+                  <button onClick={() => submitNews(false)} disabled={newsBusy}
+                    className={`${ghostBtn} disabled:opacity-50`}>
+                    {newsBusy ? 'Saving…' : '💾 Save as Draft'}
                   </button>
                   <button onClick={() => { setShowNewsForm(false); setNn(emptyNews()); setEditNewsId(null); }} className={ghostBtn}>Cancel</button>
                 </div>
@@ -1495,20 +1690,13 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
 
               <div>
                 <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
-                  HTML Content — {Object.values(COUNTRIES_MAP).find(c => c.code === cpCountry)?.name} / {SECTION_LABELS[cpSection as keyof typeof SECTION_LABELS] || cpSection}
+                  Content — {Object.values(COUNTRIES_MAP).find(c => c.code === cpCountry)?.name} / {SECTION_LABELS[cpSection as keyof typeof SECTION_LABELS] || cpSection}
                 </label>
-                <div className="bg-slate-50 rounded-xl p-3 mb-2 border border-slate-200">
-                  <p className="font-jakarta text-[11px] text-slate-500">
-                    Paste full HTML including <strong>&lt;h2&gt;</strong>, <strong>&lt;p&gt;</strong>, <strong>&lt;ul&gt;</strong>, <strong>&lt;table&gt;</strong>, <strong>&lt;blockquote&gt;</strong> tags.
-                    Leave empty to revert to the default bundled content.
-                  </p>
-                </div>
-                <textarea
+                <RichTextEditor
                   value={cpHtml}
-                  onChange={e => setCpHtml(e.target.value)}
+                  onChange={setCpHtml}
+                  placeholder="Load current content first, then edit here. Leave empty to revert to the default bundled content."
                   rows={18}
-                  className={`${inp} resize-y font-mono text-xs`}
-                  placeholder={'<h2>Section Heading</h2>\n<p>Content here...</p>'}
                 />
                 <p className="font-jakarta text-[10px] text-slate-400 mt-1 text-right">{cpHtml.length} chars</p>
               </div>
@@ -2255,6 +2443,125 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
             </div>
           </div>
         )}
+
+        {/* ══ HISTORY ══ */}
+        {tab === 'history' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="font-jakarta font-extrabold text-slate-800 text-2xl mb-1">Change History 🕒</h2>
+                <p className="font-jakarta text-sm text-slate-500">Every save is logged. Restore any item to its previous state.</p>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={fetchAuditLog} disabled={auditLoading}
+                  className={`${ghostBtn} disabled:opacity-50`}>
+                  {auditLoading ? 'Loading…' : '↻ Refresh'}
+                </button>
+                <button onClick={clearHistory}
+                  className="font-jakarta text-xs font-semibold px-3 py-2 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
+                  🗑 Clear All
+                </button>
+              </div>
+            </div>
+
+            {auditLoading ? (
+              <div className="bg-white rounded-2xl border border-slate-100 p-10 text-center">
+                <div className="font-jakarta text-slate-400">Loading history…</div>
+              </div>
+            ) : auditLog.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-100 p-10 text-center">
+                <div className="text-5xl mb-4">🕒</div>
+                <h3 className="font-jakarta font-bold text-slate-700 mb-2">No history yet</h3>
+                <p className="font-jakarta text-sm text-slate-400">Changes to events, news, and content will appear here automatically.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {auditLog.map(entry => {
+                  const d = new Date(entry.timestamp);
+                  const dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                  const timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                  const entityColors: Record<string, string> = {
+                    news: '#2D5A99', event: '#059669', testimonials: '#7C3AED',
+                    services: '#D97706', processSteps: '#DC2626', companyDetails: '#64748B', globalSettings: '#64748B',
+                  };
+                  const color = entityColors[entry.entity] || '#1A365D';
+                  const isDeleted = entry.action.toLowerCase().includes('deleted');
+                  const isDraft   = !entry.published;
+                  const canRestore = !!entry.before && !isDeleted;
+
+                  return (
+                    <div key={entry.id} className="bg-white rounded-2xl border border-slate-100 shadow-card overflow-hidden">
+                      <div className="flex items-start gap-4 p-5">
+                        <div className="w-1.5 self-stretch rounded-full flex-shrink-0" style={{ background: color }} />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-3 flex-wrap">
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap mb-1">
+                                <span className="font-jakarta font-semibold text-sm text-slate-800">{entry.action}</span>
+                                {isDraft && (
+                                  <span className="font-jakarta text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">DRAFT</span>
+                                )}
+                                {isDeleted && (
+                                  <span className="font-jakarta text-[10px] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-600">DELETED</span>
+                                )}
+                                {entry.published && !isDeleted && (
+                                  <span className="font-jakarta text-[10px] font-semibold px-2 py-0.5 rounded-full bg-green-100 text-green-700">PUBLISHED</span>
+                                )}
+                              </div>
+                              <div className="font-jakarta text-xs text-slate-500">
+                                <span className="font-medium text-slate-600">{entry.entityName}</span>
+                                <span className="mx-1.5 text-slate-300">·</span>
+                                <span className="capitalize text-slate-400">{entry.entity}</span>
+                                <span className="mx-1.5 text-slate-300">·</span>
+                                <span>{dateStr} at {timeStr}</span>
+                              </div>
+                            </div>
+                            {canRestore && (
+                              <button
+                                onClick={() => restoreSnapshot(entry)}
+                                disabled={auditRestoring === entry.id}
+                                className={`font-jakarta text-xs font-semibold px-3 py-1.5 rounded-lg border border-amber-200 text-amber-700 hover:bg-amber-50 transition-colors disabled:opacity-50 flex-shrink-0`}>
+                                {auditRestoring === entry.id ? 'Restoring…' : '↩ Restore'}
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Before/After diff summary */}
+                          {(entry.before !== null || entry.after !== null) && (
+                            <details className="mt-3">
+                              <summary className="font-jakarta text-xs text-slate-400 cursor-pointer hover:text-slate-600 transition-colors select-none">
+                                View snapshot →
+                              </summary>
+                              <div className="mt-2 grid sm:grid-cols-2 gap-2">
+                                {entry.before !== null && (
+                                  <div className="bg-red-50 border border-red-100 rounded-xl p-3">
+                                    <div className="font-jakarta text-[10px] font-bold text-red-400 uppercase tracking-wide mb-1.5">Before</div>
+                                    <pre className="font-mono text-[10px] text-red-700 whitespace-pre-wrap break-all max-h-32 overflow-y-auto">
+                                      {JSON.stringify(entry.before, null, 2)}
+                                    </pre>
+                                  </div>
+                                )}
+                                {entry.after !== null && (
+                                  <div className="bg-green-50 border border-green-100 rounded-xl p-3">
+                                    <div className="font-jakarta text-[10px] font-bold text-green-500 uppercase tracking-wide mb-1.5">After</div>
+                                    <pre className="font-mono text-[10px] text-green-700 whitespace-pre-wrap break-all max-h-32 overflow-y-auto">
+                                      {JSON.stringify(entry.after, null, 2)}
+                                    </pre>
+                                  </div>
+                                )}
+                              </div>
+                            </details>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
 
       {/* Toast */}

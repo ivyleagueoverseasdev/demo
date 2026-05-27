@@ -1,5 +1,9 @@
+// ── Edge runtime required: page calls getOptionalRequestContext() via lib/kv ──
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic'; // Replaces `revalidate` — KV is always fresh
+
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
+import lazyLoad from 'next/dynamic';
 import { getGlobalSettings, getSiteContent } from '@/lib/kv';
 import type { ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
 import { DEFAULT_HERO_IMAGES } from '@/lib/data';
@@ -12,21 +16,18 @@ import ServicesSection   from '@/components/home/ServicesSection';
 import HowItWorks        from '@/components/home/HowItWorks';
 
 // ── Below-fold: lazy-loaded, not in the critical JS bundle ────────────────
-const UniversityMarquee   = dynamic(() => import('@/components/home/UniversityMarquee'));
-const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection'));
-const EventsCarousel      = dynamic(() => import('@/components/home/EventsCarousel'));
-const Updates2026         = dynamic(() => import('@/components/home/Updates2026'));
-const QuickEnquiry        = dynamic(() => import('@/components/home/QuickEnquiry'));
-const CTASection          = dynamic(() => import('@/components/home/CTASection'));
+const UniversityMarquee   = lazyLoad(() => import('@/components/home/UniversityMarquee'));
+const TestimonialsSection = lazyLoad(() => import('@/components/home/TestimonialsSection'));
+const EventsCarousel      = lazyLoad(() => import('@/components/home/EventsCarousel'));
+const Updates2026         = lazyLoad(() => import('@/components/home/Updates2026'));
+const QuickEnquiry        = lazyLoad(() => import('@/components/home/QuickEnquiry'));
+const CTASection          = lazyLoad(() => import('@/components/home/CTASection'));
 
 export const metadata: Metadata = {
   title: 'Ivy League Overseas Consulting | Study Abroad from Pune',
   description:
     'Premium overseas education consulting from Pune. 2,500+ students placed, 97% visa approval. Free 30-min counselling for USA, UK, Canada, Australia.',
 };
-
-// Revalidate every 60 s so KV edits surface quickly without a full redeploy
-export const revalidate = 3600;
 
 export default async function HomePage() {
   // Fetch KV overrides in parallel — both fall back gracefully on error

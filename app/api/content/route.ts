@@ -2,6 +2,7 @@ export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllPages, getCompanyDetails, getGlobalSettings, getRedirects, getSiteContent, setCompanyDetails, setGlobalSettings, setRedirects, setSiteContent, validateAdminToken } from '@/lib/kv';
+import { appendAuditLog } from '@/lib/audit';
 import type { CompanyDetails, GlobalSettings, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
 
 
@@ -25,7 +26,7 @@ export async function GET() {
   ]);
   return NextResponse.json(
     { pages, redirects, siteContent: siteContent || {}, companyDetails: companyDetails || null, globalSettings: globalSettings || null },
-    { headers: { ...CORS, 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } },
+    { headers: { ...CORS, 'Cache-Control': 'no-store' } },
   );
 }
 
@@ -52,10 +53,28 @@ export async function PUT(req: NextRequest) {
   if (body.services !== undefined || body.processSteps !== undefined || body.testimonials !== undefined) {
     const existing = (await getSiteContent<Record<string, unknown>>()) ?? {};
     const updated: Record<string, unknown> = { ...existing };
-    if (body.services      !== undefined) updated.services      = body.services;
-    if (body.processSteps  !== undefined) updated.processSteps  = body.processSteps;
-    if (body.testimonials  !== undefined) updated.testimonials  = body.testimonials;
+
+    if (body.services !== undefined) {
+      await appendAuditLog({ action: 'Updated Services', entity: 'services', entityId: 'services', entityName: 'Services List', before: existing.services ?? null, after: body.services, published: true });
+      updated.services = body.services;
+    }
+    if (body.processSteps !== undefined) {
+      await appendAuditLog({ action: 'Updated Process Steps', entity: 'processSteps', entityId: 'processSteps', entityName: 'Process Steps', before: existing.processSteps ?? null, after: body.processSteps, published: true });
+      updated.processSteps = body.processSteps;
+    }
+    if (body.testimonials !== undefined) {
+      await appendAuditLog({ action: 'Updated Testimonials', entity: 'testimonials', entityId: 'testimonials', entityName: 'Testimonials List', before: existing.testimonials ?? null, after: body.testimonials, published: true });
+      updated.testimonials = body.testimonials;
+    }
+
     await setSiteContent(updated);
+  }
+
+  if (body.companyDetails) {
+    await appendAuditLog({ action: 'Updated Company Details', entity: 'companyDetails', entityId: 'companyDetails', entityName: 'Company Details', before: null, after: body.companyDetails, published: true });
+  }
+  if (body.globalSettings) {
+    await appendAuditLog({ action: 'Updated Global Settings', entity: 'globalSettings', entityId: 'globalSettings', entityName: 'Global Settings', before: null, after: body.globalSettings, published: true });
   }
 
   return NextResponse.json({ ok: true }, { headers: CORS });
