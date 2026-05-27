@@ -3,21 +3,28 @@
  * KV Namespace binding expected: CONTENT_KV
  */
 
-/// <reference path="../env.d.ts" />
-
 import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia } from './types';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
+
+// Minimal local interface — avoids any dependency on @cloudflare/workers-types
+// or global ambient declarations that are unreliable in Next.js strict mode.
+interface CfKVNamespace {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string): Promise<void>;
+  delete(key: string): Promise<void>;
+}
 
 // ── In-memory fallback for local dev ─────────────────────────────────────
 const DEV_STORE = new Map<string, string>();
 
-function getKV(): KVNamespace | null {
+function getKV(): CfKVNamespace | null {
   try {
     // Use the official @cloudflare/next-on-pages v1.x API to access bindings.
     // getOptionalRequestContext() returns undefined outside a Worker request
     // (e.g. during Next.js local dev), so we fall through to DEV_STORE safely.
     const ctx = getOptionalRequestContext();
-    return ctx?.env?.CONTENT_KV ?? null;
+    const kv = ctx?.env?.['CONTENT_KV' as keyof typeof ctx.env];
+    return (kv as unknown as CfKVNamespace) ?? null;
   } catch {
     return null;
   }
