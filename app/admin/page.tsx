@@ -293,6 +293,12 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const flash = (m: string) => { setToast(m); setTimeout(() => setToast(''), 2600); };
   const hdrs  = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
+  const extractEditorHtml = (payload: unknown) => {
+    if (!payload || typeof payload !== 'object') return '';
+    const body = (payload as any).html ?? (payload as any).content ?? (payload as any).data ?? (payload as any).body ?? '';
+    return typeof body === 'string' ? body : '';
+  };
+
   // ── Fetch data ────────────────────────────────────────────────────────
   const fetchEvents = useCallback(async () => {
     console.log('Admin Events Fetching: requesting /api/events');
@@ -322,6 +328,9 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       fetch('/api/news').catch(() => null),
     ]);
     const contentData = cRes?.ok ? await cRes.json() : null;
+    const mappedSiteContent = contentData ? (contentData.siteContent ?? contentData.content ?? contentData.data ?? {}) : {};
+    console.log('Raw /api/content response:', contentData);
+    console.log('Mapped siteContent for admin:', mappedSiteContent);
     if (pRes?.ok)  { const d = await pRes.json(); setPages(d.pages || []); }
     if (contentData)  { setRedirects(contentData.redirects || []); }
     if (mRes?.ok)  {
@@ -329,10 +338,10 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       if (d.heroImages?.length) setHeroUrls(d.heroImages.concat(['','','']).slice(0,3));
       if (d.countryImages)      setCountryImgs(d.countryImages);
     }
-    if (contentData?.siteContent) {
-      if ('services' in contentData.siteContent)      setServices(contentData.siteContent.services || []);
-      if ('processSteps' in contentData.siteContent)  setProcessSteps(contentData.siteContent.processSteps || []);
-      if ('testimonials' in contentData.siteContent)  setTestimonials(contentData.siteContent.testimonials || []);
+    if (mappedSiteContent) {
+      if ('services' in mappedSiteContent)      setServices((mappedSiteContent as any).services || []);
+      if ('processSteps' in mappedSiteContent)  setProcessSteps((mappedSiteContent as any).processSteps || []);
+      if ('testimonials' in mappedSiteContent)  setTestimonials((mappedSiteContent as any).testimonials || []);
     }
     if (lRes?.ok) { const d = await lRes.json(); setLeads(d.leads || []); }
     if (nRes?.ok) { const d = await nRes.json(); setNews(d.news || []); }
@@ -615,14 +624,13 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   // ── Country pages helpers ─────────────────────────────────────────────
   const loadCountrySection = useCallback(async (country: string, section: string) => {
     setCpLoading(true); setCpHtml('');
-    const res = await fetch(`/api/country-content?country=${country}&section=${section}`).catch(() => null);
+    const res = await fetch(`/api/country-content?country=${encodeURIComponent(country)}&section=${encodeURIComponent(section)}`).catch(() => null);
     let html = '';
     if (res?.ok) {
-      const d = await res.json();
-      html = d.html || '';
-    }
-    if (!html) {
-      html = getSubpageContent(country, section as SectionSlug) || '';
+      const d = await res.json().catch(() => null);
+      console.log('Raw API Response for country-content:', d);
+      html = extractEditorHtml(d);
+      console.log('State set to:', html);
     }
     setCpHtml(html);
     setCpLoading(false);
@@ -647,8 +655,14 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
 
   const loadPartnerSection = useCallback(async (section: string) => {
     setPartnerLoading(true); setPartnerHtml('');
-    const res = await fetch(`/api/country-content?country=global&section=${section}`).catch(() => null);
-    if (res?.ok) { const d = await res.json(); setPartnerHtml(d.html || ''); }
+    const res = await fetch(`/api/country-content?country=${encodeURIComponent('global')}&section=${encodeURIComponent(section)}`).catch(() => null);
+    if (res?.ok) {
+      const d = await res.json().catch(() => null);
+      console.log('Raw API Response for partner section:', d);
+      const html = extractEditorHtml(d);
+      console.log('State set to:', html);
+      setPartnerHtml(html);
+    }
     setPartnerLoading(false);
   }, [token]);
 
@@ -1110,7 +1124,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
               {!partnerLoading && partnerHtml.trim() === '' && (
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 text-sm mt-3">
                   {partnerSection
-                    ? 'No content found for this section. You can start typing to create it.'
+                    ? 'No saved content yet for this section. Start typing to create it.'
                     : 'Select a partner page to begin editing.'}
                 </div>
               )}
@@ -1851,7 +1865,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                 {!cpLoading && cpHtml.trim() === '' && (
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 text-sm mt-3">
                     {cpCountry && cpSection
-                      ? 'No content found for this selection. You can start typing to create it.'
+                      ? 'No saved content yet for this selection. Start typing to create it.'
                       : 'Select a country and section to begin editing.'}
                   </div>
                 )}
