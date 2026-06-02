@@ -4,7 +4,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../layout';
 import ImagePicker from '@/components/admin/ImagePicker';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 import { apiCall } from '@/lib/edge-utils';
+import { useRouter } from 'next/navigation';
 import type { NewsItem } from '@/lib/types';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -241,25 +243,13 @@ function NewsForm({
 
         {/* ── Body content ── */}
         <section className="space-y-2">
-          <div className="flex items-center justify-between">
-            <h4 className="font-jakarta font-semibold text-slate-600 text-xs uppercase tracking-wide">Article Body *</h4>
-            <span className="font-jakarta text-[10px] text-slate-400">HTML or Markdown · rendered on /news/[slug]</span>
-          </div>
-          <div className="bg-slate-50 rounded-xl px-3 py-2 border border-slate-100 text-[11px] font-jakarta text-slate-400 space-x-3">
-            <span><strong>{'<h2>'}</strong> Section</span>
-            <span><strong>{'<p>'}</strong> Paragraph</span>
-            <span><strong>{'<ul><li>'}</strong> List</span>
-            <span><strong>{'<blockquote>'}</strong> Quote</span>
-            <span><strong>{'<strong>'}</strong> Bold</span>
-          </div>
-          <textarea
+          <h4 className="font-jakarta font-semibold text-slate-600 text-xs uppercase tracking-wide">Article Body *</h4>
+          <RichTextEditor
             value={form.content}
-            onChange={e => patch('content', e.target.value)}
-            rows={18}
-            className={`${inp} resize-y font-mono text-xs leading-relaxed`}
-            placeholder={'<h2>Introduction</h2>\n<p>Your article content here.</p>\n\n<h2>Key Points</h2>\n<ul>\n  <li>Point one</li>\n  <li>Point two</li>\n</ul>\n\n<blockquote>Important takeaway for students.</blockquote>'}
+            onChange={html => patch('content', html)}
+            placeholder="Start writing the article here. Use the toolbar above to add headings, lists, and emphasis."
+            minHeight={320}
           />
-          <p className="font-jakarta text-[10px] text-slate-400 text-right">{form.content.length.toLocaleString()} chars</p>
         </section>
 
         {/* ── Publish toggle ── */}
@@ -349,6 +339,7 @@ function FilterBar({
 export default function AdminNewsPage() {
   const { token } = useAuth();
   const { flash } = useToast();
+  const router    = useRouter();
 
   const [items,        setItems]        = useState<NewsItem[]>([]);
   const [loading,      setLoading]      = useState(true);
@@ -381,9 +372,10 @@ export default function AdminNewsPage() {
       : await apiCall({ method: 'POST', url: '/api/news', token, body: { ...payload, id: `news_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, createdAt: new Date().toISOString() } });
 
     if (!ok) { flash(`Save failed: ${error}`, 'error'); setBusy(false); return; }
-    flash(editId ? '✓ Article updated.' : '✓ Article published.', 'success');
+    flash(editId ? '✓ Article updated — live immediately.' : '✓ Article published — live immediately.', 'success');
     closeForm();
     await load();
+    router.refresh(); // clear Next.js client cache so /news reflects new content
     setBusy(false);
   }
 
@@ -394,8 +386,9 @@ export default function AdminNewsPage() {
       body: { ...item, published: !item.published },
     });
     if (!ok) { flash(`Update failed: ${error}`, 'error'); return; }
-    flash(`Article ${!item.published ? 'published' : 'unpublished'}.`, 'success');
+    flash(`Article ${!item.published ? 'published' : 'unpublished'} — live immediately.`, 'success');
     await load();
+    router.refresh();
   }
 
   // ── Delete ────────────────────────────────────────────────────────────────

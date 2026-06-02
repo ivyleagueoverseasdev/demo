@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useAuth, useToast } from '../layout';
 import { apiCall } from '@/lib/edge-utils';
 import ImagePicker from '@/components/admin/ImagePicker';
+import RichTextEditor from '@/components/admin/RichTextEditor';
+import { useRouter } from 'next/navigation';
 import type { DynamicPage } from '@/lib/types';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -230,25 +232,13 @@ function PageForm({ initial, editSlug, token, onSave, onCancel, busy }: {
 
         {/* ── Body ── */}
         <section className="space-y-2">
-          <div className="flex items-center justify-between">
-            <h4 className="font-jakarta font-semibold text-slate-600 text-xs uppercase tracking-wide">Body Content</h4>
-            <span className="font-jakarta text-[10px] text-slate-400">HTML · rendered inside the page template</span>
-          </div>
-          <div className="bg-slate-50 rounded-xl px-3 py-2 border border-slate-100 text-[11px] font-jakarta text-slate-400 flex gap-3 flex-wrap">
-            <span><strong>{'<h2>'}</strong> Section</span>
-            <span><strong>{'<p>'}</strong> Para</span>
-            <span><strong>{'<ul><li>'}</strong> List</span>
-            <span><strong>{'<blockquote>'}</strong> Quote</span>
-            <span><strong>{'<strong>'}</strong> Bold</span>
-          </div>
-          <textarea
+          <h4 className="font-jakarta font-semibold text-slate-600 text-xs uppercase tracking-wide">Body Content</h4>
+          <RichTextEditor
             value={body}
-            onChange={e => setBody(e.target.value)}
-            rows={16}
-            className={`${inp} resize-y font-mono text-xs leading-relaxed`}
-            placeholder={'<h2>Introduction</h2>\n<p>Your page content here.</p>\n\n<h2>Key Information</h2>\n<ul>\n  <li>Point one</li>\n  <li>Point two</li>\n</ul>'}
+            onChange={setBody}
+            placeholder="Write the page content here. Use the toolbar to add headings, bullet lists, and emphasis."
+            minHeight={300}
           />
-          <p className="font-jakarta text-[10px] text-slate-400 text-right">{body.length.toLocaleString()} chars</p>
         </section>
 
         {/* ── Publish ── */}
@@ -330,6 +320,7 @@ function FilterBar({ search, setSearch, statusFilter, setStatusFilter, layoutFil
 export default function AdminPagesPage() {
   const { token } = useAuth();
   const { flash } = useToast();
+  const router    = useRouter();
 
   const [pages,        setPages]        = useState<DynamicPage[]>([]);
   const [loading,      setLoading]      = useState(true);
@@ -370,9 +361,10 @@ export default function AdminPagesPage() {
         const e = await res.json().catch(() => ({})) as { error?: string; details?: string };
         throw new Error(e.error ?? `HTTP ${res.status}`);
       }
-      flash(editSlug ? '✓ Page updated.' : '✓ Page published.', 'success');
+      flash(editSlug ? '✓ Page updated — live immediately.' : '✓ Page published — live immediately.', 'success');
       closeForm();
       await load();
+      router.refresh();
     } catch (e) {
       const msg = e instanceof Error ? (e as Error).message : String(e);
       flash(`Save failed: ${msg}`, 'error');

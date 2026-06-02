@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../layout';
+import RichTextEditor from '@/components/admin/RichTextEditor';
+import { useRouter } from 'next/navigation';
 import ImagePicker from '@/components/admin/ImagePicker';
 import { COUNTRIES_MAP } from '@/lib/data';
 
@@ -48,7 +50,8 @@ function emptyMeta(code: string): CountryMetaForm {
 export default function AdminCountriesPage() {
   const { token } = useAuth();
   const { flash } = useToast();
-  const hdrs = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+  const hdrs   = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+  const router = useRouter();
 
   const [activeCountry, setActiveCountry] = useState(COUNTRY_CODES[0] ?? 'usa');
   const [activeSection, setActiveSection] = useState(SECTIONS[0].slug);
@@ -107,7 +110,8 @@ export default function AdminCountriesPage() {
         body: JSON.stringify({ country: activeCountry, meta }),
       });
       if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
-      flash('✓ Country stats saved — live on next page load.', 'success');
+      flash('✓ Country stats saved — live immediately.', 'success');
+      router.refresh();
     } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
     finally { setMetaBusy(false); }
   }
@@ -120,7 +124,8 @@ export default function AdminCountriesPage() {
         body: JSON.stringify({ country: activeCountry, section: activeSection, html }),
       });
       if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
-      flash('✓ Section content saved — live on next page load.', 'success');
+      flash('✓ Section content saved — live immediately.', 'success');
+      router.refresh();
     } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
     finally { setHtmlBusy(false); }
   }
@@ -131,7 +136,7 @@ export default function AdminCountriesPage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-jakarta font-extrabold text-slate-800 text-2xl">🌍 Country Pages</h1>
-        <p className="font-jakarta text-sm text-slate-400 mt-1">Edit stats and rich content for each study destination. Saves to KV — live on next page load.</p>
+        <p className="font-jakarta text-sm text-slate-400 mt-1">Edit stats and rich content for each study destination. Saves to KV — live immediately.</p>
       </div>
 
       {/* Country selector */}
@@ -233,26 +238,16 @@ export default function AdminCountriesPage() {
             ))}
           </div>
 
-          {/* HTML editor */}
-          <div className="bg-slate-50 rounded-xl px-3 py-2 border border-slate-100 text-[11px] font-jakarta text-slate-400 flex gap-3 flex-wrap">
-            <span><strong>{'<h2>'}</strong> Section</span>
-            <span><strong>{'<p>'}</strong> Para</span>
-            <span><strong>{'<ul><li>'}</strong> List</span>
-            <span><strong>{'<blockquote>'}</strong> Quote</span>
-            <span><strong>{'<strong>'}</strong> Bold</span>
-          </div>
           {htmlLoading ? (
             <div className="h-48 bg-slate-100 rounded-xl animate-pulse" />
           ) : (
-            <textarea
+            <RichTextEditor
               value={html}
-              onChange={e => setHtml(e.target.value)}
-              rows={18}
-              className={`${inp} resize-y font-mono text-xs leading-relaxed`}
-              placeholder={`<h2>${SECTIONS.find(s => s.slug === activeSection)?.label ?? 'Section'}</h2>\n<p>Edit this section content for ${country?.name ?? activeCountry}.</p>`}
+              onChange={setHtml}
+              placeholder={`Write content for the ${SECTIONS.find(s => s.slug === activeSection)?.label ?? 'section'} section of the ${country?.name ?? activeCountry} page…`}
+              minHeight={300}
             />
           )}
-          <p className="font-jakarta text-[10px] text-slate-400 text-right">{html.length.toLocaleString()} chars</p>
         </div>
       </div>
     </div>

@@ -304,7 +304,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <header className="bg-white border-b border-slate-100 px-6 py-3.5 flex items-center justify-between flex-shrink-0">
               <div>
                 <p className="font-jakarta text-xs text-slate-400">
-                  Cloudflare KV Edge CMS · changes go live on next page load
+                  Cloudflare KV Edge CMS · changes go live immediately
                 </p>
               </div>
               <div className="flex items-center gap-2">

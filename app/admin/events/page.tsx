@@ -5,7 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth, useToast } from '../layout';
 import ImagePicker from '@/components/admin/ImagePicker';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 import { apiCall } from '@/lib/edge-utils';
+import { useRouter } from 'next/navigation';
 import type { SiteEvent, EventType, EventActionType } from '@/lib/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -208,7 +210,6 @@ function EventForm({
   busy:     boolean;
 }) {
   const [form, setForm] = useState(initial);
-  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   // Sync when editing different event
   useEffect(() => { setForm(initial); }, [initial]);
@@ -311,20 +312,13 @@ function EventForm({
         <section className="space-y-2">
           <div className="flex items-center justify-between">
             <h4 className="font-jakarta font-semibold text-slate-600 text-xs uppercase tracking-wide">Rich Body Content</h4>
-            <span className="font-jakarta text-[10px] text-slate-400">Shown on /events/[id] detail page · Markdown supported</span>
+            <span className="font-jakarta text-[10px] text-slate-400">Shown on /events/[id] detail page</span>
           </div>
-          <div className="bg-slate-50 rounded-xl px-3 py-2 border border-slate-200 mb-1">
-            <p className="font-jakarta text-[11px] text-slate-500">
-              <strong>## Section</strong> · <strong>### Sub</strong> · <strong>- List</strong> · <strong>&gt; Quote</strong> · <strong>**bold**</strong>
-            </p>
-          </div>
-          <textarea
-            ref={bodyRef}
+          <RichTextEditor
             value={form.body ?? ''}
-            onChange={e => patch('body', e.target.value)}
-            rows={12}
-            className={`${inp} resize-y font-mono text-xs leading-relaxed`}
-            placeholder={'## About This Event\n\nDescribe the event in detail.\n\n## What You Will Learn\n\n- Point one\n- Point two\n\n> Important note for attendees.'}
+            onChange={html => patch('body', html)}
+            placeholder="Describe the event in detail — what attendees will learn, who should attend, speakers, format…"
+            minHeight={260}
           />
         </section>
 
@@ -540,6 +534,7 @@ export default function AdminEventsPage() {
   const [search,       setSearch]       = useState('');
   const [typeFilter,   setTypeFilter]   = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const router  = useRouter();
   const formRef = useRef<HTMLDivElement>(null);
 
   // ── Load ──────────────────────────────────────────────────────────────────
@@ -572,8 +567,9 @@ export default function AdminEventsPage() {
         ? events.map(e => e.id === editId ? { ...e, ...payload } : e)
         : [...events, { ...payload, id: crypto.randomUUID(), createdAt: new Date().toISOString() }];
       await saveEvents(next);
-      flash(editId ? '✓ Event updated.' : '✓ Event published.', 'success');
+      flash(editId ? '✓ Event updated — live immediately.' : '✓ Event published — live immediately.', 'success');
       closeForm();
+      router.refresh();
     } catch (e: unknown) {
       flash(`Save failed: ${(e as Error).message}`, 'error');
     } finally { setBusy(false); }
