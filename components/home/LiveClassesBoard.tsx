@@ -30,7 +30,7 @@ const CLASSES: LiveClass[] = [
     level:    'A1 Level',
     date:     'Mon, 2 June 2026',
     time:     '8:00 PM – 9:30 PM',
-    imageUrl: '/images/german.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=1600&auto=format&fit=crop',
     imageAlt: 'German A1 Online Class promotional poster',
     color:    '#2563FF',
     tag:      'Language',
@@ -42,7 +42,7 @@ const CLASSES: LiveClass[] = [
     subject:  'GRE Online Coaching',
     date:     'Fri, 5 June 2026',
     time:     '10:00 PM – 11:30 PM',
-    imageUrl: '/images/gre.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1600&auto=format&fit=crop',
     imageAlt: 'GRE Online Coaching promotional poster',
     color:    '#7C3AED',
     tag:      'Test Prep',
@@ -54,7 +54,7 @@ const CLASSES: LiveClass[] = [
     subject:  'TOEFL Online Coaching',
     date:     'Tue, 9 June 2026',
     time:     '5:00 PM – 6:00 PM',
-    imageUrl: '/images/toefl.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=1600&auto=format&fit=crop',
     imageAlt: 'TOEFL Online Coaching promotional poster',
     color:    '#059669',
     tag:      'Test Prep',
@@ -246,8 +246,6 @@ function BookingModal({ cls, onClose }: { cls: LiveClass; onClose: () => void })
 
 // ── ClassCard ─────────────────────────────────────────────────────────────
 function ClassCard({ cls, index, onBook }: { cls: LiveClass; index: number; onBook: (cls: LiveClass) => void }) {
-  const [imgError, setImgError] = useState(false);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 28 }}
@@ -260,27 +258,13 @@ function ClassCard({ cls, index, onBook }: { cls: LiveClass; index: number; onBo
     >
       {/* ── Poster image ── */}
       <div className="relative w-full aspect-video overflow-hidden flex-shrink-0">
-        {imgError ? (
-          /* Fallback gradient when image file not yet uploaded */
-          <div
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ background: `linear-gradient(135deg,${cls.color}22,${cls.color}55)` }}
-          >
-            <span className="font-jakarta font-extrabold text-2xl" style={{ color: cls.color }}>
-              {cls.subject}
-            </span>
-          </div>
-        ) : (
-          <Image
-            src={cls.imageUrl}
-            alt={cls.imageAlt}
-            fill
-            unoptimized
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width:768px) 90vw, 360px"
-            onError={() => setImgError(true)}
-          />
-        )}
+        <Image
+          src={cls.imageUrl}
+          alt={cls.imageAlt}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width:768px) 90vw, 360px"
+        />
         {/* Gradient overlay for readability */}
         <div
           className="absolute inset-0"

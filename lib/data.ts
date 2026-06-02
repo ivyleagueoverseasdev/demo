@@ -909,7 +909,7 @@ Classes run live on Zoom with a maximum batch size of 20 students for personalis
 Live Zoom classes · 1.5 hours per session · 3 sessions per week · Recordings provided
 
 > **The first session is a FREE demo.** Attend and decide — no payment required upfront.`,
-    imageUrl: '/images/german.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=1600&auto=format&fit=crop',
     ctaLabel: 'Book Free Demo',
     ctaUrl: '/contact',
     seats: 20,
@@ -952,7 +952,7 @@ ILOC's **GRE Online Coaching** is a structured, live program built around the re
 Live Zoom · 1.5 hours per session · 4 sessions per week · Full mock tests every 2 weeks
 
 > **First session is a FREE demo.** See the teaching quality before committing.`,
-    imageUrl: '/images/gre.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1600&auto=format&fit=crop',
     ctaLabel: 'Book Free Demo',
     ctaUrl: '/contact',
     seats: 25,
@@ -998,7 +998,7 @@ ILOC's **TOEFL Online Coaching** is a structured program for students targeting 
 Live Zoom · 1 hour per session · 5 sessions per week · Full iBT mock tests monthly
 
 > **First session is a FREE demo.** No payment or commitment required to attend.`,
-    imageUrl: '/images/toefl.jpg',
+    imageUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=1600&auto=format&fit=crop',
     ctaLabel: 'Book Free Demo',
     ctaUrl: '/contact',
     seats: 25,
