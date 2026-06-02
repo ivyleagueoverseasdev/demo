@@ -2,39 +2,54 @@ export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getPartnerSettings, setPartnerSettings, validateAdminToken } from '@/lib/kv';
+import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
 import type { PartnerPageSettings } from '@/lib/kv';
-
-const CORS = {
-  'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-};
 
 type Page = 'institutions' | 'agent' | 'referral';
 const VALID_PAGES: Page[] = ['institutions', 'agent', 'referral'];
+
+function json(data: unknown, status = 200) {
+  return NextResponse.json(data, { status, headers: CORS });
+}
 
 export async function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS });
 }
 
 export async function GET(req: NextRequest) {
-  const page = req.nextUrl.searchParams.get('page') as Page | null;
-  if (!page || !VALID_PAGES.includes(page)) {
-    return NextResponse.json({ error: 'page param required: institutions | agent | referral' }, { status: 400, headers: CORS });
+  try {
+    const page = req.nextUrl.searchParams.get('page') as Page | null;
+    if (!page || !VALID_PAGES.includes(page)) {
+      return json({ error: 'page param required: institutions | agent | referral' }, 400);
+    }
+    const settings = await getPartnerSettings(page);
+    return json({ settings });
+  } catch (e: unknown) {
+    console.error('[GET /api/partner-settings]', (e as Error).stack ?? e);
+    return json({ error: 'Failed to load settings' }, 500);
   }
-  const settings = await getPartnerSettings(page);
-  return NextResponse.json({ settings }, { headers: CORS });
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '');
-  if (!(await validateAdminToken(String(token || '')))) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS });
+  if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
+
+  let body: { page?: Page; settings?: PartnerPageSettings };
+  try {
+    body = await parseBody(req);
+  } catch (e) {
+    console.error('[PUT /api/partner-settings] parse error:', e);
+    return json({ error: 'Invalid request body' }, 400);
   }
-  const body = await req.json() as { page: Page; settings: PartnerPageSettings };
-  if (!body?.page || !VALID_PAGES.includes(body.page) || !body?.settings) {
-    return NextResponse.json({ error: 'page and settings required' }, { status: 400, headers: CORS });
+
+  if (!body.page || !VALID_PAGES.includes(body.page) || !body.settings) {
+    return json({ error: 'page and settings required' }, 400);
   }
-  await setPartnerSettings(body.page, body.settings);
-  return NextResponse.json({ ok: true }, { headers: CORS });
+
+  try {
+    await setPartnerSettings(body.page, body.settings);
+    return json({ ok: true });
+  } catch (e: unknown) {
+    console.error('[PUT /api/partner-settings] KV write failed:', (e as Error).stack ?? e);
+    return json({ error: 'Failed to save settings', details: (e as Error).message }, 500);
+  }
 }

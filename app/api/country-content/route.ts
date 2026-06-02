@@ -2,40 +2,50 @@ export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getCountryContent, setCountryContent, validateAdminToken } from '@/lib/kv';
+import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
 
-
-const CORS = {
-  'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-};
+function json(data: unknown, status = 200) {
+  return NextResponse.json(data, { status, headers: CORS });
+}
 
 export async function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS });
 }
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const country = searchParams.get('country');
-  const section = searchParams.get('section');
-  if (!country || !section) {
-    return NextResponse.json({ error: 'country and section params required' }, { status: 400, headers: CORS });
+  try {
+    const { searchParams } = new URL(req.url);
+    const country = searchParams.get('country');
+    const section = searchParams.get('section');
+    if (!country || !section) return json({ error: 'country and section params required' }, 400);
+    const html = await getCountryContent(country, section);
+    return json({ html });
+  } catch (e: unknown) {
+    console.error('[GET /api/country-content]', (e as Error).stack ?? e);
+    return json({ error: 'Failed to load content' }, 500);
   }
-  const html = await getCountryContent(country, section);
-  return NextResponse.json({ html }, { headers: CORS });
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '');
-  if (!(await validateAdminToken(String(token || '')))) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS });
+  if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
+
+  let body: { country?: string; section?: string; html?: string };
+  try {
+    body = await parseBody(req);
+  } catch (e) {
+    console.error('[PUT /api/country-content] parse error:', e);
+    return json({ error: 'Invalid request body' }, 400);
   }
 
-  const { country, section, html } = await req.json() as { country: string; section: string; html: string };
-  if (!country || !section || html === undefined) {
-    return NextResponse.json({ error: 'country, section, and html are required' }, { status: 400, headers: CORS });
+  if (!body.country || !body.section || body.html === undefined) {
+    return json({ error: 'country, section, and html are required' }, 400);
   }
 
-  await setCountryContent(country, section, html);
-  return NextResponse.json({ ok: true }, { headers: CORS });
+  try {
+    await setCountryContent(body.country, body.section, body.html);
+    return json({ ok: true });
+  } catch (e: unknown) {
+    console.error('[PUT /api/country-content] KV write failed:', (e as Error).stack ?? e);
+    return json({ error: 'Failed to save content', details: (e as Error).message }, 500);
+  }
 }

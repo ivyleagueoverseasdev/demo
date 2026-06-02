@@ -2,36 +2,47 @@ export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getCountryMeta, setCountryMeta, validateAdminToken } from '@/lib/kv';
+import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
 import type { CountryMeta } from '@/lib/kv';
 
-const CORS = {
-  'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-};
+function json(data: unknown, status = 200) {
+  return NextResponse.json(data, { status, headers: CORS });
+}
 
 export async function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS });
 }
 
 export async function GET(req: NextRequest) {
-  const country = new URL(req.url).searchParams.get('country');
-  if (!country) {
-    return NextResponse.json({ error: 'country param required' }, { status: 400, headers: CORS });
+  try {
+    const country = new URL(req.url).searchParams.get('country');
+    if (!country) return json({ error: 'country param required' }, 400);
+    const meta = await getCountryMeta(country);
+    return json({ meta });
+  } catch (e: unknown) {
+    console.error('[GET /api/country-meta]', (e as Error).stack ?? e);
+    return json({ error: 'Failed to load country meta' }, 500);
   }
-  const meta = await getCountryMeta(country);
-  return NextResponse.json({ meta }, { headers: CORS });
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '');
-  if (!(await validateAdminToken(String(token || '')))) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS });
+  if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
+
+  let body: { country?: string; meta?: CountryMeta };
+  try {
+    body = await parseBody(req);
+  } catch (e) {
+    console.error('[PUT /api/country-meta] parse error:', e);
+    return json({ error: 'Invalid request body' }, 400);
   }
-  const { country, meta } = await req.json() as { country: string; meta: CountryMeta };
-  if (!country || !meta) {
-    return NextResponse.json({ error: 'country and meta required' }, { status: 400, headers: CORS });
+
+  if (!body.country || !body.meta) return json({ error: 'country and meta required' }, 400);
+
+  try {
+    await setCountryMeta(body.country, body.meta);
+    return json({ ok: true });
+  } catch (e: unknown) {
+    console.error('[PUT /api/country-meta] KV write failed:', (e as Error).stack ?? e);
+    return json({ error: 'Failed to save country meta', details: (e as Error).message }, 500);
   }
-  await setCountryMeta(country, meta);
-  return NextResponse.json({ ok: true }, { headers: CORS });
 }

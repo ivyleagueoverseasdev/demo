@@ -7,6 +7,7 @@ import {
   setSiteContent, validateAdminToken,
 } from '@/lib/kv';
 import { appendAuditLog } from '@/lib/audit';
+import { parseBody, getBearerToken } from '@/lib/edge-utils';
 import type { CompanyDetails, GlobalSettings, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
 
 const CORS = {
@@ -41,15 +42,15 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   // ── Auth: read token from header ONLY — never consume body for auth ──────
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
+  const token  = getBearerToken(req);
   const authed = await validateAdminToken(token);
   if (!authed) {
     console.error('[PUT /api/content] Unauthorized — token:', token ? `${token.slice(0, 8)}…` : 'missing');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS });
   }
 
-  // ── Parse body once ───────────────────────────────────────────────────────
-  let body: {
+  // ── Parse body once via edge-safe helper ─────────────────────────────────
+  type ContentBody = {
     redirects?:      unknown[];
     services?:       ServiceItem[];
     processSteps?:   ProcessStepItem[];
@@ -57,8 +58,9 @@ export async function PUT(req: NextRequest) {
     companyDetails?: CompanyDetails;
     globalSettings?: GlobalSettings;
   };
+  let body: ContentBody;
   try {
-    body = await req.json();
+    body = await parseBody<ContentBody>(req);
   } catch (e) {
     console.error('[PUT /api/content] Failed to parse body:', e);
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400, headers: CORS });

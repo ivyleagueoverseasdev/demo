@@ -2,32 +2,45 @@ export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getMarqueeSettings, setMarqueeSettings, validateAdminToken } from '@/lib/kv';
+import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
 import type { MarqueeSettings } from '@/lib/kv';
 
-const CORS = {
-  'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-};
+function json(data: unknown, status = 200) {
+  return NextResponse.json(data, { status, headers: CORS });
+}
 
 export async function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS });
 }
 
 export async function GET() {
-  const settings = await getMarqueeSettings();
-  return NextResponse.json({ settings }, { headers: CORS });
+  try {
+    const settings = await getMarqueeSettings();
+    return json({ settings });
+  } catch (e: unknown) {
+    console.error('[GET /api/marquee]', (e as Error).stack ?? e);
+    return json({ error: 'Failed to load settings' }, 500);
+  }
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '');
-  if (!(await validateAdminToken(String(token || '')))) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS });
+  if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
+
+  let settings: Partial<MarqueeSettings>;
+  try {
+    settings = await parseBody<Partial<MarqueeSettings>>(req);
+  } catch (e) {
+    console.error('[PUT /api/marquee] parse error:', e);
+    return json({ error: 'Invalid request body' }, 400);
   }
-  const settings = await req.json() as MarqueeSettings;
-  if (!settings) {
-    return NextResponse.json({ error: 'settings body required' }, { status: 400, headers: CORS });
+
+  if (!settings || typeof settings !== 'object') return json({ error: 'settings body required' }, 400);
+
+  try {
+    await setMarqueeSettings(settings as MarqueeSettings);
+    return json({ ok: true });
+  } catch (e: unknown) {
+    console.error('[PUT /api/marquee] KV write failed:', (e as Error).stack ?? e);
+    return json({ error: 'Failed to save settings', details: (e as Error).message }, 500);
   }
-  await setMarqueeSettings(settings);
-  return NextResponse.json({ ok: true }, { headers: CORS });
 }

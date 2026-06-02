@@ -3,34 +3,45 @@ export const runtime = 'edge';
 import { NextRequest, NextResponse } from 'next/server';
 import { getStats, setStats, validateAdminToken } from '@/lib/kv';
 import { STATS } from '@/lib/data';
+import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
 import type { Stat } from '@/lib/types';
 
-const CORS = {
-  'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'GET,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-};
+function json(data: unknown, status = 200) {
+  return NextResponse.json(data, { status, headers: CORS });
+}
 
 export async function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS });
 }
 
 export async function GET() {
-  const kv = await getStats();
-  const stats = kv ?? STATS;
-  return NextResponse.json({ stats }, { headers: { ...CORS, 'Cache-Control': 'no-store' } });
+  try {
+    const kv = await getStats();
+    return json({ stats: kv ?? STATS });
+  } catch (e: unknown) {
+    console.error('[GET /api/stats]', (e as Error).stack ?? e);
+    return json({ error: 'Failed to load stats' }, 500);
+  }
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
-  const authed = await validateAdminToken(token);
-  if (!authed) return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS });
+  if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
 
-  const body = await req.json().catch(() => null);
-  const stats: Stat[] = body?.stats ?? [];
-  if (!Array.isArray(stats)) {
-    return NextResponse.json({ error: 'stats must be an array' }, { status: 400, headers: CORS });
+  let body: { stats?: Stat[] };
+  try {
+    body = await parseBody(req);
+  } catch (e) {
+    console.error('[PUT /api/stats] parse error:', e);
+    return json({ error: 'Invalid request body' }, 400);
   }
-  await setStats(stats);
-  return NextResponse.json({ ok: true }, { headers: CORS });
+
+  if (!Array.isArray(body.stats)) return json({ error: 'stats must be an array' }, 400);
+
+  try {
+    await setStats(body.stats);
+    return json({ ok: true });
+  } catch (e: unknown) {
+    console.error('[PUT /api/stats] KV write failed:', (e as Error).stack ?? e);
+    return json({ error: 'Failed to save stats', details: (e as Error).message }, 500);
+  }
 }
