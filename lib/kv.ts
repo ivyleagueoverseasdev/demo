@@ -3,7 +3,6 @@
  * KV Namespace binding expected: CONTENT_KV
  */
 
-import { getCloudflareContext } from '@opennextjs/cloudflare';
 import type { CompanyDetails, DynamicPage, GlobalSettings, HeroSlide, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia, Stat } from './types';
 
 // Minimal KV shape — avoids requiring @cloudflare/workers-types as a dep.
@@ -18,10 +17,10 @@ const DEV_STORE = new Map<string, string>();
 
 function getKV(): CfKVNamespace | null {
   try {
-    // Cast env to `any` — CONTENT_KV is bound at runtime via wrangler.toml
-    // but not declared in @cloudflare/next-on-pages' CloudflareEnv type.
-    const ctx = getCloudflareContext();
-    return (ctx?.env as any)?.CONTENT_KV || null;
+    // @cloudflare/next-on-pages injects bindings onto the global process.env
+    // proxy at runtime. Access CONTENT_KV directly from globalThis.
+    const kv = (globalThis as any).CONTENT_KV ?? (process as any).env?.CONTENT_KV;
+    return kv ?? null;
   } catch {
     return null;
   }

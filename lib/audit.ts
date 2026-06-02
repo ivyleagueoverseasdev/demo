@@ -4,9 +4,6 @@
  */
 import type { AuditEntry } from './schemas';
 
-// Re-use the same KV accessor pattern as kv.ts but imported here to avoid circular deps.
-import { getCloudflareContext } from '@opennextjs/cloudflare';
-
 interface CfKVNamespace {
   get(key: string): Promise<string | null>;
   put(key: string, value: string): Promise<void>;
@@ -14,8 +11,8 @@ interface CfKVNamespace {
 
 function getKV(): CfKVNamespace | null {
   try {
-    const ctx = getCloudflareContext();
-    return (ctx?.env as any)?.CONTENT_KV || null;
+    const kv = (globalThis as any).CONTENT_KV ?? (process as any).env?.CONTENT_KV;
+    return kv ?? null;
   } catch {
     return null;
   }
