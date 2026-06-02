@@ -1,4 +1,5 @@
-export const runtime = 'edge';
+﻿export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { upsertPage, deletePage, getAllPages, validateAdminToken } from '@/lib/kv';
@@ -14,7 +15,7 @@ function json(data: unknown, status = 200) {
   return NextResponse.json(data, { status, headers: CORS });
 }
 
-// ── Auth: header-only — never consume body ────────────────────────────────────
+// â”€â”€ Auth: header-only â€” never consume body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function authCheck(req: NextRequest): Promise<boolean> {
   const token = req.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
   return validateAdminToken(token);

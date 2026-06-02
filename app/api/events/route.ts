@@ -1,4 +1,5 @@
-export const runtime = 'edge';
+﻿export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getEvents, setEvents, validateAdminToken } from '@/lib/kv';
@@ -33,15 +34,15 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  // ── Auth: header-only — never read body before auth ───────────────────────
+  // â”€â”€ Auth: header-only â€” never read body before auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const token = req.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
   const authed = await validateAdminToken(token);
   if (!authed) {
-    console.error('[PUT /api/events] Unauthorized — token:', token ? `${token.slice(0, 8)}…` : 'missing');
+    console.error('[PUT /api/events] Unauthorized â€” token:', token ? `${token.slice(0, 8)}â€¦` : 'missing');
     return json({ error: 'Unauthorized' }, 401);
   }
 
-  // ── Parse body once ───────────────────────────────────────────────────────
+  // â”€â”€ Parse body once â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let body: { events?: SiteEvent[] };
   try {
     body = await req.json();
@@ -56,7 +57,7 @@ export async function PUT(req: NextRequest) {
     const before = await getEvents();
     await setEvents(events);
 
-    // ── Audit log — detect diffs ──────────────────────────────────────────
+    // â”€â”€ Audit log â€” detect diffs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const beforeIds = new Set(before.map(e => e.id));
     const afterIds  = new Set(events.map(e => e.id));
 

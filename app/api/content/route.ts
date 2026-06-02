@@ -1,4 +1,5 @@
-export const runtime = 'edge';
+﻿export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import {
@@ -41,15 +42,15 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  // ── Auth: read token from header ONLY — never consume body for auth ──────
+  // â”€â”€ Auth: read token from header ONLY â€” never consume body for auth â”€â”€â”€â”€â”€â”€
   const token  = getBearerToken(req);
   const authed = await validateAdminToken(token);
   if (!authed) {
-    console.error('[PUT /api/content] Unauthorized — token:', token ? `${token.slice(0, 8)}…` : 'missing');
+    console.error('[PUT /api/content] Unauthorized â€” token:', token ? `${token.slice(0, 8)}â€¦` : 'missing');
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS });
   }
 
-  // ── Parse body once via edge-safe helper ─────────────────────────────────
+  // â”€â”€ Parse body once via edge-safe helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   type ContentBody = {
     redirects?:      unknown[];
     services?:       ServiceItem[];

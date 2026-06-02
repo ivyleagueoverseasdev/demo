@@ -1,4 +1,5 @@
-export const runtime = 'edge';
+﻿export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getMediaLibrary, addMediaToLibrary, validateAdminToken } from '@/lib/kv';
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PUT — replace the entire library list (used by delete operations in admin)
+// PUT â€” replace the entire library list (used by delete operations in admin)
 export async function PUT(req: NextRequest) {
   if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
 
@@ -66,8 +67,8 @@ export async function PUT(req: NextRequest) {
       { put(k: string, v: string): Promise<void> } | undefined;
 
     if (!kv) {
-      // No KV in local next dev — log and return success so UI doesn't break
-      console.warn('[PUT /api/media/library] No CONTENT_KV — skipped (local dev)');
+      // No KV in local next dev â€” log and return success so UI doesn't break
+      console.warn('[PUT /api/media/library] No CONTENT_KV â€” skipped (local dev)');
       return json({ ok: true, urls: body.urls });
     }
 

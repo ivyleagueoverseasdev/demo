@@ -1,4 +1,5 @@
-export const runtime = 'edge';
+﻿export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getHeroSlides, setHeroSlides, validateAdminToken } from '@/lib/kv';
@@ -31,7 +32,7 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
-  // ── Auth: header-only ─────────────────────────────────────────────────────
+  // â”€â”€ Auth: header-only â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const token = req.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
   const authed = await validateAdminToken(token);
   if (!authed) {

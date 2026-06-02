@@ -1,4 +1,5 @@
-export const runtime = 'edge';
+﻿export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getLeads, upsertLead, deleteLead, validateAdminToken } from '@/lib/kv';
@@ -13,7 +14,7 @@ export async function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS });
 }
 
-// ── POST — public: save a new lead and send email notification ────────────────
+// â”€â”€ POST â€” public: save a new lead and send email notification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export async function POST(req: NextRequest) {
   let body: Record<string, string>;
   try {
@@ -47,8 +48,8 @@ export async function POST(req: NextRequest) {
     return json({ error: 'Failed to save enquiry', details: (e as Error).message }, 500);
   }
 
-  // ── Email notification via Resend ─────────────────────────────────────────
-  // Fire-and-forget — a failed email must never block the lead from being saved.
+  // â”€â”€ Email notification via Resend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // Fire-and-forget â€” a failed email must never block the lead from being saved.
   void sendLeadEmail(lead, req).catch(e =>
     console.error('[POST /api/leads] Email send failed:', (e as Error).stack ?? e)
   );
@@ -65,24 +66,24 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
     ?? '';
 
   if (!apiKey) {
-    console.warn('[leads/email] RESEND_API_KEY not configured — skipping notification');
+    console.warn('[leads/email] RESEND_API_KEY not configured â€” skipping notification');
     return;
   }
 
   const html = `
-    <h2>New Enquiry — ILOC Website</h2>
+    <h2>New Enquiry â€” ILOC Website</h2>
     <table cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
       <tr><td style="font-weight:bold;color:#555">Name</td><td>${lead.name}</td></tr>
       <tr><td style="font-weight:bold;color:#555">Phone</td><td><a href="tel:${lead.phone}">${lead.phone}</a></td></tr>
       <tr><td style="font-weight:bold;color:#555">Email</td><td><a href="mailto:${lead.email}">${lead.email}</a></td></tr>
-      <tr><td style="font-weight:bold;color:#555">Country</td><td>${lead.country || '—'}</td></tr>
-      <tr><td style="font-weight:bold;color:#555">Program</td><td>${lead.program || '—'}</td></tr>
+      <tr><td style="font-weight:bold;color:#555">Country</td><td>${lead.country || 'â€”'}</td></tr>
+      <tr><td style="font-weight:bold;color:#555">Program</td><td>${lead.program || 'â€”'}</td></tr>
       <tr><td style="font-weight:bold;color:#555">Source</td><td>${lead.source}</td></tr>
-      <tr><td style="font-weight:bold;color:#555">Message</td><td style="max-width:420px">${lead.message || '—'}</td></tr>
+      <tr><td style="font-weight:bold;color:#555">Message</td><td style="max-width:420px">${lead.message || 'â€”'}</td></tr>
       <tr><td style="font-weight:bold;color:#555">Time</td><td>${new Date(lead.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</td></tr>
     </table>
     <p style="margin-top:16px;font-size:12px;color:#999">
-      Lead ID: ${lead.id} · View in admin: ${new URL(req.url).origin}/admin/enquiries
+      Lead ID: ${lead.id} Â· View in admin: ${new URL(req.url).origin}/admin/enquiries
     </p>
   `;
 
@@ -92,7 +93,7 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
     body: JSON.stringify({
       from:    'ILOC Enquiries <notifications@resend.dev>',
       to:      ['ivyleagueoverseas@gmail.com'],
-      subject: `🎓 New Enquiry: ${lead.name} (${lead.country || lead.source})`,
+      subject: `ðŸŽ“ New Enquiry: ${lead.name} (${lead.country || lead.source})`,
       html,
     }),
   });
@@ -105,7 +106,7 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
   }
 }
 
-// ── GET — admin: list all leads ───────────────────────────────────────────────
+// â”€â”€ GET â€” admin: list all leads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export async function GET(req: NextRequest) {
   if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
   try {
@@ -117,7 +118,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// ── PUT — admin: update status or delete ─────────────────────────────────────
+// â”€â”€ PUT â€” admin: update status or delete â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export async function PUT(req: NextRequest) {
   if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
 

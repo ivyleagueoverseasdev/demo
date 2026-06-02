@@ -2,72 +2,91 @@
  * Cloudflare KV wrapper.
  * KV Namespace binding expected: CONTENT_KV
  *
- * IMPORTANT — Cloudflare Edge runtime constraints:
- *   - Every request runs in a fresh V8 isolate. In-memory state (Maps, globals)
- *     is NOT shared between requests. Never use globalThis for session storage.
- *   - All persistent state MUST go through CONTENT_KV.
- *   - Local dev without wrangler: KV is unavailable, so writes are no-ops and
- *     reads return null. Use `wrangler pages dev` to test with real KV locally.
+ * EDGE RUNTIME RULES:
+ *   1. Every request runs in a fresh V8 isolate — no in-memory/globalThis state.
+ *   2. Use getRequestContext() (throws) for auth writes — silent failure = 401 loop.
+ *   3. Use getOptionalRequestContext() only for non-critical public reads.
+ *   4. All auth errors must be LOUD — return null gracefully only for public content.
  */
 
-import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
-import type { CompanyDetails, DynamicPage, GlobalSettings, HeroSlide, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia, Stat } from './types';
+import { getRequestContext, getOptionalRequestContext } from '@cloudflare/next-on-pages';
+import type {
+  CompanyDetails, DynamicPage, GlobalSettings, HeroSlide,
+  Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia, Stat,
+} from './types';
 
-// Minimal KV shape — avoids requiring @cloudflare/workers-types as a dep.
+// ── KV shape ──────────────────────────────────────────────────────────────────
 interface CfKVNamespace {
   get(key: string): Promise<string | null>;
   put(key: string, value: string, opts?: { expirationTtl?: number }): Promise<void>;
   delete(key: string): Promise<void>;
 }
 
-function getKV(): CfKVNamespace | null {
+/**
+ * Get the KV namespace using the STRICT context (throws if missing).
+ * Use this for any write or auth operation — we NEED to know if it fails.
+ */
+function getKVStrict(): CfKVNamespace {
+  const ctx = getRequestContext(); // throws if called outside a CF request
+  const kv  = (ctx.env as Record<string, unknown>).CONTENT_KV as CfKVNamespace | undefined;
+  if (!kv) {
+    throw new Error(
+      'CRITICAL: CONTENT_KV binding is missing. ' +
+      'Add the KV namespace binding in Cloudflare Pages → Settings → Functions → KV Namespace Bindings. ' +
+      'Variable name must be exactly "CONTENT_KV".'
+    );
+  }
+  return kv;
+}
+
+/**
+ * Get the KV namespace using the OPTIONAL context (returns null if missing).
+ * Use this only for public reads that can gracefully fall back to static defaults.
+ */
+function getKVOptional(): CfKVNamespace | null {
   try {
     const ctx = getOptionalRequestContext();
-    return (ctx?.env as Record<string, unknown>)?.CONTENT_KV as CfKVNamespace ?? null;
+    if (!ctx) return null;
+    return (ctx.env as Record<string, unknown>).CONTENT_KV as CfKVNamespace ?? null;
   } catch {
     return null;
   }
 }
 
+// ── Internal helpers ──────────────────────────────────────────────────────────
+
+/** Read from KV — returns null on miss or local dev (never throws). */
 async function kvGet<T>(key: string): Promise<T | null> {
-  const kv = getKV();
-  if (!kv) return null; // No KV in local next dev — caller handles null
+  const kv = getKVOptional();
+  if (!kv) return null;
   try {
     const raw = await kv.get(key);
     if (!raw) return null;
     return JSON.parse(raw) as T;
   } catch (e) {
-    console.error(`[kv] kvGet(${key}) failed:`, e);
+    console.error(`[kv] kvGet("${key}") failed:`, e);
     return null;
   }
 }
 
+/** Write to KV — THROWS if binding is missing (callers must surface the error). */
 async function kvPut(key: string, value: unknown, opts?: { expirationTtl?: number }): Promise<void> {
-  const kv = getKV();
-  if (!kv) {
-    // Local next dev without wrangler — log and continue so UI doesn't crash
-    console.warn(`[kv] No CONTENT_KV binding — kvPut("${key}") skipped (local dev)`);
-    return;
-  }
-  try {
-    await kv.put(key, JSON.stringify(value), opts);
-  } catch (e) {
-    console.error(`[kv] kvPut(${key}) failed:`, e);
-    throw e; // Re-throw so callers can surface the error to the client
-  }
+  const kv = getKVStrict(); // throws → caller catches and returns 500
+  await kv.put(key, JSON.stringify(value), opts);
 }
 
+/** Delete from KV — soft-fails locally, throws on CF if binding is missing. */
 async function kvDelete(key: string): Promise<void> {
-  const kv = getKV();
+  const kv = getKVOptional();
   if (!kv) return;
   try {
     await kv.delete(key);
   } catch (e) {
-    console.error(`[kv] kvDelete(${key}) failed:`, e);
+    console.error(`[kv] kvDelete("${key}") failed:`, e);
   }
 }
 
-// ── Page CRUD ─────────────────────────────────────────────────────────────
+// ── Page CRUD ─────────────────────────────────────────────────────────────────
 
 export async function getPage(slug: string): Promise<DynamicPage | null> {
   return kvGet<DynamicPage>(`page:${slug}`);
@@ -84,7 +103,6 @@ export async function getAllPages(): Promise<DynamicPage[]> {
 }
 
 export async function upsertPage(page: DynamicPage): Promise<void> {
-  // Update index
   const slugs = await getAllPageSlugs();
   if (!slugs.includes(page.slug)) {
     await kvPut('pages:index', [...slugs, page.slug]);
@@ -98,7 +116,7 @@ export async function deletePage(slug: string): Promise<void> {
   await kvDelete(`page:${slug}`);
 }
 
-// ── Redirect rules ────────────────────────────────────────────────────────
+// ── Redirect rules ────────────────────────────────────────────────────────────
 
 export async function getRedirects(): Promise<RedirectRule[]> {
   return (await kvGet<RedirectRule[]>('redirects')) ?? [];
@@ -113,54 +131,61 @@ export async function resolveRedirect(path: string): Promise<RedirectRule | null
   return rules.find(r => r.active && r.from === path) ?? null;
 }
 
-// ── Admin session auth ────────────────────────────────────────────────────
+// ── Admin session auth ────────────────────────────────────────────────────────
 //
-// Architecture: stateless KV sessions.
-//
-// WHY NOT in-memory / globalThis:
-//   Cloudflare Workers run in ephemeral V8 isolates. Each request gets a
-//   fresh isolate — in-memory state written by the login request is GONE
-//   by the time the next API call arrives. This caused every save to 401.
-//
-// HOW IT WORKS NOW:
-//   Login  → generates token → writes session:<token> = "1" to KV (24h TTL)
-//   Auth   → reads session:<token> from KV → present = valid, absent = 401
+// HOW IT WORKS:
+//   Login  → generates token → writes session:<token> = "1" to KV with 24h TTL
+//   Auth   → reads session:<token> from KV → present=valid, absent/error=401
 //   Logout → deletes session:<token> from KV
+//
+// WHY getKVStrict() FOR WRITES:
+//   If CONTENT_KV is misconfigured, createAdminSession() must THROW — not silently
+//   skip. The login route catches the error and returns a clear 500 with the
+//   binding error message. This surfaces the misconfiguration immediately.
+//
+// WHY getKVOptional() FOR READS WITH LOCAL BYPASS:
+//   On production, the session key must exist in KV. In local next dev (no CF
+//   context), we bypass auth so developers can work without wrangler.
 
-const SESSION_TTL = 86_400; // 24 hours in seconds
+const SESSION_TTL = 86_400; // 24 h
 
-/** Create a new admin session. Token must be a securely-generated hex string. */
+/** Create a KV-backed admin session. THROWS if CONTENT_KV is missing. */
 export async function createAdminSession(token: string): Promise<void> {
-  // Store the raw string "1" — no JSON serialisation needed, just a presence check.
-  const kv = getKV();
-  if (!kv) {
-    console.warn('[kv] No CONTENT_KV — createAdminSession skipped (local dev)');
-    return;
-  }
+  const kv = getKVStrict(); // LOUD failure if binding not configured
+  // Store raw "1" — presence check only, no JSON serialisation
   await kv.put(`session:${token}`, '1', { expirationTtl: SESSION_TTL });
+  console.log(`[kv] Session created: session:${token.slice(0, 8)}… (TTL ${SESSION_TTL}s)`);
 }
 
-/** Validate a session token against KV. Returns false if KV is unavailable. */
+/** Validate a session token. Local dev without CF context bypasses auth. */
 export async function validateAdminToken(token: string): Promise<boolean> {
   if (!token) return false;
-  const kv = getKV();
+
+  const kv = getKVOptional();
+
   if (!kv) {
-    // Local next dev without wrangler: KV not available.
-    // Bypass auth ONLY in explicit local dev (no CF env).
-    // In production CONTENT_KV is always bound; if it's null there, something
-    // is misconfigured and we should hard-deny.
-    const isLocalDev = !process.env.CF_PAGES;
+    // No CF context → local next dev (not wrangler dev).
+    // Bypass auth so developers can work without the full CF setup.
+    // On production CF_PAGES env is always set; if kv is null there, the
+    // getKVStrict() call in createAdminSession would have thrown at login time
+    // — meaning no valid token could exist anyway.
+    const isLocalDev = typeof process !== 'undefined' && !process.env.CF_PAGES;
     if (isLocalDev) {
-      console.warn('[kv] No CONTENT_KV — bypassing auth for local dev only');
+      console.warn('[kv] No CONTENT_KV — bypassing auth (local next dev)');
       return true;
     }
+    console.error('[kv] validateAdminToken: CONTENT_KV missing in CF context — denying');
     return false;
   }
+
   try {
     const val = await kv.get(`session:${token}`);
-    return val !== null; // Any non-null value = valid session
+    if (val === null) {
+      console.warn(`[kv] Token not found in KV: session:${token.slice(0, 8)}…`);
+    }
+    return val !== null;
   } catch (e) {
-    console.error('[kv] validateAdminToken KV read failed:', e);
+    console.error('[kv] validateAdminToken KV.get failed:', e);
     return false;
   }
 }
@@ -171,19 +196,15 @@ export async function destroyAdminSession(token: string): Promise<void> {
   await kvDelete(`session:${token}`);
 }
 
-// Legacy — kept for the system/status health check (reads admin:token key to test KV connectivity).
-// Not used for auth. Can be removed once health check is updated.
+// Kept for KV health-check probe in /api/system/status
 export async function getAdminToken(): Promise<string | null> {
   return kvGet<string>('admin:token');
 }
 
-/** @deprecated Use createAdminSession instead */
-export async function setAdminToken(_token: string): Promise<void> {
-  // No-op: superseded by createAdminSession + KV session keys.
-  // Kept to avoid import errors in callers that haven't been updated yet.
-}
+/** @deprecated — superseded by createAdminSession */
+export async function setAdminToken(_token: string): Promise<void> { /* no-op */ }
 
-// ── Site content overrides ────────────────────────────────────────────────
+// ── Site content overrides ────────────────────────────────────────────────────
 
 export async function getSiteContent<T extends Record<string, unknown>>(): Promise<T | null> {
   return kvGet<T>('content:site');
@@ -193,7 +214,7 @@ export async function setSiteContent(content: Record<string, unknown>): Promise<
   await kvPut('content:site', content);
 }
 
-// ── Events CRUD ───────────────────────────────────────────────────────────
+// ── Events CRUD ───────────────────────────────────────────────────────────────
 
 export async function getEvents(): Promise<SiteEvent[]> {
   return (await kvGet<SiteEvent[]>('events')) ?? [];
@@ -216,7 +237,7 @@ export async function deleteEvent(id: string): Promise<void> {
   await setEvents(events.filter(e => e.id !== id));
 }
 
-// ── Site media ────────────────────────────────────────────────────────────
+// ── Site media ────────────────────────────────────────────────────────────────
 
 export async function getSiteMedia(): Promise<SiteMedia | null> {
   return kvGet<SiteMedia>('media');
@@ -226,7 +247,7 @@ export async function setSiteMedia(media: SiteMedia): Promise<void> {
   await kvPut('media', media);
 }
 
-// ── Leads CRM ─────────────────────────────────────────────────────────────
+// ── Leads CRM ─────────────────────────────────────────────────────────────────
 
 export async function getLeads(): Promise<Lead[]> {
   return (await kvGet<Lead[]>('leads')) ?? [];
@@ -238,9 +259,9 @@ export async function setLeads(leads: Lead[]): Promise<void> {
 
 export async function upsertLead(lead: Lead): Promise<void> {
   const leads = await getLeads();
-  const idx = leads.findIndex(l => l.id === lead.id);
+  const idx   = leads.findIndex(l => l.id === lead.id);
   if (idx >= 0) leads[idx] = lead;
-  else leads.unshift(lead); // newest first
+  else leads.unshift(lead);
   await setLeads(leads);
 }
 
@@ -249,7 +270,7 @@ export async function deleteLead(id: string): Promise<void> {
   await setLeads(leads.filter(l => l.id !== id));
 }
 
-// ── Media Library (R2 Uploads) ────────────────────────────────────────────
+// ── Media Library ─────────────────────────────────────────────────────────────
 
 export async function getMediaLibrary(): Promise<string[]> {
   return (await kvGet<string[]>('mediaLibrary')) ?? [];
@@ -260,7 +281,7 @@ export async function addMediaToLibrary(url: string): Promise<void> {
   await kvPut('mediaLibrary', [url, ...lib]);
 }
 
-// ── Company details ───────────────────────────────────────────────────────
+// ── Company details ───────────────────────────────────────────────────────────
 
 export async function getCompanyDetails(): Promise<CompanyDetails | null> {
   return kvGet<CompanyDetails>('companyDetails');
@@ -270,43 +291,9 @@ export async function setCompanyDetails(details: CompanyDetails): Promise<void> 
   await kvPut('companyDetails', details);
 }
 
-// ── News CMS ──────────────────────────────────────────────────────────────
+// ── News CMS ──────────────────────────────────────────────────────────────────
 
-const DEFAULT_NEWS: NewsItem[] = [
-  {
-    id: 'news_canada_2026',
-    title: 'Canada IRCC Cap Updates 2026 — What Indian Students Must Know',
-    slug: 'canada-ircc-cap-updates-2026',
-    date: '2026-03-15',
-    excerpt: 'IRCC has confirmed new international student cap allocations for 2026. Learn how the provincial attestation letter system affects your application timeline.',
-    content: `<h2>Canada's 2026 International Student Cap</h2><p>Immigration, Refugees and Citizenship Canada (IRCC) has confirmed that the international student cap introduced in 2024 will remain in force through 2026, with province-level attestation letters (PALs) required for most study permit applications.</p><h3>Key Changes for 2026</h3><ul><li>Ontario, BC, and Alberta have updated PAL quotas — apply early</li><li>Study permits for programs under 6 months are now fully exempt</li><li>The biometrics wait time has reduced to an average of 4–6 weeks</li><li>GIC requirement remains CAD 10,000 (unchanged from 2025)</li></ul><h3>ILOC Guidance</h3><p>Book a free session with Rajib Sir to map out your 2026 application timeline before the PAL slots are exhausted.</p>`,
-    imageUrl: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?w=800&q=80',
-    published: true,
-    createdAt: new Date('2026-03-15').toISOString(),
-  },
-  {
-    id: 'news_uk_graduate_route_2026',
-    title: 'UK Graduate Route Confirmed for 2026 — 2-Year PSW Stays',
-    slug: 'uk-graduate-route-confirmed-2026',
-    date: '2026-02-10',
-    excerpt: 'The UK Home Office has officially confirmed the Graduate Route (post-study work visa) will remain open for 2026 intakes — a huge win for Indian students.',
-    content: `<h2>UK Graduate Route: Official Confirmation</h2><p>The UK Home Office announced in February 2026 that the Graduate Route (formerly Tier 1 PSW) will remain available to international students graduating from 2026 onwards. This 2-year post-study work visa allows graduates to work or look for work in the UK at any skill level.</p><h3>Who is Eligible?</h3><ul><li>Students who complete a UK bachelor's, master's, or PhD degree</li><li>Must have studied in the UK for the full duration of the course</li><li>No job offer required at the time of application</li></ul><h3>Financial Requirements for 2026</h3><p>Maintenance funds: £1,334/month in London (£1,023/month outside London) for up to 9 months, proving up to £12,006 in savings.</p><blockquote>ILOC placed 180+ students into UK universities in 2025. Contact us to begin your 2026 September intake application now.</blockquote>`,
-    imageUrl: 'https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=800&q=80',
-    published: true,
-    createdAt: new Date('2026-02-10').toISOString(),
-  },
-  {
-    id: 'news_australia_gst_2026',
-    title: 'Australia Genuine Student Test (GST) 2026 — Replacing GTE',
-    slug: 'australia-genuine-student-test-2026',
-    date: '2026-01-20',
-    excerpt: 'Australia replaced the Genuine Temporary Entrant (GTE) requirement with the new Genuine Student Test from March 2024. Here is what changes for 2026 applicants.',
-    content: `<h2>Australia's New Genuine Student Test</h2><p>From 23 March 2024, the Department of Home Affairs replaced the Genuine Temporary Entrant (GTE) requirement with the Genuine Student (GS) test for all Student visa (subclass 500) applications. This change applies to all 2026 applications.</p><h3>What the GST Assesses</h3><ul><li>Your understanding of the course and provider you have chosen</li><li>Your English language skills and academic readiness</li><li>Your ties to India and intention to return (or migrate via proper pathways)</li><li>Financial capacity: AUD $29,710 for living costs per year</li></ul><h3>Pro Tip from ILOC</h3><p>A strong Statement of Purpose (SOP) addressing the GST criteria can significantly reduce processing delays. ILOC's SOP coaching has a 97% first-attempt approval rate for Australian student visas.</p>`,
-    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
-    published: true,
-    createdAt: new Date('2026-01-20').toISOString(),
-  },
-];
+const DEFAULT_NEWS: NewsItem[] = [];
 
 export async function getNews(): Promise<NewsItem[]> {
   return (await kvGet<NewsItem[]>('news')) ?? DEFAULT_NEWS;
@@ -318,7 +305,7 @@ export async function setNews(items: NewsItem[]): Promise<void> {
 
 export async function upsertNews(item: NewsItem): Promise<void> {
   const news = await getNews();
-  const idx = news.findIndex(n => n.id === item.id);
+  const idx  = news.findIndex(n => n.id === item.id);
   if (idx >= 0) news[idx] = item;
   else news.unshift(item);
   await setNews(news);
@@ -329,7 +316,7 @@ export async function deleteNews(id: string): Promise<void> {
   await setNews(news.filter(n => n.id !== id));
 }
 
-// ── Global settings ───────────────────────────────────────────────────────
+// ── Global settings ───────────────────────────────────────────────────────────
 
 export async function getGlobalSettings(): Promise<GlobalSettings | null> {
   return kvGet<GlobalSettings>('globalSettings');
@@ -339,7 +326,7 @@ export async function setGlobalSettings(settings: GlobalSettings): Promise<void>
   await kvPut('globalSettings', settings);
 }
 
-// ── Country subpage KV overrides ──────────────────────────────────────────
+// ── Country subpage KV overrides ──────────────────────────────────────────────
 
 export async function getCountryContent(country: string, section: string): Promise<string | null> {
   return kvGet<string>(`countryContent:${country}:${section}`);
@@ -349,9 +336,7 @@ export async function setCountryContent(country: string, section: string, html: 
   await kvPut(`countryContent:${country}:${section}`, html);
 }
 
-// ── Country meta (stat block) overrides ───────────────────────────────────
-// Stores overrides for intake, avgCost, visaRate, unis, tagline, description
-// per country. Merged with COUNTRIES_MAP defaults at render time.
+// ── Country meta overrides ────────────────────────────────────────────────────
 
 export interface CountryMeta {
   intake?:      string;
@@ -374,14 +359,13 @@ export async function setCountryMeta(country: string, meta: CountryMeta): Promis
   await kvPut(`countryMeta:${country}`, meta);
 }
 
-// ── University marquee settings ────────────────────────────────────────────
+// ── University marquee settings ───────────────────────────────────────────────
 
 export interface MarqueeSettings {
-  speedRow1: number;   // seconds for row 1 (forward)
-  speedRow2: number;   // seconds for row 2 (reverse)
-  heading:   string;   // section heading text
-  subheading: string;  // section sub-heading text
-  // custom university list overrides — if empty, falls back to UNIS_MARQUEE_DATA
+  speedRow1:   number;
+  speedRow2:   number;
+  heading:     string;
+  subheading:  string;
   unis?: { name: string; src: string; country: string }[];
 }
 
@@ -393,7 +377,7 @@ export async function setMarqueeSettings(settings: MarqueeSettings): Promise<voi
   await kvPut('marqueeSettings', settings);
 }
 
-// ── Global stats block CMS ────────────────────────────────────────────────
+// ── Global stats block ────────────────────────────────────────────────────────
 
 export async function getStats(): Promise<Stat[] | null> {
   return kvGet<Stat[]>('siteStats');
@@ -403,7 +387,7 @@ export async function setStats(stats: Stat[]): Promise<void> {
   await kvPut('siteStats', stats);
 }
 
-// ── Hero carousel slides CMS ──────────────────────────────────────────────
+// ── Hero carousel slides ──────────────────────────────────────────────────────
 
 export async function getHeroSlides(): Promise<HeroSlide[] | null> {
   return kvGet<HeroSlide[]>('heroSlides');
@@ -413,27 +397,23 @@ export async function setHeroSlides(slides: HeroSlide[]): Promise<void> {
   await kvPut('heroSlides', slides);
 }
 
-// ── Partner page settings ──────────────────────────────────────────────────
+// ── Partner page settings ─────────────────────────────────────────────────────
 
 export interface PartnerStat {
-  value: string;   // e.g. "97%"
-  label: string;   // e.g. "Visa Success Rate"
-  desc:  string;   // supporting sentence
+  value: string;
+  label: string;
+  desc:  string;
 }
 
 export interface PartnerPageSettings {
-  // Hero
-  badge:       string;   // small pill text above h1
-  heading:     string;   // h1 text (can contain **bold** markers)
-  subheading:  string;   // paragraph below h1
-  // Body
-  bodyHeading: string;   // left-column h2
-  bodyIntro:   string;   // left-column intro paragraph
-  stats:       PartnerStat[];  // the numbered/stat cards
-  // Points list title + items
+  badge:       string;
+  heading:     string;
+  subheading:  string;
+  bodyHeading: string;
+  bodyIntro:   string;
+  stats:       PartnerStat[];
   listHeading: string;
-  listItems:   string[];  // each item: "Title: description"
-  // Form card
+  listItems:   string[];
   formHeading: string;
   formSubtext: string;
 }

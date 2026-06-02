@@ -1,4 +1,5 @@
-export const runtime = 'edge';
+﻿export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminSession } from '@/lib/kv';
@@ -35,13 +36,13 @@ export async function POST(req: NextRequest) {
 
   try {
     // Write session:<token> = "1" to KV with 24h TTL.
-    // Each login creates its own KV key — multiple sessions are supported.
+    // Each login creates its own KV key â€” multiple sessions are supported.
     await createAdminSession(token);
     console.log('[POST /api/admin/login] Session created, token prefix:', token.slice(0, 8));
   } catch (e: unknown) {
     console.error('[POST /api/admin/login] KV session write failed:', (e as Error).stack ?? e);
     return NextResponse.json(
-      { error: 'Failed to create session — check CONTENT_KV binding in Cloudflare Pages settings', details: (e as Error).message },
+      { error: 'Failed to create session â€” check CONTENT_KV binding in Cloudflare Pages settings', details: (e as Error).message },
       { status: 500, headers: CORS }
     );
   }

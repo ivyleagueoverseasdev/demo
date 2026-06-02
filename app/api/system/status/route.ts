@@ -1,4 +1,5 @@
-export const runtime = 'edge';
+﻿export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { validateAdminToken } from '@/lib/kv';
@@ -16,7 +17,7 @@ export async function OPTIONS() {
 export async function GET(req: NextRequest) {
   if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
 
-  // ── Resolve CF env ─────────────────────────────────────────────────────────
+  // â”€â”€ Resolve CF env â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const ctx = getOptionalRequestContext();
   const env = ctx?.env as Record<string, unknown> | undefined;
 
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
     return !!(env?.[key] ?? process.env[key]);
   }
 
-  // ── KV connectivity check — try a direct get on a known-safe key ──────────
+  // â”€â”€ KV connectivity check â€” try a direct get on a known-safe key â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let kvOk    = false;
   let kvError = '';
   const kvBinding = env?.CONTENT_KV as { get(k: string): Promise<string | null> } | undefined;
@@ -43,7 +44,7 @@ export async function GET(req: NextRequest) {
     kvError = (e as Error).message;
   }
 
-  // ── Deployment environment ─────────────────────────────────────────────────
+  // â”€â”€ Deployment environment â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const cfEnv     = (env?.['CF_PAGES_BRANCH'] as string | undefined) ?? process.env.CF_PAGES_BRANCH;
   const isPreview = cfEnv ? cfEnv !== 'main' && cfEnv !== 'master' : false;
   const deployEnv = cfEnv
