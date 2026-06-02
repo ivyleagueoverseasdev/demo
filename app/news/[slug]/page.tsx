@@ -111,7 +111,7 @@ export default async function NewsArticlePage({ params }: Props) {
                 Get personalised advice on this update
               </h3>
               <p className="font-jakarta text-sm text-slate-500 mb-4">
-                Free 30-min session with Rajib Sir · Zero pressure · Tailored action plan
+                Free 30-min session with ILOC · Zero pressure · Tailored action plan
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link

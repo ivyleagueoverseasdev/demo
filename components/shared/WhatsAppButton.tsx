@@ -28,42 +28,62 @@ const COUNTRIES: Country[] = [
   {
     code: 'usa', flag: '🇺🇸', name: 'USA',
     highlight: '2026 Intakes: Jan & Aug. STEM OPT 36-month extension active. H-1B lottery opens March.',
-    waText: 'Hi Rajib Sir! I want to know more about studying in the USA for 2026. Can we connect?',
+    waText: 'Hi! I am interested in studying in the USA for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },
   {
     code: 'uk', flag: '🇬🇧', name: 'UK',
     highlight: '2026 Intakes: Jan & Sep. Graduate Route (2-yr PSW) confirmed active. Maintenance: £1,334/mo London.',
-    waText: 'Hi Rajib Sir! I want to know more about studying in the UK for 2026. Can we connect?',
-  },
-  {
-    code: 'canada', flag: '🇨🇦', name: 'Canada',
-    highlight: '2026 Intakes: Jan & Sep. GIC CAD 10,000 required. Provincial Attestation Letter (PAL) mandatory.',
-    waText: 'Hi Rajib Sir! I want to know more about studying in Canada for 2026. Can we connect?',
+    waText: 'Hi! I am interested in studying in the UK for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },
   {
     code: 'australia', flag: '🇦🇺', name: 'Australia',
     highlight: '2026 Intakes: Feb & Jul. Genuine Student Test active. Living costs AUD 29,710/yr required.',
-    waText: 'Hi Rajib Sir! I want to know more about studying in Australia for 2026. Can we connect?',
+    waText: 'Hi! I am interested in studying in Australia for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },
   {
-    code: 'ireland', flag: '🇮🇪', name: 'Ireland',
-    highlight: '2026 Intakes: Jan & Sep. Stamp 1G: 24-month stay-back for Masters. No employer tie-in.',
-    waText: 'Hi Rajib Sir! I want to know more about studying in Ireland for 2026. Can we connect?',
+    code: 'canada', flag: '🇨🇦', name: 'Canada',
+    highlight: '2026 Intakes: Jan & Sep. GIC CAD 10,000 required. Provincial Attestation Letter (PAL) mandatory.',
+    waText: 'Hi! I am interested in studying in Canada for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },
   {
     code: 'new-zealand', flag: '🇳🇿', name: 'New Zealand',
     highlight: '2026 Intakes: Feb & Jul. Post-study open work visa up to 3 years. Living costs NZD 15,000/yr.',
-    waText: 'Hi Rajib Sir! I want to know more about studying in New Zealand for 2026. Can we connect?',
+    waText: 'Hi! I am interested in studying in New Zealand for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },
   {
-    code: 'singapore', flag: '🇸🇬', name: 'Singapore',
-    highlight: '2026 Intakes: Jan & Aug. NUS/NTU QS Top 15. Employment Pass pathway strong for Indian graduates.',
-    waText: 'Hi Rajib Sir! I want to know more about studying in Singapore for 2026. Can we connect?',
+    code: 'ireland', flag: '🇮🇪', name: 'Ireland',
+    highlight: '2026 Intakes: Jan & Sep. Stamp 1G: 24-month stay-back for Masters. No employer tie-in.',
+    waText: 'Hi! I am interested in studying in Ireland for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },
   {
     code: 'europe', flag: '🇪🇺', name: 'Europe',
-    highlight: '2026 Intakes: Sep. Germany: €11,208 blocked account. Schengen work rights post-graduation.',
-    waText: 'Hi Rajib Sir! I want to know more about studying in Europe for 2026. Can we connect?',
+    highlight: '2026: Germany public universities near-zero tuition. Schengen Zone work access across 26 EU countries. DAAD scholarships open.',
+    waText: 'Hi! I am interested in studying in Europe (Germany/Netherlands/France) for 2026 intake. Could I get a free consultation with ILOC?',
+  },
+  {
+    code: 'uae', flag: '🇦🇪', name: 'UAE',
+    highlight: '2026 Intakes: Jan & Sep. NYU Abu Dhabi, Heriot-Watt Dubai. Zero income tax. 4-hr flight from India.',
+    waText: 'Hi! I am interested in studying in the UAE for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
+  },
+  {
+    code: 'japan', flag: '🇯🇵', name: 'Japan',
+    highlight: '2026 Intakes: Apr & Oct. MEXT scholarship: ¥143,000/month + full tuition. STEM OPT pathway expanding.',
+    waText: 'Hi! I am interested in studying in Japan for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
+  },
+  {
+    code: 'south-korea', flag: '🇰🇷', name: 'South Korea',
+    highlight: '2026 Intakes: Mar & Sep. GKS scholarship: full tuition + ₩900,000/month stipend. KAIST & POSTECH top 50.',
+    waText: 'Hi! I am interested in studying in South Korea for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
+  },
+  {
+    code: 'singapore', flag: '🇸🇬', name: 'Singapore',
+    highlight: '2026 Intakes: Aug & Jan. NUS #8 globally. Student\'s Pass 16 hrs/week work. ASEAN PR pathway.',
+    waText: 'Hi! I am interested in studying in Singapore (NUS/NTU) for 2026 intake. Could I get a free consultation with ILOC?',
+  },
+  {
+    code: 'russia', flag: '🇷🇺', name: 'Russia',
+    highlight: '2026: MBBS from ₹15–25 lakhs total. Russian Govt Scholarship covers full tuition. Low living costs ₹15,000–25,000/month.',
+    waText: 'Hi! I am interested in studying in Russia (MBBS/Engineering) for 2026 intake. Could I get a free consultation with ILOC?',
   },
 ];
 
@@ -71,38 +91,38 @@ const VISA_QA: QA[] = [
   {
     q: "What are Canada's 2026 fund requirements?",
     answer: "CAD 10,000 in a GIC + CAD 833/month for living costs. The Provincial Attestation Letter (PAL) is now mandatory — provincial quotas fill fast, apply early.",
-    waText: "Hi Rajib Sir! I have a question about Canada's 2026 GIC and PAL fund requirements for my study permit. Can we connect?",
+    waText: "Hi! I have a question about Canada's 2026 GIC and PAL fund requirements for my study permit. I would love a free consultation with ILOC.",
   },
   {
     q: "Is the UK 2-year Graduate Route still valid?",
     answer: "Yes — the UK Home Office confirmed the Graduate Route remains open for 2026 intakes. Maintenance funds: £1,334/month in London, £1,023/month outside (up to 9 months = £12,006 max).",
-    waText: "Hi Rajib Sir! I want to understand the UK Graduate Route for 2026 and check my eligibility. Can we connect?",
+    waText: "Hi! I would like to understand the UK Graduate Route for 2026 and check my eligibility. Can I book a free consultation with ILOC?",
   },
   {
     q: "USA: H-1B & 36-month STEM OPT update?",
     answer: "STEM OPT 36-month extension is active for Bachelor's+ STEM graduates. H-1B lottery opens in March. USCIS premium processing is currently 3–5 months.",
-    waText: "Hi Rajib Sir! I want to understand USA STEM OPT and H-1B pathways for Indian students in 2026. Can we talk?",
+    waText: "Hi! I would like to understand USA STEM OPT and H-1B pathways for Indian students in 2026. Can I book a free consultation with ILOC?",
   },
   {
     q: "Australia Genuine Student (GS) Test?",
     answer: "Australia replaced the GTE with the GST from March 2024. You must show genuine study intent, English readiness, and financial capacity of AUD 29,710/year for living costs.",
-    waText: "Hi Rajib Sir! I need help with Australia's Genuine Student Test for my Subclass 500 visa. Can we talk?",
+    waText: "Hi! I need guidance on Australia's Genuine Student Test for my Subclass 500 visa application. Can I get a free consultation with ILOC?",
   },
   {
     q: "Ireland's 2-year stay-back rule?",
     answer: "Stamp 1G grants 12 months post-study for Bachelor's and 24 months for Level 9+ Masters. Full open-market work rights — no employer sponsorship required.",
-    waText: "Hi Rajib Sir! I want to know about Ireland's Stamp 1G post-study work permit for 2026. Can we discuss?",
+    waText: "Hi! I would like to learn more about Ireland's Stamp 1G post-study work permit for 2026. Can I book a free consultation with ILOC?",
   },
   {
     q: "Can I apply without IELTS?",
     answer: "Yes — Canada, Ireland, and Europe accept PTE Academic, Duolingo, or medium-of-instruction certificates. Several UK and Australian universities offer conditional offers too.",
-    waText: "Hi Rajib Sir! I want to explore 2026 study abroad options without IELTS. Can you guide me?",
+    waText: "Hi! I would like to explore 2026 study abroad options without IELTS. Can ILOC guide me on my best options?",
   },
 ];
 
 // ── Screen title map ───────────────────────────────────────────────────────
 const SCREEN_TITLES: Record<Screen, string> = {
-  'menu':           'Chat with Rajib Sir',
+  'menu':           'Chat with ILOC',
   'countries':      'Choose Destination',
   'country-detail': 'Country Guide',
   'visa-qa':        'Visa & Policies 2026',
@@ -258,13 +278,13 @@ export default function WhatsAppButton() {
                 <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-slate-100 bg-white">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center font-jakarta font-black text-sm text-white flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg,#1A365D 0%,#2D5A99 100%)' }}
+                    style={{ background: 'linear-gradient(135deg,#246DFF 0%,#246DFF 100%)' }}
                   >
                     RP
                   </div>
                   <div className="min-w-0">
-                    <div className="font-jakarta font-bold text-slate-800 text-[13px] leading-tight">Rajib Paul Choudhury</div>
-                    <div className="font-jakarta text-[11px] text-slate-400 mt-0.5">Head Counsellor · 7+ Years Experience</div>
+                    <div className="font-jakarta font-bold text-slate-800 text-[13px] leading-tight">ILOC Counselling Team</div>
+                    <div className="font-jakarta text-[11px] text-slate-400 mt-0.5">Expert Counsellors · 25+ Years Experience</div>
                   </div>
                 </div>
 
@@ -338,8 +358,8 @@ export default function WhatsAppButton() {
                           <a
                             href={waUrl(
                               menuSelected === 0
-                                ? 'Hi Rajib Sir! I want to book a free 30-minute counselling session to discuss my study abroad options.'
-                                : 'Hi Rajib Sir! I found you on your website and want to chat about my study abroad plans.'
+                                ? 'Hi! I would like to book a free 30-minute counselling session with ILOC to discuss my study abroad options.'
+                                : 'Hi! I came across ILOC\'s website and would love to chat about my study abroad plans. Could we connect?'
                             )}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -422,8 +442,8 @@ export default function WhatsAppButton() {
                             }}
                             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-jakarta font-bold text-sm text-white transition-opacity hover:opacity-90"
                             style={{
-                              background: 'linear-gradient(135deg,#1A365D 0%,#2D5A99 100%)',
-                              boxShadow: '0 4px 16px rgba(26,54,93,0.25)',
+                              background: 'linear-gradient(135deg,#246DFF 0%,#246DFF 100%)',
+                              boxShadow: '0 4px 16px rgba(36,109,255,0.25)',
                             }}
                           >
                             📖 Read Full {activeCountry.name} Guide
@@ -500,7 +520,7 @@ export default function WhatsAppButton() {
                           }}
                         >
                           <WaIcon className="w-4 h-4 text-white" />
-                          Chat with Rajib Sir to apply →
+                          Chat with ILOC to apply →
                         </a>
                       </motion.div>
                     )}

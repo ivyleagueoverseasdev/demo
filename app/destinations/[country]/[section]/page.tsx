@@ -105,7 +105,7 @@ export default async function SectionPage({ params }: Props) {
                   Get personalised guidance for {c.name}
                 </h3>
                 <p className="font-jakarta text-sm text-slate-500">
-                  Free 30-min session with Rajib Paul · Zero pressure · Tailored scholarship strategy
+                  Free 30-min session with ILOC · Zero pressure · Tailored scholarship strategy
                 </p>
               </div>
               <a

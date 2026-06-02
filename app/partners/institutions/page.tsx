@@ -1,32 +1,74 @@
 import type { Metadata } from 'next';
 import { COMPANY } from '@/lib/data';
 import InstitutionsForm from './InstitutionsForm';
+import { getPartnerSettings } from '@/lib/kv';
+import type { PartnerPageSettings } from '@/lib/kv';
+
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: `Institution Partnerships | ${COMPANY.name}`,
   description: 'Partner with ILOC to recruit top-tier, rigorously screened international students from India. Join 400+ global universities trusting our 97% visa success rate.',
 };
 
-export const revalidate = 3600;
+const DEFAULTS: PartnerPageSettings = {
+  badge:       'Global University Network',
+  heading:     'Recruit **High-Intent** Indian Students.',
+  subheading:  'Join over 400 prestigious global institutions that trust ILOC for rigorous student screening, authentic documentation, and a sustained 97% visa approval rate.',
+  bodyHeading: 'Why Partner with ILOC?',
+  bodyIntro:   "As India's student mobility accelerates, universities face the challenge of volume versus quality. At Ivy League Overseas Consulting, we solve this by operating as an extension of your admissions office. We do not just process applications; we curate academic profiles.",
+  stats: [
+    { value: '97%',  label: 'Visa Success Rate',  desc: 'Our meticulous financial and academic verification guarantees highly genuine students with exceptional visa conversion.' },
+    { value: '2.5k', label: 'Alumni Network',      desc: 'A thriving ecosystem of successful placements across the US, UK, Canada, and Australia generating constant organic referrals.' },
+  ],
+  listHeading: 'Our Commitment to Quality',
+  listItems: [
+    'Rigorous Academic Vetting: Direct verification of transcripts, test scores, and language proficiency.',
+    'Financial Authenticity: Strict pre-screening of funding sources before application submission.',
+    'Volume & Scale: Strategic marketing campaigns ensuring a steady pipeline of diverse applicants.',
+  ],
+  formHeading: 'Initiate Partnership',
+  formSubtext: 'Our institutional relations team will contact you within 24 hours.',
+};
 
-export default function InstitutionsPartnerPage() {
+function renderHeading(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((p, i) =>
+    p.startsWith('**') ? (
+      <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">
+        {p.slice(2, -2)}
+      </span>
+    ) : p
+  );
+}
+
+export default async function InstitutionsPartnerPage() {
+  const kv = await getPartnerSettings('institutions').catch(() => null);
+  const s: PartnerPageSettings = kv
+    ? { ...DEFAULTS, ...kv, stats: kv.stats?.length ? kv.stats : DEFAULTS.stats, listItems: kv.listItems?.length ? kv.listItems : DEFAULTS.listItems }
+    : DEFAULTS;
+
   return (
     <main className="bg-white">
-      {/* ── Hero Section (Dark Navy) ── */}
-      <section className="relative bg-primary-900 text-white overflow-hidden py-24 sm:py-32">
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop")', backgroundSize: 'cover', backgroundPosition: 'center' }} />
-        <div className="absolute -top-32 -right-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        
+
+      {/* ── Hero ── */}
+      <section className="relative text-white overflow-hidden py-24 sm:py-32" style={{ background: 'linear-gradient(135deg,#3B71F3 0%,#2458D9 60%,#1A43B0 100%)' }}>
+        <div className="absolute inset-0 opacity-[0.08] pointer-events-none"
+          style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #ffffff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #ffffff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl pointer-events-none" />
+
         <div className="container-xl relative z-10 text-center max-w-4xl mx-auto px-4">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
-            <span className="font-jakarta text-xs font-semibold text-amber-400 tracking-wide uppercase">Global University Network</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
+            <span className="font-jakarta text-xs font-semibold text-white/90 tracking-wide uppercase">{s.badge}</span>
           </div>
           <h1 className="font-jakarta font-extrabold text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
-            Recruit <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">High-Intent</span> Indian Students.
+            {renderHeading(s.heading)}
           </h1>
           <p className="font-jakarta text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            Join over 400 prestigious global institutions that trust ILOC for rigorous student screening, authentic documentation, and a sustained 97% visa approval rate.
+            {s.subheading}
           </p>
         </div>
       </section>
@@ -35,62 +77,68 @@ export default function InstitutionsPartnerPage() {
       <section className="py-20">
         <div className="container-xl">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
-            
-            {/* Left: Elite Copywriting */}
+
+            {/* Left: Content */}
             <div className="space-y-8">
               <div>
-                <h2 className="font-jakarta font-extrabold text-3xl text-primary-900 mb-4">Why Partner with ILOC?</h2>
-                <div className="w-16 h-1.5 bg-amber-500 rounded-full mb-6" />
-                <p className="font-jakarta text-slate-600 leading-relaxed">
-                  As India's student mobility accelerates, universities face the challenge of volume versus quality. At Ivy League Overseas Consulting, we solve this by operating as an extension of your admissions office. We do not just process applications; we curate academic profiles.
-                </p>
+                <h2 className="font-jakarta font-extrabold text-3xl text-slate-900 mb-4">{s.bodyHeading}</h2>
+                <div className="w-16 h-1 rounded-full mb-6" style={{ background: 'linear-gradient(90deg,#3B71F3,#D97706)' }} />
+                <p className="font-jakarta text-slate-500 leading-relaxed">{s.bodyIntro}</p>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                  <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center mb-4 text-xl font-black">97%</div>
-                  <h3 className="font-jakarta font-bold text-slate-900 mb-2">Visa Success Rate</h3>
-                  <p className="font-jakarta text-sm text-slate-500 leading-relaxed">Our meticulous financial and academic verification guarantees highly genuine students with exceptional visa conversion.</p>
-                </div>
-                <div className="bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                  <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4 text-xl font-black">2.5k</div>
-                  <h3 className="font-jakarta font-bold text-slate-900 mb-2">Alumni Network</h3>
-                  <p className="font-jakarta text-sm text-slate-500 leading-relaxed">A thriving ecosystem of successful placements across the US, UK, Canada, and Australia generating constant organic referrals.</p>
-                </div>
+              {/* Stat cards */}
+              <div className="grid sm:grid-cols-2 gap-5">
+                {s.stats.map((stat, i) => (
+                  <div key={i} className="group bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-lg hover:border-partner-100 transition-all duration-200">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 font-black text-lg transition-all duration-200 ${i % 2 === 0 ? 'bg-partner-50 text-partner-600 group-hover:bg-partner-500 group-hover:text-white' : 'bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white'}`}>
+                      {stat.value}
+                    </div>
+                    <h3 className="font-jakarta font-bold text-slate-800 mb-1.5">{stat.label}</h3>
+                    <p className="font-jakarta text-sm text-slate-500 leading-relaxed">{stat.desc}</p>
+                  </div>
+                ))}
               </div>
 
+              {/* List */}
               <div>
-                <h3 className="font-jakarta font-bold text-xl text-primary-900 mb-3">Our Commitment to Quality</h3>
+                <h3 className="font-jakarta font-bold text-xl text-slate-900 mb-4">{s.listHeading}</h3>
                 <ul className="space-y-3 font-jakarta text-slate-600">
-                  <li className="flex items-start gap-3">
-                    <span className="text-amber-500 mt-1">✓</span>
-                    <span><strong>Rigorous Academic Vetting:</strong> Direct verification of transcripts, test scores, and language proficiency.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-amber-500 mt-1">✓</span>
-                    <span><strong>Financial Authenticity:</strong> Strict pre-screening of funding sources before application submission.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-amber-500 mt-1">✓</span>
-                    <span><strong>Volume & Scale:</strong> Strategic marketing campaigns ensuring a steady pipeline of diverse applicants.</span>
-                  </li>
+                  {s.listItems.map((item, i) => {
+                    const [title, ...rest] = item.split(':');
+                    return (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="mt-0.5 w-5 h-5 rounded-full bg-partner-50 flex items-center justify-center flex-shrink-0">
+                          <svg className="w-3 h-3 text-partner-600" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        </span>
+                        <span className="text-sm leading-relaxed">{rest.length ? <><strong className="text-slate-700">{title}:</strong>{rest.join(':')}</> : item}</span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             </div>
 
-            {/* Right: Onboarding Form */}
-            <div className="bg-slate-50 border border-slate-200 p-8 sm:p-10 rounded-3xl shadow-lg relative">
-              <div className="absolute top-0 right-0 p-6 text-slate-300 opacity-50">
-                <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-              </div>
-              <div className="relative z-10">
-                <h3 className="font-jakarta font-extrabold text-2xl text-slate-900 mb-2">Initiate Partnership</h3>
-                <p className="font-jakarta text-sm text-slate-500 mb-8">Our institutional relations team will contact you within 24 hours.</p>
-
-                <InstitutionsForm />
+            {/* Right: Form */}
+            <div className="sticky top-8">
+              <div className="bg-white border border-slate-100 p-8 sm:p-10 rounded-3xl shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-40 h-40 rounded-bl-[80px] opacity-[0.06] pointer-events-none" style={{ background: '#3B71F3' }} />
+                <div className="absolute top-0 right-0 p-6 text-partner-300 opacity-30">
+                  <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+                  </svg>
+                </div>
+                <div className="relative z-10">
+                  <div className="inline-flex items-center gap-1.5 bg-partner-50 text-partner-600 text-xs font-semibold font-jakarta px-3 py-1 rounded-full mb-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-partner-500 animate-pulse" />
+                    Open for Partnerships
+                  </div>
+                  <h3 className="font-jakarta font-extrabold text-2xl text-slate-900 mb-1">{s.formHeading}</h3>
+                  <p className="font-jakarta text-sm text-slate-400 mb-8">{s.formSubtext}</p>
+                  <InstitutionsForm />
+                </div>
               </div>
             </div>
-            
+
           </div>
         </div>
       </section>

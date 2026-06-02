@@ -44,7 +44,7 @@ export default function HowItWorks({ steps }: Props) {
   return (
     <section
       className="section relative overflow-hidden"
-      style={{ background: 'linear-gradient(145deg,#0F2247 0%,#1A365D 50%,#2D5A99 100%)' }}
+      style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 50%,#246DFF 100%)' }}
     >
       {/* Dot pattern */}
       <div className="absolute inset-0 opacity-[0.035] pointer-events-none" aria-hidden>
@@ -81,11 +81,11 @@ export default function HowItWorks({ steps }: Props) {
             </span>
           </h2>
           <p className="font-jakarta text-white/75 max-w-xl mx-auto leading-relaxed text-base">
-            Our proven 4-step process is trusted by 2,500+ families. Every action is pre-planned,
+            Our proven 4-step process is trusted by 10,000+ families. Every action is pre-planned,
             every deadline tracked — parents stay informed, students stay focused.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-7">
-            {['97% Visa Approval', '2,500+ Students Placed', '₹0 Hidden Charges'].map(p => (
+            {['97% Visa Approval', '10,000+ Students Placed', '₹0 Hidden Charges'].map(p => (
               <span key={p} className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-full px-4 py-1.5 font-jakarta text-xs font-semibold text-white/90">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
                 {p}
@@ -133,7 +133,7 @@ export default function HowItWorks({ steps }: Props) {
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
                     style={{ background: 'radial-gradient(ellipse at 50% 0%,rgba(251,191,36,0.10),transparent 70%)' }} />
                   <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 ease-out rounded-full"
-                    style={{ background: 'linear-gradient(to right,#FBBF24,#D97706,#1A365D)' }} />
+                    style={{ background: 'linear-gradient(to right,#FBBF24,#D97706,#246DFF)' }} />
 
                   <div className="relative p-6">
                     {/* Ghost number */}
@@ -186,7 +186,7 @@ export default function HowItWorks({ steps }: Props) {
           className="text-center mt-14"
         >
           <p className="font-jakarta text-white/55 text-xs mb-5 tracking-wide">
-            Join 2,500+ students who started with a free 30-minute session
+            Join 10,000+ students who started with a free 30-minute session
           </p>
           <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
             <Link
@@ -198,7 +198,7 @@ export default function HowItWorks({ steps }: Props) {
             </Link>
           </motion.div>
           <p className="font-jakarta text-white/40 text-[11px] mt-3">
-            No obligation · No sales pressure · Direct with Rajib Paul
+            No obligation · No sales pressure · Free expert consultation
           </p>
         </motion.div>
       </div>

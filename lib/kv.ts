@@ -4,7 +4,7 @@
  */
 
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
-import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia } from './types';
+import type { CompanyDetails, DynamicPage, GlobalSettings, HeroSlide, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia, Stat } from './types';
 
 // Minimal KV shape — avoids requiring @cloudflare/workers-types as a dep.
 interface CfKVNamespace {
@@ -279,4 +279,101 @@ export async function getCountryContent(country: string, section: string): Promi
 
 export async function setCountryContent(country: string, section: string, html: string): Promise<void> {
   await kvPut(`countryContent:${country}:${section}`, html);
+}
+
+// ── Country meta (stat block) overrides ───────────────────────────────────
+// Stores overrides for intake, avgCost, visaRate, unis, tagline, description
+// per country. Merged with COUNTRIES_MAP defaults at render time.
+
+export interface CountryMeta {
+  intake?:      string;
+  avgCost?:     string;
+  visaRate?:    string;
+  unis?:        string;
+  tagline?:     string;
+  description?: string;
+  highlights?:  string[];
+  heroImage?:   string;
+  campusImage?: string;
+  color?:       string;
+}
+
+export async function getCountryMeta(country: string): Promise<CountryMeta | null> {
+  return kvGet<CountryMeta>(`countryMeta:${country}`);
+}
+
+export async function setCountryMeta(country: string, meta: CountryMeta): Promise<void> {
+  await kvPut(`countryMeta:${country}`, meta);
+}
+
+// ── University marquee settings ────────────────────────────────────────────
+
+export interface MarqueeSettings {
+  speedRow1: number;   // seconds for row 1 (forward)
+  speedRow2: number;   // seconds for row 2 (reverse)
+  heading:   string;   // section heading text
+  subheading: string;  // section sub-heading text
+  // custom university list overrides — if empty, falls back to UNIS_MARQUEE_DATA
+  unis?: { name: string; src: string; country: string }[];
+}
+
+export async function getMarqueeSettings(): Promise<MarqueeSettings | null> {
+  return kvGet<MarqueeSettings>('marqueeSettings');
+}
+
+export async function setMarqueeSettings(settings: MarqueeSettings): Promise<void> {
+  await kvPut('marqueeSettings', settings);
+}
+
+// ── Global stats block CMS ────────────────────────────────────────────────
+
+export async function getStats(): Promise<Stat[] | null> {
+  return kvGet<Stat[]>('siteStats');
+}
+
+export async function setStats(stats: Stat[]): Promise<void> {
+  await kvPut('siteStats', stats);
+}
+
+// ── Hero carousel slides CMS ──────────────────────────────────────────────
+
+export async function getHeroSlides(): Promise<HeroSlide[] | null> {
+  return kvGet<HeroSlide[]>('heroSlides');
+}
+
+export async function setHeroSlides(slides: HeroSlide[]): Promise<void> {
+  await kvPut('heroSlides', slides);
+}
+
+// ── Partner page settings ──────────────────────────────────────────────────
+
+export interface PartnerStat {
+  value: string;   // e.g. "97%"
+  label: string;   // e.g. "Visa Success Rate"
+  desc:  string;   // supporting sentence
+}
+
+export interface PartnerPageSettings {
+  // Hero
+  badge:       string;   // small pill text above h1
+  heading:     string;   // h1 text (can contain **bold** markers)
+  subheading:  string;   // paragraph below h1
+  // Body
+  bodyHeading: string;   // left-column h2
+  bodyIntro:   string;   // left-column intro paragraph
+  stats:       PartnerStat[];  // the numbered/stat cards
+  // Points list title + items
+  listHeading: string;
+  listItems:   string[];  // each item: "Title: description"
+  // Form card
+  formHeading: string;
+  formSubtext: string;
+}
+
+export async function getPartnerSettings(page: 'institutions' | 'agent' | 'referral'): Promise<PartnerPageSettings | null> {
+  return kvGet<PartnerPageSettings>(`partnerSettings:${page}`);
+}
+
+export async function setPartnerSettings(page: 'institutions' | 'agent' | 'referral', settings: PartnerPageSettings): Promise<void> {
+  await kvPut(`partnerSettings:${page}`, settings);
 }

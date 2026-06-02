@@ -114,7 +114,7 @@ export default function DestinationsStrip() {
             Where will you go?
           </h2>
           <p className="font-jakarta text-slate-500 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">
-            We assist with admissions across 7+ countries and 400+ partner universities.
+            We assist with admissions across 12 countries and 400+ partner universities.
             Click any destination for 2026 visa updates, scholarships and career opportunities.
           </p>
         </motion.div>

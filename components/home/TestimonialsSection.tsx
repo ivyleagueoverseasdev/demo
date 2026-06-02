@@ -33,7 +33,7 @@ function Avatar({ name, imageUrl }: { name: string; imageUrl: string }) {
   if (!imageUrl || err) {
     return (
       <div className="w-11 h-11 rounded-full flex items-center justify-center font-jakarta font-bold text-sm text-white flex-shrink-0"
-        style={{ background: 'linear-gradient(135deg,#1A365D,#2D5A99)' }}>
+        style={{ background: 'linear-gradient(135deg,#246DFF,#246DFF)' }}>
         {initials}
       </div>
     );
@@ -77,8 +77,8 @@ function TestimonialCard({ t }: { t: Testimonial }) {
           bg-white/80 backdrop-blur-md
           border border-slate-100
           rounded-2xl p-6
-          shadow-[0_2px_12px_rgba(26,54,93,0.06)]
-          hover:shadow-[0_8px_32px_rgba(26,54,93,0.14)]
+          shadow-[0_2px_12px_rgba(36,109,255,0.06)]
+          hover:shadow-[0_8px_32px_rgba(36,109,255,0.14)]
           transition-shadow duration-300
           flex flex-col gap-4
         "
@@ -153,7 +153,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
             From Ambition&nbsp;<span className="text-gradient-amber">to Acceptance.</span>
           </h2>
           <p className="font-jakarta text-slate-500 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">
-            Join over 2,500 students who have secured admits to the world&apos;s top universities with maximum scholarships. Here is what they have to say about the ILOC roadmap.
+            Join over 10,000 students who have secured admits to the world&apos;s top universities with maximum scholarships. Here is what they have to say about the ILOC roadmap.
           </p>
 
           {/* Trust badges */}
@@ -161,8 +161,8 @@ export default function TestimonialsSection({ testimonials }: Props) {
             {[
               { icon: '⭐', label: '5.0 JustDial Rating' },
               { icon: '✅', label: '97% Visa Success' },
-              { icon: '🎓', label: '2,500+ Alumni' },
-              { icon: '🏆', label: '7+ Years of Excellence' },
+              { icon: '🎓', label: '10,000+ Alumni' },
+              { icon: '🏆', label: '25+ Years of Excellence' },
             ].map(b => (
               <span key={b.label}
                 className="inline-flex items-center gap-1.5 bg-white border border-slate-200 rounded-full px-4 py-1.5 font-jakarta text-xs font-semibold text-slate-700 shadow-sm">

@@ -29,6 +29,12 @@ export const NewsSchema = z.object({
 export type NewsFormData = z.infer<typeof NewsSchema>;
 
 // ── Events ────────────────────────────────────────────────────────────────
+const EventActionLinkSchema = z.object({
+  type:  z.enum(['zoom', 'webinar', 'registration', 'external', 'whatsapp']),
+  label: z.string().max(100).default(''),
+  url:   z.string().max(2048).default(''),
+});
+
 export const EventSchema = z.object({
   title:       nonEmpty('Event title').max(200),
   type:        z.enum(['webinar', 'fair', 'deadline', 'workshop', 'seminar']),
@@ -41,6 +47,7 @@ export const EventSchema = z.object({
   imageUrl:    urlOrEmpty.default(''),
   ctaLabel:    z.string().default('Register Free'),
   ctaUrl:      urlOrEmpty.default('/contact'),
+  actionLinks: z.array(EventActionLinkSchema).default([]),
   seats:       z.number().int().positive().optional(),
   speakers:    z.array(z.string()).default([]),
   published:   z.boolean().default(true),

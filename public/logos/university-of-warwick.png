@@ -1,0 +1,627 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Tag Manager -->
+    
+
+<!-- Google Tag Manager -->
+<script id='gtmScript' nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=" data-nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WDKG3R4N');</script>
+<!-- End Google Tag Manager -->
+    <!-- End Google Tag Manager -->
+    <script nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=">
+!function(T,l,y){var S=T.location,k="script",D="instrumentationKey",C="ingestionendpoint",I="disableExceptionTracking",E="ai.device.",b="toLowerCase",w="crossOrigin",N="POST",e="appInsightsSDK",t=y.name||"appInsights";(y.name||T[e])&&(T[e]=t);var n=T[t]||function(d){var g=!1,f=!1,m={initialize:!0,queue:[],sv:"5",version:2,config:d};function v(e,t){var n={},a="Browser";return n[E+"id"]=a[b](),n[E+"type"]=a,n["ai.operation.name"]=S&&S.pathname||"_unknown_",n["ai.internal.sdkVersion"]="javascript:snippet_"+(m.sv||m.version),{time:function(){var e=new Date;function t(e){var t=""+e;return 1===t.length&&(t="0"+t),t}return e.getUTCFullYear()+"-"+t(1+e.getUTCMonth())+"-"+t(e.getUTCDate())+"T"+t(e.getUTCHours())+":"+t(e.getUTCMinutes())+":"+t(e.getUTCSeconds())+"."+((e.getUTCMilliseconds()/1e3).toFixed(3)+"").slice(2,5)+"Z"}(),iKey:e,name:"Microsoft.ApplicationInsights."+e.replace(/-/g,"")+"."+t,sampleRate:100,tags:n,data:{baseData:{ver:2}}}}var h=d.url||y.src;if(h){function a(e){var t,n,a,i,r,o,s,c,u,p,l;g=!0,m.queue=[],f||(f=!0,t=h,s=function(){var e={},t=d.connectionString;if(t)for(var n=t.split(";"),a=0;a<n.length;a++){var i=n[a].split("=");2===i.length&&(e[i[0][b]()]=i[1])}if(!e[C]){var r=e.endpointsuffix,o=r?e.location:null;e[C]="https://"+(o?o+".":"")+"dc."+(r||"services.visualstudio.com")}return e}(),c=s[D]||d[D]||"",u=s[C],p=u?u+"/v2/track":d.endpointUrl,(l=[]).push((n="SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)",a=t,i=p,(o=(r=v(c,"Exception")).data).baseType="ExceptionData",o.baseData.exceptions=[{typeName:"SDKLoadFailed",message:n.replace(/\./g,"-"),hasFullStack:!1,stack:n+"\nSnippet failed to load ["+a+"] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: "+(S&&S.pathname||"_unknown_")+"\nEndpoint: "+i,parsedStack:[]}],r)),l.push(function(e,t,n,a){var i=v(c,"Message"),r=i.data;r.baseType="MessageData";var o=r.baseData;return o.message='AI (Internal): 99 message:"'+("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) ("+n+")").replace(/\"/g,"")+'"',o.properties={endpoint:a},i}(0,0,t,p)),function(e,t){if(JSON){var n=T.fetch;if(n&&!y.useXhr)n(t,{method:N,body:JSON.stringify(e),mode:"cors"});else if(XMLHttpRequest){var a=new XMLHttpRequest;a.open(N,t),a.setRequestHeader("Content-type","application/json"),a.send(JSON.stringify(e))}}}(l,p))}function i(e,t){f||setTimeout(function(){!t&&m.core||a()},500)}var e=function(){var n=l.createElement(k);n.src=h;var e=y[w];return!e&&""!==e||"undefined"==n[w]||(n[w]=e),n.onload=i,n.onerror=a,n.onreadystatechange=function(e,t){"loaded"!==n.readyState&&"complete"!==n.readyState||i(0,t)},n}();y.ld<0?l.getElementsByTagName("head")[0].appendChild(e):setTimeout(function(){l.getElementsByTagName(k)[0].parentNode.appendChild(e)},y.ld||0)}try{m.cookie=l.cookie}catch(p){}function t(e){for(;e.length;)!function(t){m[t]=function(){var e=arguments;g||m.queue.push(function(){m[t].apply(m,e)})}}(e.pop())}var n="track",r="TrackPage",o="TrackEvent";t([n+"Event",n+"PageView",n+"Exception",n+"Trace",n+"DependencyData",n+"Metric",n+"PageViewPerformance","start"+r,"stop"+r,"start"+o,"stop"+o,"addTelemetryInitializer","setAuthenticatedUserContext","clearAuthenticatedUserContext","flush"]),m.SeverityLevel={Verbose:0,Information:1,Warning:2,Error:3,Critical:4};var s=(d.extensionConfig||{}).ApplicationInsightsAnalytics||{};if(!0!==d[I]&&!0!==s[I]){var c="onerror";t(["_"+c]);var u=T[c];T[c]=function(e,t,n,a,i){var r=u&&u(e,t,n,a,i);return!0!==r&&m["_"+c]({message:e,url:t,lineNumber:n,columnNumber:a,error:i}),r},d.autoExceptionInstrumented=!0}return m}(y.cfg);function a(){y.onInit&&y.onInit(n)}(T[t]=n).queue&&0===n.queue.length?(n.queue.push(a),n.trackPageView({})):a()}(window,document,{src: "https://js.monitor.azure.com/scripts/b/ai.2.gbl.min.js", crossOrigin: "anonymous", cfg: {instrumentationKey: '0bd87d54-1b0c-4389-bdc2-d1ea661081bd', disableCookiesUsage: false }});
+</script>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    
+
+    <link rel="canonical" href="https://brand.warwick.ac.uk/en/" />
+    <meta property="og:url" content="https://brand.warwick.ac.uk/en/" />
+    <meta property="twitter:site" content="https://brand.warwick.ac.uk/en/" />
+
+    
+
+    <meta name="description" content="Discover the University of Warwick&#x27;s Brand Portal &#x2013; our central hub for brand guidelines, assets, templates, and information to ensure impactful communications.">
+    <meta name="keywords" content="University of Warwick Brand Portal" />
+    <meta property="og:locale" content="en">
+    <meta property="og:site_name" content="Warwick University Website" />
+    <meta property="og:title" content="University of Warwick Brand Portal - Warwick University" />
+    <meta property="og:description" content="Discover the University of Warwick&#x27;s Brand Portal &#x2013; our central hub for brand guidelines, assets, templates, and information to ensure impactful communications." />
+
+    <meta property="twitter:card" content="summary" />
+
+
+
+    <title>University of Warwick Brand Portal - University of Warwick</title>
+    <link rel="stylesheet" href="/WarwickUniversity.Web.Server.styles.css?v=9PbsAS42ba4zo6MZgakomQsQ15KiQj8Qd4yi9klbIKk" />
+
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="stylesheet" href="https://use.typekit.net/xcx8pmu.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" integrity="sha384-42kyIPf7HDYLkGffmxDhSx/3Z/53wGBs3nD6wEFxsbeDc7rMO6mkYbkAcpRsnMU2" crossorigin="anonymous" />
+
+    
+        
+
+    
+
+    <script nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=" defer src="/dist/manifest.a17e20763d8ceb1e2af8.js"></script>
+    <script nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=" defer src="/dist/vendor.9de9046d8a5a6c421665.js"></script>
+    <script nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=" defer src="/dist/site.f19a121b3d7474587157.js"></script>
+    
+
+    <link rel="stylesheet" href="/dist/site.7ba3e9a79e0c032edf8c.css" />
+    
+
+    
+
+<script type="application/ld+json" nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=">
+    {"@context":"https://schema.org","@type":"WebPage","name":"Brand Portal","description":"Discover the University of Warwick\u0027s Brand Portal \u2013 our central hub for brand guidelines, assets, templates, and information to ensure impactful communications.","abstract":"Discover the University of Warwick\u0027s Brand Portal \u2013 our central hub for brand guidelines, assets, templates, and information to ensure impactful communications.","breadcrumb":"Brand Portal"}
+</script>
+
+    
+
+    <script type="application/ld+json" nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=">
+        {"@context":"https://schema.org","@type":"EducationalOrganization","url":"https://brand.warwick.ac.uk","logo":"https://brand.warwick.ac.uk"}
+    </script>
+
+
+
+    
+
+    
+    <script async nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=" src="//optimizely-cmp-analytics.com/analytics.js"></script>
+    <script nonce="kkvufqj/pCwa4kO4L/C/S4J9FkPtjImrhcfIvoX3E5w=">
+        window.optiCmpAnalytics = window.optiCmpAnalytics || function() {
+          (window.optiCmpAnalytics.q = window.optiCmpAnalytics.q || []).push(arguments)
+        }
+        optiCmpAnalytics(
+          'init',
+          '3e60d85c52964972a2348d987e02d515',
+          'G-FQ2V81NDQP',
+          'GTM-WP2SS9SG'
+        );
+        optiCmpAnalytics('pageview');
+    </script>
+</head>
+<body>
+    
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WDKG3R4N"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    
+<header b-2u3w89aj8o class="header">
+    <div b-2u3w89aj8o class="container">
+        <div b-2u3w89aj8o class="grid">
+            <div b-2u3w89aj8o class="header__additional-links g-col-12">
+                    <a class="text-link text-link--locked" href="/en/downloads/" rel="nofollow"><span b-2u3w89aj8o>Multimedia Library</span></a>
+                    <a b-2u3w89aj8o class="text-link" href="/en/login/"><i b-2u3w89aj8o class="bx bx-user"></i><span b-2u3w89aj8o>Sign in</span></a>
+            </div>
+
+            <div b-2u3w89aj8o class="header__logo g-col-6 g-col-md-2">
+                <a b-2u3w89aj8o href="/">
+                    <img title="University of Warwick Logo" src="https://dam.assets.warwick.ac.uk/images/assets/header_wordmark_146x39.svg/Zz0yYjhiNTU5MjRhY2ExMWYwYjlkOTRlYzRjNDI3ZDU1Yg==" alt="University of Warwick Logo" loading="lazy" data-height="0" data-width="0" />
+                </a>
+            </div>
+
+            <div b-2u3w89aj8o class="header__links g-col-6 g-col-md-10">
+
+                <div b-2u3w89aj8o class="header__links__nav" id="header-nav">
+                    <div b-2u3w89aj8o class="container">
+                            <ul b-2u3w89aj8o role="menubar" class="header__links__nav__links">
+
+                                    <li b-2u3w89aj8o role="none">
+                                            <a title="Brand Story" class="text-link" href="/en/brand-story/">Brand Story</a>
+                                    </li>
+                                    <li b-2u3w89aj8o role="none">
+                                            <a title="Showcase" class="text-link" href="/en/brand-showcase/">Showcase</a>
+                                    </li>
+                                    <li b-2u3w89aj8o role="none">
+                                            <div b-2u3w89aj8o class="text-link" aria-controls="Guidelines" tabindex="0" aria-expanded="false" data-sub-menu="Guidelines" role="menuitem"><span b-2u3w89aj8o>Guidelines</span></div>
+                                            <div b-2u3w89aj8o class="header-sub-menu" data-sub-menu="Guidelines" id="Guidelines">
+                                                <div b-2u3w89aj8o class="container">
+                                                    <div b-2u3w89aj8o class="header-sub-menu__back-crest">
+                                                        <span b-2u3w89aj8o data-back class="text-link">Back</span>
+                                                        <picture b-2u3w89aj8o>
+                                                            
+                                                        </picture>
+
+                                                        <picture b-2u3w89aj8o>
+                                                            <img class="header-sub-menu__back-crest__crest" src="https://dam.assets.warwick.ac.uk/images/Zz0yYjhmOTljMjRhY2ExMWYwYTYzMzlhMGZkMmQ5NGNhNg==" alt="The University of Warwick crest featuring dna strands, elephant and castle, book, atoms and warwickshire bear." loading="lazy" data-height="0" data-width="0" />
+                                                        </picture>
+
+                                                    </div>
+
+                                                    <div b-2u3w89aj8o class="header-sub-menu__links">
+
+                                                        <a class="header-sub-menu__links__parent-link text-link text-link--locked" href="/en/brand-guidelines/our-name/" rel="nofollow">
+                                                            <span b-2u3w89aj8o>Guidelines</span>
+                                                        </a>
+
+                                                        <div b-2u3w89aj8o class="header-sub-menu__links__children">
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/our-name/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Our Official Name</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/tone-of-voice/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Tone of Voice</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/visual-identity/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Visual Identity</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/design-elements/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Design Elements</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/brand-system/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Brand System</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/brand-photography/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Brand Photography</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/brand-videography/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Brand Videography</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/social-media/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Social Media</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/iconography/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Iconography</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/promotional-items/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Promotional Merchandise</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/brand-guidelines/clubs-societies/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Clubs &amp; Societies</span>
+                                                                </a>
+                                                        </div>
+                                                    </div>
+
+                                                        <div b-2u3w89aj8o class="social-links">
+                                                            <p b-2u3w89aj8o class="social-links__follow-text">Follow us</p>
+                                                            <div b-2u3w89aj8o class="social-links__items">
+                                                                        <a href="https://www.facebook.com/warwickuniversity/">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz1jNDM2NTMzMjMxNzAxMWYwYjk4M2NhZGU1YjJjMzMzZg==" alt="Facebook" loading="lazy" data-height="48" data-width="48" />
+                                                                            </picture>
+                                                                        </a>
+                                                                        <a href="https://www.instagram.com/uniofwarwick/?hl=en">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz1kN2ZjNjBlMDMxNzExMWYwOTgxMzdhMTc5YTVhNDNiNw==" alt="Instagram" loading="lazy" data-height="24" data-width="24" />
+                                                                            </picture>
+                                                                        </a>
+                                                                        <a href="https://www.linkedin.com/school/uniofwarwick/">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz1mYzNmNjk4NDMxNzExMWYwYjk4M2NhZGU1YjJjMzMzZg==" alt="LinkedIn" loading="lazy" data-height="24" data-width="24" />
+                                                                            </picture>
+                                                                        </a>
+                                                                        <a href="https://www.youtube.com/@uniofwarwick">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz0wNzgyNDdmZTMxOWUxMWYwODY2NGE2YjFmZTViNmNhMQ==" alt="Youtube" loading="lazy" data-height="24" data-width="24" />
+                                                                            </picture>
+                                                                        </a>
+                                                                        <a href="https://x.com/uniofwarwick">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz02OTdhZmJjMDMxNzMxMWYwOTMzOTU2YzI0NTc1NDljZA==" alt="X" loading="lazy" data-height="24" data-width="24" />
+                                                                            </picture>
+                                                                        </a>
+                                                            </div>
+
+                                                        </div>
+                                                </div>
+
+                                            </div>
+                                    </li>
+                                    <li b-2u3w89aj8o role="none">
+                                            <a title="Governance" class="text-link" href="/en/brand-governance/">Governance</a>
+                                    </li>
+                                    <li b-2u3w89aj8o role="none">
+                                            <div b-2u3w89aj8o class="text-link" aria-controls="Frameworks" tabindex="0" aria-expanded="false" data-sub-menu="Frameworks" role="menuitem"><span b-2u3w89aj8o>Frameworks</span></div>
+                                            <div b-2u3w89aj8o class="header-sub-menu" data-sub-menu="Frameworks" id="Frameworks">
+                                                <div b-2u3w89aj8o class="container">
+                                                    <div b-2u3w89aj8o class="header-sub-menu__back-crest">
+                                                        <span b-2u3w89aj8o data-back class="text-link">Back</span>
+                                                        <picture b-2u3w89aj8o>
+                                                            
+                                                        </picture>
+
+                                                        <picture b-2u3w89aj8o>
+                                                            <img class="header-sub-menu__back-crest__crest" src="https://dam.assets.warwick.ac.uk/images/Zz0yYjhmOTljMjRhY2ExMWYwYTYzMzlhMGZkMmQ5NGNhNg==" alt="The University of Warwick crest featuring dna strands, elephant and castle, book, atoms and warwickshire bear." loading="lazy" data-height="0" data-width="0" />
+                                                        </picture>
+
+                                                    </div>
+
+                                                    <div b-2u3w89aj8o class="header-sub-menu__links">
+
+                                                        <a class="header-sub-menu__links__parent-link text-link text-link--locked" href="/en/supplier-frameworks/media-buying-framework/" rel="nofollow">
+                                                            <span b-2u3w89aj8o>Frameworks</span>
+                                                        </a>
+
+                                                        <div b-2u3w89aj8o class="header-sub-menu__links__children">
+                                                                <a class="text-link text-link--locked" href="/en/supplier-frameworks/media-buying-framework/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Advertising and Media Buying</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/supplier-frameworks/design-and-creative-framework/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Creative and Design Services</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/supplier-frameworks/our-photographers-and-videographers/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Photographers and Videographers</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/supplier-frameworks/print-and-promotional-suppliers/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Print and Promotional Merchandise</span>
+                                                                </a>
+                                                                <a class="text-link text-link--locked" href="/en/supplier-frameworks/public-relations/" rel="nofollow">
+                                                                    <span b-2u3w89aj8o>Public Relations</span>
+                                                                </a>
+                                                        </div>
+                                                    </div>
+
+                                                        <div b-2u3w89aj8o class="social-links">
+                                                            <p b-2u3w89aj8o class="social-links__follow-text">Follow us</p>
+                                                            <div b-2u3w89aj8o class="social-links__items">
+                                                                        <a href="https://www.facebook.com/warwickuniversity/">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz1jNDM2NTMzMjMxNzAxMWYwYjk4M2NhZGU1YjJjMzMzZg==" alt="Facebook" loading="lazy" data-height="48" data-width="48" />
+                                                                            </picture>
+                                                                        </a>
+                                                                        <a href="https://www.instagram.com/uniofwarwick/?hl=en">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz1kN2ZjNjBlMDMxNzExMWYwOTgxMzdhMTc5YTVhNDNiNw==" alt="Instagram" loading="lazy" data-height="24" data-width="24" />
+                                                                            </picture>
+                                                                        </a>
+                                                                        <a href="https://www.linkedin.com/school/uniofwarwick/">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz1mYzNmNjk4NDMxNzExMWYwYjk4M2NhZGU1YjJjMzMzZg==" alt="LinkedIn" loading="lazy" data-height="24" data-width="24" />
+                                                                            </picture>
+                                                                        </a>
+                                                                        <a href="https://www.youtube.com/@uniofwarwick">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz0wNzgyNDdmZTMxOWUxMWYwODY2NGE2YjFmZTViNmNhMQ==" alt="Youtube" loading="lazy" data-height="24" data-width="24" />
+                                                                            </picture>
+                                                                        </a>
+                                                                        <a href="https://x.com/uniofwarwick">
+                                                                            <picture b-2u3w89aj8o>
+                                                                                <img src="https://dam.assets.warwick.ac.uk/images/Zz02OTdhZmJjMDMxNzMxMWYwOTMzOTU2YzI0NTc1NDljZA==" alt="X" loading="lazy" data-height="24" data-width="24" />
+                                                                            </picture>
+                                                                        </a>
+                                                            </div>
+
+                                                        </div>
+                                                </div>
+
+                                            </div>
+                                    </li>
+                                    <li b-2u3w89aj8o role="none">
+                                            <a title="Downloads" class="text-link text-link--locked" href="/en/downloads/" rel="nofollow">Downloads</a>
+                                    </li>
+                                    <li b-2u3w89aj8o role="none">
+                                            <a title="FAQs" class="text-link text-link--locked" href="/en/faqs/" rel="nofollow">FAQs</a>
+                                    </li>
+                                    <li b-2u3w89aj8o role="none">
+                                            <a title="Contact" class="text-link" href="/en/contact/">Contact</a>
+                                    </li>
+                            </ul>
+                            <div b-2u3w89aj8o class="header__links__nav__additional-links">
+                                    <a b-2u3w89aj8o class="text-link" href="/en/login/"><i b-2u3w89aj8o class='bx bx-user'></i><span b-2u3w89aj8o>Sign in</span></a>
+                                    <a class="text-link text-link--locked" href="/en/downloads/" rel="nofollow"><span b-2u3w89aj8o>Multimedia Library</span></a>
+                            </div>
+                                <div b-2u3w89aj8o class="social-links">
+                                    <p b-2u3w89aj8o class="social-links__follow-text">Follow us</p>
+                                    <div b-2u3w89aj8o class="social-links__items">
+                                                <a href="https://www.facebook.com/warwickuniversity/">
+                                                    <picture b-2u3w89aj8o>
+                                                        <img src="https://dam.assets.warwick.ac.uk/images/Zz1jNDM2NTMzMjMxNzAxMWYwYjk4M2NhZGU1YjJjMzMzZg==" alt="Facebook" loading="lazy" data-height="48" data-width="48" />
+                                                    </picture>
+                                                </a>
+                                                <a href="https://www.instagram.com/uniofwarwick/?hl=en">
+                                                    <picture b-2u3w89aj8o>
+                                                        <img src="https://dam.assets.warwick.ac.uk/images/Zz1kN2ZjNjBlMDMxNzExMWYwOTgxMzdhMTc5YTVhNDNiNw==" alt="Instagram" loading="lazy" data-height="24" data-width="24" />
+                                                    </picture>
+                                                </a>
+                                                <a href="https://www.linkedin.com/school/uniofwarwick/">
+                                                    <picture b-2u3w89aj8o>
+                                                        <img src="https://dam.assets.warwick.ac.uk/images/Zz1mYzNmNjk4NDMxNzExMWYwYjk4M2NhZGU1YjJjMzMzZg==" alt="LinkedIn" loading="lazy" data-height="24" data-width="24" />
+                                                    </picture>
+                                                </a>
+                                                <a href="https://www.youtube.com/@uniofwarwick">
+                                                    <picture b-2u3w89aj8o>
+                                                        <img src="https://dam.assets.warwick.ac.uk/images/Zz0wNzgyNDdmZTMxOWUxMWYwODY2NGE2YjFmZTViNmNhMQ==" alt="Youtube" loading="lazy" data-height="24" data-width="24" />
+                                                    </picture>
+                                                </a>
+                                                <a href="https://x.com/uniofwarwick">
+                                                    <picture b-2u3w89aj8o>
+                                                        <img src="https://dam.assets.warwick.ac.uk/images/Zz02OTdhZmJjMDMxNzMxMWYwOTMzOTU2YzI0NTc1NDljZA==" alt="X" loading="lazy" data-height="24" data-width="24" />
+                                                    </picture>
+                                                </a>
+                                    </div>
+                                </div>
+                    </div>
+                </div>
+
+                <button b-2u3w89aj8o class="header__links__mobile-button" aria-controls="header-nav" aria-expanded="false">
+                    <i b-2u3w89aj8o class='bx bx-menu'></i><span b-2u3w89aj8o>Menu</span>
+                </button>
+
+                    <div b-2u3w89aj8o>
+                        <a b-2u3w89aj8o href="/en/search/" class="header__links__search" title="Search">
+                            <i b-2u3w89aj8o class='bx bx-search'></i>
+                        </a>
+                    </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <main b-92ltnl9hlz role="main">
+        
+
+
+
+
+<div b-63njcg8bqg class="hero-banner section--lavender">
+    <div b-63njcg8bqg class="container">
+
+        <div b-63njcg8bqg class="hero-banner__content">
+                <div b-63njcg8bqg class="hero-banner__content__logo">
+                    <picture b-63njcg8bqg>
+                        <img src="https://dam.assets.warwick.ac.uk/images/Zz0yYjhmOTljMjRhY2ExMWYwYTYzMzlhMGZkMmQ5NGNhNg==" alt="The University of Warwick crest featuring dna strands, elephant and castle, book, atoms and warwickshire bear." loading="lazy" data-height="0" data-width="0" />
+                    </picture>
+                </div>
+            <div b-63njcg8bqg class="hero-banner__content__container">
+
+                <div b-63njcg8bqg class="hero-banner__content__container__text-content">
+                        <div b-63njcg8bqg class="hero-banner__content__heading"><h1>This is University of Warwick.</h1>
+<h1>This is Beyond.</h1></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        <div b-63njcg8bqg class="hero-banner__media">
+            <div b-63njcg8bqg class="hero-banner__media__video video-controls">
+                <video autoplay="" muted="" preload="auto" playsinline="" poster="https://dam.assets.warwick.ac.uk/images/assets/brand-video-homepage-preview-image.jpg/Zz1iMjg2M2U3Y2Q1YzYxMWYwOWEwYjcyMjkzMjRjNmMyZg=="><source src="https://dam.assets.warwick.ac.uk/download/3f82511263e911f0bc5a8e9d719a61b1" type="video/mp4" media="(width >= 1200px)">
+<source src="https://dam.assets.warwick.ac.uk/download/3f79d6f463e911f0ad657614976283e1" type="video/mp4" media="(992px <= width < 1200px)">
+<source src="https://dam.assets.warwick.ac.uk/download/3f759b4863e911f0bc5a8e9d719a61b1" type="video/mp4" media="(768px <= width < 992px)">
+<source src="https://dam.assets.warwick.ac.uk/download/3f759b4863e911f0bc5a8e9d719a61b1" type="video/mp4" media="(576px <= width < 768px)">
+<source src="https://dam.assets.warwick.ac.uk/download/3f876b8463e911f0ad657614976283e1" type="video/mp4" media="(width < 576px)">
+<track src="/video-transcripts/download/ad2f9c0263e811f0a8ed7ea072d37378.vtt" kind="subtitles" srclang="en" label="English Subtitles" default>
+</video>
+
+                    <div b-63njcg8bqg class="video-controls__info">
+                        <i b-63njcg8bqg class="bx bx-info-circle video-controls__info-toggle" tabindex="0"></i>
+                        <div b-63njcg8bqg class="video-controls__info-box">
+                                <div b-63njcg8bqg class="rich-text-editor"><p>This video contains flashing imagery.</p></div>
+                                <label b-63njcg8bqg>
+                                    <input b-63njcg8bqg type="checkbox" class="disable-autoplay" />
+                                    Disable autoplay?
+                                </label>
+                        </div>
+                    </div>
+
+                    <div b-63njcg8bqg class="video-controls__transcript" data-bs-toggle="collapse" data-bs-target="#collapse-hero-banner-transcript" aria-expanded="false" aria-controls="collapse-hero-banner-transcript" tabindex="0">
+                        <i b-63njcg8bqg class='bx bx-message-detail'></i>
+                    </div>
+
+                <div b-63njcg8bqg class="video-controls__play" tabindex="0">
+                        <i b-63njcg8bqg class='bx bx-pause'></i>
+                        <span b-63njcg8bqg>Pause</span>
+                </div>
+
+                <div b-63njcg8bqg class="video-controls__fullscreen" tabindex="0">
+                    <i b-63njcg8bqg class='bx bx-expand'></i>
+                </div>
+
+                <div b-63njcg8bqg class="video-controls__sound" tabindex="0">
+                    <i b-63njcg8bqg class='bx bx-volume-mute'></i>
+                </div>
+
+                    <div b-63njcg8bqg class="video-controls__transcript-description collapse" id="collapse-hero-banner-transcript">
+                    </div>
+            </div>
+        </div>
+</div>
+
+<div b-2asnyabr5n class="content-section">
+    
+<div class="row row0 group-blocks"><div class="block textblock col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 displaymode-half">
+
+<div b-66bmfhyr6x="" class="section section--none">
+    <div b-66bmfhyr6x="" class="container" id="53">
+        <div b-66bmfhyr6x="" class="text-block">
+                <h2 b-66bmfhyr6x="" class="text-block__title">Welcome to the University of Warwick Brand Portal</h2>
+            <div b-66bmfhyr6x="" class="text-block__body rich-text-editor">
+            </div>
+
+        </div>
+    </div>
+</div>
+</div><div class="block textblock col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 displaymode-half">
+
+<div b-66bmfhyr6x="" class="section section--none">
+    <div b-66bmfhyr6x="" class="container" id="92">
+        <div b-66bmfhyr6x="" class="text-block">
+            <div b-66bmfhyr6x="" class="text-block__body rich-text-editor">
+<p>Our brand portal provides the insight and direction needed to understand our brand and the tools to build outputs that capture the essence of 'Beyond'.</p>            </div>
+
+                <div b-66bmfhyr6x="" class="text-block__cta">
+                    <a href="/en/brand-story/" title="Read our brand story">Read our brand story</a>
+                </div>
+        </div>
+    </div>
+</div>
+</div></div><div class="row row1 group-blocks"><div class="block imageblock col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+<div b-cxgjnkfmi6="" class="section section--none">
+    <div b-cxgjnkfmi6="" class="image-block">
+        <div b-cxgjnkfmi6="" id="1264" class="container">
+                <picture b-cxgjnkfmi6="">
+                    <img src="https://dam.assets.warwick.ac.uk/images/Zz1jNGE0MTJlYTQ1ZmQxMWYwYjFiYTc2YTBiMzFlMzg2MA==" alt="Collection of images of students and branding in the environment." loading="lazy" data-height="740" data-width="2880">
+                </picture>
+        </div>
+    </div>
+</div></div></div><div class="row row2 group-blocks"><div class="block tiledgridblock col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div b-yjoaibbbhg="" class="section section--none">
+	<div b-yjoaibbbhg="" class="container" id="63">
+		<div b-yjoaibbbhg="" class="tiled-grid-block layout-six-items">
+
+					<a b-yjoaibbbhg="" href="/en/brand-story/" class="tiled-grid-block__item">
+						<div b-yjoaibbbhg="" class="tiled-grid-block__item__image">
+								<picture b-yjoaibbbhg="">
+									<img src="https://dam.assets.warwick.ac.uk/images/Zz1lMzgwNmIxNjQxNjQxMWYwYmNmYTE2NWRlMzI4MTdlMQ==" alt="Students in conversation at the University of Warwick." loading="lazy" data-height="189" data-width="600">
+								</picture>
+						</div>
+
+						<div b-yjoaibbbhg="" class="tiled-grid-block__item__content">
+
+							<div b-yjoaibbbhg="" class="tiled-grid-block__item__content__link">
+								<div b-yjoaibbbhg="" class="tiled-grid-block__item__content__link__container">
+										<h4 b-yjoaibbbhg="" class="tiled-grid-block__item__content__link__title">
+											Brand Story
+										</h4>
+
+								</div>
+
+
+								<i b-yjoaibbbhg="" class="bx bx-right-arrow-alt"></i>
+							</div>
+						</div>
+					</a>
+		</div>
+	</div>
+</div>
+</div></div><div class="row row3 group-blocks"><div class="block ctacontactblock col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div b-xf7kyv02mo="" class="section section--blue">
+    <div b-xf7kyv02mo="" id="79" class="container">
+        <div b-xf7kyv02mo="" class="cta-contact-block">
+            <div b-xf7kyv02mo="" class="cta-contact-block__content">
+                    <h3 b-xf7kyv02mo="" class="cta-contact-block__content__title">Need branding support?</h3>
+
+                    <div b-xf7kyv02mo="" class="cta-contact-block__content__body rich-text-editor">
+                        <p>Whether you're creating presentations, designing materials, or planning an event, we're here to help you stay on brand. From logos and templates to tone of voice and visual guidance, we offer advice and resources to support your project.</p>
+                    </div>
+            </div>
+
+                <div b-xf7kyv02mo="" class="cta-contact-block__links">
+                        <div b-xf7kyv02mo="" class="cta-contact-block__links__item">
+                            <a href="/en/contact/" title="Get in touch">Get in touch</a>
+                        </div>
+                </div>
+        </div>
+    </div>
+</div>
+</div></div>
+</div>
+    </main>
+
+    
+    
+        <!-- Version: c986b2c8 -->
+
+    
+
+    
+    
+    
+<footer b-rzhi5m6cin class="footer">
+    <div b-rzhi5m6cin class="container">
+        <div b-rzhi5m6cin class="footer__upper">
+            <div b-rzhi5m6cin class="footer__upper__links">
+                        <a href="/en/contact/" title="Contact">Contact</a>
+                        <a href="https://warwick.ac.uk/terms/general">Website Terms</a>
+                        <a href="https://warwick.ac.uk/privacy">Privacy Policy</a>
+                        <a href="https://warwick.ac.uk/cookies">Cookies Policy</a>
+                        <a href="https://warwick.ac.uk/modernslavery">Modern Slavery Statement</a>
+                        <a href="/en/accessibility-statement/" title="Accessibility Statement">Accessibility Statement</a>
+                        <a href="https://warwick.ac.uk/services/legalandcomplianceservices/freedomofinformation/">Freedom of Information</a>
+                        <a href="/en/sitemap/" title="Sitemap">Sitemap</a>
+            </div>
+
+            <div b-rzhi5m6cin class="footer__upper__logo">
+                <a b-rzhi5m6cin href="/">
+                    <picture b-rzhi5m6cin>
+                        <img title="University of Warwick Logo" src="https://dam.assets.warwick.ac.uk/images/Zz0xMGQxYTUxMjVjZDYxMWYwYmQxNTQ2MDEwN2JmMjYxZg==" alt="University of Warwick Logo" loading="lazy" data-height="0" data-width="0" />
+                    </picture>
+                </a>
+            </div>
+        </div>
+
+        <div b-rzhi5m6cin class="footer__lower">
+            <div b-rzhi5m6cin class="footer__lower__socials">
+                <p b-rzhi5m6cin class="footer__lower__socials__follow-text">Follow us</p>
+
+                    <div b-rzhi5m6cin class="footer__lower__socials__links">
+                            <a href="https://www.facebook.com/warwickuniversity/">
+                                <picture b-rzhi5m6cin>
+                                    <img src="https://dam.assets.warwick.ac.uk/images/Zz1jNDM2NTMzMjMxNzAxMWYwYjk4M2NhZGU1YjJjMzMzZg==" alt="Facebook" loading="lazy" data-height="48" data-width="48" />
+                                </picture>
+                            </a>
+                            <a href="https://www.instagram.com/uniofwarwick/?hl=en">
+                                <picture b-rzhi5m6cin>
+                                    <img src="https://dam.assets.warwick.ac.uk/images/Zz1kN2ZjNjBlMDMxNzExMWYwOTgxMzdhMTc5YTVhNDNiNw==" alt="Instagram" loading="lazy" data-height="24" data-width="24" />
+                                </picture>
+                            </a>
+                            <a href="https://www.linkedin.com/school/uniofwarwick/">
+                                <picture b-rzhi5m6cin>
+                                    <img src="https://dam.assets.warwick.ac.uk/images/Zz1mYzNmNjk4NDMxNzExMWYwYjk4M2NhZGU1YjJjMzMzZg==" alt="LinkedIn" loading="lazy" data-height="24" data-width="24" />
+                                </picture>
+                            </a>
+                            <a href="https://www.youtube.com/@uniofwarwick">
+                                <picture b-rzhi5m6cin>
+                                    <img src="https://dam.assets.warwick.ac.uk/images/Zz0wNzgyNDdmZTMxOWUxMWYwODY2NGE2YjFmZTViNmNhMQ==" alt="Youtube" loading="lazy" data-height="24" data-width="24" />
+                                </picture>
+                            </a>
+                            <a href="https://x.com/uniofwarwick">
+                                <picture b-rzhi5m6cin>
+                                    <img src="https://dam.assets.warwick.ac.uk/images/Zz02OTdhZmJjMDMxNzMxMWYwOTMzOTU2YzI0NTc1NDljZA==" alt="X" loading="lazy" data-height="24" data-width="24" />
+                                </picture>
+                            </a>
+                    </div>
+            </div>
+
+            <div b-rzhi5m6cin class="footer__lower__copyright">
+                <p b-rzhi5m6cin>&#xA9; UNIVERSITY OF WARWICK</p>
+            </div>
+        </div>
+
+    </div>
+</footer>
+
+    
+<div b-2159ln4z6c class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div b-2159ln4z6c class="modal-dialog modal-dialog-centered">
+        <div b-2159ln4z6c class="modal-content none">
+            <div b-2159ln4z6c class="modal-header">
+                <h4 b-2159ln4z6c id="loginModalLabel"></h4>
+                <button b-2159ln4z6c type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div b-2159ln4z6c class="modal-body rich-text-editor">
+                
+            </div>
+            <div b-2159ln4z6c class="modal-footer">
+                    <div b-2159ln4z6c class="model-primary-button">
+                        <a b-2159ln4z6c href="#" title="Login">Login</a> 
+                    </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -2,6 +2,7 @@ export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getEvents, setEvents, validateAdminToken } from '@/lib/kv';
+import { DEFAULT_EVENTS } from '@/lib/data';
 import { appendAuditLog } from '@/lib/audit';
 import type { SiteEvent } from '@/lib/types';
 
@@ -20,7 +21,8 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
-  const events = await getEvents();
+  const kvEvents = await getEvents();
+  const events = kvEvents.length > 0 ? kvEvents : DEFAULT_EVENTS;
   return NextResponse.json({ events }, {
     headers: { ...CORS, 'Cache-Control': 'no-store' },
   });

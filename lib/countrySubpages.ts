@@ -715,230 +715,662 @@ const NEW_ZEALAND: CountryContent = {
 `,
 };
 
-const SINGAPORE: CountryContent = {
-  'why-study': `
-<h2>Why Study in Singapore in 2026?</h2>
-<p>Singapore is Asia's education powerhouse. The <strong>National University of Singapore (NUS)</strong> ranks <strong>#8 globally (QS 2026)</strong> — higher than the entire UK except Oxford and Cambridge. Singapore's strategic position as ASEAN's financial, technological, and logistics hub means graduates immediately enter a job market that connects to 650 million consumers across Southeast Asia.</p>
-<h3>Asia's Highest Graduate Salaries</h3>
-<p>Singapore offers Indian graduates the highest starting salaries in Asia. Software engineers at Singaporean tech firms or MNCs earn SGD $60,000–$100,000 in their first year — comparable to US salaries with a lower cost of living penalty.</p>
-<h3>English-Medium, World-Class Research</h3>
-<p>All top Singaporean universities operate entirely in English. Research funding from A*STAR (Agency for Science, Technology and Research) ensures postgraduate students have access to cutting-edge laboratory infrastructure.</p>
-<h3>Gateway to ASEAN Careers</h3>
-<p>An NUS or NTU degree is the most respected credential across all ASEAN markets. ILOC alumni who studied in Singapore have landed roles at Grab, Sea Group, DBS, OCBC, and regional offices of McKinsey and BCG.</p>
-<blockquote><p><strong>ILOC Insight (2026):</strong> Singapore is our top recommendation for students targeting fintech, data science, supply chain management, or early-stage startup careers in Asia. The NUS/NTU network in Southeast Asia is unparalleled.</p></blockquote>
-`,
-
-  'application-procedure': `
-<h2>Singapore Application Procedure (2026)</h2>
-<h3>Key Intakes</h3>
-<ul>
-  <li><strong>August intake:</strong> Apply October 2025 – February 2026</li>
-  <li><strong>January intake</strong> (NTU/SMU select programs): Apply June – August 2026</li>
-</ul>
-<h3>Step 1 — Application to NUS / NTU / SMU</h3>
-<p>Applications are submitted directly to each university's admissions portal. NUS and NTU are highly selective — ILOC recommends applying to 3–5 Singaporean institutions simultaneously with an optimised portfolio.</p>
-<h3>Step 2 — Student's Pass (STP) via SOLAR+</h3>
-<p>Once you receive an <strong>Enrolment Acceptance Form (eForm 16)</strong> from your institution, the <strong>ICA (Immigration and Checkpoints Authority)</strong> Student's Pass application is submitted via the SOLAR+ system:</p>
-<ul>
-  <li>In-Principle Approval (IPA) letter issued within 4–8 weeks</li>
-  <li>The IPA letter is used to obtain a Single Journey Pass to enter Singapore</li>
-  <li>STP is collected in person at ICA upon arrival in Singapore</li>
-</ul>
-<h3>Step 3 — Pre-Departure</h3>
-<ul>
-  <li>Accommodation: on-campus hostel (ballot system) or off-campus HDB flat</li>
-  <li>DBS/POSB bank account setup (ILOC provides guidance)</li>
-  <li>MOE Tuition Grant acceptance (where applicable) — requires 3-year Singapore employment bond</li>
-</ul>
-`,
-
-  'university-list': `
-<h2>Top Singapore Universities for Indian Students (2026)</h2>
-<h3>World-Class Research Universities</h3>
-<ul>
-  <li><strong>National University of Singapore (NUS)</strong> — QS #8 globally; Computing, Engineering, Medicine, Law, Business</li>
-  <li><strong>Nanyang Technological University (NTU)</strong> — QS #26 globally; Engineering, Business, Arts &amp; Social Sciences, Science</li>
-  <li><strong>Singapore Management University (SMU)</strong> — Finance, Law, Information Systems, Accounting</li>
-</ul>
-<h3>Government Polytechnics</h3>
-<ul>
-  <li><strong>Singapore Polytechnic</strong> — Engineering, Business, Media &amp; Communication</li>
-  <li><strong>Temasek Polytechnic</strong> — Design, Engineering, IT, Business, Applied Science</li>
-  <li><strong>Nanyang Polytechnic</strong> — IT, Engineering, Business, Health Sciences</li>
-</ul>
-<h3>Private Education Institutions (PEIs)</h3>
-<ul>
-  <li><strong>INSEAD (Asia Campus)</strong> — Asia's top MBA program; SGD $95,000; average GMAT 711</li>
-  <li><strong>James Cook University Singapore</strong> — Psychology, Marine Science, Business</li>
-  <li><strong>PSB Academy</strong> — Business, Engineering, IT; UK-affiliated degrees</li>
-</ul>
-`,
-
-  'salient-features': `
-<h2>Salient Features of Studying in Singapore</h2>
-<h3>1. Proximity to Asia-Pacific Markets</h3>
-<p>Singapore sits at the intersection of ASEAN, Greater China, India, and Australia's trade routes. A degree from NUS or NTU gives Indian students a professional identity that travels across the entire Asia-Pacific region.</p>
-<h3>2. MOE Tuition Grant</h3>
-<p>The Singapore Ministry of Education (MOE) offers tuition subsidies of up to <strong>SGD $10,000–$16,000/year</strong> to international students at NUS, NTU, and SMU — in exchange for a commitment to work in Singapore for 3 years post-graduation. This dramatically reduces the effective cost of a Singaporean degree.</p>
-<h3>3. Part-Time Work Rights</h3>
-<p>Student's Pass holders may work up to <strong>16 hours per week</strong> during academic term time. Singapore's high hourly wages (SGD $10–$18 for entry-level positions) make part-time work a meaningful supplement to living costs.</p>
-<h3>4. Safe, Clean, Efficient City</h3>
-<p>Singapore is consistently ranked the world's most efficient city. Public transport, housing quality, healthcare, and food hygiene standards are globally benchmarked. Indian students adjust quickly — Indian food, temples, and South Asian communities are abundant in Little India and Serangoon.</p>
-<h3>5. Research Funding & A*STAR</h3>
-<p>A*STAR funds hundreds of research scholarships for postgraduate students at NUS and NTU. ILOC has helped students secure A*STAR Graduate Scholarships covering full tuition plus a monthly stipend of SGD $2,200.</p>
-`,
-
-  'entry-criteria': `
-<h2>Entry Criteria for Singapore Universities (2026)</h2>
-<h3>Undergraduate Entry (NUS / NTU)</h3>
-<table>
-  <thead><tr><th>Requirement</th><th>NUS / NTU</th><th>Government Polytechnics</th></tr></thead>
-  <tbody>
-    <tr><td>Class 12 Percentage</td><td>90%+ (PCM for Engineering/Science)</td><td>65–75%</td></tr>
-    <tr><td>SAT Score</td><td>1400+ (competitive benchmark)</td><td>Not required</td></tr>
-    <tr><td>IELTS Academic</td><td>6.5–7.0</td><td>6.0</td></tr>
-    <tr><td>Maths / Physics</td><td>Strong H2 or equivalent required</td><td>O-Level equivalent</td></tr>
-  </tbody>
-</table>
-<h3>Postgraduate Entry</h3>
-<table>
-  <thead><tr><th>Requirement</th><th>NUS / NTU / SMU</th></tr></thead>
-  <tbody>
-    <tr><td>UG Degree</td><td>Honours degree (equivalent to 3.5 GPA / 8.0+ CGPA)</td></tr>
-    <tr><td>IELTS Academic</td><td>6.5+ (some programs require 7.0+)</td></tr>
-    <tr><td>TOEFL iBT</td><td>85–100+ depending on faculty</td></tr>
-    <tr><td>GRE / GMAT</td><td>Required for select Engineering PhD and MBA programs</td></tr>
-    <tr><td>Research Proposal</td><td>Required for PhD applications — ILOC assists with draft</td></tr>
-  </tbody>
-</table>
-<h3>Financial Requirements (Student's Pass)</h3>
-<ul>
-  <li>Proof of sufficient funds for first year of study (tuition + living)</li>
-  <li>Typical annual budget: SGD $25,000–$45,000 (tuition + accommodation + living)</li>
-  <li>MOE Tuition Grant recipients must sign a service obligation agreement</li>
-</ul>
-`,
-};
-
+// ── Europe ─────────────────────────────────────────────────────────────────────
 const EUROPE: CountryContent = {
   'why-study': `
 <h2>Why Study in Europe in 2026?</h2>
-<p>Europe offers the world's best tuition-to-quality ratio. <strong>Germany's public universities charge zero tuition fees</strong> for international students in most states — including TU Munich (#37 QS) and Heidelberg University. The <strong>Schengen Zone</strong> grants graduates access to work across 26 EU countries, creating a career opportunity space larger than the entire population of the USA.</p>
-<h3>Germany: The Free-Tuition Powerhouse</h3>
-<p>Germany's 300+ public universities charge only a semester contribution fee of €150–€350 — covering public transport, student union services, and sports facilities. For Indian students, a German Master's in Engineering, Computer Science, or Business from TU Munich, RWTH Aachen, or KIT costs less than one semester of tuition at a US state university.</p>
-<h3>Netherlands, France & Spain — English Programs at Scale</h3>
-<p>The Netherlands offers 2,100+ fully English-taught Master's programs. France's <em>Grandes Écoles</em> (HEC Paris, Sciences Po, CentraleSupélec) are globally competitive. Spain's ESADE and IE Business School rank in the global top 30 for MBA programs.</p>
-<h3>EU Blue Card — The Executive Immigration Pathway</h3>
-<p>After 2 years of working in an EU country at a minimum salary threshold (€48,060/year in Germany for 2026), graduates qualify for the <strong>EU Blue Card</strong> — the most powerful working-residency permit in the world, valid across 25 EU member states.</p>
-<blockquote><p><strong>ILOC Insight (2026):</strong> Europe is our top recommendation for students with strong academic profiles but budget constraints. A free German master's + 18-month job search visa + EU Blue Card pathway delivers comparable lifetime earnings to an expensive US degree at a fraction of the upfront cost.</p></blockquote>
+<p>Europe offers the world's most diverse and affordable higher education landscape. From Germany's tuition-free public universities to the Netherlands' internationally acclaimed English-taught programs, Europe delivers Ivy League-calibre academics at a fraction of the cost. The Schengen Zone's open borders mean one degree unlocks career opportunities across 26 countries simultaneously.</p>
+<h3>Germany: The Engineering Powerhouse</h3>
+<p>TU Munich, RWTH Aachen, and KIT consistently rank among the world's top 10 engineering universities. German public universities charge <strong>no tuition fees</strong> for international students — only a semester contribution of €150–€350. With a booming automotive, pharmaceutical, and AI industry, Germany produces some of the world's highest-paid engineering graduates.</p>
+<h3>Netherlands: Global Business & Technology Hub</h3>
+<p>Delft University of Technology, Wageningen University, and the University of Amsterdam offer hundreds of fully English-taught programs. The Netherlands hosts the EMEA headquarters of Shell, ASML, Philips, and Booking.com — translating directly into internship and post-study employment opportunities.</p>
+<h3>France: Elite Grandes Écoles & Research</h3>
+<p>Sciences Po, HEC Paris, and École Polytechnique (Polytechnique) are global brand names in business, policy, and engineering. France's Campus France program provides a structured, counsellor-guided application process with highly subsidised tuition at public universities.</p>
+<h3>EU Blue Card: Your Path to European PR</h3>
+<p>The <strong>EU Blue Card</strong> — available to non-EU graduates employed above the salary threshold — provides a fast-track route to permanent residency across most EU member states. In 2026, Germany lowered the Blue Card salary threshold, making it accessible to more STEM graduates.</p>
+<blockquote><p><strong>ILOC Insight (2026):</strong> Europe is the fastest-growing destination in our portfolio. For students deterred by the US H-1B lottery or UK living costs, Germany and the Netherlands offer a compelling combination of free/low tuition, strong employment prospects, and a viable PR pathway.</p></blockquote>
 `,
-
   'application-procedure': `
-<h2>Europe Application Procedure (2026)</h2>
+<h2>Europe Application Procedure (2026 Intake)</h2>
+<p>Europe's application system varies by country and institution. ILOC manages the full process across all major European destinations.</p>
 <h3>Germany — Step-by-Step</h3>
 <ol>
-  <li><strong>University-Assist / Uni-Assist:</strong> Most German universities use the <em>uni-assist</em> portal for international document verification. Apply via uni-assist October–January for Winter Semester (October 2026 intake).</li>
-  <li><strong>Language Requirement:</strong> English-taught programs require IELTS 6.5+ / TOEFL 90+. German-taught programs require <strong>TestDaF Level 4</strong> or DSH-2. ILOC offers TestDaF preparation.</li>
-  <li><strong>Blocked Account:</strong> German student visa requires proof of a <strong>Sperrkonto (blocked account)</strong> with €11,208 (2026 rate). ILOC assists with Expatrio or Fintiba account setup.</li>
-  <li><strong>Student Visa Application:</strong> At the German Consulate in Mumbai, Chennai, or New Delhi. Processing: 4–12 weeks. Documents: admission letter, blocked account, health insurance, CV, SOP.</li>
+  <li><strong>University Shortlisting (Month 1–2):</strong> We select programs via uni-assist portal or direct university application. TU Munich, RWTH, TU Berlin, Heidelberg University — matched to your profile.</li>
+  <li><strong>Document Preparation (Month 2–5):</strong> Certified transcripts, German/English language proof, motivation letter (Motivationsschreiben), CV in Europass format, recommendation letters.</li>
+  <li><strong>Blocked Account (Sperrkonto) Setup:</strong> Required for visa — €11,208 for 2026. ILOC guides account opening with Fintiba or Deutsche Bank.</li>
+  <li><strong>German Student Visa Application:</strong> Applied at German consulate in Mumbai, Delhi, or Chennai. Processing: 4–12 weeks.</li>
 </ol>
 <h3>Netherlands — Step-by-Step</h3>
-<ul>
-  <li>Apply directly to university portals (Studielink for Dutch-taught; direct for English)</li>
-  <li>Deadline: 1 April 2026 for most programs; highly competitive programs close December 2025</li>
-  <li>Holland Scholarship (€5,000) application: February 2026 deadline</li>
-  <li>MVV (Machtiging tot Voorlopig Verblijf) — Entry Visa — processed by IND (Dutch Immigration)</li>
-</ul>
-<h3>France — Key Steps</h3>
-<ul>
-  <li>Applications via <strong>Campus France India</strong> (mandatory for French universities)</li>
-  <li>Campus France interview required before visa application</li>
-  <li>APS (post-study work permit): 1 year, extendable; apply at French Prefecture</li>
-</ul>
+<ol>
+  <li><strong>Studielink Application:</strong> All Dutch university applications go through the national Studielink portal. ILOC handles registration and submission.</li>
+  <li><strong>MVV (Entry Visa) + Residence Permit:</strong> Applied via Dutch IND (Immigration and Naturalisation Service). Most students receive a combined student visa + residence permit (NUFFIC pathway).</li>
+</ol>
+<h3>Key Deadlines 2026</h3>
+<table>
+  <thead><tr><th>Country</th><th>Application Deadline</th><th>Intake</th></tr></thead>
+  <tbody>
+    <tr><td>Germany (most universities)</td><td>15 Jan / 15 Jul 2026</td><td>Apr / Oct 2026</td></tr>
+    <tr><td>Netherlands</td><td>1 Apr 2026</td><td>Sep 2026</td></tr>
+    <tr><td>France (Campus France)</td><td>15 Jan 2026</td><td>Sep 2026</td></tr>
+  </tbody>
+</table>
 `,
-
   'university-list': `
 <h2>Top European Universities for Indian Students (2026)</h2>
 <h3>Germany</h3>
 <ul>
-  <li><strong>TU Munich (TUM)</strong> — QS #37; Engineering, Computer Science, Business (TUM School of Management)</li>
-  <li><strong>RWTH Aachen University</strong> — Europe's largest technical university; Mechanical & Electrical Engineering</li>
-  <li><strong>Heidelberg University</strong> — Life Sciences, Medicine, Humanities; Germany's oldest university</li>
-  <li><strong>Karlsruhe Institute of Technology (KIT)</strong> — Engineering, Physics, Computer Science</li>
-  <li><strong>Ludwig Maximilian University (LMU Munich)</strong> — Medicine, Law, Social Sciences</li>
+  <li><strong>TU Munich (TUM)</strong> — QS #30 globally; Engineering, Computer Science, Life Sciences</li>
+  <li><strong>RWTH Aachen University</strong> — QS #106; Mechanical Engineering, Automotive, Materials Science</li>
+  <li><strong>Heidelberg University</strong> — Germany's oldest university; Medicine, Natural Sciences</li>
+  <li><strong>Karlsruhe Institute of Technology (KIT)</strong> — Top-5 Germany for STEM</li>
+  <li><strong>LMU Munich</strong> — Research excellence in Physics, Economics, Law</li>
 </ul>
 <h3>Netherlands</h3>
 <ul>
-  <li><strong>Delft University of Technology (TU Delft)</strong> — QS #47; Architecture, Aerospace, Civil, Computing</li>
-  <li><strong>University of Amsterdam (UvA)</strong> — Economics, Law, Social Sciences, Humanities</li>
-  <li><strong>Eindhoven University of Technology (TU/e)</strong> — Industrial Design, Applied Physics, Data Science</li>
-  <li><strong>Wageningen University</strong> — #1 globally in Agricultural Sciences</li>
+  <li><strong>Delft University of Technology (TU Delft)</strong> — QS #47; Architecture, Civil, Aerospace Engineering</li>
+  <li><strong>Wageningen University</strong> — QS #61; World #1 for Agriculture & Food Science</li>
+  <li><strong>University of Amsterdam (UvA)</strong> — Business, AI, Social Sciences</li>
+  <li><strong>Eindhoven University of Technology</strong> — Industry tie-ups with ASML, Philips, NXP</li>
 </ul>
 <h3>France</h3>
 <ul>
-  <li><strong>HEC Paris</strong> — #1 MBA in Europe (FT 2025); Finance, Management, Entrepreneurship</li>
-  <li><strong>Sciences Po Paris</strong> — International Affairs, Public Policy, Law</li>
-  <li><strong>CentraleSupélec</strong> — Engineering, Data Science, Energy</li>
-</ul>
-<h3>Spain</h3>
-<ul>
-  <li><strong>ESADE Business School</strong> — Top-20 global MBA; Strategy, Marketing, Finance</li>
-  <li><strong>IE Business School</strong> — Top-5 global MBA; Entrepreneurship, Innovation</li>
+  <li><strong>HEC Paris</strong> — QS #24 for Business; Europe's top MBA</li>
+  <li><strong>Sciences Po</strong> — World #1 for Politics & International Relations</li>
+  <li><strong>École Polytechnique</strong> — France's premier engineering grande école</li>
+  <li><strong>INSEAD (Fontainebleau)</strong> — World's most international MBA program</li>
 </ul>
 `,
-
   'salient-features': `
 <h2>Salient Features of Studying in Europe</h2>
-<h3>1. Free / Near-Free Tuition in Germany</h3>
-<p>Public German universities charge <strong>zero tuition fees</strong> for international students (except Baden-Württemberg, which charges €1,500/semester). This is categorically the best tuition deal in the world for STEM programs — TU Munich and RWTH Aachen at zero cost versus $80,000+ for equivalent US programs.</p>
-<h3>2. Schengen Zone Freedom</h3>
-<p>A German or Dutch residence permit provides freedom of movement across 26 Schengen countries. Indian students can travel, attend interviews, and eventually work across the entire EU single market without additional visas.</p>
-<h3>3. 18-Month Job Search Visa (Germany)</h3>
-<p>Germany's <strong>Aufenthaltserlaubnis zur Arbeitssuche</strong> (job-search visa) allows graduates to remain in Germany for 18 months after graduation to find employment — the most generous job-search window in Europe.</p>
-<h3>4. Erasmus+ Programme</h3>
-<p>Studying in one EU country provides access to the <strong>Erasmus+ exchange programme</strong> — allowing Indian students to spend a semester at another European university, gaining multilingual exposure and EU-wide professional networks.</p>
-<h3>5. EU Blue Card — Accelerated Residency</h3>
-<p>Once employed at the minimum EU Blue Card salary threshold, Indian graduates can obtain the Blue Card within 1–3 months — granting long-term residency, family reunion rights, and a path to permanent residency in 2–5 years (2 years in Germany with B1 German language level).</p>
+<ul>
+  <li><strong>Zero tuition (Germany):</strong> Public universities in Germany charge no tuition — only a semester fee of €150–€350 covering transport passes and student services.</li>
+  <li><strong>Schengen Freedom:</strong> One student visa lets you travel freely across 26 Schengen countries during your studies — weekend trips to Paris, Amsterdam or Prague are part of the experience.</li>
+  <li><strong>18-Month Job Search Visa:</strong> Germany's Student Opportunity Visa allows 18 months after graduation to find employment — no employer sponsorship needed during the search period.</li>
+  <li><strong>EU Blue Card:</strong> After employment above the threshold salary, India graduates can apply for the EU Blue Card — a fast-track PR permit valid across most EU member states.</li>
+  <li><strong>Research Ecosystem:</strong> The EU's Horizon Europe program funds €95 billion in research (2021–2027) — graduate students can access funded research assistant positions.</li>
+  <li><strong>Affordable Living:</strong> Outside major cities, monthly expenses average €700–€1,000 — significantly lower than the UK or USA.</li>
+  <li><strong>English-Taught Programs:</strong> Over 3,000 English-taught Master's programs across Europe — German language not required for most international programs.</li>
+</ul>
 `,
-
   'entry-criteria': `
 <h2>Entry Criteria for European Universities (2026)</h2>
-<h3>Germany — Postgraduate (Most Common Entry for Indians)</h3>
+<h3>Germany — Postgraduate</h3>
 <table>
-  <thead><tr><th>Requirement</th><th>TU Munich / RWTH / KIT</th><th>Other Public Universities</th></tr></thead>
+  <thead><tr><th>Requirement</th><th>Top Universities (TUM/RWTH)</th><th>Other Public Universities</th></tr></thead>
   <tbody>
-    <tr><td>UG Degree / CGPA</td><td>75%+ / 3.5 GPA equivalent</td><td>60%+ / 3.0 GPA</td></tr>
-    <tr><td>Language (English programs)</td><td>IELTS 7.0+ / TOEFL 100+</td><td>IELTS 6.5 / TOEFL 90+</td></tr>
-    <tr><td>Language (German programs)</td><td>TestDaF TDN 4 / DSH-2</td><td>TestDaF TDN 3+ acceptable</td></tr>
-    <tr><td>GRE</td><td>Recommended but not mandatory</td><td>Not required</td></tr>
-    <tr><td>Motivation Letter</td><td>Required — ILOC drafts and reviews</td><td>Required</td></tr>
+    <tr><td>UG CGPA</td><td>75%+ / 3.5 GPA equivalent</td><td>60%+ / 3.0 GPA</td></tr>
+    <tr><td>German Language</td><td>Not required for English programs</td><td>DSH-2 / TestDaF 4 for German programs</td></tr>
+    <tr><td>English</td><td>IELTS 6.5+ / TOEFL 88+</td><td>IELTS 6.0+</td></tr>
+    <tr><td>GRE/GMAT</td><td>Recommended, not mandatory</td><td>Not required</td></tr>
+    <tr><td>Work Experience</td><td>Preferred for MBA programs</td><td>Not required</td></tr>
   </tbody>
 </table>
-<h3>Netherlands — Postgraduate</h3>
+<h3>Netherlands</h3>
 <ul>
-  <li>Bachelor's degree with minimum 75% / 3.0 GPA</li>
-  <li>IELTS 6.5–7.0 / TOEFL 90+ (program-dependent)</li>
-  <li>Programme-specific entry: research proposal for MSc Research programs</li>
+  <li>Bachelor's degree with 60–75% CGPA (program dependent)</li>
+  <li>IELTS 6.5–7.0 / TOEFL 90+ for most Master's programs</li>
+  <li>Numerus Fixus (capacity restriction) applies to Medicine and some Psychology programs</li>
 </ul>
 <h3>Financial Requirements</h3>
 <ul>
-  <li><strong>Germany:</strong> Blocked account (Sperrkonto) — <strong>€11,208</strong> (2026 requirement); health insurance ~€110/month</li>
+  <li><strong>Germany:</strong> Blocked account (Sperrkonto) — €11,208 for 2026; health insurance ~€110/month</li>
   <li><strong>Netherlands:</strong> MVV application — proof of accommodation and ~€900/month living funds</li>
   <li><strong>France:</strong> Campus France fee €50; visa fee €99; proof of €615/month minimum</li>
 </ul>
 `,
 };
 
+// ── UAE ────────────────────────────────────────────────────────────────────────
+const UAE: CountryContent = {
+  'why-study': `
+<h2>Why Study in the UAE in 2026?</h2>
+<p>The United Arab Emirates has transformed itself into one of the world's most dynamic international education hubs in less than a decade. Dubai and Abu Dhabi now host branch campuses of globally ranked institutions — NYU Abu Dhabi, Heriot-Watt University Dubai, Middlesex University Dubai, and the University of Birmingham Dubai — offering authentic, accredited international degrees within a 4-hour flight from India.</p>
+<h3>Zero Income Tax: The Financial Advantage</h3>
+<p>The UAE levies <strong>no personal income tax</strong>. A graduate earning AED 150,000/year retains every dirham — making UAE salaries among the highest real-value compensation packages globally. For Indian students weighing 3 years of US OPT against immediate UAE employment, the tax-free salary is a compelling equaliser.</p>
+<h3>Proximity to India & Cultural Familiarity</h3>
+<p>The UAE hosts the world's largest Indian diaspora — over 3.5 million Indians. Hindi, Malayalam, Tamil, and Punjabi are widely spoken. Vegetarian food is universally available. The 4-hour direct flight from Mumbai means families can visit cheaply and frequently — a psychological comfort that matters enormously for first-time international students.</p>
+<h3>2026: UAE Golden Visa for Graduates</h3>
+<p>Top-performing graduates from accredited UAE universities are now eligible for the <strong>10-year UAE Golden Visa</strong> — a landmark long-term residency permit that allows living, working, and studying without a national sponsor. This is a game-changer for Indian students seeking long-term Middle East career pathways.</p>
+<blockquote><p><strong>ILOC Insight (2026):</strong> The UAE is the fastest-growing destination in our portfolio for 2026. Students from Maharashtra and Gujarat with strong commerce or engineering backgrounds are finding the UAE combination of global degree + tax-free salary + proximity to India genuinely compelling.</p></blockquote>
+`,
+  'application-procedure': `
+<h2>UAE Application Procedure (2026 Intake)</h2>
+<h3>Step 1 — University Selection (Month 1)</h3>
+<p>ILOC maps your degree objective to the strongest available UAE institution:</p>
+<ul>
+  <li><strong>NYU Abu Dhabi:</strong> Liberal arts, Science, Engineering — highly selective, generous scholarships</li>
+  <li><strong>Heriot-Watt University Dubai:</strong> Engineering, Business, Actuarial Science — UK-accredited degree</li>
+  <li><strong>Middlesex University Dubai:</strong> Business, IT, Arts — UK degree, more accessible entry</li>
+  <li><strong>University of Birmingham Dubai:</strong> Engineering, Business — Russell Group degree in Dubai</li>
+  <li><strong>UAEU (UAE University):</strong> Engineering, Medicine — flagship national university</li>
+</ul>
+<h3>Step 2 — Application Submission (Month 1–2)</h3>
+<p>Most UAE universities have rolling admissions. ILOC prepares your complete package: transcripts (attested), English proficiency scores, personal statement, and references. Applications are typically reviewed within 2–4 weeks.</p>
+<h3>Step 3 — Student Entry Permit & Visa (Month 2–3)</h3>
+<p>Upon receiving your offer letter, your university sponsors your UAE Student Entry Permit. ILOC guides:</p>
+<ul>
+  <li>Medical fitness test (blood test + chest X-ray) — required for all entrants</li>
+  <li>Emirates ID registration at GDRFA within 30 days of arrival</li>
+  <li>University health insurance enrollment (mandatory)</li>
+</ul>
+<h3>Key 2026 Intakes</h3>
+<table>
+  <thead><tr><th>University</th><th>Intake 1</th><th>Intake 2</th></tr></thead>
+  <tbody>
+    <tr><td>NYU Abu Dhabi</td><td>Sep 2026</td><td>Jan 2027</td></tr>
+    <tr><td>Heriot-Watt Dubai</td><td>Sep 2026</td><td>Jan 2027</td></tr>
+    <tr><td>Middlesex Dubai</td><td>Sep 2026</td><td>Jan 2027</td></tr>
+    <tr><td>UAEU</td><td>Sep 2026</td><td>Feb 2027</td></tr>
+  </tbody>
+</table>
+`,
+  'university-list': `
+<h2>Top UAE Universities for Indian Students (2026)</h2>
+<h3>International Branch Campuses</h3>
+<ul>
+  <li><strong>NYU Abu Dhabi</strong> — Ranked among the most selective universities globally; full scholarships available; offers degrees in Science, Engineering, Liberal Arts, and Social Science identical to NYU New York</li>
+  <li><strong>Heriot-Watt University Dubai</strong> — UK-accredited degrees in Engineering, Business, Energy; strong industry placements in Gulf energy sector</li>
+  <li><strong>University of Birmingham Dubai</strong> — Russell Group credentials; Engineering, Business, Computer Science</li>
+  <li><strong>Middlesex University Dubai</strong> — Business, IT, Media, Psychology; UK degree, accessible entry requirements</li>
+  <li><strong>Murdoch University Dubai</strong> — Australian degree; Business, IT, Media</li>
+</ul>
+<h3>National UAE Universities</h3>
+<ul>
+  <li><strong>UAE University (UAEU)</strong> — Flagship national university; Medicine, Engineering, Business; QS ranked</li>
+  <li><strong>Khalifa University</strong> — Abu Dhabi; focused on Engineering, AI, Energy; strong industry ties with ADNOC, Mubadala</li>
+  <li><strong>American University of Sharjah (AUS)</strong> — Architecture, Engineering, Business; ABET-accredited programs</li>
+  <li><strong>University of Sharjah</strong> — Medicine, Pharmacy, Dentistry — growing popularity among Indian students</li>
+</ul>
+<h3>Free Zone Education Clusters</h3>
+<ul>
+  <li><strong>Dubai International Academic City (DIAC)</strong> — Hosts 30+ universities including Manipal, Amity, and BITS Pilani Dubai</li>
+  <li><strong>Abu Dhabi Education Knowledge (ADEK)</strong> — Governs higher education quality in Abu Dhabi emirate</li>
+</ul>
+`,
+  'salient-features': `
+<h2>Salient Features of Studying in the UAE</h2>
+<ul>
+  <li><strong>Zero income tax:</strong> Graduates retain 100% of their salary — no PAYE, no income deductions beyond social contributions.</li>
+  <li><strong>World-class infrastructure:</strong> State-of-the-art campuses, cutting-edge labs, and smart-city environments that mirror the innovation culture of Singapore and Switzerland.</li>
+  <li><strong>Indian community support:</strong> Over 3.5 million Indians in the UAE — the largest diaspora globally. Malayalam, Hindi, Gujarati, and Tamil widely spoken.</li>
+  <li><strong>Part-time work (2026):</strong> Student visa holders may now work 20 hours/week — enabling students to gain professional experience and offset living costs simultaneously.</li>
+  <li><strong>Safety & stability:</strong> UAE consistently ranks among the world's safest countries — a major factor for Indian parents.</li>
+  <li><strong>English-medium instruction:</strong> All international branch campuses and most national universities operate in English.</li>
+  <li><strong>Cost of living:</strong> AED 3,000–6,000/month including accommodation, transport and food — comparable to UK, lower than USA.</li>
+  <li><strong>Golden Visa pathway:</strong> High-performing graduates eligible for the 10-year UAE Golden Visa, enabling long-term career building without annual visa renewals.</li>
+</ul>
+`,
+  'entry-criteria': `
+<h2>Entry Criteria for UAE Universities (2026)</h2>
+<h3>Undergraduate Programs</h3>
+<table>
+  <thead><tr><th>Requirement</th><th>NYU Abu Dhabi / Khalifa</th><th>Heriot-Watt / Middlesex</th><th>UAEU / AUS</th></tr></thead>
+  <tbody>
+    <tr><td>Grade 12 Score</td><td>90%+ (top-ranking)</td><td>75–85%</td><td>70%+</td></tr>
+    <tr><td>English (IELTS)</td><td>7.0+</td><td>6.0–6.5</td><td>5.5–6.0</td></tr>
+    <tr><td>SAT/ACT</td><td>Required (1400+ SAT)</td><td>Not required</td><td>Not required</td></tr>
+    <tr><td>Personal Statement</td><td>Required</td><td>Required</td><td>Not required</td></tr>
+  </tbody>
+</table>
+<h3>Postgraduate Programs</h3>
+<ul>
+  <li>Bachelor's degree with minimum 60% CGPA (most programs accept 55% with work experience)</li>
+  <li>IELTS 6.0–6.5 / TOEFL 79–90 (program specific)</li>
+  <li>2+ years work experience preferred for MBA programs</li>
+  <li>GMAT 550+ for top MBA programs (HEC Paris Dubai, Heriot-Watt MBA)</li>
+</ul>
+<h3>Financial Requirements</h3>
+<ul>
+  <li>Proof of funds: AED 15,000–25,000 minimum in bank account (visa requirement)</li>
+  <li>University tuition fee payment or scholarship letter required for entry permit</li>
+  <li>Health insurance: provided by most universities (AED 500–1,500/year)</li>
+</ul>
+`,
+};
+
+// ── Japan ──────────────────────────────────────────────────────────────────────
+const JAPAN: CountryContent = {
+  'why-study': `
+<h2>Why Study in Japan in 2026?</h2>
+<p>Japan is the world's third-largest economy and a global leader in robotics, semiconductor manufacturing, automotive engineering, and artificial intelligence. For Indian STEM students, a Japanese university degree combines cutting-edge technical education with direct industry access to corporations like Toyota, Sony, SoftBank, and Panasonic — companies that actively recruit at Japan's national universities.</p>
+<h3>Academic Excellence: Asia's Premier Research Universities</h3>
+<p>The University of Tokyo (#28 globally, QS 2026) and Kyoto University (#46) are among Asia's finest research institutions. Osaka University, Tohoku University, and Tokyo Institute of Technology (Tokyo Tech) are consistently ranked in the world's top 200 for engineering, science, and medicine. Research funding in Japan exceeds ¥19 trillion annually — second only to the USA.</p>
+<h3>MEXT Scholarship: Fully Funded Study</h3>
+<p>The Japanese Government (Monbukagakusho/MEXT) Scholarship is one of the world's most comprehensive — covering <strong>full tuition, a monthly stipend of ¥143,000, and return airfare</strong>. Approximately 2,000 Research Student slots are available annually for Master's and PhD applicants. ILOC has a proven MEXT application strategy that significantly improves shortlisting probability.</p>
+<h3>English-Taught Programs: A Rapidly Expanding Catalogue</h3>
+<p>Over 300 English-taught undergraduate and postgraduate programs are now available across Japanese universities — a figure that has tripled since 2019. Programs such as the University of Tokyo's PEAK (Programs in English at Komaba) and GSGC, and Tokyo Tech's English-medium Master's, require <strong>no Japanese language ability</strong>.</p>
+<h3>Post-Study Work Pathways</h3>
+<p>Japan's rapidly ageing population has created a significant skilled worker shortage. The government has responded with the <strong>Specified Skilled Worker (SSW) visa</strong>, allowing STEM graduates to transition directly to employment. The 2026 Japan Skills Program fast-tracks PR eligibility to just 1 year for highly skilled graduates — down from the previous 5-year standard.</p>
+`,
+  'application-procedure': `
+<h2>Japan Application Procedure (2026 Intake)</h2>
+<h3>Track A — MEXT Government Scholarship (Recommended)</h3>
+<ol>
+  <li><strong>Embassy Recommendation (Month 1–4):</strong> Apply through the Japanese Embassy in India (Delhi/Mumbai/Chennai/Kolkata). Submit application, academic records, and research plan. Written exam in English, Mathematics, and subject-specific papers.</li>
+  <li><strong>Primary Screening (Month 4–6):</strong> Embassy selects candidates for interview. ILOC provides full preparation.</li>
+  <li><strong>University Matching (Month 6–9):</strong> MEXT forwards your application to 3 Japanese universities of your choice. Professors review and accept candidates as Research Students.</li>
+  <li><strong>Certificate of Eligibility & Visa (Month 9–12):</strong> ILOC handles CoE application, student visa documentation, and pre-departure briefing.</li>
+</ol>
+<h3>Track B — Direct University Application</h3>
+<ol>
+  <li>Identify English-taught programs via JASSO (Japan Student Services Organisation) portal</li>
+  <li>Contact supervising professor (for research degrees) — ILOC assists with email drafting and research proposal</li>
+  <li>Submit application: transcripts, SOP, recommendation letters, English proficiency scores</li>
+  <li>Obtain Certificate of Eligibility (CoE) from Japanese immigration — then apply for student visa</li>
+</ol>
+<h3>Key Dates 2026</h3>
+<table>
+  <thead><tr><th>Track</th><th>Application Period</th><th>Intake</th></tr></thead>
+  <tbody>
+    <tr><td>MEXT Embassy Recommendation</td><td>May–Jun 2026</td><td>Apr 2027</td></tr>
+    <tr><td>University Recommendation (MEXT)</td><td>Nov–Dec 2025</td><td>Apr 2026</td></tr>
+    <tr><td>Direct University Application</td><td>Oct–Jan (varies)</td><td>Apr / Oct 2026</td></tr>
+  </tbody>
+</table>
+`,
+  'university-list': `
+<h2>Top Japanese Universities for Indian Students (2026)</h2>
+<h3>National Top-Tier (QS Ranked)</h3>
+<ul>
+  <li><strong>University of Tokyo (UTokyo)</strong> — QS #28; Engineering, Science, Medicine, Economics; PEAK English program</li>
+  <li><strong>Kyoto University</strong> — QS #46; Research excellence; Nobel laureate faculty</li>
+  <li><strong>Osaka University</strong> — QS #80; Medical Engineering, Biotechnology</li>
+  <li><strong>Tokyo Institute of Technology (Tokyo Tech)</strong> — QS #91; STEM specialist; English-medium Master's</li>
+  <li><strong>Tohoku University</strong> — QS #101; Materials Science, Physics; strong research funding</li>
+</ul>
+<h3>Strong Industry Tie-Ups</h3>
+<ul>
+  <li><strong>Waseda University</strong> — Business, International Studies; large English-taught catalogue; Tokyo location</li>
+  <li><strong>Keio University</strong> — Business, Engineering; IBM and Microsoft research partnerships</li>
+  <li><strong>Nagoya University</strong> — Automotive Engineering; Toyota research collaboration</li>
+  <li><strong>Kyushu University</strong> — Energy, Environment, Regional Studies; growing English programs</li>
+</ul>
+<h3>Programs Popular with Indian Students</h3>
+<ul>
+  <li>Robotics & Mechatronics Engineering (Tokyo Tech, Tohoku)</li>
+  <li>AI & Data Science (UTokyo, Waseda)</li>
+  <li>MBA / International Business (Waseda, Keio, Hitotsubashi)</li>
+  <li>Materials Science & Semiconductor Engineering (Tokyo Tech, Nagoya)</li>
+</ul>
+`,
+  'salient-features': `
+<h2>Salient Features of Studying in Japan</h2>
+<ul>
+  <li><strong>Safety:</strong> Japan consistently ranks in the top 5 safest countries globally — crime rates are among the world's lowest; solo travel is universally safe.</li>
+  <li><strong>Part-time work:</strong> Student visa holders may work 28 hours/week during term and full-time during university breaks — enabling students to offset living costs substantially.</li>
+  <li><strong>Low cost of living (outside Tokyo):</strong> Monthly expenses in Kyoto, Osaka, Nagoya average ¥80,000–120,000 (₹44,000–66,000) — significantly lower than Australia, UK, or USA.</li>
+  <li><strong>National Health Insurance (NHI):</strong> International students pay ¥20,000–40,000/year for comprehensive public health coverage — far lower than private health insurance in other destinations.</li>
+  <li><strong>Cultural immersion:</strong> Japan offers a uniquely rich cultural experience — from traditional arts to the world's most advanced urban technology — contributing to a well-rounded global perspective.</li>
+  <li><strong>Industry access:</strong> Japanese corporations conduct campus recruitment (shūkatsu) at national universities — Toyota, Sony, SoftBank and Panasonic actively recruit international graduates.</li>
+  <li><strong>Language support:</strong> Most universities provide extensive Japanese language courses — even non-language students develop conversational Japanese proficiency, enhancing career prospects.</li>
+</ul>
+`,
+  'entry-criteria': `
+<h2>Entry Criteria for Japanese Universities (2026)</h2>
+<h3>Undergraduate (English-Taught Programs)</h3>
+<table>
+  <thead><tr><th>Requirement</th><th>UTokyo PEAK</th><th>Waseda / Keio</th><th>Other National Universities</th></tr></thead>
+  <tbody>
+    <tr><td>Grade 12 Score</td><td>90%+ (very selective)</td><td>80%+</td><td>75%+</td></tr>
+    <tr><td>English (IELTS)</td><td>7.0+</td><td>6.5+</td><td>6.0+</td></tr>
+    <tr><td>SAT/ACT</td><td>Required</td><td>Recommended</td><td>Not required</td></tr>
+    <tr><td>Essays / SOP</td><td>Required (rigorous)</td><td>Required</td><td>Required</td></tr>
+  </tbody>
+</table>
+<h3>Postgraduate (Master's / PhD)</h3>
+<ul>
+  <li>Bachelor's degree with strong academic record (70%+ CGPA)</li>
+  <li>Research proposal (for research Master's and PhD) — ILOC assists with drafting</li>
+  <li>IELTS 6.0–7.0 / TOEFL 72–100 (program specific)</li>
+  <li>Letter of acceptance from supervising professor (for research track)</li>
+  <li>GRE: required by some programs (Tokyo Tech, UTokyo Graduate School)</li>
+</ul>
+<h3>MEXT Scholarship Eligibility</h3>
+<ul>
+  <li>Age: Under 35 years at time of application</li>
+  <li>Academic performance: Minimum 65% across undergraduate degree</li>
+  <li>Health: Must pass medical examination</li>
+  <li>No prior Japanese government scholarship holder in the last 3 years</li>
+</ul>
+`,
+};
+
+// ── South Korea ────────────────────────────────────────────────────────────────
+const SOUTH_KOREA: CountryContent = {
+  'why-study': `
+<h2>Why Study in South Korea in 2026?</h2>
+<p>South Korea is the world's most technologically dense economy per capita — home to Samsung, LG, SK Hynix, Hyundai, and POSCO, which together dominate global semiconductor, display, EV battery, and steel manufacturing. For Indian engineering and business students, South Korea offers a unique proposition: world-ranked universities, fully funded government scholarships, and direct access to the companies shaping 21st-century technology.</p>
+<h3>Academic Rankings: KAIST & POSTECH in the Global Elite</h3>
+<p>KAIST (Korea Advanced Institute of Science and Technology) ranks <strong>#42 globally</strong> and <strong>#7 in Asia</strong> for Engineering (QS 2026). POSTECH (Pohang University of Science and Technology) is often described as South Korea's Caltech — consistently ranked in the world's top 100 for STEM. Seoul National University (SNU), Yonsei, and Korea University (SKY universities) are considered Korea's Ivy League equivalents.</p>
+<h3>Global Korea Scholarship: The World's Best Value Full Funding</h3>
+<p>The <strong>Global Korea Scholarship (GKS)</strong> — funded by the Korean government — covers full tuition, a monthly living stipend of ₩900,000 (~₹55,000), return airfare, and Korean language training. Approximately 5,000 scholarships are awarded annually to international students. ILOC has successfully guided GKS applications from Maharashtra and Karnataka for engineering and business programs.</p>
+<h3>K-Tech Industry Access</h3>
+<p>Samsung Electronics, SK Hynix, LG Energy Solution, and Hyundai Motor actively recruit from KAIST, POSTECH, SNU, and Yonsei campuses. Graduate engineers from these institutions command starting salaries of ₩45,000,000–80,000,000 (₹28–50 lakhs/year) — with rapid progression in a performance-driven corporate culture.</p>
+<blockquote><p><strong>ILOC Insight (2026):</strong> South Korea is our most underrated destination. Students who apply for GKS scholarship with strong CGPA and research profiles have a very real chance of receiving one of the world's most generous fully-funded study packages. The Korea opportunity is genuinely available — most Indian students simply don't know it exists.</p></blockquote>
+`,
+  'application-procedure': `
+<h2>South Korea Application Procedure (2026 Intake)</h2>
+<h3>Track A — GKS Embassy Track (Most Common)</h3>
+<ol>
+  <li><strong>Application through Indian Embassy (Month 1–2):</strong> Apply through the Korean Embassy in Delhi or the Korean Consulate in Mumbai/Chennai. Submit GKS application form, academic records, personal statement, and recommendations.</li>
+  <li><strong>Written Test & Interview (Month 2–3):</strong> Korean Embassy screens candidates. Some applicants are invited for interview. ILOC provides full mock preparation.</li>
+  <li><strong>University Matching (Month 3–5):</strong> Successful GKS candidates list 3 preferred universities. NIIED (National Institute for International Education) matches candidates to institutions.</li>
+  <li><strong>Korean Language Training (Month 6):</strong> All GKS scholars attend 1 year of Korean language training before academic studies begin. ILOC provides pre-departure language preparation.</li>
+  <li><strong>D-2 Visa & Arrival (Month 6–7):</strong> ILOC handles Certificate of Admission, ARC pre-registration, and arrival setup in Korea.</li>
+</ol>
+<h3>Track B — University Direct Application</h3>
+<ol>
+  <li>Apply directly to KAIST, SNU, Yonsei, or Korea University via their international admission portals</li>
+  <li>ILOC prepares application package: transcripts, SOP, research proposal, recommendation letters</li>
+  <li>Obtain D-2 Student Visa through Korean Consulate in India</li>
+</ol>
+<h3>Key Deadlines 2026</h3>
+<table>
+  <thead><tr><th>Track</th><th>Application Period</th><th>Intake</th></tr></thead>
+  <tbody>
+    <tr><td>GKS Embassy Track</td><td>Feb–Mar 2026</td><td>Sep 2026</td></tr>
+    <tr><td>GKS University Track</td><td>Oct–Nov 2025</td><td>Mar 2026</td></tr>
+    <tr><td>Direct University Application</td><td>Sep–Nov 2025</td><td>Mar 2026</td></tr>
+  </tbody>
+</table>
+`,
+  'university-list': `
+<h2>Top South Korean Universities for Indian Students (2026)</h2>
+<h3>SKY Universities (Korea's Ivy League)</h3>
+<ul>
+  <li><strong>Seoul National University (SNU)</strong> — QS #41; Korea's premier national university; Engineering, Medicine, Business, Law</li>
+  <li><strong>Yonsei University</strong> — QS #56; Business, International Studies, Medicine; strong English-taught programs</li>
+  <li><strong>Korea University</strong> — QS #74; Law, Business, Engineering; large international student community</li>
+</ul>
+<h3>STEM Specialist Institutions</h3>
+<ul>
+  <li><strong>KAIST (Korea Advanced Institute of Science and Technology)</strong> — QS #42; AI, Semiconductor Engineering, Robotics; 100% English-medium instruction for international students</li>
+  <li><strong>POSTECH (Pohang University of Science and Technology)</strong> — QS #107; Materials Science, Chemical Engineering; POSCO industry partnership</li>
+  <li><strong>GIST (Gwangju Institute of Science and Technology)</strong> — Photonics, Energy Science; full English instruction</li>
+  <li><strong>DGIST (Daegu Gyeongbuk Institute of Science and Technology)</strong> — Interdisciplinary convergence science; GKS scholarships available</li>
+</ul>
+<h3>Programs Popular with Indian Students</h3>
+<ul>
+  <li>Semiconductor & Display Engineering (KAIST, POSTECH)</li>
+  <li>AI & Machine Learning (KAIST, SNU)</li>
+  <li>EV Battery & Materials Science (POSTECH, Yonsei)</li>
+  <li>International Business & MBA (SKY Universities, Sungkyunkwan)</li>
+</ul>
+`,
+  'salient-features': `
+<h2>Salient Features of Studying in South Korea</h2>
+<ul>
+  <li><strong>GKS Full Scholarship:</strong> One of the world's most generous government scholarships — full tuition, ₩900,000/month stipend, Korean language year, and return airfare.</li>
+  <li><strong>Fastest internet globally:</strong> South Korea has the world's fastest average internet speed — a genuine advantage for CS, data science, and tech research students.</li>
+  <li><strong>Part-time work:</strong> D-2 student visa holders may work 20 hours/week on campus, and full-time during vacation periods.</li>
+  <li><strong>Affordable living:</strong> Monthly expenses average ₩600,000–1,000,000 (₹37,000–62,000) — significantly lower than the USA, UK, or Australia.</li>
+  <li><strong>Samsung & LG campus recruitment:</strong> Both companies conduct on-campus recruitment at KAIST, POSTECH, SNU, and Yonsei — directly accessible to international students.</li>
+  <li><strong>D-10 Job-Seeking Visa:</strong> 1-year post-study job search visa allowing graduates to find employment without leaving Korea.</li>
+  <li><strong>Safety:</strong> South Korea is one of Asia's safest countries with extremely low violent crime rates.</li>
+  <li><strong>Cultural richness:</strong> The K-culture wave (K-pop, K-food, K-drama) has created a vibrant, internationally connected social environment for international students.</li>
+</ul>
+`,
+  'entry-criteria': `
+<h2>Entry Criteria for South Korean Universities (2026)</h2>
+<h3>Undergraduate</h3>
+<table>
+  <thead><tr><th>Requirement</th><th>SNU / Yonsei / Korea Univ.</th><th>KAIST / POSTECH</th></tr></thead>
+  <tbody>
+    <tr><td>Grade 12 Score</td><td>85%+</td><td>90%+ (highly competitive)</td></tr>
+    <tr><td>English (IELTS)</td><td>6.0–6.5</td><td>6.5+ (KAIST may waive for English-medium school graduates)</td></tr>
+    <tr><td>SAT/ACT</td><td>Recommended</td><td>Required for some programs</td></tr>
+    <tr><td>Math/Science</td><td>Strong performance required</td><td>Outstanding performance required</td></tr>
+  </tbody>
+</table>
+<h3>Postgraduate (Master's / PhD)</h3>
+<ul>
+  <li>Bachelor's degree with 70%+ CGPA (KAIST/POSTECH require 3.0/4.0 GPA minimum)</li>
+  <li>IELTS 6.0+ / TOEFL 80+ (KAIST English-medium programs accept IELTS 6.5+)</li>
+  <li>Research proposal required for research Master's and PhD programs</li>
+  <li>GRE: recommended for KAIST and POSTECH graduate programs</li>
+</ul>
+<h3>GKS Scholarship Eligibility</h3>
+<ul>
+  <li>Age: Under 25 (undergraduate track), under 40 (graduate track)</li>
+  <li>GPA: Minimum 80% (2.64/4.0) across all subjects in the most recent 3 years</li>
+  <li>Not a Korean national or dual citizen</li>
+  <li>Good health — medical certificate required</li>
+</ul>
+`,
+};
+
+// ── Singapore ──────────────────────────────────────────────────────────────────
+const SINGAPORE: CountryContent = {
+  'why-study': `
+<h2>Why Study in Singapore in 2026?</h2>
+<p>Singapore is the undisputed education capital of Asia. The National University of Singapore (NUS) ranks <strong>#8 globally</strong> in the QS World University Rankings 2026 — making it one of the highest-ranked universities in the world outside the US and UK. Nanyang Technological University (NTU) follows at #26. For Indian students seeking a top-10 global degree within a 4-hour flight of home, Singapore is unmatched.</p>
+<h3>Asia's Financial & Technology Hub</h3>
+<p>Singapore hosts the APAC headquarters of Google, Meta, Apple, Goldman Sachs, JPMorgan, and virtually every major global corporation. Graduates from NUS and NTU access a talent market that is among the world's most competitive and highest-paying — with starting salaries in tech and finance ranging from SGD 4,500–8,000/month (~₹2.8–5 lakhs/month).</p>
+<h3>English-Medium: No Language Barrier</h3>
+<p>Singapore's official working language is English. All NUS, NTU, SMU, and SIT programs are conducted entirely in English — eliminating the language preparation burden that Japan, Korea, Germany, or France impose. This makes Singapore the natural first choice for Indian students seeking an Asian university without a language transition.</p>
+<h3>Student's Pass: Structured Work Rights</h3>
+<p>All Singapore university students receive a Student's Pass (STP) that permits <strong>16 hours of part-time work per week</strong> during term and full-time work during vacations. The 2026 MOE Tuition Grant reduces effective tuition by 50–70% for international students who commit to working 3 years in Singapore after graduation — making NUS genuinely cost-competitive with European destinations.</p>
+<blockquote><p><strong>ILOC Insight (2026):</strong> NUS and NTU admit approximately 3,000 international undergraduates per year — and Indian students consistently comprise the largest non-ASEAN cohort. The academic standards are high, but so is the reward. Our track record shows that Indian applicants with 90%+ Class 12 scores and strong extracurriculars have a credible shot at admission.</p></blockquote>
+`,
+  'application-procedure': `
+<h2>Singapore Application Procedure (2026 Intake)</h2>
+<h3>Step 1 — University Selection (Month 1)</h3>
+<ul>
+  <li><strong>NUS:</strong> Engineering, Computing, Business, Medicine, Law, Arts & Social Sciences</li>
+  <li><strong>NTU:</strong> Engineering, Business, Science, Art, Design & Media</li>
+  <li><strong>SMU:</strong> Business, Law, Accountancy, Information Systems</li>
+  <li><strong>SIT (Singapore Institute of Technology):</strong> Applied engineering; work-integrated learning</li>
+  <li><strong>SUTD:</strong> Architecture & Sustainable Design, Engineering Systems</li>
+</ul>
+<h3>Step 2 — Application Submission (Month 1–3)</h3>
+<p>NUS and NTU applications open in October for the August intake. ILOC prepares:</p>
+<ul>
+  <li>Online application via university portal</li>
+  <li>Academic transcripts (Class 10, 11, 12) with certified translations if required</li>
+  <li>Personal Statement / Essay (ILOC provides extensive coaching)</li>
+  <li>Co-curricular activity portfolio and leadership record</li>
+  <li>SAT/ACT scores (required for NUS and NTU undergraduate programs)</li>
+  <li>IELTS/TOEFL: IELTS 6.5+ / TOEFL 90+</li>
+</ul>
+<h3>Step 3 — SOLAR+ Student's Pass Application (Month 4–5)</h3>
+<p>Upon receiving an offer letter, the university submits an In-Principle Approval (IPA) through the SOLAR+ system. ILOC then guides:</p>
+<ul>
+  <li>IPA letter collection and travel to Singapore</li>
+  <li>Student's Pass (STP) issuance at ICA within first week of arrival</li>
+  <li>MOE Tuition Grant agreement signing (reduces tuition by 50–70%)</li>
+</ul>
+<h3>Key 2026 Deadlines</h3>
+<table>
+  <thead><tr><th>University</th><th>Application Opens</th><th>Deadline</th><th>Intake</th></tr></thead>
+  <tbody>
+    <tr><td>NUS Undergraduate</td><td>Oct 2025</td><td>Mar 2026</td><td>Aug 2026</td></tr>
+    <tr><td>NTU Undergraduate</td><td>Oct 2025</td><td>Feb 2026</td><td>Aug 2026</td></tr>
+    <tr><td>SMU Undergraduate</td><td>Oct 2025</td><td>Feb 2026</td><td>Aug 2026</td></tr>
+    <tr><td>NUS Graduate (Master's)</td><td>Sep 2025</td><td>Dec 2025</td><td>Aug 2026</td></tr>
+  </tbody>
+</table>
+`,
+  'university-list': `
+<h2>Top Singapore Universities for Indian Students (2026)</h2>
+<h3>National Universities</h3>
+<ul>
+  <li><strong>National University of Singapore (NUS)</strong> — QS #8 globally; consistently Asia's top-ranked university; Computing, Engineering, Business, Medicine, Law; 40,000+ students; largest and most research-intensive</li>
+  <li><strong>Nanyang Technological University (NTU)</strong> — QS #26 globally; Engineering, Science, Business, Art, Design; strong AI and materials science research; vibrant campus</li>
+  <li><strong>Singapore Management University (SMU)</strong> — QS #511 globally; Business, Law, Accountancy, IT; city campus in the heart of Singapore's CBD</li>
+  <li><strong>Singapore Institute of Technology (SIT)</strong> — Applied degrees with work-integrated learning; partnerships with overseas universities including DigiPen, Newcastle, Glasgow</li>
+  <li><strong>Singapore University of Technology and Design (SUTD)</strong> — Collaboration with MIT; Architecture, Engineering Systems, Information Systems Technology & Design</li>
+</ul>
+<h3>Programs Popular with Indian Students</h3>
+<ul>
+  <li>Computer Science & Computing (NUS School of Computing — ranked #11 globally)</li>
+  <li>Electrical & Computer Engineering (NTU)</li>
+  <li>Business Administration / Accountancy (NUS Business School, SMU)</li>
+  <li>Data Science & AI (NUS, NTU)</li>
+  <li>Biomedical Engineering (NUS, NTU)</li>
+  <li>MBA (NUS MBA — ranked #24 globally by FT)</li>
+</ul>
+`,
+  'salient-features': `
+<h2>Salient Features of Studying in Singapore</h2>
+<ul>
+  <li><strong>World's top 10 university:</strong> NUS at #8 globally — the only non-US/UK institution in the world's top 10. An NUS degree commands the same global respect as Imperial College or UCL.</li>
+  <li><strong>English is the working language:</strong> No language barrier — all academic instruction, corporate culture, and daily life operate in English.</li>
+  <li><strong>MOE Tuition Grant:</strong> Reduces NUS/NTU/SMU tuition by 50–70% in exchange for a 3-year Singapore work commitment after graduation — making the net cost competitive with European destinations.</li>
+  <li><strong>Safety:</strong> Singapore is consistently ranked the world's safest city — violent crime is virtually non-existent.</li>
+  <li><strong>Indian community:</strong> 400,000+ Indian-origin residents in Singapore; Tamil is an official language; Indian food, festivals, and cultural spaces are deeply embedded in daily life.</li>
+  <li><strong>Global corporate hub:</strong> Google, Apple, Meta, Goldman Sachs APAC HQs — all within commuting distance of NUS and NTU campuses.</li>
+  <li><strong>Singapore PR pathway:</strong> After 3 years of employment (MOE Tuition Grant period), graduates are well-positioned to apply for Singapore Permanent Residency.</li>
+  <li><strong>Climate & lifestyle:</strong> Year-round warm weather, world-class food scene, and exceptional public transport make Singapore highly liveable for South Asian students.</li>
+</ul>
+`,
+  'entry-criteria': `
+<h2>Entry Criteria for Singapore Universities (2026)</h2>
+<h3>NUS & NTU Undergraduate</h3>
+<table>
+  <thead><tr><th>Requirement</th><th>NUS Computing / Engineering</th><th>NUS Business / Arts</th><th>NTU Engineering</th></tr></thead>
+  <tbody>
+    <tr><td>Class 12 Score</td><td>92%+ (PCM for Engineering)</td><td>88%+</td><td>90%+</td></tr>
+    <tr><td>English (IELTS)</td><td>6.5+</td><td>6.5+</td><td>6.0+</td></tr>
+    <tr><td>SAT</td><td>1400+ strongly preferred</td><td>1300+ preferred</td><td>1350+ preferred</td></tr>
+    <tr><td>Extracurriculars</td><td>Leadership record required</td><td>Required</td><td>Required</td></tr>
+  </tbody>
+</table>
+<h3>Postgraduate (Master's / PhD)</h3>
+<ul>
+  <li>Bachelor's degree with first-class or upper second-class honours equivalent (3.2/4.0 GPA or 70%+ CGPA)</li>
+  <li>IELTS 6.5+ / TOEFL 85+ for most programs</li>
+  <li>GRE: required for some NUS School of Computing and Engineering graduate programs</li>
+  <li>Research proposal: required for PhD and research Master's programs</li>
+  <li>2+ years work experience preferred (but not mandatory) for NUS MBA</li>
+</ul>
+<h3>Financial Requirements</h3>
+<ul>
+  <li>Proof of funds: SGD 20,000–30,000 minimum for Student's Pass issuance</li>
+  <li>MOE Tuition Grant recipients: 3-year post-graduation Singapore employment commitment</li>
+  <li>ASEAN Scholarship holders: full funding including accommodation and stipend</li>
+</ul>
+`,
+};
+
+// ── Russia ─────────────────────────────────────────────────────────────────────
+const RUSSIA: CountryContent = {
+  'why-study': `
+<h2>Why Study in Russia in 2026?</h2>
+<p>Russia is one of the world's most underrated academic destinations for Indian students — offering globally recognised degrees, particularly in <strong>Medicine (MBBS), Engineering, and Science</strong>, at a fraction of the cost of Western universities. With 48 Russian universities ranked in the QS World Rankings 2026 and a government scholarship program awarding 15,000 places annually to international students, Russia provides accessible excellence for cost-conscious Indian families.</p>
+<h3>MBBS in Russia: The #1 Choice for Affordable Medical Education</h3>
+<p>Russia's medical universities are approved by the <strong>National Medical Commission (NMC) of India</strong>, meaning MBBS graduates can appear for the National Exit Test (NExT) and practice medicine in India. The total cost of a 6-year MBBS in Russia — including tuition and living expenses — ranges from <strong>₹15–28 lakhs</strong>, compared to ₹60–100 lakhs at private Indian medical colleges. Key institutions include Kazan State Medical University, RUDN University, and First Moscow State Medical University (Sechenov).</p>
+<h3>Lomonosov Moscow State University: Academic Prestige</h3>
+<p>Moscow State University (MSU) ranks <strong>#87 globally</strong> (QS 2026) and is one of the world's oldest and most respected research institutions. Its Mathematics, Physics, Chemistry, and Computer Science departments have produced more Fields Medal and Nobel Prize winners than most Western universities. For Indian students seeking research-based postgraduate programs, MSU offers genuine world-class academic resources.</p>
+<h3>Engineering & STEM Programs</h3>
+<p>Bauman Moscow State Technical University (BMSTU) is Russia's MIT equivalent — ranked among Asia-Pacific's top engineering universities. SPbPU (St. Petersburg Polytechnic University) and NUST MISIS are strong in materials science, metallurgy, and industrial engineering. All offer English-medium programs for international students.</p>
+<blockquote><p><strong>ILOC Insight (2026):</strong> Russia is best suited for Indian students pursuing MBBS or engineering who are unable to secure seats in Indian government colleges and are unwilling to pay ₹60–100 lakhs at Indian private institutions. Our MBBS Russia program includes FMGE/NExT coaching starting from Year 1 to ensure India return success.</p></blockquote>
+`,
+  'application-procedure': `
+<h2>Russia Application Procedure (2026 Intake)</h2>
+<h3>Track A — Russian Government Scholarship (Rossotrudnichestvo)</h3>
+<ol>
+  <li><strong>Apply through Rossotrudnichestvo (Month 1–3):</strong> The Russian House in India manages applications. Open Jan–Mar 2026 for Sep 2026 intake. Submit Class 12 certificate, passport, medical certificate, and application form.</li>
+  <li><strong>Shortlisting & Interview (Month 3–5):</strong> Candidates are invited for interview at the Russian House (Delhi/Mumbai). ILOC provides full preparation.</li>
+  <li><strong>University Placement (Month 5–6):</strong> Successful candidates are assigned to Russian universities by the Ministry of Education.</li>
+  <li><strong>Invitation Letter (Vyzov) & Visa (Month 6–7):</strong> University issues formal invitation; ILOC handles student visa application at Russian consulate in Mumbai or Delhi.</li>
+</ol>
+<h3>Track B — Direct University Application</h3>
+<ol>
+  <li>Apply directly to your chosen university via their international admissions portal or authorised ILOC channel</li>
+  <li>Receive university invitation letter (vyzov)</li>
+  <li>Apply for Russian Student Visa at consulate — ILOC handles all documentation</li>
+  <li>Upon arrival: register migration card within 7 working days; enrol in university system</li>
+</ol>
+<h3>Key Dates 2026</h3>
+<table>
+  <thead><tr><th>Track</th><th>Application Period</th><th>Intake</th></tr></thead>
+  <tbody>
+    <tr><td>Government Scholarship</td><td>Jan–Mar 2026</td><td>Sep 2026</td></tr>
+    <tr><td>Direct University</td><td>Mar–Jul 2026</td><td>Sep 2026</td></tr>
+    <tr><td>Spring Intake (some universities)</td><td>Oct–Nov 2025</td><td>Feb 2026</td></tr>
+  </tbody>
+</table>
+`,
+  'university-list': `
+<h2>Top Russian Universities for Indian Students (2026)</h2>
+<h3>Medical Universities (NMC-Approved)</h3>
+<ul>
+  <li><strong>Kazan State Medical University</strong> — One of Russia's oldest medical schools (1814); NMC-approved; MBBS in 6 years; strong FMGE pass rate</li>
+  <li><strong>First Moscow State Medical University (I.M. Sechenov)</strong> — Russia's largest and most prestigious medical university; QS ranked; NMC-approved</li>
+  <li><strong>RUDN University (Peoples' Friendship University)</strong> — QS #326; large Indian student community; NMC-approved MBBS; Medicine and Engineering programs</li>
+  <li><strong>Kazan Federal University</strong> — QS #392; Medicine, Chemistry, IT; one of Russia's oldest universities</li>
+  <li><strong>Saint Petersburg State Pediatric Medical University</strong> — Specialist in Pediatrics and General Medicine; NMC-approved</li>
+</ul>
+<h3>Engineering & STEM Universities</h3>
+<ul>
+  <li><strong>Lomonosov Moscow State University (MSU)</strong> — QS #87; Mathematics, Physics, Chemistry, Computer Science; Russia's flagship research institution</li>
+  <li><strong>Bauman Moscow State Technical University (BMSTU)</strong> — Russia's premier engineering university; Aerospace, Mechanical, Robotics</li>
+  <li><strong>St. Petersburg Polytechnic University (SPbPU)</strong> — QS #360; Engineering, IT, Physics; strong industry ties</li>
+  <li><strong>NUST MISIS</strong> — Materials Science, Metallurgy, IT; government partner for international students</li>
+  <li><strong>ITMO University (St. Petersburg)</strong> — QS #313; Computer Science, AI, Photonics; 6× World Programming Champion</li>
+</ul>
+`,
+  'salient-features': `
+<h2>Salient Features of Studying in Russia</h2>
+<ul>
+  <li><strong>Extremely affordable MBBS:</strong> Total MBBS cost (6 years, tuition + living) of ₹15–28 lakhs — compared to ₹60–100 lakhs at Indian private medical colleges.</li>
+  <li><strong>NMC-approved medical degrees:</strong> Russian medical universities approved by India's National Medical Commission — graduates can appear for NExT/FMGE and practise in India.</li>
+  <li><strong>Government scholarship:</strong> Rossotrudnichestvo awards 1,000+ scholarships to Indian students annually — covering full tuition for eligible applicants.</li>
+  <li><strong>Low cost of living:</strong> Monthly expenses average ₹15,000–25,000 including university accommodation, food, and local transport — among the lowest of any major study destination.</li>
+  <li><strong>Large Indian community:</strong> Over 18,000 Indian students currently study in Russia — peer support networks are well-established at all major medical universities.</li>
+  <li><strong>No IELTS/TOEFL required:</strong> Most Russian universities offering English-medium programs do not require English proficiency tests for Indian students (Class 12 English qualification suffices).</li>
+  <li><strong>Historic academic excellence:</strong> Russia has produced 31 Nobel Prize winners in Physics, Chemistry, and Medicine — the research tradition is genuinely world-class.</li>
+  <li><strong>ILOC FMGE/NExT support:</strong> For MBBS students, ILOC provides access to NExT coaching materials and India-return career planning from Year 1.</li>
+</ul>
+`,
+  'entry-criteria': `
+<h2>Entry Criteria for Russian Universities (2026)</h2>
+<h3>MBBS (Most Common Program for Indian Students)</h3>
+<table>
+  <thead><tr><th>Requirement</th><th>Standard</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Class 12 Score</td><td>50%+ in PCB (Physics, Chemistry, Biology)</td><td>Government scholarship requires 60%+</td></tr>
+    <tr><td>English Proficiency</td><td>No IELTS/TOEFL required</td><td>Class 12 English subject satisfies requirement</td></tr>
+    <tr><td>NEET</td><td>Must have appeared and passed NEET</td><td>NEET qualification mandatory for Indian students per NMC rules 2024</td></tr>
+    <tr><td>Age</td><td>17–25 years at time of admission</td><td>DOB between 2001–2009 for 2026 intake</td></tr>
+    <tr><td>Medical Fitness</td><td>Required</td><td>HIV test, blood group certificate</td></tr>
+  </tbody>
+</table>
+<h3>Engineering & Science (Bachelor's)</h3>
+<ul>
+  <li>Class 12 with 55%+ in relevant subjects (PCM for Engineering; PCB for Life Sciences)</li>
+  <li>No IELTS required for English-medium programs</li>
+  <li>University entrance test (online) conducted by some institutions — ILOC provides preparation materials</li>
+</ul>
+<h3>Postgraduate (Master's / PhD)</h3>
+<ul>
+  <li>Bachelor's degree in relevant field with 55%+ aggregate</li>
+  <li>Research proposal for PhD programs</li>
+  <li>IELTS 5.5+ / TOEFL 60+ for English-medium programs at QS-ranked universities (MSU, SPbPU)</li>
+</ul>
+<h3>Financial Requirements</h3>
+<ul>
+  <li>Proof of funds: ₹2–4 lakhs in bank account for visa issuance</li>
+  <li>VHI (Voluntary Health Insurance): ₹8,000–12,000/year — mandatory for student visa</li>
+  <li>First-year tuition: Must be paid before university invitation letter (vyzov) is issued</li>
+</ul>
+`,
+};
+
 // ── Master export map ──────────────────────────────────────────────────────────
 export const COUNTRY_SUBPAGES: Record<string, CountryContent> = {
-  usa:           USA,
-  uk:            UK,
-  canada:        CANADA,
-  australia:     AUSTRALIA,
-  ireland:       IRELAND,
-  'new-zealand': NEW_ZEALAND,
-  singapore:     SINGAPORE,
-  europe:        EUROPE,
+  usa:            USA,
+  uk:             UK,
+  canada:         CANADA,
+  australia:      AUSTRALIA,
+  ireland:        IRELAND,
+  'new-zealand':  NEW_ZEALAND,
+  europe:         EUROPE,
+  uae:            UAE,
+  japan:          JAPAN,
+  'south-korea':  SOUTH_KOREA,
+  singapore:      SINGAPORE,
+  russia:         RUSSIA,
 };
 
 export function getSubpageContent(country: string, section: SectionSlug): string | null {

@@ -55,7 +55,7 @@ export default function Footer() {
             <span className="font-jakarta font-bold text-white text-lg">ILOC</span>
           </div>
           <p className="text-sm leading-6 text-white/60 mb-5 max-w-xs">
-            {COMPANY.tagline} Trusted by 2,500+ students since {COMPANY.since}.
+            {COMPANY.tagline} Trusted by 10,000+ students for 25+ years.
           </p>
           <div className="space-y-2 text-sm">
             <a href={`tel:${COMPANY.phone}`} className="flex items-center gap-2 text-white/60 hover:text-white transition-colors">

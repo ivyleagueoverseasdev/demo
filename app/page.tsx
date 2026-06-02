@@ -4,9 +4,8 @@ export const dynamic = 'force-dynamic'; // Replaces `revalidate` — KV is alway
 
 import type { Metadata } from 'next';
 import lazyLoad from 'next/dynamic';
-import { getGlobalSettings, getSiteContent } from '@/lib/kv';
+import { getGlobalSettings, getHeroSlides, getSiteContent } from '@/lib/kv';
 import type { ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
-import { DEFAULT_HERO_IMAGES } from '@/lib/data';
 
 // ── Above-fold: eager imports ─────────────────────────────────────────────
 import HeroSection       from '@/components/home/HeroSection';
@@ -18,6 +17,7 @@ import HowItWorks        from '@/components/home/HowItWorks';
 // ── Below-fold: lazy-loaded, not in the critical JS bundle ────────────────
 const UniversityMarquee   = lazyLoad(() => import('@/components/home/UniversityMarquee'));
 const TestimonialsSection = lazyLoad(() => import('@/components/home/TestimonialsSection'));
+const LiveClassesBoard    = lazyLoad(() => import('@/components/home/LiveClassesBoard'));
 const EventsCarousel      = lazyLoad(() => import('@/components/home/EventsCarousel'));
 const Updates2026         = lazyLoad(() => import('@/components/home/Updates2026'));
 const QuickEnquiry        = lazyLoad(() => import('@/components/home/QuickEnquiry'));
@@ -26,23 +26,19 @@ const CTASection          = lazyLoad(() => import('@/components/home/CTASection'
 export const metadata: Metadata = {
   title: 'Ivy League Overseas Consulting | Study Abroad from Pune',
   description:
-    'Premium overseas education consulting from Pune. 2,500+ students placed, 97% visa approval. Free 30-min counselling for USA, UK, Canada, Australia.',
+    'Premium overseas education consulting from Pune. 10,000+ students placed over 25+ years, 97% visa approval. Free 30-min counselling for USA, UK, Canada, Australia.',
 };
 
 export default async function HomePage() {
-  // Fetch KV overrides in parallel — both fall back gracefully on error
-  const [siteContent, globalSettings] = await Promise.all([
+  const [siteContent, globalSettings, heroSlidesKv] = await Promise.all([
     getSiteContent<{
       services?:     ServiceItem[];
       processSteps?: ProcessStepItem[];
       testimonials?: Testimonial[];
     }>().catch(() => null),
     getGlobalSettings().catch(() => null),
+    getHeroSlides().catch(() => null),
   ]);
-
-  const heroImages = globalSettings?.heroImages?.length
-    ? globalSettings.heroImages
-    : DEFAULT_HERO_IMAGES;
 
   const noticeBanner = globalSettings?.noticeBanner?.trim() || null;
 
@@ -53,13 +49,14 @@ export default async function HomePage() {
           {noticeBanner}
         </div>
       )}
-      <HeroSection heroImages={heroImages} />
+      <HeroSection slides={heroSlidesKv ?? undefined} />
       <StatsSection />
       <DestinationsStrip />
       <ServicesSection services={siteContent?.services} />
       <HowItWorks     steps={siteContent?.processSteps} />
       <UniversityMarquee />
       <TestimonialsSection testimonials={siteContent?.testimonials} />
+      <LiveClassesBoard />
       <EventsCarousel />
       <Updates2026 />
       <QuickEnquiry />

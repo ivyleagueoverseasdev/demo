@@ -13,12 +13,12 @@ import {
 
 // ── Icon registry: service id → Lucide icon + glow config ─────────────────
 const SERVICE_ICONS: Record<string, { Icon: React.ElementType; color: string; glow: string; bg: string }> = {
-  undergrad: { Icon: GraduationCap, color: '#2D5A99', glow: 'rgba(45,90,153,0.45)',  bg: '#EBF4FF' },
+  undergrad: { Icon: GraduationCap, color: '#246DFF', glow: 'rgba(36,109,255,0.45)',  bg: '#EBF4FF' },
   postgrad:  { Icon: Medal,         color: '#D97706', glow: 'rgba(217,119,6,0.45)',   bg: '#FFFBEB' },
   profiling: { Icon: Star,          color: '#7C3AED', glow: 'rgba(124,58,237,0.40)', bg: '#F5F3FF' },
   training:  { Icon: BookOpen,      color: '#059669', glow: 'rgba(5,150,105,0.40)',  bg: '#ECFDF5' },
   visa:      { Icon: ShieldCheck,   color: '#DC2626', glow: 'rgba(220,38,38,0.35)',  bg: '#FEF2F2' },
-  counsel:   { Icon: Users,         color: '#1A365D', glow: 'rgba(26,54,93,0.40)',   bg: '#EBF4FF' },
+  counsel:   { Icon: Users,         color: '#246DFF', glow: 'rgba(36,109,255,0.40)',   bg: '#EBF4FF' },
 };
 
 const FALLBACKS = [GraduationCap, Medal, Star, BookOpen, ShieldCheck, Users, Globe, Briefcase, FileText, BadgeCheck, Award];
@@ -26,7 +26,7 @@ const FALLBACKS = [GraduationCap, Medal, Star, BookOpen, ShieldCheck, Users, Glo
 function getIconCfg(id: string, index: number) {
   return SERVICE_ICONS[id] ?? {
     Icon: FALLBACKS[index % FALLBACKS.length],
-    color: '#2D5A99', glow: 'rgba(45,90,153,0.40)', bg: '#EBF4FF',
+    color: '#246DFF', glow: 'rgba(36,109,255,0.40)', bg: '#EBF4FF',
   };
 }
 
@@ -94,7 +94,7 @@ export default function ServicesSection({ services }: Props) {
             <p className="label mb-3">End-to-End Premium Support</p>
             <h2 className="font-jakarta font-extrabold text-primary-600" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
               Six ways we take you<br />
-              <span style={{ background: 'linear-gradient(135deg,#1A365D,#2D5A99)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              <span style={{ background: 'linear-gradient(135deg,#246DFF,#246DFF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                 from Pune to the world.
               </span>
             </h2>
@@ -136,10 +136,10 @@ export default function ServicesSection({ services }: Props) {
                 >
                   {/* Hover wash */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                    style={{ background: 'linear-gradient(145deg,rgba(26,54,93,0.025),rgba(217,119,6,0.015))' }} />
+                    style={{ background: 'linear-gradient(145deg,rgba(36,109,255,0.025),rgba(217,119,6,0.015))' }} />
                   {/* Animated bottom border */}
                   <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 ease-out"
-                    style={{ background: 'linear-gradient(to right,#1A365D,#2D5A99,#D97706)' }} />
+                    style={{ background: 'linear-gradient(to right,#246DFF,#246DFF,#D97706)' }} />
 
                   <div className="relative p-6 flex flex-col h-full">
                     {/* Ghost index */}
@@ -203,7 +203,7 @@ export default function ServicesSection({ services }: Props) {
           className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4"
         >
           {[
-            { Icon: GraduationCap, num: '2,500+', label: 'Students Placed',     color: '#2D5A99' },
+            { Icon: GraduationCap, num: '10,000+', label: 'Students Placed',    color: '#246DFF' },
             { Icon: BadgeCheck,    num: '97%',    label: 'Visa Approval Rate',   color: '#059669' },
             { Icon: Award,         num: '400+',   label: 'Partner Universities', color: '#7C3AED' },
             { Icon: ShieldCheck,   num: '₹0',     label: 'Hidden Fees, Ever',    color: '#D97706' },

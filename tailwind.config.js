@@ -9,10 +9,16 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50:  '#EBF4FF', 100: '#DBEAFE', 200: '#BFDBFE',
-          300: '#93C5FD', 500: '#2D5A99', 600: '#1A365D',
-          700: '#0F2247', 800: '#071630', 900: '#030B18',
-          DEFAULT: '#1A365D',
+          50:  '#EBF2FF', 100: '#D6E6FF', 200: '#ADCCFF',
+          300: '#7AADFF', 500: '#246DFF', 600: '#1A5CE8',
+          700: '#1249C4', 800: '#0C37A0', 900: '#07257C',
+          DEFAULT: '#246DFF',
+        },
+        partner: {
+          50:  '#EEF3FE', 100: '#D5E1FC', 200: '#ABBFFB',
+          300: '#7B98F7', 400: '#5A7CF5', 500: '#3B71F3',
+          600: '#2458D9', 700: '#1A43B0', 800: '#12308A',
+          900: '#0C2168', DEFAULT: '#3B71F3',
         },
         amber: {
           50: '#FFFBEB', 100: '#FEF3C7', 200: '#FDE68A',
@@ -42,10 +48,12 @@ module.exports = {
         'pulse-dot':      'pulseDot 2s ease-in-out infinite',
         'review-scroll':  'reviewScroll 35s linear infinite',
         'review-reverse': 'reviewScrollReverse 38s linear infinite',
+        slideUp:          'slideUp 0.25s ease-out',
       },
       keyframes: {
         fadeUp:              { from:{ opacity:'0',transform:'translateY(24px)' }, to:{ opacity:'1',transform:'translateY(0)' } },
         fadeIn:              { from:{ opacity:'0' }, to:{ opacity:'1' } },
+        slideUp:             { from:{ opacity:'0',transform:'translateY(16px)' }, to:{ opacity:'1',transform:'translateY(0)' } },
         float:               { '0%,100%':{ transform:'translateY(0px)' }, '50%':{ transform:'translateY(-12px)' } },
         pulseDot:            { '0%,100%':{ opacity:'1',transform:'scale(1)' }, '50%':{ opacity:'0.5',transform:'scale(0.85)' } },
         reviewScroll:        { '0%':{ transform:'translateX(0)' }, '100%':{ transform:'translateX(-50%)' } },

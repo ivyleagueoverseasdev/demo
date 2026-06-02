@@ -3,14 +3,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import type { CompanyDetails, DynamicPage, GlobalSettings, Lead, NewsItem, RedirectRule, SiteEvent, EventType, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
-import { DEFAULT_SERVICES, DEFAULT_PROCESS_STEPS, DEFAULT_TESTIMONIALS, COUNTRIES_MAP, COMPANY } from '@/lib/data';
+import type { CompanyDetails, DynamicPage, GlobalSettings, HeroSlide, Lead, NewsItem, RedirectRule, SiteEvent, EventType, EventActionLink, EventActionType, ServiceItem, ProcessStepItem, Testimonial, Stat } from '@/lib/types';
+import { DEFAULT_HERO_SLIDES, DEFAULT_SERVICES, DEFAULT_PROCESS_STEPS, DEFAULT_TESTIMONIALS, COUNTRIES_MAP, COMPANY } from '@/lib/data';
 import { SECTION_SLUGS, SECTION_LABELS, SectionSlug, getSubpageContent } from '@/lib/countrySubpages';
 import { NewsSchema, EventSchema, TestimonialSchema } from '@/lib/schemas';
 import type { AuditEntry } from '@/lib/schemas';
 
 // ── Design tokens ─────────────────────────────────────────────────────────
-const BLUE  = '#1A365D';
+const BLUE  = '#246DFF';
 const AMBER = '#D97706';
 
 // ── Slug utility ──────────────────────────────────────────────────────────
@@ -125,7 +125,7 @@ const inp      = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl
 
 const EVENT_TYPES: EventType[] = ['webinar','fair','deadline','workshop','seminar'];
 const EVENT_TYPE_COLORS: Record<EventType,string> = {
-  webinar: '#2D5A99', fair: '#059669', deadline: '#DC2626', workshop: '#7C3AED', seminar: '#D97706',
+  webinar: '#246DFF', fair: '#059669', deadline: '#DC2626', workshop: '#7C3AED', seminar: '#D97706',
 };
 
 // ── Login screen ──────────────────────────────────────────────────────────
@@ -153,14 +153,14 @@ function LoginScreen({ onLogin }: { onLogin: (t: string) => void }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4"
-      style={{ background: 'linear-gradient(145deg,#0F2247,#1A365D,#2D5A99)' }}>
+      style={{ background: 'linear-gradient(145deg,#1249C4,#246DFF,#246DFF)' }}>
       <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div className="h-1.5 bg-gradient-to-r from-amber-400 to-amber-600" />
           <div className="p-8 sm:p-10">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-jakarta font-black text-sm text-white"
-                style={{ background: `linear-gradient(135deg,${BLUE},#2D5A99)` }}>IL</div>
+                style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>IL</div>
               <div>
                 <div className="font-jakarta font-bold text-lg text-slate-800">ILOC Admin</div>
                 <div className="font-jakarta text-xs text-slate-400">Content Management</div>
@@ -177,7 +177,7 @@ function LoginScreen({ onLogin }: { onLogin: (t: string) => void }) {
               </div>
               <button type="submit" disabled={loading || !pw}
                 className={`w-full ${blueBtn} py-3.5 disabled:opacity-50`}
-                style={{ background: `linear-gradient(135deg,${BLUE},#2D5A99)` }}>
+                style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
                 {loading ? 'Signing in…' : 'Sign in →'}
               </button>
             </form>
@@ -199,6 +199,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const [tab,       setTab]       = useState<Tab>('overview');
   const [pages,     setPages]     = useState<DynamicPage[]>([]);
   const [redirects, setRedirects] = useState<RedirectRule[]>([]);
+  const [redirectsSaving, setRedirectsSaving] = useState(false);
   const [events,    setEvents]    = useState<SiteEvent[]>([]);
   const [toast,     setToast]     = useState('');
   const [busy,      setBusy]      = useState(false);
@@ -235,15 +236,36 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
 
   // ── Global settings state ─────────────────────────────────────────────
   const defaultGlobalSettings = (): GlobalSettings => ({
-    brandName:    COMPANY.short,
-    heroImages:   ['', '', ''],
-    noticeBanner: '',
-    linkedIn:     '',
-    instagram:    '',
-    whatsappUrl:  COMPANY.wa,
+    brandName:               COMPANY.short,
+    heroImages:              ['', '', ''],
+    noticeBanner:            '',
+    linkedIn:                '',
+    instagram:               '',
+    whatsappUrl:             COMPANY.wa,
+    mainLogoUrl:             '',
+    businessNameText:        '',
+    headerLogoUrl:           '',
+    headerBackgroundColor:   '#2563FF',
+    headerVerticalPadding:   '72px',
+    businessNameDisplayName: '',
   });
-  const [gs,     setGs]     = useState<GlobalSettings>(defaultGlobalSettings());
-  const [gsBusy, setGsBusy] = useState(false);
+  const [gs,         setGs]         = useState<GlobalSettings>(defaultGlobalSettings());
+  const [gsBusy,     setGsBusy]     = useState(false);
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(DEFAULT_HERO_SLIDES);
+  const [heroSlideBusy, setHeroSlideBusy] = useState(false);
+  const [heroSlideEditIdx, setHeroSlideEditIdx] = useState<number | null>(null);
+
+  // ── Stats block CMS state ─────────────────────────────────────────────
+  const DEFAULT_STATS_FORM: Stat[] = [
+    { num: '10,000+', label: 'Students Placed'               },
+    { num: '97%',     label: 'Visa Approval Rate'             },
+    { num: '5.0★',   label: 'JustDial Rating (48+ Reviews)'  },
+    { num: '25+',     label: 'Years in Business'              },
+    { num: '400+',    label: 'Partner Universities'           },
+    { num: '₹0',      label: 'Hidden Fees'                   },
+  ];
+  const [siteStats,     setSiteStats]     = useState<Stat[]>(DEFAULT_STATS_FORM);
+  const [statsBusy,     setStatsBusy]     = useState(false);
 
   // ── News CMS state ────────────────────────────────────────────────────
   const emptyNews = (): Omit<NewsItem, 'id' | 'createdAt'> => ({
@@ -264,10 +286,59 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const [cpLoading,  setCpLoading]  = useState(false);
   const [cpSaving,   setCpSaving]   = useState(false);
 
+  // ── Country Meta (stat blocks) editor state ───────────────────────────
+  type CountryMetaForm = {
+    intake: string; avgCost: string; visaRate: string; unis: string;
+    tagline: string; description: string; heroImage: string; campusImage: string; color: string;
+  };
+  const emptyMeta = (code: string): CountryMetaForm => {
+    const d = COUNTRIES_MAP[code];
+    return {
+      intake: d?.intake || '', avgCost: d?.avgCost || '', visaRate: d?.visaRate || '',
+      unis: d?.unis || '', tagline: d?.tagline || '', description: d?.description || '',
+      heroImage: d?.heroImage || '', campusImage: d?.campusImage || '', color: d?.color || '',
+    };
+  };
+  const [metaCountry,  setMetaCountry]  = useState(countryCodes[0] || 'usa');
+  const [metaForm,     setMetaForm]     = useState<CountryMetaForm>(() => emptyMeta(countryCodes[0] || 'usa'));
+  const [metaLoading,  setMetaLoading]  = useState(false);
+  const [metaSaving,   setMetaSaving]   = useState(false);
+
   const [partnerSection, setPartnerSection] = useState('partners:institutions');
   const [partnerHtml,    setPartnerHtml]    = useState('');
   const [partnerLoading, setPartnerLoading] = useState(false);
   const [partnerSaving,  setPartnerSaving]  = useState(false);
+
+  // ── Structured partner page settings state ────────────────────────────
+  type PartnerStatForm = { value: string; label: string; desc: string };
+  type PartnerSettingsForm = {
+    badge: string; heading: string; subheading: string;
+    bodyHeading: string; bodyIntro: string;
+    stats: PartnerStatForm[];
+    listHeading: string; listItems: string[];
+    formHeading: string; formSubtext: string;
+  };
+  const emptyPartnerForm = (): PartnerSettingsForm => ({
+    badge: '', heading: '', subheading: '', bodyHeading: '', bodyIntro: '',
+    stats: [{ value: '', label: '', desc: '' }],
+    listHeading: '', listItems: [''], formHeading: '', formSubtext: '',
+  });
+  const [partnerPage,      setPartnerPage]      = useState<'institutions' | 'agent' | 'referral'>('institutions');
+  const [partnerForm,      setPartnerForm]      = useState<PartnerSettingsForm>(emptyPartnerForm());
+  const [partnerFormLoad,  setPartnerFormLoad]  = useState(false);
+  const [partnerFormSave,  setPartnerFormSave]  = useState(false);
+
+  // ── University marquee settings state ────────────────────────────────
+  type UniEntryForm = { name: string; src: string; country: string };
+  const DEFAULT_MARQUEE_FORM = {
+    speedRow1: 38, speedRow2: 44,
+    heading: 'Students Placed in Top Universities',
+    subheading: "Join 10,000+ students we've placed at the world's finest institutions across 12 countries.",
+    unis: [] as UniEntryForm[],
+  };
+  const [marqueeForm,   setMarqueeForm]   = useState(DEFAULT_MARQUEE_FORM);
+  const [marqueeSaving, setMarqueeSaving] = useState(false);
+  const [marqueeLoading, setMarqueeLoading] = useState(false);
 
   // ── New page form ─────────────────────────────────────────────────────
   const [np, setNp] = useState({
@@ -284,55 +355,47 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     title: '', type: 'webinar', date: '', time: '', location: '',
     description: '', body: '', country: '', imageUrl: '',
     ctaLabel: 'Register Free', ctaUrl: '/contact',
-    seats: undefined, speakers: [], published: true,
+    actionLinks: [], seats: undefined, speakers: [], published: true,
   });
   const [ne,      setNe]      = useState(emptyEvent());
   const [editEvId,setEditEvId] = useState<string | null>(null);
   const [showEvForm,setShowEvForm] = useState(false);
 
-  const flash = (m: string) => { setToast(m); setTimeout(() => setToast(''), 2600); };
+  const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
+  const flash = (m: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setToastType(type); setToast(m); setTimeout(() => setToast(''), 3000);
+  };
   const hdrs  = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
   const extractEditorHtml = (payload: unknown) => {
-    if (!payload || typeof payload !== 'object') return '';
-    const body = (payload as any).html ?? (payload as any).content ?? (payload as any).data ?? (payload as any).body ?? '';
-    return typeof body === 'string' ? body : '';
+    if (!payload || typeof payload !== 'object') return undefined;
+    const body = (payload as any).html ?? (payload as any).content ?? (payload as any).data ?? (payload as any).body;
+    return typeof body === 'string' ? body : undefined;
   };
 
   // ── Fetch data ────────────────────────────────────────────────────────
   const fetchEvents = useCallback(async () => {
-    console.log('Admin Events Fetching: requesting /api/events');
-    const res = await fetch('/api/events').catch((err) => {
-      console.log('Admin Events fetch error:', err);
-      return null;
-    });
-    if (!res?.ok) {
-      console.log('Admin Events response not ok:', res?.status, res?.statusText);
-      setEvents([]);
-      return;
-    }
-    const data = await res.json().catch((err) => {
-      console.log('Admin Events JSON parse failed:', err);
-      return null;
-    });
-    console.log('KV Data Received in Admin:', data);
+    const res = await fetch('/api/events', { cache: 'no-store' }).catch(() => null);
+    if (!res?.ok) { setEvents([]); return; }
+    const data = await res.json().catch(() => null);
     setEvents(data?.events || []);
   }, [token]);
 
   const fetchAll = useCallback(async () => {
     const [pRes, cRes, mRes, lRes, nRes] = await Promise.all([
-      fetch('/api/pages',   { headers: hdrs }).catch(() => null),
-      fetch('/api/content').catch(() => null),
-      fetch('/api/media').catch(() => null),
-      fetch('/api/leads',   { headers: hdrs }).catch(() => null),
-      fetch('/api/news').catch(() => null),
+      fetch('/api/pages',   { headers: hdrs, cache: 'no-store' }).catch(() => null),
+      fetch('/api/content', { headers: hdrs, cache: 'no-store' }).catch(() => null),
+      fetch('/api/media',   { cache: 'no-store' }).catch(() => null),
+      fetch('/api/leads',   { headers: hdrs, cache: 'no-store' }).catch(() => null),
+      fetch('/api/news',    { cache: 'no-store' }).catch(() => null),
     ]);
     const contentData = cRes?.ok ? await cRes.json() : null;
     const mappedSiteContent = contentData ? (contentData.siteContent ?? contentData.content ?? contentData.data ?? {}) : {};
-    console.log('Raw /api/content response:', contentData);
-    console.log('Mapped siteContent for admin:', mappedSiteContent);
-    if (pRes?.ok)  { const d = await pRes.json(); setPages(d.pages || []); }
-    if (contentData)  { setRedirects(contentData.redirects || []); }
+    if (pRes) {
+      const d = pRes.ok ? await pRes.json() : null;
+      setPages(d?.pages || []);
+    }
+    if (contentData) { setRedirects(contentData.redirects || []); }
     if (mRes?.ok)  {
       const d = await mRes.json();
       if (d.heroImages?.length) setHeroUrls(d.heroImages.concat(['','','']).slice(0,3));
@@ -348,15 +411,33 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     if (contentData) {
       if (contentData.companyDetails)  setCompanyDetails(contentData.companyDetails);
       if (contentData.globalSettings)  setGs({
-        brandName:    contentData.globalSettings.brandName    || COMPANY.short,
-        heroImages:   (contentData.globalSettings.heroImages  || ['','','']).concat(['','','']).slice(0,3),
-        noticeBanner: contentData.globalSettings.noticeBanner || '',
-        linkedIn:     contentData.globalSettings.linkedIn     || '',
-        instagram:    contentData.globalSettings.instagram    || '',
-        whatsappUrl:  contentData.globalSettings.whatsappUrl  || COMPANY.wa,
+        brandName:               contentData.globalSettings.brandName               || COMPANY.short,
+        heroImages:              (contentData.globalSettings.heroImages              || ['','','']).concat(['','','']).slice(0,3),
+        noticeBanner:            contentData.globalSettings.noticeBanner            || '',
+        linkedIn:                contentData.globalSettings.linkedIn                || '',
+        instagram:               contentData.globalSettings.instagram               || '',
+        whatsappUrl:             contentData.globalSettings.whatsappUrl             || COMPANY.wa,
+        mainLogoUrl:             contentData.globalSettings.mainLogoUrl             || '',
+        businessNameText:        contentData.globalSettings.businessNameText        || '',
+        headerLogoUrl:           contentData.globalSettings.headerLogoUrl           || '',
+        headerBackgroundColor:   contentData.globalSettings.headerBackgroundColor   || '#2563FF',
+        headerVerticalPadding:   contentData.globalSettings.headerVerticalPadding   || '72px',
+        businessNameDisplayName: contentData.globalSettings.businessNameDisplayName || '',
       });
     }
     await fetchEvents();
+    // Hero slides
+    const hsRes = await fetch('/api/hero-slides', { cache: 'no-store' }).catch(() => null);
+    if (hsRes?.ok) {
+      const hsd = await hsRes.json().catch(() => null);
+      if (hsd?.slides?.length) setHeroSlides(hsd.slides);
+    }
+    // Stats block
+    const statsRes = await fetch('/api/stats', { cache: 'no-store' }).catch(() => null);
+    if (statsRes?.ok) {
+      const sd = await statsRes.json().catch(() => null);
+      if (sd?.stats?.length) setSiteStats(sd.stats);
+    }
   }, [fetchEvents, token]);
 
   const fetchLeads = useCallback(async () => {
@@ -396,8 +477,8 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   };
 
   const createPage = async () => {
-    if (!np.title) { flash('Page title is required.'); return; }
-    if (!np.slug) { flash('Could not generate URL — please enter a title.'); return; }
+    if (!np.title) { flash('Page title is required.', 'error'); return; }
+    if (!np.slug) { flash('Could not generate URL — please enter a title.', 'error'); return; }
     setBusy(true);
     const page: Partial<DynamicPage> = {
       id: crypto.randomUUID(),
@@ -412,7 +493,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       flash(`✓ Page /${page.slug} live!`);
       setNp({ slug:'',title:'',metaTitle:'',metaDescription:'',category:'',description:'',body:'',heroImageUrl:'',layout:'default',published:true });
       fetchAll(); setTab('pages');
-    } else flash('Failed to create page.');
+    } else flash('Failed to create page.', 'error');
     setBusy(false);
   };
 
@@ -473,7 +554,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     const payload = publishedOverride !== undefined ? { ...nt, published: publishedOverride } : nt;
     const result = TestimonialSchema.safeParse(payload);
     if (!result.success) {
-      flash(formatZodErrors(result.error.issues));
+      flash(formatZodErrors(result.error.issues), 'error');
       return;
     }
     const validatedT = result.data;
@@ -509,11 +590,18 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
 
   // ── Redirect helpers ──────────────────────────────────────────────────
   const saveRedirects = async (rules: RedirectRule[]) => {
-    await fetch('/api/content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ redirects: rules }) }).catch(() => null);
-    setRedirects(rules); flash('Redirects saved.');
+    setRedirectsSaving(true);
+    try {
+      const res = await fetch('/api/content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ redirects: rules }) }).catch(() => null);
+      if (res && !res.ok) flash('Failed to save redirects.', 'error');
+    } finally {
+      setRedirects(rules);
+      flash('Redirects saved.');
+      setRedirectsSaving(false);
+    }
   };
   const addRedirect = () => {
-    if (!nr.from || !nr.to) { flash('From and To are required.'); return; }
+    if (!nr.from || !nr.to) { flash('From and To are required.', 'error'); return; }
     saveRedirects([...redirects, { ...nr, id: crypto.randomUUID() }]);
     setNr({ from:'', to:'', type:301, active:true, note:'' });
   };
@@ -527,7 +615,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         await fetchAll();
         flash('Status updated.');
       } else {
-        flash('Failed to update status.');
+        flash('Failed to update status.', 'error');
       }
     } finally {
       setLeadsBusy(false);
@@ -543,7 +631,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         await fetchAll();
         flash('Lead deleted.');
       } else {
-        flash('Failed to delete lead.');
+        flash('Failed to delete lead.', 'error');
       }
     } finally {
       setLeadsBusy(false);
@@ -557,6 +645,28 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     flash('✓ Company details saved — live immediately.');
     setCdBusy(false);
   };
+
+  // ── Hero slides helpers ───────────────────────────────────────────────
+  const saveStats = async () => {
+    setStatsBusy(true);
+    const res = await fetch('/api/stats', { method: 'PUT', headers: hdrs, body: JSON.stringify({ stats: siteStats }) }).catch(() => null);
+    if (res?.ok) flash('✓ Stats block saved — live immediately.');
+    else flash('Failed to save stats.', 'error');
+    setStatsBusy(false);
+  };
+
+  const saveHeroSlides = async () => {
+    setHeroSlideBusy(true);
+    const res = await fetch('/api/hero-slides', {
+      method: 'PUT', headers: hdrs, body: JSON.stringify({ slides: heroSlides }),
+    }).catch(() => null);
+    if (res?.ok) flash('✓ Hero slides saved — live immediately.');
+    else flash('Failed to save hero slides.', 'error');
+    setHeroSlideBusy(false);
+  };
+
+  const updateSlide = (i: number, patch: Partial<HeroSlide>) =>
+    setHeroSlides(prev => prev.map((s, si) => si === i ? { ...s, ...patch } : s));
 
   // ── Global settings helpers ───────────────────────────────────────────
   const saveGlobalSettings = async () => {
@@ -575,7 +685,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     const payload = publishedOverride !== undefined ? { ...nn, published: publishedOverride } : nn;
     const result = NewsSchema.safeParse(payload);
     if (!result.success) {
-      flash(formatZodErrors(result.error.issues));
+      flash(formatZodErrors(result.error.issues), 'error');
       return;
     }
     const validatedNews = result.data;
@@ -591,7 +701,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         : (validatedNews.published ? '✓ Article published.' : '✓ Draft saved.'));
       setNn(emptyNews()); setEditNewsId(null); setShowNewsForm(false);
       fetchAll();
-    } else flash('Failed to save article.');
+    } else flash('Failed to save article.', 'error');
     setNewsBusy(false);
   };
 
@@ -617,7 +727,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       await fetchAll();
       flash('Visibility updated.');
     } else {
-      flash('Failed to update visibility.');
+      flash('Failed to update visibility.', 'error');
     }
   };
 
@@ -625,12 +735,13 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const loadCountrySection = useCallback(async (country: string, section: string) => {
     setCpLoading(true); setCpHtml('');
     const res = await fetch(`/api/country-content?country=${encodeURIComponent(country)}&section=${encodeURIComponent(section)}`).catch(() => null);
-    let html = '';
+    let html: string | undefined = undefined;
     if (res?.ok) {
       const d = await res.json().catch(() => null);
-      console.log('Raw API Response for country-content:', d);
       html = extractEditorHtml(d);
-      console.log('State set to:', html);
+    }
+    if (html === undefined) {
+      html = getSubpageContent(country, section as SectionSlug) || '';
     }
     setCpHtml(html);
     setCpLoading(false);
@@ -639,7 +750,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   const saveCountrySection = async (country?: string) => {
     const targetCountry = country ?? cpCountry;
     if (!targetCountry || !cpSection) {
-      flash('Please select a country and section before saving.');
+      flash('Please select a country and section before saving.', 'error');
       return;
     }
     setCpSaving(true);
@@ -648,27 +759,122 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       flash('✓ Country section saved — live on next page load.');
       await loadCountrySection(targetCountry, cpSection);
     } else {
-      flash('Failed to save content.');
+      flash('Failed to save content.', 'error');
     }
     setCpSaving(false);
+  };
+
+  // ── Country meta (stat blocks) helpers ───────────────────────────────
+  const loadCountryMeta = useCallback(async (code: string) => {
+    setMetaLoading(true);
+    // Start with static defaults so fields are always pre-filled
+    const defaults = emptyMeta(code);
+    const res = await fetch(`/api/country-meta?country=${encodeURIComponent(code)}`).catch(() => null);
+    if (res?.ok) {
+      const d = await res.json().catch(() => null);
+      if (d?.meta) {
+        setMetaForm({
+          intake:      d.meta.intake      || defaults.intake,
+          avgCost:     d.meta.avgCost     || defaults.avgCost,
+          visaRate:    d.meta.visaRate    || defaults.visaRate,
+          unis:        d.meta.unis        || defaults.unis,
+          tagline:     d.meta.tagline     || defaults.tagline,
+          description: d.meta.description || defaults.description,
+          heroImage:   d.meta.heroImage   || defaults.heroImage,
+          campusImage: d.meta.campusImage || defaults.campusImage,
+          color:       d.meta.color       || defaults.color,
+        });
+      } else {
+        setMetaForm(defaults);
+      }
+    } else {
+      setMetaForm(defaults);
+    }
+    setMetaLoading(false);
+  }, [token]);
+
+  const saveCountryMeta = async () => {
+    if (!metaCountry) { flash('Select a country first.', 'error'); return; }
+    setMetaSaving(true);
+    const payload = {
+      country: metaCountry,
+      meta: {
+        intake:      metaForm.intake      || undefined,
+        avgCost:     metaForm.avgCost     || undefined,
+        visaRate:    metaForm.visaRate    || undefined,
+        unis:        metaForm.unis        || undefined,
+        tagline:     metaForm.tagline     || undefined,
+        description: metaForm.description || undefined,
+        heroImage:   metaForm.heroImage   || undefined,
+        campusImage: metaForm.campusImage || undefined,
+        color:       metaForm.color       || undefined,
+      },
+    };
+    const res = await fetch('/api/country-meta', { method: 'PUT', headers: hdrs, body: JSON.stringify(payload) }).catch(() => null);
+    if (res?.ok) {
+      flash('✓ Stat blocks saved — live on next page load.');
+    } else {
+      flash('Failed to save stat blocks.', 'error');
+    }
+    setMetaSaving(false);
+  };
+
+  const resetCountryMeta = () => {
+    setMetaForm(emptyMeta(metaCountry));
+    flash('Reset to defaults — click Save to apply.', 'info');
+  };
+
+  const loadMarqueeSettings = useCallback(async () => {
+    setMarqueeLoading(true);
+    const res = await fetch('/api/marquee', { cache: 'no-store' }).catch(() => null);
+    if (res?.ok) {
+      const d = await res.json().catch(() => null);
+      if (d?.settings) {
+        setMarqueeForm({
+          speedRow1:  d.settings.speedRow1  ?? DEFAULT_MARQUEE_FORM.speedRow1,
+          speedRow2:  d.settings.speedRow2  ?? DEFAULT_MARQUEE_FORM.speedRow2,
+          heading:    d.settings.heading    || DEFAULT_MARQUEE_FORM.heading,
+          subheading: d.settings.subheading || DEFAULT_MARQUEE_FORM.subheading,
+          unis:       d.settings.unis       ?? [],
+        });
+      }
+    }
+    setMarqueeLoading(false);
+  }, []);
+
+  const saveMarqueeSettings = async () => {
+    setMarqueeSaving(true);
+    const payload = {
+      speedRow1:  marqueeForm.speedRow1,
+      speedRow2:  marqueeForm.speedRow2,
+      heading:    marqueeForm.heading,
+      subheading: marqueeForm.subheading,
+      unis:       marqueeForm.unis.length > 0 ? marqueeForm.unis : undefined,
+    };
+    const res = await fetch('/api/marquee', { method: 'PUT', headers: hdrs, body: JSON.stringify(payload) }).catch(() => null);
+    if (res?.ok) {
+      flash('✓ Marquee settings saved — live on next page load.');
+    } else {
+      flash('Failed to save marquee settings.', 'error');
+    }
+    setMarqueeSaving(false);
   };
 
   const loadPartnerSection = useCallback(async (section: string) => {
     setPartnerLoading(true); setPartnerHtml('');
     const res = await fetch(`/api/country-content?country=${encodeURIComponent('global')}&section=${encodeURIComponent(section)}`).catch(() => null);
+    let html = '';
     if (res?.ok) {
       const d = await res.json().catch(() => null);
-      console.log('Raw API Response for partner section:', d);
-      const html = extractEditorHtml(d);
-      console.log('State set to:', html);
-      setPartnerHtml(html);
+      html = extractEditorHtml(d) ?? '';
     }
+    setPartnerHtml(html);
     setPartnerLoading(false);
   }, [token]);
 
   const savePartnerSection = async () => {
     if (!partnerSection) {
-      flash('Please select a partner page before saving.');
+      flash('Please select a partner page before saving.', 'error');
       return;
     }
     setPartnerSaving(true);
@@ -676,10 +882,59 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     if (res?.ok) {
       flash('✓ Partners content saved — live on next page load.');
       await loadPartnerSection(partnerSection);
+    } else if (res?.status === 401) {
+      flash('Unauthorized. Please sign in again.', 'error');
+      onLogout();
     } else {
-      flash('Failed to save content.');
+      flash('Failed to save content.', 'error');
     }
     setPartnerSaving(false);
+  };
+
+  const loadPartnerForm = useCallback(async (page: 'institutions' | 'agent' | 'referral') => {
+    setPartnerFormLoad(true);
+    const res = await fetch(`/api/partner-settings?page=${page}`).catch(() => null);
+    if (res?.ok) {
+      const d = await res.json().catch(() => null);
+      const s = d?.settings;
+      if (s) {
+        setPartnerForm({
+          badge:       s.badge       ?? '',
+          heading:     s.heading     ?? '',
+          subheading:  s.subheading  ?? '',
+          bodyHeading: s.bodyHeading ?? '',
+          bodyIntro:   s.bodyIntro   ?? '',
+          stats:       s.stats?.length ? s.stats : [{ value: '', label: '', desc: '' }],
+          listHeading: s.listHeading ?? '',
+          listItems:   s.listItems?.length ? s.listItems : [''],
+          formHeading: s.formHeading ?? '',
+          formSubtext: s.formSubtext ?? '',
+        });
+      } else {
+        setPartnerForm({ badge: '', heading: '', subheading: '', bodyHeading: '', bodyIntro: '', stats: [{ value: '', label: '', desc: '' }], listHeading: '', listItems: [''], formHeading: '', formSubtext: '' });
+      }
+    } else {
+      setPartnerForm({ badge: '', heading: '', subheading: '', bodyHeading: '', bodyIntro: '', stats: [{ value: '', label: '', desc: '' }], listHeading: '', listItems: [''], formHeading: '', formSubtext: '' });
+    }
+    setPartnerFormLoad(false);
+  }, [token]);
+
+  const savePartnerForm = async () => {
+    setPartnerFormSave(true);
+    const res = await fetch('/api/partner-settings', {
+      method: 'PUT',
+      headers: hdrs,
+      body: JSON.stringify({ page: partnerPage, settings: partnerForm }),
+    }).catch(() => null);
+    if (res?.ok) {
+      flash('✓ Partner page settings saved — live on next page load.');
+    } else if (res?.status === 401) {
+      flash('Unauthorized. Please sign in again.', 'error');
+      onLogout();
+    } else {
+      flash('Failed to save partner settings.', 'error');
+    }
+    setPartnerFormSave(false);
   };
 
   useEffect(() => {
@@ -693,6 +948,10 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   }, [tab, partnerSection, loadPartnerSection]);
 
   useEffect(() => {
+    if (tab === 'partners') loadPartnerForm(partnerPage);
+  }, [tab, partnerPage, loadPartnerForm]);
+
+  useEffect(() => {
     if (tab === 'country-pages') {
       if (cpCountry && cpSection) {
         loadCountrySection(cpCountry, cpSection);
@@ -702,26 +961,35 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
     }
   }, [tab, cpCountry, cpSection, loadCountrySection]);
 
+  useEffect(() => {
+    if (tab === 'country-pages') {
+      loadCountryMeta(metaCountry);
+    }
+  }, [tab, metaCountry, loadCountryMeta]);
+
+  useEffect(() => {
+    if (tab === 'homepage') {
+      loadMarqueeSettings();
+    }
+  }, [tab, loadMarqueeSettings]);
+
   // ── Event helpers ─────────────────────────────────────────────────────
-  const saveEvents = async (evs: SiteEvent[]) => {
-    console.log('Admin Events Saving:', evs.length, 'events');
-    const res = await fetch('/api/events', { method: 'PUT', headers: hdrs, body: JSON.stringify({ events: evs }) }).catch((err) => {
-      console.log('Admin Events save error:', err);
-      return null;
-    });
+  const saveEvents = async (evs: SiteEvent[]): Promise<boolean> => {
+    const res = await fetch('/api/events', { method: 'PUT', headers: hdrs, body: JSON.stringify({ events: evs }) }).catch(() => null);
     if (res?.ok) {
       await fetchEvents();
-    } else {
-      console.log('Admin Events save failed:', res?.status, res?.statusText);
+      return true;
     }
     setEvents(evs);
+    flash('Failed to save event — please try again.', 'error');
+    return false;
   };
 
   const submitEvent = async (publishedOverride?: boolean) => {
     const payload = publishedOverride !== undefined ? { ...ne, published: publishedOverride } : ne;
     const result = EventSchema.safeParse(payload);
     if (!result.success) {
-      flash(formatZodErrors(result.error.issues));
+      flash(formatZodErrors(result.error.issues), 'error');
       return;
     }
     const validatedEvent = result.data;
@@ -733,12 +1001,14 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       const newEv: SiteEvent = { ...validatedEvent, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
       evs = [...events, newEv];
     }
-    await saveEvents(evs);
-    flash(editEvId
-      ? (validatedEvent.published ? '✓ Event updated & published.' : '✓ Event draft saved.')
-      : (validatedEvent.published ? '✓ Event created & published.' : '✓ Event draft saved.'));
-    setNe(emptyEvent()); setEditEvId(null); setShowEvForm(false);
-    await fetchAll();
+    const ok = await saveEvents(evs);
+    if (ok) {
+      flash(editEvId
+        ? (validatedEvent.published ? '✓ Event updated & published.' : '✓ Event draft saved.')
+        : (validatedEvent.published ? '✓ Event created & published.' : '✓ Event draft saved.'));
+      setNe(emptyEvent()); setEditEvId(null); setShowEvForm(false);
+      await fetchAll();
+    }
     setBusy(false);
   };
 
@@ -748,8 +1018,8 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
       location: ev.location, description: ev.description,
       body: ev.body || '', country: ev.country || '',
       imageUrl: ev.imageUrl || '', ctaLabel: ev.ctaLabel,
-      ctaUrl: ev.ctaUrl || '', seats: ev.seats,
-      speakers: ev.speakers || [], published: ev.published,
+      ctaUrl: ev.ctaUrl || '', actionLinks: ev.actionLinks || [],
+      seats: ev.seats, speakers: ev.speakers || [], published: ev.published,
     });
     setEditEvId(ev.id); setShowEvForm(true);
   };
@@ -833,7 +1103,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
   };
 
   const restoreSnapshot = async (entry: AuditEntry) => {
-    if (!entry.before) { flash('No previous snapshot to restore.'); return; }
+    if (!entry.before) { flash('No previous snapshot to restore.', 'error'); return; }
     if (!confirm(`Restore "${entry.entityName}" to its state before this action?`)) return;
     setAuditRestoring(entry.id);
     try {
@@ -853,7 +1123,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         flash(`✓ Restored "${entry.entityName}" to previous state.`);
         fetchAll(); fetchAuditLog();
       } else {
-        flash('Restore failed — please try again.');
+        flash('Restore failed — please try again.', 'error');
       }
     } finally {
       setAuditRestoring(null);
@@ -887,7 +1157,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         flash('✓ Image uploaded successfully.');
       }
     } else {
-      flash('Failed to upload image.');
+      flash('Failed to upload image.', 'error');
     }
     setUploading(false);
   };
@@ -917,7 +1187,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
           flash('✓ Image uploaded and attached.');
         }
       } else {
-        flash('Upload failed.');
+        flash('Upload failed.', 'error');
       }
       setLocalUpload(false);
     };
@@ -948,7 +1218,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center font-jakarta font-black text-xs text-white"
-              style={{ background: `linear-gradient(135deg,${BLUE},#2D5A99)` }}>IL</div>
+              style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>IL</div>
             <span className="font-jakarta font-bold text-slate-800">ILOC Admin</span>
             <span className="hidden sm:block text-xs text-slate-400 ml-1">· Content Management</span>
           </div>
@@ -987,9 +1257,9 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
             <h2 className="font-jakarta font-extrabold text-slate-800 text-2xl mb-6">Dashboard</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {[
-                { label:'Published Pages',   val: pages.filter(p=>p.published).length, icon:'📄', color:BLUE  },
-                { label:'Draft Pages',       val: pages.filter(p=>!p.published).length,icon:'📝', color:'#64748B' },
-                { label:'Live Events',       val: events.filter(e=>e.published).length, icon:'📅', color:AMBER },
+                { label:'Total Pages',      val: pages.length, icon:'📄', color:BLUE  },
+                { label:'Draft Pages',       val: pages.filter(p=>!p.published).length, icon:'📝', color:'#64748B' },
+                { label:'Total Events',      val: events.length, icon:'📅', color:AMBER },
                 { label:'Active Redirects',  val: redirects.filter(r=>r.active).length, icon:'↗', color:'#059669' },
               ].map(s => (
                 <div key={s.label} className="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
@@ -1080,64 +1350,159 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         {tab === 'partners' && (
           <div>
             <h2 className="font-jakarta font-extrabold text-slate-800 text-2xl mb-2">B2B Partners Editor</h2>
-            <p className="font-jakarta text-sm text-slate-500 mb-6">Override the content for Institutions, Agents, and Referral pages. Changes are live on the next page load.</p>
+            <p className="font-jakarta text-sm text-slate-500 mb-6">Edit all content for the Institutions, Agent, and Referral partner pages. Changes go live on the next page load.</p>
 
+            {/* Page selector */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6 mb-6">
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                 <div>
-                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Select Partner Page</label>
-                    <select
-                      value={partnerSection}
-                      onChange={e => { setPartnerSection(e.target.value); setPartnerHtml(''); }}
-                      className={`${inp} cursor-pointer`}
-                    >
-                    <option value="">Select a partner page</option>
-                    <option value="partners:institutions">🏛️ Institutions</option>
-                    <option value="partners:agent">🤝 Agents</option>
-                    <option value="partners:referral">🎁 Referral</option>
-                  </select>
-                </div>
+              <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Select Partner Page</label>
+              <div className="flex gap-3 flex-wrap">
+                {(['institutions', 'agent', 'referral'] as const).map(p => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPartnerPage(p)}
+                    className={`font-jakarta font-semibold text-sm px-5 py-2.5 rounded-xl border transition-all capitalize ${partnerPage === p ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                  >
+                    {p === 'institutions' ? '🏛️ Institutions' : p === 'agent' ? '🤝 Agent' : '🎁 Referral'}
+                  </button>
+                ))}
               </div>
-
-              <div className="mb-4 text-slate-500 text-xs flex items-center gap-2">
-                {partnerLoading ? (
-                  <span className="inline-flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full border-2 border-slate-300 border-t-amber-500 animate-spin" />
-                    Loading content automatically...
-                  </span>
-                ) : partnerSection ? (
-                  <span>Content loads automatically when you select a partner page.</span>
-                ) : (
-                  <span>Select a partner page to begin.</span>
-                )}
-              </div>
-
-              <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">
-                Page Content
-              </label>
-              <RichTextEditor
-                value={partnerHtml}
-                onChange={setPartnerHtml}
-                placeholder="The editor will fill automatically after selecting a partner page."
-                rows={12}
-              />
-              {!partnerLoading && partnerHtml.trim() === '' && (
-                <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 text-sm mt-3">
-                  {partnerSection
-                    ? 'No saved content yet for this section. Start typing to create it.'
-                    : 'Select a partner page to begin editing.'}
+              {partnerFormLoad && (
+                <div className="mt-3 flex items-center gap-2 text-slate-400 text-xs">
+                  <span className="h-2.5 w-2.5 rounded-full border-2 border-slate-300 border-t-amber-500 animate-spin" />
+                  Loading settings…
                 </div>
               )}
-
-              <button
-                onClick={() => { void savePartnerSection(); }}
-                disabled={!partnerSection || partnerSaving}
-                className={`${amberBtn} mt-4 disabled:opacity-50`}
-                style={{ background: `linear-gradient(135deg,#D97706,#F59E0B)` }}
-              >
-                {partnerSaving ? 'Saving…' : 'Save to KV →'}
-              </button>
             </div>
+
+            {!partnerFormLoad && (
+              <div className="space-y-6">
+
+                {/* ── Hero section ── */}
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                  <h3 className="font-jakarta font-bold text-slate-700 mb-4 flex items-center gap-2"><span className="text-amber-500">◆</span> Hero Section</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Badge Text (small pill above heading)</label>
+                      <input className={inp} value={partnerForm.badge} onChange={e => setPartnerForm(f => ({ ...f, badge: e.target.value }))} placeholder="e.g. Global University Network" />
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Heading — wrap a word in **double asterisks** for amber gradient</label>
+                      <input className={inp} value={partnerForm.heading} onChange={e => setPartnerForm(f => ({ ...f, heading: e.target.value }))} placeholder="e.g. Recruit **High-Intent** Indian Students." />
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Subheading</label>
+                      <textarea className={`${inp} resize-none`} rows={3} value={partnerForm.subheading} onChange={e => setPartnerForm(f => ({ ...f, subheading: e.target.value }))} placeholder="Paragraph below the heading…" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Body section ── */}
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                  <h3 className="font-jakarta font-bold text-slate-700 mb-4 flex items-center gap-2"><span className="text-amber-500">◆</span> Body Section</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Section Heading</label>
+                      <input className={inp} value={partnerForm.bodyHeading} onChange={e => setPartnerForm(f => ({ ...f, bodyHeading: e.target.value }))} placeholder="e.g. Why Partner with ILOC?" />
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Intro Paragraph</label>
+                      <textarea className={`${inp} resize-none`} rows={4} value={partnerForm.bodyIntro} onChange={e => setPartnerForm(f => ({ ...f, bodyIntro: e.target.value }))} placeholder="Opening paragraph for the body section…" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Stats / Steps cards ── */}
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                  <h3 className="font-jakarta font-bold text-slate-700 mb-1 flex items-center gap-2"><span className="text-amber-500">◆</span> Stat / Step Cards</h3>
+                  <p className="font-jakarta text-xs text-slate-400 mb-4">For Agent & Institutions: use stat values like "97%" or "400+". For Referral: use step numbers "1", "2", "3".</p>
+                  <div className="space-y-4">
+                    {partnerForm.stats.map((stat, i) => (
+                      <div key={i} className="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="font-jakarta text-xs font-semibold text-slate-400 uppercase">Card {i + 1}</span>
+                          <button type="button" onClick={() => setPartnerForm(f => ({ ...f, stats: f.stats.filter((_, j) => j !== i) }))}
+                            className="font-jakarta text-xs text-red-400 hover:text-red-600 transition-colors">✕ Remove</button>
+                        </div>
+                        <div className="grid sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block font-jakarta text-xs text-slate-400 mb-1">Value / Number</label>
+                            <input className={inp} value={stat.value} onChange={e => setPartnerForm(f => ({ ...f, stats: f.stats.map((s, j) => j === i ? { ...s, value: e.target.value } : s) }))} placeholder="97%" />
+                          </div>
+                          <div>
+                            <label className="block font-jakarta text-xs text-slate-400 mb-1">Label / Title</label>
+                            <input className={inp} value={stat.label} onChange={e => setPartnerForm(f => ({ ...f, stats: f.stats.map((s, j) => j === i ? { ...s, label: e.target.value } : s) }))} placeholder="Visa Success Rate" />
+                          </div>
+                          <div>
+                            <label className="block font-jakarta text-xs text-slate-400 mb-1">Description</label>
+                            <input className={inp} value={stat.desc} onChange={e => setPartnerForm(f => ({ ...f, stats: f.stats.map((s, j) => j === i ? { ...s, desc: e.target.value } : s) }))} placeholder="Supporting sentence…" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <button type="button"
+                      onClick={() => setPartnerForm(f => ({ ...f, stats: [...f.stats, { value: '', label: '', desc: '' }] }))}
+                      className={`${ghostBtn} text-xs`}>
+                      + Add Card
+                    </button>
+                  </div>
+                </div>
+
+                {/* ── List / Benefits ── */}
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                  <h3 className="font-jakarta font-bold text-slate-700 mb-4 flex items-center gap-2"><span className="text-amber-500">◆</span> Benefits / Steps List</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">List Heading</label>
+                      <input className={inp} value={partnerForm.listHeading} onChange={e => setPartnerForm(f => ({ ...f, listHeading: e.target.value }))} placeholder="e.g. Partner Benefits" />
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">List Items — format: <code className="bg-slate-100 px-1 rounded text-amber-600">Bold Title: description text</code></label>
+                      <div className="space-y-2">
+                        {partnerForm.listItems.map((item, i) => (
+                          <div key={i} className="flex gap-2">
+                            <input className={inp} value={item} onChange={e => setPartnerForm(f => ({ ...f, listItems: f.listItems.map((x, j) => j === i ? e.target.value : x) }))} placeholder="Title: Description of this benefit…" />
+                            <button type="button" onClick={() => setPartnerForm(f => ({ ...f, listItems: f.listItems.filter((_, j) => j !== i) }))}
+                              className="px-3 py-2 rounded-xl border border-slate-200 text-red-400 hover:bg-red-50 hover:border-red-200 transition-colors text-sm flex-shrink-0">✕</button>
+                          </div>
+                        ))}
+                        <button type="button" onClick={() => setPartnerForm(f => ({ ...f, listItems: [...f.listItems, ''] }))}
+                          className={`${ghostBtn} text-xs`}>+ Add Item</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Form card ── */}
+                <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                  <h3 className="font-jakarta font-bold text-slate-700 mb-4 flex items-center gap-2"><span className="text-amber-500">◆</span> Form Card (right column)</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Form Heading</label>
+                      <input className={inp} value={partnerForm.formHeading} onChange={e => setPartnerForm(f => ({ ...f, formHeading: e.target.value }))} placeholder="e.g. Initiate Partnership" />
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Form Subtext</label>
+                      <input className={inp} value={partnerForm.formSubtext} onChange={e => setPartnerForm(f => ({ ...f, formSubtext: e.target.value }))} placeholder="e.g. Our team will contact you within 24 hours." />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Save */}
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => { void savePartnerForm(); }}
+                    disabled={partnerFormSave}
+                    className={`${amberBtn} disabled:opacity-50`}
+                    style={{ background: 'linear-gradient(135deg,#D97706,#F59E0B)' }}
+                  >
+                    {partnerFormSave ? 'Saving…' : `Save ${partnerPage.charAt(0).toUpperCase() + partnerPage.slice(1)} Page →`}
+                  </button>
+                  <span className="font-jakarta text-xs text-slate-400">Saves to KV · live on next page load</span>
+                </div>
+
+              </div>
+            )}
           </div>
         )}
 
@@ -1296,10 +1661,10 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         {/* ══ EVENTS ══ */}
         {tab === 'events' && (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="font-jakarta font-extrabold text-slate-800 text-2xl">Events ({events.length})</h2>
-                <p className="font-jakarta text-sm text-slate-400 mt-1">Manage events shown in the homepage carousel. Changes sync to KV instantly.</p>
+                <p className="font-jakarta text-sm text-slate-400 mt-1">Manage events shown on /events and detail pages. Syncs to KV instantly.</p>
               </div>
               {!showEvForm && (
                 <button onClick={() => { setNe(emptyEvent()); setEditEvId(null); setShowEvForm(true); }}
@@ -1308,6 +1673,24 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                 </button>
               )}
             </div>
+
+            {/* Stats bar */}
+            {events.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                {[
+                  { label: 'Total', value: events.length, color: 'text-slate-700', bg: 'bg-slate-50 border-slate-200' },
+                  { label: 'Published', value: events.filter(e => e.published).length, color: 'text-green-700', bg: 'bg-green-50 border-green-200' },
+                  { label: 'Drafts', value: events.filter(e => !e.published).length, color: 'text-slate-500', bg: 'bg-slate-50 border-slate-200' },
+                  { label: 'Upcoming', value: events.filter(e => e.published && new Date(e.date) >= new Date()).length, color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200' },
+                ].map(s => (
+                  <div key={s.label} className={`rounded-xl border ${s.bg} px-4 py-3 text-center`}>
+                    <div className={`font-jakarta font-extrabold text-xl ${s.color}`}>{s.value}</div>
+                    <div className="font-jakarta text-xs text-slate-400 mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
 
             {/* Event form */}
             {showEvForm && (
@@ -1344,11 +1727,16 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                       <option value="">All Countries</option>
                       <option value="usa">🇺🇸 USA</option>
                       <option value="uk">🇬🇧 UK</option>
-                      <option value="canada">🇨🇦 Canada</option>
                       <option value="australia">🇦🇺 Australia</option>
+                      <option value="canada">🇨🇦 Canada</option>
+                      <option value="new-zealand">🇳🇿 New Zealand</option>
                       <option value="ireland">🇮🇪 Ireland</option>
-                      <option value="singapore">🇸🇬 Singapore</option>
                       <option value="europe">🇪🇺 Europe</option>
+                      <option value="uae">🇦🇪 UAE</option>
+                      <option value="japan">🇯🇵 Japan</option>
+                      <option value="south-korea">🇰🇷 South Korea</option>
+                      <option value="singapore">🇸🇬 Singapore</option>
+                      <option value="russia">🇷🇺 Russia</option>
                     </select>
                   </div>
                   <div className="sm:col-span-2">
@@ -1404,6 +1792,90 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                       <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${ne.published ? 'translate-x-5' : ''}`} />
                     </button>
                     <span className="font-jakarta text-sm text-slate-700">{ne.published ? 'Published' : 'Draft'}</span>
+                  </div>
+                  {/* Speakers */}
+                  <div className="sm:col-span-2">
+                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">🎤 Speakers (shown on detail page)</label>
+                    <div className="space-y-2">
+                      {(ne.speakers || []).map((sp, i) => (
+                        <div key={i} className="flex gap-2">
+                          <input
+                            value={sp}
+                            onChange={e => setNe(p => ({ ...p, speakers: (p.speakers || []).map((s, j) => j === i ? e.target.value : s) }))}
+                            className={inp}
+                            placeholder="e.g. Rajib Paul, Study Abroad Expert"
+                          />
+                          <button type="button"
+                            onClick={() => setNe(p => ({ ...p, speakers: (p.speakers || []).filter((_, j) => j !== i) }))}
+                            className="px-3 rounded-xl border border-red-200 text-red-400 hover:bg-red-50 transition-colors text-sm flex-shrink-0">✕</button>
+                        </div>
+                      ))}
+                      <button type="button"
+                        onClick={() => setNe(p => ({ ...p, speakers: [...(p.speakers || []), ''] }))}
+                        className={`${ghostBtn} text-xs`}>+ Add Speaker</button>
+                    </div>
+                  </div>
+
+                  {/* Action Links — Zoom, Webinar, Registration etc. */}
+                  <div className="sm:col-span-2">
+                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-1">
+                      🔗 Action Links — Zoom / Webinar / Registration
+                    </label>
+                    <p className="font-jakarta text-[11px] text-slate-400 mb-3">
+                      Add clickable buttons on the event detail page (e.g. "Join Zoom", "Register for Webinar"). Visible on the event detail page registration card.
+                    </p>
+                    <div className="space-y-3">
+                      {(ne.actionLinks || []).map((link, i) => (
+                        <div key={i} className="border border-slate-200 rounded-xl p-4 bg-slate-50/60">
+                          <div className="grid sm:grid-cols-[140px_1fr_1fr] gap-3 mb-3">
+                            <div>
+                              <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Type</label>
+                              <select
+                                value={link.type}
+                                onChange={e => setNe(p => ({ ...p, actionLinks: (p.actionLinks || []).map((l, j) => j === i ? { ...l, type: e.target.value as EventActionType } : l) }))}
+                                className={`${inp} cursor-pointer text-xs`}
+                              >
+                                <option value="zoom">🎥 Zoom</option>
+                                <option value="webinar">📡 Webinar</option>
+                                <option value="registration">📋 Registration</option>
+                                <option value="external">🌐 External Link</option>
+                                <option value="whatsapp">💬 WhatsApp</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Button Label</label>
+                              <input
+                                value={link.label}
+                                onChange={e => setNe(p => ({ ...p, actionLinks: (p.actionLinks || []).map((l, j) => j === i ? { ...l, label: e.target.value } : l) }))}
+                                className={inp}
+                                placeholder="Join Zoom / Register Now"
+                              />
+                            </div>
+                            <div>
+                              <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">URL *</label>
+                              <input
+                                value={link.url}
+                                onChange={e => setNe(p => ({ ...p, actionLinks: (p.actionLinks || []).map((l, j) => j === i ? { ...l, url: e.target.value } : l) }))}
+                                className={inp}
+                                placeholder="https://zoom.us/j/..."
+                              />
+                            </div>
+                          </div>
+                          <div className="flex justify-end">
+                            <button type="button"
+                              onClick={() => setNe(p => ({ ...p, actionLinks: (p.actionLinks || []).filter((_, j) => j !== i) }))}
+                              className="font-jakarta text-xs text-red-400 hover:text-red-600 px-3 py-1 rounded-lg hover:bg-red-50 transition-colors border border-red-100">
+                              Remove Link
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <button type="button"
+                        onClick={() => setNe(p => ({ ...p, actionLinks: [...(p.actionLinks || []), { type: 'zoom', label: 'Join Zoom', url: '' }] }))}
+                        className={`${ghostBtn} text-xs`}>
+                        + Add Action Link
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div className="flex gap-3 mt-5 flex-wrap">
@@ -1679,10 +2151,10 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
         {/* ══ NEWS ══ */}
         {tab === 'news' && (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="font-jakarta font-extrabold text-slate-800 text-2xl">News & Updates ({news.length})</h2>
-                <p className="font-jakarta text-sm text-slate-400 mt-1">Manage articles shown on /news. Changes sync to KV instantly.</p>
+                <p className="font-jakarta text-sm text-slate-400 mt-1">Manage articles shown on /news and /news/[slug]. Syncs to KV instantly.</p>
               </div>
               {!showNewsForm && (
                 <button onClick={() => { setNn(emptyNews()); setEditNewsId(null); setShowNewsForm(true); }}
@@ -1691,6 +2163,23 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                 </button>
               )}
             </div>
+
+            {/* Stats bar */}
+            {news.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+                {[
+                  { label: 'Total Articles', value: news.length, color: 'text-slate-700', bg: 'bg-slate-50 border-slate-200' },
+                  { label: 'Published', value: news.filter(n => n.published).length, color: 'text-green-700', bg: 'bg-green-50 border-green-200' },
+                  { label: 'Drafts', value: news.filter(n => !n.published).length, color: 'text-slate-500', bg: 'bg-slate-50 border-slate-200' },
+                ].map(s => (
+                  <div key={s.label} className={`rounded-xl border ${s.bg} px-4 py-3 text-center`}>
+                    <div className={`font-jakarta font-extrabold text-xl ${s.color}`}>{s.value}</div>
+                    <div className="font-jakarta text-xs text-slate-400 mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
 
             {/* News form */}
             {showNewsForm && (
@@ -1723,6 +2212,14 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                   <div className="sm:col-span-2">
                     <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">🖼 Hero Image URL</label>
                     <input value={nn.imageUrl} onChange={e => setNn(p => ({ ...p, imageUrl: e.target.value }))} className={inp} placeholder="https://images.unsplash.com/..." />
+                    {nn.imageUrl && (
+                      <div className="mt-2 relative h-28 rounded-xl overflow-hidden border border-slate-200">
+                        <Image src={nn.imageUrl} alt="preview" fill className="object-cover" sizes="600px" onError={() => {}} />
+                        <div className="absolute inset-0 flex items-end p-2">
+                          <span className="font-jakarta text-[10px] text-white bg-black/40 backdrop-blur-sm px-2 py-1 rounded">Image preview</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="sm:col-span-2">
                     <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Article Body</label>
@@ -1907,6 +2404,193 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                 </p>
               </div>
             </div>
+
+            {/* ── Stat Blocks Editor ─────────────────────────────────────── */}
+            <div className="mt-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                  style={{ background: `linear-gradient(135deg,${BLUE},#1249C4)` }}>📊</div>
+                <div>
+                  <h3 className="font-jakarta font-extrabold text-slate-800 text-lg leading-tight">Stat Block Editor</h3>
+                  <p className="font-jakarta text-xs text-slate-400">Edit the 4 hero tiles (Intake · Cost · Visa Rate · Universities) + tagline, description, and images for each country.</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                {/* Country picker */}
+                <div className="mb-5">
+                  <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Select Country</label>
+                  <select
+                    value={metaCountry}
+                    onChange={e => { setMetaCountry(e.target.value); }}
+                    className={`${inp} cursor-pointer max-w-xs`}
+                  >
+                    {Object.values(COUNTRIES_MAP).map(c => (
+                      <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {metaLoading ? (
+                  <div className="flex items-center gap-2 py-6 text-slate-400 font-jakarta text-sm">
+                    <span className="h-3 w-3 rounded-full border-2 border-slate-300 border-t-amber-500 animate-spin" />
+                    Loading current values…
+                  </div>
+                ) : (
+                  <>
+                    {/* Live preview of stat tiles */}
+                    <div className="mb-5 p-4 rounded-2xl border border-slate-100 bg-slate-50">
+                      <p className="font-jakarta text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-3">Live preview (as seen on destination hero)</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {[
+                          ['📅 Intake',       metaForm.intake],
+                          ['💰 Avg Cost',     metaForm.avgCost],
+                          ['✅ Visa Rate',    metaForm.visaRate],
+                          ['🏛️ Universities', metaForm.unis],
+                        ].map(([label, value]) => (
+                          <div key={label}
+                            className="rounded-xl px-3 py-3 text-center text-white"
+                            style={{ background: `linear-gradient(135deg,${metaForm.color || COUNTRIES_MAP[metaCountry]?.color || BLUE}CC,${metaForm.color || COUNTRIES_MAP[metaCountry]?.color || BLUE}99)` }}
+                          >
+                            <div className="font-jakarta text-[9px] text-white/70 uppercase tracking-widest mb-1">{label}</div>
+                            <div className="font-jakarta font-extrabold text-white text-xs leading-tight">{value || '—'}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Stat fields */}
+                    <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">📅 Intake</label>
+                        <input
+                          value={metaForm.intake}
+                          onChange={e => setMetaForm(f => ({ ...f, intake: e.target.value }))}
+                          className={inp}
+                          placeholder={COUNTRIES_MAP[metaCountry]?.intake || 'e.g. Aug / Jan'}
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">💰 Avg Cost</label>
+                        <input
+                          value={metaForm.avgCost}
+                          onChange={e => setMetaForm(f => ({ ...f, avgCost: e.target.value }))}
+                          className={inp}
+                          placeholder={COUNTRIES_MAP[metaCountry]?.avgCost || 'e.g. $20,000–$55,000/yr'}
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">✅ Visa Rate</label>
+                        <input
+                          value={metaForm.visaRate}
+                          onChange={e => setMetaForm(f => ({ ...f, visaRate: e.target.value }))}
+                          className={inp}
+                          placeholder={COUNTRIES_MAP[metaCountry]?.visaRate || 'e.g. 94%'}
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">🏛️ Universities</label>
+                        <input
+                          value={metaForm.unis}
+                          onChange={e => setMetaForm(f => ({ ...f, unis: e.target.value }))}
+                          className={inp}
+                          placeholder={COUNTRIES_MAP[metaCountry]?.unis || 'e.g. 4,000+'}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Tagline */}
+                    <div className="mb-4">
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Hero Tagline</label>
+                      <input
+                        value={metaForm.tagline}
+                        onChange={e => setMetaForm(f => ({ ...f, tagline: e.target.value }))}
+                        className={inp}
+                        placeholder={COUNTRIES_MAP[metaCountry]?.tagline || 'Short hero tagline…'}
+                      />
+                    </div>
+
+                    {/* Description */}
+                    <div className="mb-4">
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Page Description</label>
+                      <textarea
+                        value={metaForm.description}
+                        onChange={e => setMetaForm(f => ({ ...f, description: e.target.value }))}
+                        rows={3}
+                        className={`${inp} resize-none`}
+                        placeholder={COUNTRIES_MAP[metaCountry]?.description?.slice(0, 80) + '…' || 'Short country description shown on destination cards…'}
+                      />
+                    </div>
+
+                    {/* Images + color */}
+                    <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Hero Image URL</label>
+                        <input
+                          value={metaForm.heroImage}
+                          onChange={e => setMetaForm(f => ({ ...f, heroImage: e.target.value }))}
+                          className={inp}
+                          placeholder="https://images.unsplash.com/…"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Campus Image URL</label>
+                        <input
+                          value={metaForm.campusImage}
+                          onChange={e => setMetaForm(f => ({ ...f, campusImage: e.target.value }))}
+                          className={inp}
+                          placeholder="https://images.unsplash.com/…"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-5">
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Accent Color (hex)</label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="color"
+                          value={metaForm.color || COUNTRIES_MAP[metaCountry]?.color || BLUE}
+                          onChange={e => setMetaForm(f => ({ ...f, color: e.target.value }))}
+                          className="w-10 h-10 rounded-xl border border-slate-200 cursor-pointer p-0.5"
+                        />
+                        <input
+                          value={metaForm.color}
+                          onChange={e => setMetaForm(f => ({ ...f, color: e.target.value }))}
+                          className={`${inp} flex-1`}
+                          placeholder={COUNTRIES_MAP[metaCountry]?.color || '#246DFF'}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex gap-3 flex-wrap">
+                      <button
+                        onClick={() => { void saveCountryMeta(); }}
+                        disabled={metaSaving}
+                        className={`${amberBtn} px-8 disabled:opacity-50`}
+                        style={{ background: `linear-gradient(135deg,${AMBER},#F59E0B)` }}
+                      >
+                        {metaSaving ? 'Saving…' : 'Save Stat Blocks →'}
+                      </button>
+                      <a
+                        href={`/destinations/${metaCountry}/why-study`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={ghostBtn}
+                      >
+                        Preview page ↗
+                      </a>
+                      <button
+                        onClick={resetCountryMeta}
+                        className={ghostBtn}
+                      >
+                        Reset to defaults
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -1941,7 +2625,9 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                   <input value={nr.note} onChange={e => setNr(p => ({ ...p, note: e.target.value }))} className={inp} placeholder="Optional note" />
                 </div>
               </div>
-              <button onClick={addRedirect} className={`${blueBtn} mt-4 px-6`} style={{ background: BLUE }}>Add Redirect</button>
+              <button onClick={addRedirect} disabled={redirectsSaving} className={`${blueBtn} mt-4 px-6 ${redirectsSaving ? 'opacity-50 cursor-not-allowed' : ''}`} style={{ background: BLUE }}>
+                {redirectsSaving ? 'Saving…' : 'Add Redirect'}
+              </button>
             </div>
             {redirects.length === 0 ? (
               <div className="bg-white rounded-2xl border border-slate-100 p-8 text-center">
@@ -1958,8 +2644,10 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                       <code className="font-mono text-xs text-primary-600 truncate">{r.to}</code>
                       {r.note && <span className="font-jakarta text-xs text-slate-400 truncate hidden md:block">{r.note}</span>}
                     </div>
-                    <button onClick={() => saveRedirects(redirects.filter((_,ri) => ri !== i))}
-                      className="font-jakarta text-xs text-red-400 hover:text-red-600 transition-colors flex-shrink-0">Remove</button>
+                    <button onClick={() => saveRedirects(redirects.filter((_,ri) => ri !== i))} disabled={redirectsSaving}
+                      className={`font-jakarta text-xs text-red-400 hover:text-red-600 transition-colors flex-shrink-0 ${redirectsSaving ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                      {redirectsSaving ? 'Removing…' : 'Remove'}
+                    </button>
                   </div>
                 ))}
               </div>
@@ -1973,7 +2661,20 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
             <h2 className="font-jakarta font-extrabold text-slate-800 text-2xl mb-2">Country Pages</h2>
             <p className="font-jakarta text-sm text-slate-500 mb-6">Pre-built with 2026 content. Create a dynamic page with matching slug to override any section.</p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[{code:'usa',name:'USA',flag:'🇺🇸'},{code:'uk',name:'UK',flag:'🇬🇧'},{code:'canada',name:'Canada',flag:'🇨🇦'},{code:'australia',name:'Australia',flag:'🇦🇺'},{code:'ireland',name:'Ireland',flag:'🇮🇪'}].map(c => (
+              {[
+                {code:'usa',name:'USA',flag:'🇺🇸'},
+                {code:'uk',name:'UK',flag:'🇬🇧'},
+                {code:'australia',name:'Australia',flag:'🇦🇺'},
+                {code:'canada',name:'Canada',flag:'🇨🇦'},
+                {code:'new-zealand',name:'New Zealand',flag:'🇳🇿'},
+                {code:'ireland',name:'Ireland',flag:'🇮🇪'},
+                {code:'europe',name:'Europe',flag:'🇪🇺'},
+                {code:'uae',name:'UAE',flag:'🇦🇪'},
+                {code:'japan',name:'Japan',flag:'🇯🇵'},
+                {code:'south-korea',name:'South Korea',flag:'🇰🇷'},
+                {code:'singapore',name:'Singapore',flag:'🇸🇬'},
+                {code:'russia',name:'Russia',flag:'🇷🇺'},
+              ].map(c => (
                 <div key={c.code} className="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-3xl">{c.flag}</span>
@@ -1998,7 +2699,81 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
           <div className="space-y-10">
             <div>
               <h2 className="font-jakarta font-extrabold text-slate-800 text-2xl mb-1">Homepage Content</h2>
-              <p className="font-jakarta text-sm text-slate-500 mb-8">Edit Services and Process Steps. Changes save to Cloudflare KV and go live immediately — no redeployment needed.</p>
+              <p className="font-jakarta text-sm text-slate-500 mb-8">Edit Stats, Services and Process Steps. Changes save to Cloudflare KV and go live immediately — no redeployment needed.</p>
+
+              {/* ── Stats Block ── */}
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6 mb-6">
+                <div className="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 className="font-jakarta font-bold text-slate-800">Stats Block</h3>
+                    <p className="font-jakarta text-xs text-slate-400 mt-0.5">
+                      The 6 stat cards shown below the hero section. Edit the number (e.g. "10,000+") and label for each card.
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setSiteStats(p => [...p, { num: '0+', label: 'New Stat' }])}
+                      className={`${ghostBtn} text-xs`}>+ Add Stat</button>
+                    <button onClick={saveStats} disabled={statsBusy}
+                      className={`${blueBtn} text-xs disabled:opacity-50`}
+                      style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
+                      {statsBusy ? 'Saving…' : 'Save Stats →'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {siteStats.map((s, i) => (
+                    <div key={i} className="border border-slate-100 rounded-xl p-4 bg-slate-50/60">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="font-jakarta text-xs font-bold text-slate-400 w-5 text-center">{i + 1}</span>
+                        <button
+                          onClick={() => setSiteStats(p => p.filter((_, j) => j !== i))}
+                          className="ml-auto font-jakarta text-xs text-red-400 hover:text-red-600 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">
+                          ✕
+                        </button>
+                      </div>
+                      <div className="mb-2">
+                        <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Number / Value</label>
+                        <input
+                          value={s.num}
+                          onChange={e => setSiteStats(p => p.map((st, j) => j === i ? { ...st, num: e.target.value } : st))}
+                          className={`${inp} font-bold text-center text-lg`}
+                          placeholder="10,000+"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Label</label>
+                        <input
+                          value={s.label}
+                          onChange={e => setSiteStats(p => p.map((st, j) => j === i ? { ...st, label: e.target.value } : st))}
+                          className={inp}
+                          placeholder="Students Placed"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {siteStats.length === 0 && (
+                  <div className="text-center py-8 text-slate-400">
+                    <p className="font-jakarta text-sm">No stats yet. Click "+ Add Stat" to add one.</p>
+                  </div>
+                )}
+
+                <div className="mt-4 flex items-center justify-between">
+                  <button
+                    onClick={() => { setSiteStats(DEFAULT_STATS_FORM); flash('Reset to defaults — click Save to apply.', 'info'); }}
+                    className={`${ghostBtn} text-xs`}>
+                    Reset to Defaults
+                  </button>
+                  <button onClick={saveStats} disabled={statsBusy}
+                    className={`${blueBtn} disabled:opacity-50`}
+                    style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
+                    {statsBusy ? 'Saving…' : 'Save Stats →'}
+                  </button>
+                </div>
+              </div>
 
               {/* ── Services ── */}
               <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6 mb-6">
@@ -2094,7 +2869,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                       className={`${ghostBtn} text-xs`}>+ Add Step</button>
                     <button onClick={() => saveHomepageContent('processSteps', processSteps)} disabled={hpBusy}
                       className={`${blueBtn} text-xs disabled:opacity-50`}
-                      style={{ background: `linear-gradient(135deg,${BLUE},#2D5A99)` }}>
+                      style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
                       {hpBusy ? 'Saving…' : 'Save Steps →'}
                     </button>
                   </div>
@@ -2106,7 +2881,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                       <div className="flex items-center gap-2 mb-3">
                         {/* Step badge */}
                         <div className="w-7 h-7 rounded-lg flex items-center justify-center font-jakarta font-black text-xs text-white flex-shrink-0"
-                          style={{ background: `linear-gradient(135deg,${BLUE},#2D5A99)` }}>
+                          style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
                           {s.step}
                         </div>
                         <div className="flex-1 grid grid-cols-1 sm:grid-cols-[56px_1fr] gap-2">
@@ -2162,7 +2937,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                 <div className="mt-4 flex justify-end">
                   <button onClick={() => saveHomepageContent('processSteps', processSteps)} disabled={hpBusy}
                     className={`${blueBtn} disabled:opacity-50`}
-                    style={{ background: `linear-gradient(135deg,${BLUE},#2D5A99)` }}>
+                    style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
                     {hpBusy ? 'Saving…' : 'Save Steps →'}
                   </button>
                 </div>
@@ -2191,6 +2966,173 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                   </button>
                 </div>
               </div>
+
+              {/* ── University Marquee Settings ── */}
+              <div className="mt-10 bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 className="font-jakarta font-bold text-slate-800">University Marquee</h3>
+                    <p className="font-jakarta text-xs text-slate-400 mt-0.5">
+                      Controls the scrolling logo strip on the homepage. Leave university list empty to use the 25 built-in logos.
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <a href="/" target="_blank" rel="noopener noreferrer"
+                      className={`${ghostBtn} text-xs`}>Preview ↗</a>
+                    <button onClick={saveMarqueeSettings} disabled={marqueeSaving}
+                      className={`${blueBtn} text-xs disabled:opacity-50`}
+                      style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
+                      {marqueeSaving ? 'Saving…' : 'Save Marquee →'}
+                    </button>
+                  </div>
+                </div>
+
+                {marqueeLoading ? (
+                  <div className="text-center py-8">
+                    <div className="inline-block w-5 h-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                    <p className="font-jakarta text-xs text-slate-400 mt-2">Loading marquee settings…</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* Text fields */}
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Section Heading</label>
+                        <input
+                          value={marqueeForm.heading}
+                          onChange={e => setMarqueeForm(f => ({ ...f, heading: e.target.value }))}
+                          className={inp}
+                          placeholder="Students Placed in Top Universities"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Sub-heading</label>
+                        <input
+                          value={marqueeForm.subheading}
+                          onChange={e => setMarqueeForm(f => ({ ...f, subheading: e.target.value }))}
+                          className={inp}
+                          placeholder="Join 10,000+ students…"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Speed controls */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                          Row 1 Speed (seconds) — lower = faster
+                        </label>
+                        <input
+                          type="number" min={10} max={120} step={1}
+                          value={marqueeForm.speedRow1}
+                          onChange={e => setMarqueeForm(f => ({ ...f, speedRow1: Number(e.target.value) }))}
+                          className={inp}
+                        />
+                        <p className="font-jakarta text-[10px] text-slate-400 mt-1">Forward scroll. Default: 38s</p>
+                      </div>
+                      <div>
+                        <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                          Row 2 Speed (seconds) — lower = faster
+                        </label>
+                        <input
+                          type="number" min={10} max={120} step={1}
+                          value={marqueeForm.speedRow2}
+                          onChange={e => setMarqueeForm(f => ({ ...f, speedRow2: Number(e.target.value) }))}
+                          className={inp}
+                        />
+                        <p className="font-jakarta text-[10px] text-slate-400 mt-1">Reverse scroll. Default: 44s</p>
+                      </div>
+                    </div>
+
+                    {/* Custom university list */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide">
+                            Custom University List
+                          </label>
+                          <p className="font-jakarta text-[10px] text-slate-400 mt-0.5">
+                            {marqueeForm.unis.length === 0
+                              ? 'Using built-in 25-university defaults. Add entries below to override.'
+                              : `${marqueeForm.unis.length} custom ${marqueeForm.unis.length === 1 ? 'entry' : 'entries'} — overrides the defaults.`}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setMarqueeForm(f => ({ ...f, unis: [...f.unis, { name: '', src: '', country: '' }] }))}
+                          className={`${ghostBtn} text-xs`}>+ Add University</button>
+                      </div>
+
+                      {marqueeForm.unis.length > 0 && (
+                        <div className="space-y-3">
+                          {marqueeForm.unis.map((u, i) => (
+                            <div key={i} className="border border-slate-100 rounded-xl p-3 bg-slate-50/60">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="font-jakarta text-xs font-bold text-slate-400 w-5 text-center">{i + 1}</span>
+                                <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                  <div>
+                                    <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">University Name</label>
+                                    <input
+                                      value={u.name}
+                                      onChange={e => setMarqueeForm(f => ({
+                                        ...f, unis: f.unis.map((x, j) => j === i ? { ...x, name: e.target.value } : x)
+                                      }))}
+                                      className={inp}
+                                      placeholder="Harvard University"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Logo path (e.g. /logos/harvard.png)</label>
+                                    <input
+                                      value={u.src}
+                                      onChange={e => setMarqueeForm(f => ({
+                                        ...f, unis: f.unis.map((x, j) => j === i ? { ...x, src: e.target.value } : x)
+                                      }))}
+                                      className={inp}
+                                      placeholder="/logos/harvard-university.png"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-wide mb-1">Country</label>
+                                    <input
+                                      value={u.country}
+                                      onChange={e => setMarqueeForm(f => ({
+                                        ...f, unis: f.unis.map((x, j) => j === i ? { ...x, country: e.target.value } : x)
+                                      }))}
+                                      className={inp}
+                                      placeholder="USA"
+                                    />
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => setMarqueeForm(f => ({ ...f, unis: f.unis.filter((_, j) => j !== i) }))}
+                                  className="font-jakarta text-xs text-red-400 hover:text-red-600 transition-colors px-2 py-1 rounded-lg hover:bg-red-50 flex-shrink-0">
+                                  ✕
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {marqueeForm.unis.length > 0 && (
+                        <button
+                          onClick={() => { if (confirm('Clear custom list and revert to built-in defaults?')) setMarqueeForm(f => ({ ...f, unis: [] })); }}
+                          className="mt-3 font-jakarta text-xs font-semibold px-4 py-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
+                          Clear custom list (use defaults)
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex justify-end">
+                      <button onClick={saveMarqueeSettings} disabled={marqueeSaving}
+                        className={`${blueBtn} disabled:opacity-50`}
+                        style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
+                        {marqueeSaving ? 'Saving…' : 'Save Marquee Settings →'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -2212,7 +3154,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
             {/* Summary badges */}
             <div className="grid grid-cols-3 gap-3 mb-6">
               {([
-                { label:'New',       status:'new',       color:'#2D5A99', bg:'#EBF4FF'  },
+                { label:'New',       status:'new',       color:'#246DFF', bg:'#EBF4FF'  },
                 { label:'Contacted', status:'contacted', color:'#D97706', bg:'#FFFBEB'  },
                 { label:'Closed',    status:'closed',    color:'#059669', bg:'#ECFDF5'  },
               ] as { label:string; status:Lead['status']; color:string; bg:string }[]).map(s => (
@@ -2267,7 +3209,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
                         <a
-                          href={`https://wa.me/${lead.phone.replace(/\D/g,'')}?text=${encodeURIComponent(`Hi ${lead.name}! This is Rajib from ILOC. I saw your enquiry about studying in ${lead.country || 'abroad'}. When would be a good time to connect?`)}`}
+                          href={`https://wa.me/${lead.phone.replace(/\D/g,'')}?text=${encodeURIComponent(`Hi ${lead.name}! This is the ILOC counselling team. We received your enquiry about studying in ${lead.country || 'abroad'}. When would be a good time for a free consultation call?`)}`}
                           target="_blank" rel="noopener noreferrer"
                           className="font-jakarta text-xs font-semibold px-3 py-2 rounded-xl text-white"
                           style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
@@ -2409,13 +3351,138 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
             {/* Brand & Banner */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6 mb-5">
               <h3 className="font-jakarta font-bold text-slate-800 text-sm mb-4">Brand Identity</h3>
+
+              {/* ── Hero Header CMS Controls ── */}
+              <div className="bg-gradient-to-br from-blue-50 to-slate-50 border border-blue-200 rounded-xl p-5 mb-4 space-y-5">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-lg">🏠</span>
+                  <h4 className="font-jakarta font-bold text-blue-800 text-xs uppercase tracking-widest">Hero Header Branding</h4>
+                  <span className="ml-auto font-jakarta text-[10px] text-slate-400 bg-white border border-slate-200 rounded-full px-2 py-0.5">Pre-loaded from KV</span>
+                </div>
+
+                {/* headerLogoUrl */}
+                <div>
+                  <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">
+                    Header Logo URL <span className="text-slate-400 normal-case font-normal lowercase tracking-normal">(blank = built-in seal SVG)</span>
+                  </label>
+                  <input
+                    value={gs.headerLogoUrl ?? ''}
+                    onChange={e => setGs(p => ({ ...p, headerLogoUrl: e.target.value }))}
+                    className={inp}
+                    placeholder="https://your-cdn.com/iloc-logo.png"
+                  />
+                  {gs.headerLogoUrl && (
+                    <div className="mt-2 flex items-center gap-3">
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-slate-200 bg-slate-100 shadow">
+                        <Image src={gs.headerLogoUrl} alt="Logo preview" fill className="object-contain" sizes="64px" unoptimized onError={() => {}} />
+                      </div>
+                      <span className="font-jakarta text-xs text-slate-400">Live logo preview</span>
+                    </div>
+                  )}
+                  <p className="font-jakarta text-[10px] text-slate-400 mt-1">Used in both the hero header and sticky nav. Leave blank to use the pixel-perfect built-in ILOC seal.</p>
+                </div>
+
+                {/* businessNameDisplayName */}
+                <div>
+                  <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">
+                    Large Business Name <span className="text-slate-400 normal-case font-normal lowercase tracking-normal">(blank = IVY LEAGUE OVERSEAS CONSULTING)</span>
+                  </label>
+                  <input
+                    value={gs.businessNameDisplayName ?? ''}
+                    onChange={e => setGs(p => ({ ...p, businessNameDisplayName: e.target.value }))}
+                    className={inp}
+                    placeholder="IVY LEAGUE OVERSEAS CONSULTING"
+                  />
+                  <p className="font-jakarta text-[10px] text-slate-400 mt-1">Displayed as a giant hero-level title with word-by-word entrance animation. All caps recommended.</p>
+                </div>
+
+                {/* headerBackgroundColor + headerVerticalPadding side by side */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">
+                      Header Background Color
+                    </label>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="color"
+                        value={gs.headerBackgroundColor ?? '#2563FF'}
+                        onChange={e => setGs(p => ({ ...p, headerBackgroundColor: e.target.value }))}
+                        className="w-12 h-10 rounded-lg border border-slate-200 cursor-pointer p-1 flex-shrink-0"
+                      />
+                      <input
+                        value={gs.headerBackgroundColor ?? '#2563FF'}
+                        onChange={e => setGs(p => ({ ...p, headerBackgroundColor: e.target.value }))}
+                        className={`${inp} font-mono`}
+                        placeholder="#2563FF"
+                        maxLength={9}
+                      />
+                    </div>
+                    <p className="font-jakarta text-[10px] text-slate-400 mt-1">Plain solid color. Default: <code className="bg-slate-100 px-1 rounded">#2563FF</code> (vibrant brand blue)</p>
+                    {(gs.headerBackgroundColor ?? '#2563FF') && (
+                      <div
+                        className="mt-2 h-6 rounded-lg border border-slate-200 shadow-sm"
+                        style={{ backgroundColor: gs.headerBackgroundColor ?? '#2563FF' }}
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">
+                      Vertical Padding (top & bottom)
+                    </label>
+                    <input
+                      value={gs.headerVerticalPadding ?? '72px'}
+                      onChange={e => setGs(p => ({ ...p, headerVerticalPadding: e.target.value }))}
+                      className={`${inp} font-mono`}
+                      placeholder="72px"
+                    />
+                    <p className="font-jakarta text-[10px] text-slate-400 mt-1">
+                      Controls the height of the hero header. Any CSS unit: <code className="bg-slate-100 px-1 rounded">72px</code>, <code className="bg-slate-100 px-1 rounded">5rem</code>, <code className="bg-slate-100 px-1 rounded">80px</code>
+                    </p>
+                    <input
+                      type="range" min="24" max="180" step="4"
+                      value={parseInt(gs.headerVerticalPadding ?? '72') || 72}
+                      onChange={e => setGs(p => ({ ...p, headerVerticalPadding: `${e.target.value}px` }))}
+                      className="w-full mt-2 accent-blue-600 cursor-pointer"
+                    />
+                    <div className="flex justify-between font-jakarta text-[9px] text-slate-400 mt-0.5">
+                      <span>Compact (24px)</span><span>Massive (180px)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Live preview strip */}
+                <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                  <div className="px-4 py-2 bg-slate-100 border-b border-slate-200">
+                    <span className="font-jakarta text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Live Preview</span>
+                  </div>
+                  <div
+                    className="flex items-center gap-4 px-5"
+                    style={{
+                      backgroundColor: gs.headerBackgroundColor ?? '#2563FF',
+                      paddingTop: Math.min(parseInt(gs.headerVerticalPadding ?? '72') || 72, 40) + 'px',
+                      paddingBottom: Math.min(parseInt(gs.headerVerticalPadding ?? '72') || 72, 40) + 'px',
+                    }}
+                  >
+                    <div className="w-14 h-14 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center flex-shrink-0">
+                      <span className="font-jakarta font-black text-white text-xs">LOGO</span>
+                    </div>
+                    <div>
+                      <p className="font-jakarta text-white/60 text-[10px] tracking-widest uppercase mb-0.5">Est. 2000 · Pune, India</p>
+                      <p className="font-jakarta font-black text-white text-sm leading-tight">
+                        {gs.businessNameDisplayName || 'IVY LEAGUE OVERSEAS CONSULTING'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Brand Name</label>
+                  <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">Brand Name (navbar compact)</label>
                   <input value={gs.brandName}
                     onChange={e => setGs(p => ({ ...p, brandName: e.target.value }))}
                     className={inp} placeholder={COMPANY.short} />
-                  <p className="font-jakarta text-[10px] text-slate-400 mt-1">Displayed in the navbar and page titles. Default: {COMPANY.short}</p>
+                  <p className="font-jakarta text-[10px] text-slate-400 mt-1">Short name in sticky nav. Default: {COMPANY.short}</p>
                 </div>
                 <div>
                   <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">WhatsApp URL</label>
@@ -2441,36 +3508,225 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
               </div>
             </div>
 
-            {/* Hero Carousel Images */}
+            {/* ── Hero Carousel Quick Image URLs ── */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6 mb-5">
-              <h3 className="font-jakarta font-bold text-slate-800 text-sm mb-1">Hero Carousel Images</h3>
-              <p className="font-jakarta text-xs text-slate-400 mb-4">
-                These override the 3 homepage rotating images. Leave a slot blank to use the default. Changes live within the CDN revalidation window (1 hr).
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="font-jakarta font-bold text-slate-800 text-sm">🖼 Hero Slide Images — Quick Edit</h3>
+                <button
+                  onClick={saveHeroSlides}
+                  disabled={heroSlideBusy}
+                  className="font-jakarta text-xs font-bold text-white px-4 py-2 rounded-xl disabled:opacity-50 transition-opacity"
+                  style={{ background: 'linear-gradient(135deg,#059669,#10b981)' }}
+                >
+                  {heroSlideBusy ? 'Saving…' : '💾 Save Images'}
+                </button>
+              </div>
+              <p className="font-jakarta text-xs text-slate-400 mb-5">
+                Update the background image for each hero carousel slide. Paste any Unsplash URL or hosted image URL. Changes go live immediately.
               </p>
-              <div className="space-y-3 mb-4">
-                {[0,1,2].map(i => (
-                  <div key={i} className="flex gap-3 items-start">
-                    <span className="font-jakarta text-xs font-bold text-slate-400 w-4 mt-3 flex-shrink-0">{i + 1}</span>
-                    <div className="flex-1">
+              <div className="space-y-4">
+                {heroSlides.map((slide, si) => (
+                  <div key={slide.id} className="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                    <label className="block font-jakarta text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">
+                      Slide {si + 1} Image {!slide.enabled && <span className="text-slate-400 normal-case font-normal">(slide hidden)</span>}
+                    </label>
+                    <div className="flex gap-3 items-start">
                       <input
-                        value={gs.heroImages[i] ?? ''}
-                        onChange={e => {
-                          const next = [...gs.heroImages];
-                          next[i] = e.target.value;
-                          setGs(p => ({ ...p, heroImages: next }));
-                        }}
-                        className={inp}
-                        placeholder="https://images.unsplash.com/..."
+                        value={slide.imageUrl}
+                        onChange={e => updateSlide(si, { imageUrl: e.target.value })}
+                        className={`${inp} flex-1`}
+                        placeholder="https://images.unsplash.com/photo-XXXXXXXXXX?q=80&w=1600&auto=format&fit=crop"
                       />
+                      {slide.imageUrl && (
+                        <div className="w-20 h-14 rounded-xl overflow-hidden border border-slate-200 relative flex-shrink-0">
+                          <Image src={slide.imageUrl} alt={`Slide ${si + 1} preview`} fill className="object-cover" sizes="80px" unoptimized onError={() => {}} />
+                        </div>
+                      )}
                     </div>
-                    {gs.heroImages[i] && (
-                      <div className="w-14 h-10 rounded-lg overflow-hidden flex-shrink-0 border border-slate-200 relative">
-                        <Image src={gs.heroImages[i]} alt={`Hero ${i+1}`} fill className="object-cover" sizes="56px" unoptimized onError={() => {}} />
-                      </div>
-                    )}
+                    <p className="font-jakarta text-[10px] text-slate-400 mt-1.5">{slide.imageAlt}</p>
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* ── Hero Carousel Full CMS Editor ── */}
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6 mb-5">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="font-jakarta font-bold text-slate-800 text-sm">Hero Carousel — Full Slide Editor</h3>
+                <button
+                  onClick={saveHeroSlides}
+                  disabled={heroSlideBusy}
+                  className="font-jakarta text-xs font-bold text-white px-4 py-2 rounded-xl disabled:opacity-50 transition-opacity"
+                  style={{ background: 'linear-gradient(135deg,#1249C4,#2563FF)' }}
+                >
+                  {heroSlideBusy ? 'Saving…' : '💾 Save Slides'}
+                </button>
+              </div>
+              <p className="font-jakarta text-xs text-slate-400 mb-5">
+                Edit heading, subtext, image, stats and CTAs for each of the 3 hero slides. Changes go live immediately.
+              </p>
+
+              {/* Slide tab switcher */}
+              <div className="flex gap-2 mb-5 border-b border-slate-100 pb-3">
+                {heroSlides.map((s, i) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setHeroSlideEditIdx(heroSlideEditIdx === i ? null : i)}
+                    className={`font-jakarta text-xs font-semibold px-4 py-2 rounded-xl border transition-all ${heroSlideEditIdx === i ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-blue-300'}`}
+                  >
+                    Slide {i + 1} {!s.enabled && '(hidden)'}
+                  </button>
+                ))}
+              </div>
+
+              {heroSlides.map((slide, si) => heroSlideEditIdx !== si ? null : (
+                <div key={slide.id} className="space-y-4 animate-fadeIn">
+
+                  {/* Enable toggle + badge */}
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <div
+                        onClick={() => updateSlide(si, { enabled: !slide.enabled })}
+                        className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${slide.enabled ? 'bg-emerald-500' : 'bg-slate-200'}`}
+                      >
+                        <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${slide.enabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                      </div>
+                      <span className="font-jakarta text-xs font-semibold text-slate-600">{slide.enabled ? 'Visible' : 'Hidden'}</span>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Badge Text (pill)</label>
+                    <input value={slide.badge} onChange={e => updateSlide(si, { badge: e.target.value })} className={inp} placeholder="🎓 25+ Years of Trusted Expertise" />
+                  </div>
+
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Heading Lines (one per line, max 3)</label>
+                    {slide.headingLines.map((line, li) => (
+                      <div key={li} className="flex gap-2 mb-2 items-center">
+                        <button
+                          onClick={() => {
+                            const hl = [...slide.headingHighlight];
+                            hl[li] = !hl[li];
+                            updateSlide(si, { headingHighlight: hl });
+                          }}
+                          title="Toggle highlight colour on this line"
+                          className={`flex-shrink-0 w-8 h-8 rounded-lg border text-xs font-bold transition-all ${slide.headingHighlight[li] ? 'bg-amber-400 border-amber-400 text-white' : 'bg-white border-slate-200 text-slate-400'}`}
+                        >A</button>
+                        <input
+                          value={line}
+                          onChange={e => {
+                            const lines = [...slide.headingLines];
+                            lines[li] = e.target.value;
+                            updateSlide(si, { headingLines: lines });
+                          }}
+                          className={inp}
+                          placeholder={`Heading line ${li + 1}`}
+                        />
+                      </div>
+                    ))}
+                    <p className="font-jakarta text-[11px] text-slate-400 mt-1">Click <strong>A</strong> to toggle amber/green highlight on that line.</p>
+                  </div>
+
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Subtext Paragraph</label>
+                    <textarea value={slide.subtext} onChange={e => updateSlide(si, { subtext: e.target.value })} rows={3} className={`${inp} resize-none`} placeholder="Join 10,000+ students who fulfilled…" />
+                  </div>
+
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Trust Badges (comma-separated)</label>
+                    <input
+                      value={slide.trustBadges.join(', ')}
+                      onChange={e => updateSlide(si, { trustBadges: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
+                      className={inp}
+                      placeholder="97% Visa Approval, ₹0 Hidden Fees, Free Counselling"
+                    />
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Primary CTA Label</label>
+                      <input value={slide.ctaPrimary.label} onChange={e => updateSlide(si, { ctaPrimary: { ...slide.ctaPrimary, label: e.target.value } })} className={inp} placeholder="Book a Free Consultation →" />
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Primary CTA Action</label>
+                      <select value={slide.ctaPrimary.action} onChange={e => updateSlide(si, { ctaPrimary: { ...slide.ctaPrimary, action: e.target.value as HeroSlide['ctaPrimary']['action'] } })} className={inp}>
+                        <option value="link">Link to page</option>
+                        <option value="whatsapp">Open WhatsApp chat</option>
+                        <option value="demo-modal">Open IELTS Demo Modal</option>
+                        <option value="phone">Phone call</option>
+                      </select>
+                    </div>
+                  </div>
+                  {(slide.ctaPrimary.action === 'link' || slide.ctaPrimary.action === 'phone') && (
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Primary CTA URL / href</label>
+                      <input value={slide.ctaPrimary.href ?? ''} onChange={e => updateSlide(si, { ctaPrimary: { ...slide.ctaPrimary, href: e.target.value } })} className={inp} placeholder="/contact or tel:+919158577707" />
+                    </div>
+                  )}
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Secondary CTA Label</label>
+                      <input value={slide.ctaSecondary.label} onChange={e => updateSlide(si, { ctaSecondary: { ...slide.ctaSecondary, label: e.target.value } })} className={inp} placeholder="💬 Chat on WhatsApp" />
+                    </div>
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Secondary CTA Action</label>
+                      <select value={slide.ctaSecondary.action} onChange={e => updateSlide(si, { ctaSecondary: { ...slide.ctaSecondary, action: e.target.value as HeroSlide['ctaSecondary']['action'] } })} className={inp}>
+                        <option value="link">Link to page</option>
+                        <option value="whatsapp">Open WhatsApp chat</option>
+                        <option value="demo-modal">Open IELTS Demo Modal</option>
+                        <option value="phone">Phone call</option>
+                      </select>
+                    </div>
+                  </div>
+                  {(slide.ctaSecondary.action === 'link' || slide.ctaSecondary.action === 'phone') && (
+                    <div>
+                      <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Secondary CTA URL / href</label>
+                      <input value={slide.ctaSecondary.href ?? ''} onChange={e => updateSlide(si, { ctaSecondary: { ...slide.ctaSecondary, href: e.target.value } })} className={inp} placeholder="/about or tel:+919158577707" />
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Slide Image URL</label>
+                    <div className="flex gap-3 items-start">
+                      <input value={slide.imageUrl} onChange={e => updateSlide(si, { imageUrl: e.target.value })} className={`${inp} flex-1`} placeholder="https://images.unsplash.com/…" />
+                      {slide.imageUrl && (
+                        <div className="w-16 h-12 rounded-xl overflow-hidden border border-slate-200 relative flex-shrink-0">
+                          <Image src={slide.imageUrl} alt="preview" fill className="object-cover" sizes="64px" unoptimized onError={() => {}} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Image Alt Text</label>
+                    <input value={slide.imageAlt} onChange={e => updateSlide(si, { imageAlt: e.target.value })} className={inp} placeholder="Students celebrating admission" />
+                  </div>
+
+                  {/* Stat chips */}
+                  <div>
+                    <label className="block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-2">Floating Stat Chips (3)</label>
+                    <div className="space-y-2">
+                      {slide.stats.map((stat, sti) => (
+                        <div key={sti} className="flex gap-2 items-center">
+                          <input value={stat.num} onChange={e => { const s=[...slide.stats]; s[sti]={...s[sti],num:e.target.value}; updateSlide(si,{stats:s}); }} className={`${inp} w-28`} placeholder="10,000+" />
+                          <input value={stat.label} onChange={e => { const s=[...slide.stats]; s[sti]={...s[sti],label:e.target.value}; updateSlide(si,{stats:s}); }} className={`${inp} flex-1`} placeholder="Students Placed" />
+                          <input type="color" value={stat.color} onChange={e => { const s=[...slide.stats]; s[sti]={...s[sti],color:e.target.value}; updateSlide(si,{stats:s}); }} className="w-10 h-10 rounded-lg border border-slate-200 cursor-pointer p-1 flex-shrink-0" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button onClick={saveHeroSlides} disabled={heroSlideBusy}
+                      className="font-jakarta text-xs font-bold text-white px-6 py-2.5 rounded-xl disabled:opacity-50"
+                      style={{ background: 'linear-gradient(135deg,#1249C4,#2563FF)' }}>
+                      {heroSlideBusy ? 'Saving…' : '💾 Save All Slides'}
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Social Media */}
@@ -2546,7 +3802,7 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
               </div>
               <button onClick={saveHeroImages} disabled={busy}
                 className={`${blueBtn} disabled:opacity-50`}
-                style={{ background: `linear-gradient(135deg,${BLUE},#2D5A99)` }}>
+                style={{ background: `linear-gradient(135deg,${BLUE},#246DFF)` }}>
                 {busy ? 'Saving…' : 'Save Hero Images →'}
               </button>
             </div>
@@ -2557,14 +3813,18 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
               <p className="font-jakarta text-xs text-slate-400 mb-4">Override the background campus photo for each destination card and country hero. Paste any Unsplash URL. Leave blank to use the default.</p>
               <div className="space-y-3 mb-4">
                 {[
-                  { code:'usa',        name:'USA',         flag:'🇺🇸' },
-                  { code:'uk',         name:'UK',          flag:'🇬🇧' },
-                  { code:'canada',     name:'Canada',      flag:'🇨🇦' },
-                  { code:'australia',  name:'Australia',   flag:'🇦🇺' },
-                  { code:'ireland',    name:'Ireland',     flag:'🇮🇪' },
-                  { code:'new-zealand',name:'New Zealand', flag:'🇳🇿' },
-                  { code:'singapore',  name:'Singapore',   flag:'🇸🇬' },
-                  { code:'europe',     name:'Europe',      flag:'🇪🇺' },
+                  { code:'usa',         name:'USA',          flag:'🇺🇸' },
+                  { code:'uk',          name:'UK',           flag:'🇬🇧' },
+                  { code:'australia',   name:'Australia',    flag:'🇦🇺' },
+                  { code:'canada',      name:'Canada',       flag:'🇨🇦' },
+                  { code:'new-zealand', name:'New Zealand',  flag:'🇳🇿' },
+                  { code:'ireland',     name:'Ireland',      flag:'🇮🇪' },
+                  { code:'europe',      name:'Europe',       flag:'🇪🇺' },
+                  { code:'uae',         name:'UAE',          flag:'🇦🇪' },
+                  { code:'japan',       name:'Japan',        flag:'🇯🇵' },
+                  { code:'south-korea', name:'South Korea',  flag:'🇰🇷' },
+                  { code:'singapore',   name:'Singapore',    flag:'🇸🇬' },
+                  { code:'russia',      name:'Russia',       flag:'🇷🇺' },
                 ].map(c => (
                   <div key={c.code} className="flex gap-3 items-center">
                     <span className="text-xl w-7 flex-shrink-0">{c.flag}</span>
@@ -2654,10 +3914,10 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
                   const dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
                   const timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
                   const entityColors: Record<string, string> = {
-                    news: '#2D5A99', event: '#059669', testimonials: '#7C3AED',
+                    news: '#246DFF', event: '#059669', testimonials: '#7C3AED',
                     services: '#D97706', processSteps: '#DC2626', companyDetails: '#64748B', globalSettings: '#64748B',
                   };
-                  const color = entityColors[entry.entity] || '#1A365D';
+                  const color = entityColors[entry.entity] || '#246DFF';
                   const isDeleted = entry.action.toLowerCase().includes('deleted');
                   const isDraft   = !entry.published;
                   const canRestore = !!entry.before && !isDeleted;
@@ -2739,8 +3999,18 @@ function Dashboard({ token, onLogout }: { token: string; onLogout: () => void })
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-[700] font-jakarta font-semibold text-sm px-5 py-3 rounded-xl shadow-xl text-white"
-          style={{ background: `linear-gradient(135deg,${BLUE},#2D5A99)` }}>
+        <div
+          className="fixed bottom-6 right-6 z-[700] font-jakarta font-semibold text-sm px-5 py-3 rounded-xl shadow-2xl text-white flex items-center gap-2.5 animate-[slideUp_0.25s_ease-out]"
+          style={{
+            background: toastType === 'error'
+              ? 'linear-gradient(135deg,#DC2626,#B91C1C)'
+              : toastType === 'info'
+              ? `linear-gradient(135deg,${BLUE},#246DFF)`
+              : 'linear-gradient(135deg,#059669,#047857)',
+          }}>
+          <span className="text-base leading-none">
+            {toastType === 'error' ? '✕' : toastType === 'info' ? 'ℹ' : '✓'}
+          </span>
           {toast}
         </div>
       )}

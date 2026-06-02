@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { COUNTRIES_MAP, COMPANY } from '@/lib/data';
-import { getSiteMedia } from '@/lib/kv';
+import { getSiteMedia, getCountryMeta } from '@/lib/kv';
 import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
 import SubNav from './SubNav';
 
@@ -16,8 +16,20 @@ export default async function CountryLayout({ children, params }: Props) {
   const c = COUNTRIES_MAP[country];
   if (!c) notFound();
 
-  const media       = await getSiteMedia().catch(() => null);
-  const campusImage = media?.countryImages?.[country] || c.campusImage;
+  const [media, kvMeta] = await Promise.all([
+    getSiteMedia().catch(() => null),
+    getCountryMeta(country).catch(() => null),
+  ]);
+
+  // Merge KV overrides onto static defaults — KV wins when set
+  const intake      = kvMeta?.intake      || c.intake;
+  const avgCost     = kvMeta?.avgCost     || c.avgCost;
+  const visaRate    = kvMeta?.visaRate    || c.visaRate;
+  const unis        = kvMeta?.unis        || c.unis;
+  const tagline     = kvMeta?.tagline     || c.tagline;
+  const campusImage = kvMeta?.campusImage || media?.countryImages?.[country] || c.campusImage;
+  const heroImage   = kvMeta?.heroImage   || c.heroImage;
+  const color       = kvMeta?.color       || c.color;
 
   return (
     <div className="bg-white">
@@ -25,7 +37,7 @@ export default async function CountryLayout({ children, params }: Props) {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         className="relative min-h-[72vh] flex items-end overflow-hidden"
-        style={{ backgroundColor: c.color }}
+        style={{ backgroundColor: color }}
       >
         {/* Campus photo as base layer */}
         <Image
@@ -38,7 +50,7 @@ export default async function CountryLayout({ children, params }: Props) {
         />
         {/* Hero portrait overlaid */}
         <Image
-          src={c.heroImage}
+          src={heroImage}
           alt={c.name}
           fill
           className="object-cover opacity-60"
@@ -52,10 +64,10 @@ export default async function CountryLayout({ children, params }: Props) {
           style={{
             background: `linear-gradient(
               to top,
-              ${c.color}F8 0%,
-              ${c.color}C0 30%,
-              ${c.color}70 55%,
-              ${c.color}20 78%,
+              ${color}F8 0%,
+              ${color}C0 30%,
+              ${color}70 55%,
+              ${color}20 78%,
               transparent 100%
             )`,
           }}
@@ -97,17 +109,17 @@ export default async function CountryLayout({ children, params }: Props) {
                 Study in {c.name}
               </h1>
               <p className="font-jakarta text-white/85 text-lg mt-3 max-w-lg leading-relaxed">
-                {c.tagline}
+                {tagline}
               </p>
             </div>
 
             {/* Glassmorphic stat tiles */}
             <div className="grid grid-cols-2 gap-3 lg:min-w-[280px]">
               {[
-                ['📅 Intake',       c.intake],
-                ['💰 Avg Cost',     c.avgCost],
-                ['✅ Visa Rate',    c.visaRate],
-                ['🏛️ Universities', c.unis],
+                ['📅 Intake',       intake],
+                ['💰 Avg Cost',     avgCost],
+                ['✅ Visa Rate',    visaRate],
+                ['🏛️ Universities', unis],
               ].map(([label, value]) => (
                 <div
                   key={label as string}
@@ -131,7 +143,7 @@ export default async function CountryLayout({ children, params }: Props) {
         country={country}
         sections={SECTION_SLUGS}
         labels={SECTION_LABELS}
-        accentColor={c.color}
+        accentColor={color}
       />
 
       {/* ── Section Content ──────────────────────────────────────────────── */}
@@ -140,7 +152,7 @@ export default async function CountryLayout({ children, params }: Props) {
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <section
         className="section relative overflow-hidden"
-        style={{ background: `linear-gradient(135deg,${c.color} 0%,${c.color}CC 100%)` }}
+        style={{ background: `linear-gradient(135deg,${color} 0%,${color}CC 100%)` }}
       >
         <Image
           src={campusImage}

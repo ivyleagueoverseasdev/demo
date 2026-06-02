@@ -12,7 +12,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: 'About Us | Ivy League Overseas Consulting',
   description:
-    'Learn about ILOC — founded by Rajib Paul Choudhury in Pune. 2,500+ students placed, 97% visa approval, zero hidden fees.',
+    'Learn about ILOC — Pune\'s most trusted overseas education consultancy for 25+ years. 10,000+ students placed, 97% visa approval, zero hidden fees.',
 };
 
 // ── "Why ILOC" recognition cards — explicit objects, zero string-indexing ──
@@ -28,8 +28,8 @@ const WHY_ILOC = [
   {
     Icon:  TrendingUp,
     label: '97% Visa Approval',
-    color: '#2D5A99',
-    glow:  'rgba(45,90,153,0.35)',
+    color: '#246DFF',
+    glow:  'rgba(36,109,255,0.35)',
     bg:    '#EBF4FF',
     border:'#BFDBFE',
   },
@@ -63,8 +63,8 @@ const MISSION_VISION = [
   {
     Icon:  Globe,
     title: 'Our Vision',
-    color: '#2D5A99',
-    glow:  'rgba(45,90,153,0.30)',
+    color: '#246DFF',
+    glow:  'rgba(36,109,255,0.30)',
     desc:  'To be the most trusted overseas education consulting brand in India — known for ethical practices, zero hidden fees, personalised service and outstanding student outcomes.',
   },
 ];
@@ -97,7 +97,7 @@ export default function AboutPage() {
             </h1>
             <p className="font-jakarta text-white/75 text-lg leading-relaxed max-w-2xl">
               {COMPANY.name} (ILOC) is a premium overseas education consultancy founded by{' '}
-              {COMPANY.founder} in {COMPANY.since}. Based in Pune, we've placed 2,500+ students
+              {COMPANY.founder} in {COMPANY.since}. Based in Pune, we've placed 10,000+ students
               at 400+ universities worldwide — with a 97% visa approval rate and zero hidden fees.
             </p>
           </div>
@@ -160,8 +160,8 @@ export default function AboutPage() {
               transparent and never tied to any specific university.
             </p>
             <p className="font-jakarta text-slate-600 leading-relaxed">
-              With 2,500+ students placed across 400+ universities in 7+ countries, our track
-              record speaks for itself. Every student gets my direct attention — that's the ILOC
+              With 10,000+ students placed across 400+ universities in 12+ countries, our track
+              record speaks for itself. Every student gets expert, personalised attention — that's the ILOC
               promise.
             </p>
             <p className="font-jakarta font-bold text-slate-400 italic mt-6">— {COMPANY.founder}</p>

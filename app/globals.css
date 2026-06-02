@@ -109,9 +109,22 @@
   .marquee-track-reverse { animation: marqueeReverse  40s linear infinite; }
   .marquee-track-slow    { animation: marquee         60s linear infinite; }
 
+  /* University logo marquee — speed driven by CSS custom property */
+  .uni-marquee-track {
+    animation: marquee var(--uni-marquee-speed, 38s) linear infinite;
+  }
+  .uni-marquee-track-reverse {
+    animation: marqueeReverse var(--uni-marquee-speed, 44s) linear infinite;
+  }
+  /* Pause the entire section on hover */
+  .uni-marquee-section:hover .uni-marquee-track,
+  .uni-marquee-section:hover .uni-marquee-track-reverse {
+    animation-play-state: paused;
+  }
+
   /* Gradient text */
   .text-gradient-blue {
-    background: linear-gradient(135deg,#1A365D,#2D5A99);
+    background: linear-gradient(135deg,#246DFF,#246DFF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -147,13 +160,13 @@
   .shadow-review {
     box-shadow:
       0 2px 8px rgba(0,0,0,0.06),
-      0 8px 32px rgba(26,54,93,0.08),
+      0 8px 32px rgba(36,109,255,0.08),
       0 0 0 1px rgba(255,255,255,0.9) inset;
   }
   .shadow-review-hover {
     box-shadow:
       0 4px 16px rgba(0,0,0,0.10),
-      0 20px 48px rgba(26,54,93,0.14),
+      0 20px 48px rgba(36,109,255,0.14),
       0 0 0 1px rgba(255,255,255,0.9) inset;
   }
 

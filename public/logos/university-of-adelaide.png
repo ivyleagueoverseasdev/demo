@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en" class="mod modLayout">
+    <head>
+        <title>Adelaide University Brand</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="Adelaide University Brand">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="https://brand.adelaideuni.edu.au/">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <!-- Open Graph -->
+        <meta property="og:title" content="Adelaide University Brand">
+        <meta property="og:description" content="">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://brand.adelaideuni.edu.au/">
+        <meta name="twitter:title" content="Adelaide University Brand">
+        <meta name="twitter:description" content="">
+
+        <!-- This product is built using third-party software, as described here: https://app.frontify.com/licenses.md -->
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="x-csrf-token" content="3a51a586c64c20c0b88d54f4e57089e12e037ff11dd78b68044d8a03019016b1" /><link rel="stylesheet" type="text/css" href="https://cdn.frontify.com/css/frontify-bootstrap.caed21caace9293a.css" />
+
+<style type="text/css" id="js-o-auth__style">
+  .o-auth__note {  border-radius: 4px;}.o-auth__submit {  border-radius: 4px;  background-color: rgb(20, 72, 255);  color: rgb(255, 255, 255);}.o-auth__submit:hover {  background-color: rgb(12, 43, 153);}.o-auth__submit:active {  background-color: rgb(12, 43, 153);}.o-auth__submit--oauth-and-saml {  border-radius: 4px;  background-color: rgb(20, 72, 255);  color: rgb(255, 255, 255);}.o-auth__error-message {  color: rgb(211, 35, 98);}.o-auth__submit--oauth-and-saml:hover {  background-color: rgb(12, 43, 153);}.o-auth__note {  color: rgb(0, 0, 0);  background-color: rgb(234, 235, 235);}@media (min-width: 480px) {  .o-auth, .skinLayoutRequestAccess {    background-image: url("https://media.ffycdn.net/eu/university-of-adelaide/L9JsvPmaDYvjfPfQiUkz.jpg?width={width}");  }}.o-auth, .skinLayoutRequestAccess {  background-size: cover;}.o-auth, .skinLayoutRequestAccess {  background-color: rgb(20, 15, 80);}.o-auth, .o-auth__email, .o-auth__password, .o-auth__submit, .o-auth__password-lost, .o-auth__go-to-login, .o-auth__toggle-external-login, .o-auth__submit--oauth-and-saml {font-family: inherit;}</style>
+
+
+  <link
+    rel="icon"
+    href="https://media.ffycdn.net/eu/university-of-adelaide/3dNcpRdjJzmZeHL7bKiM.png?width={width}"
+    type="image/png"
+  />
+    </head>
+    <body
+            >
+        <div class="mod mod-skip-to-main-content skip-to-main-content"></div>
+
+        <div class="mod mod-c-globalmessage c-globalmessage c-globalmessage--hidden">
+    <div class="c-globalmessage__container js-c-globalmessage__container"></div>
+</div>
+
+        <div class="mod mod-c-outstandingpayment co-outstandingpayment state-visible"></div>
+
+                    
+
+                <main class="main-content"></main>
+        <div class="js-co-modals__container co-modals__container">
+    <div class="cm-modal__overlay js-cm-modal__overlay"></div>
+    <div class="mod mod-c-modal cm-modal js-cm-modal" data-modal-id="modal">
+        <div class="cm-modal__wrapper">
+            <a
+                href="javascript:;"
+                class="cm-modal__close js-cm-modal__close"
+                title="Close"
+                aria-label="Close">
+                <i class="ca-icon--reject ca-icon--md"></i>
+            </a>
+            <div class="cm-modal__content js-cm-modal__content"></div>
+        </div>
+    </div>
+</div>
+
+<div class="mod mod-c-swal"></div>
+<div class="mod mod-c-payment co-payment clearfix"></div>
+<div class="mod mod-c-downloader co-downloader js-co-downloader"></div>
+<div class="mod mod-email-change-request"></div>
+
+<script type="text/javascript">
+    window.currentLanguage = "" || window.currentLanguage;
+
+    window.__frontify_do_not_use_or_you_will_be_fired = {
+        context: {"route_initial":true,"view":"auth","user":[],"marketplace_app_cdn_url":"https:\/\/frontify-artifacts.com","auth":{"dashboard_id":1,"appearance":{"font":{"eot":null,"otf":null,"ttf":null,"woff":null,"woff2":null,"created":"","provider":"System","font_style":"","project_id":null,"family_name":"inherit","font_weight":"","provider_id":"","display_name":"Auto (inherit main font)","css_family_name":""},"logo_image":"https:\/\/cdn-assets-eu.frontify.com\/s3\/frontify-enterprise-files-eu\/eyJwYXRoIjoidW5pdmVyc2l0eS1vZi1hZGVsYWlkZVwvZmlsZVwvNTJyTkFodmNuenNCVGt6MkhDUlQuc3ZnIn0:university-of-adelaide:2yljhXq3mJk6Cqxjv4uMbhRo0mZaarcgWZUEhxA010M?width={width}","logo_height":"70px","form_position":"center","logo_position":"center","request_access":"Request access","custom_greeting":"Welcome to Adelaide University brand guidelines","background_color":"rgb(20, 15, 80)","background_image":"https:\/\/cdn-assets-eu.frontify.com\/s3\/frontify-enterprise-files-eu\/eyJwYXRoIjoidW5pdmVyc2l0eS1vZi1hZGVsYWlkZVwvZmlsZVwvTDlKc3ZQbWFEWXZqZlBmUWlVa3ouanBnIn0:university-of-adelaide:VEtkuPWkTPmZKF3KdWBcStRoWOQmqQXt0CSHHlmFaA4?width={width}","sso_button_color":"rgb(20, 72, 255)","login_email_label":"Email","login_button_color":"rgb(20, 72, 255)","background_position":"cover","error_message_color":"rgb(211, 35, 98)","login_external_title":"","login_internal_title":"","login_internal_notice":"UniSA Staff \u2013 When signing in via SSO, please use your username as unisausername@unisa.edu.au\n\nUoA Staff \u2013 When signing in via SSO, please use your \u2018A\u2019 number","sso_button_hover_color":"rgb(12, 43, 153)","collapse_external_login":"1","login_methods_separator":"or","login_button_hover_color":"rgb(12, 43, 153)","sso_button_border_radius":null,"sso_external_expand_label":"Show external login","login_box_background_color":"rgba(255, 255, 255, 0.9)","sso_external_collapse_label":"Hide external login","terms_and_conditions_enabled":false,"login_internal_notice_text_color":"rgb(0, 0, 0)"},"access_request":null,"two_factor_authentication":null,"invitation":null,"password_reset":null,"password_policy":{"password_length":10,"password_uppercase":1,"password_lowercase":1,"password_numbers":1,"password_special":0,"password_history":3},"saml":{"url":"\/api\/auth\/saml\/"},"openid_connect":null,"secondary_sso_button":{"enabled":false,"href":"","button_label":"Sign in via SSO"},"claim":"","referer":"\/","form_position":"center","display_greeting":true,"custom_greeting":"Welcome to Adelaide University brand guidelines","display_links":true,"terms_and_conditions_enabled":false,"logo_image_file_id":"JTaz9jaetJz7Nk41dsKS","logo_image":"https:\/\/media.ffycdn.net\/eu\/university-of-adelaide\/52rNAhvcnzsBTkz2HCRT.svg?width={width}","logo_height":"70px","logo_width":"auto","logo_position":"center","login_box_background_color":"rgba(255, 255, 255, 0.9)","login_box_border_radius":"0px","border_radius":"4px","hyperlinks_link_color":"blue","login_button_color":"rgb(20, 72, 255)","login_button_hover_color":"rgb(12, 43, 153)","login_button_label_color":"rgb(255, 255, 255)","login_button_label":"Sign in","login_button_border_radius":"4px","display_background_image":true,"background_image_file_id":"AFLN9zSpFsQ2q1Vryju1","background_image":"https:\/\/media.ffycdn.net\/eu\/university-of-adelaide\/L9JsvPmaDYvjfPfQiUkz.jpg?width={width}","background_color":"rgb(20, 15, 80)","background_position":"cover","collapse_external_login":true,"error_message_color":"rgb(211, 35, 98)","sso_button_color":"rgb(20, 72, 255)","sso_button_border_radius":"4px","sso_button_hover_color":"rgb(12, 43, 153)","sso_button_label":"Sign in via SSO","sso_button_label_color":"rgb(255, 255, 255)","sso_external_expand_label":"Show external login","sso_external_collapse_label":"Hide external login","login_internal_title":"","login_internal_notice":"UniSA Staff \u2013 When signing in via SSO, please use your username as unisausername@unisa.edu.au\n\nUoA Staff \u2013 When signing in via SSO, please use your \u2018A\u2019 number","login_internal_notice_text_color":"rgb(0, 0, 0)","login_internal_notice_background_color":"rgb(234, 235, 235)","login_external_title":"","show_sign_up_link":false,"login_methods_separator":"or","login_email_label":"Email","login_email_placeholder":"you@example.com","login_email_missing_error":"Please enter your email address.","login_email_invalid_error":"This email address is invalid.","login_password_label":"Password","login_password_placeholder":"Enter your password","login_password_missing_error":"Please enter a password.","login_invalid_credentials_error":"Wrong credentials.","login_force_sso_error":"Logging in with email\/password is disabled for this user\/domain. Please log in via SSO.","login_user_locked_error":"Too many failed login attempts. Please wait a few minutes and try again.","login_unexpected_error":"Something went wrong. Reload the page and try again.","font":{"eot":null,"otf":null,"ttf":null,"woff":null,"woff2":null,"created":"","provider":"System","font_style":"","project_id":null,"family_name":"inherit","font_weight":"","provider_id":"","display_name":"Auto (inherit main font)","css_family_name":""},"go_to_login":"Go to sign-in page","request_access":"Request access","create_account":"Create a Frontify account","lost_password":"Lost your password?","terms_and_conditions_message":"<p dir=\"auto\" class=\"tw-break-words\" style=\"font-size: 14px; font-style: normal; font-weight: normal;\">&#xFEFF;<\/p>","terms_and_conditions_mandatory":false,"disclaimer":"<p class=\"tw-break-words\" style=\"font-size: 14px; font-style: normal; font-weight: normal;\">Adelaide University has made every reasonable effort to ensure the information on this website is complete and up to date.  View full disclaimer <a href=\"https:\/\/adelaideuni.edu.au\/about\/disclaimer\/\" class=\"tw-break-words\" style=\"font-size: 14px; font-style: normal; color: rgb(113, 89, 215); text-decoration: underline; cursor: pointer;\" target=\"_self\">here<\/a>\ufeff<\/p>","disclaimer_create_account":"","css":".o-auth__note {  border-radius: 4px;}.o-auth__submit {  border-radius: 4px;  background-color: rgb(20, 72, 255);  color: rgb(255, 255, 255);}.o-auth__submit:hover {  background-color: rgb(12, 43, 153);}.o-auth__submit:active {  background-color: rgb(12, 43, 153);}.o-auth__submit--oauth-and-saml {  border-radius: 4px;  background-color: rgb(20, 72, 255);  color: rgb(255, 255, 255);}.o-auth__error-message {  color: rgb(211, 35, 98);}.o-auth__submit--oauth-and-saml:hover {  background-color: rgb(12, 43, 153);}.o-auth__note {  color: rgb(0, 0, 0);  background-color: rgb(234, 235, 235);}@media (min-width: 480px) {  .o-auth, .skinLayoutRequestAccess {    background-image: url(\"https:\/\/media.ffycdn.net\/eu\/university-of-adelaide\/L9JsvPmaDYvjfPfQiUkz.jpg?width={width}\");  }}.o-auth, .skinLayoutRequestAccess {  background-size: cover;}.o-auth, .skinLayoutRequestAccess {  background-color: rgb(20, 15, 80);}.o-auth, .o-auth__email, .o-auth__password, .o-auth__submit, .o-auth__password-lost, .o-auth__go-to-login, .o-auth__toggle-external-login, .o-auth__submit--oauth-and-saml {font-family: inherit;}"},"success":true,"features":["ANALYTICS","ASSET_AUDIT_TRAIL","ASSET_EXPIRY_NOTIFICATIONS","ASSET_LIFECYCLE","AUTOMATIONS","AUTO_TAGGING","BRAND_UPDATE","COLLECTIONS","CONDITIONAL_FACETS","CORE_ACCESS_REQUEST","CORE_BRANDED_LOGIN_PAGE","CORE_CUSTOM_DOMAIN","CORE_CUSTOM_EMAIL_TEMPLATE","CORE_CUSTOM_SUBDOMAIN","CORE_MULTIPLE_STYLEGUIDE","CORE_SSO","CORE_USER_GROUPS","CUSTOM_CROPPING","DAM_METADATA","DOWNLOAD_REQUEST","EXTERNAL_DATA_IMAGES","FOCAL_POINT","MARKETPLACE","MARKETPLACE_SHARE_LINK","PERSONAL_PROJECT_ACCESS","PRINT_ON_DEMAND","PROJECT_BRIEFING","PROJECT_METADATA","PUBLIC_API","PUBLIC_ASSET_SHARING","PUBLISHING_SAVE_TO","SOURCE_TEMPLATE","STYLEGUIDE_CHANGELOG","STYLEGUIDE_I18N","STYLEGUIDE_PUBLIC_SHARING","STYLEGUIDE_SEARCH","STYLEGUIDE_SEGMENT_ANALYTICS","STYLEGUIDE_SETTING_SEARCH_ICON","STYLEGUIDE_STATS","STYLEGUIDE_TERMS","TARGETS","TWO_FACTOR_AUTHENTICATION","WORKSPACE_APPROVAL_REQUESTS","WORKSPACE_EXTERNAL_ASSET","WORKSPACE_EXTERNAL_ASSET_PASSWORD_PROTECTION","WORKSPACE_INSPECT","WORKSPACE_PROTOTYPING","WORKSPACE_PUBLISHING","WORKSPACE_WORKFLOW","WORKSPACE_WORKFLOW_CUSTOM"],"products":["BRAND_PORTAL","DAM","DOCUMENT_LIBRARY","ICON_LIBRARY","LOGO_LIBRARY","STYLEGUIDE","WORKSPACE"],"account":{"development_flags":["ACCOUNT_SETTINGS_CERTIFICATE_MANAGEMENT","ADMIN_EMAIL_VERIFICATION_BANNER","ASSET_CHOOSER_ALPHABETICAL_LIBRARY_SORT","ASSET_DESCRIPTION_OVERLAY","ASSET_DOWNLOAD_SPLIT_BUTTON_REMOVAL","ASSET_SEARCH_METRICS_LOGGER","BRAND_ASSISTANT_AGENTIC","BRAND_ASSISTANT_EXACT_TERM_SEARCH","CROSS_LIBRARY_SEARCH_SETTINGS","MEDIA_MANIPULATOR_TRANSFORMATIONS","REACT_PUBLICATION_EDITOR","REFACTOR_MODULE_CUSTOM_METADATA","RESTORE_CONTENT","UPLOAD_CUSTOM_METADATA"]},"global_message":{"enabled":false,"text":"","admin_only":true},"authenticated":false},
+    };
+
+    window.APPLICATION_CONFIG = {
+        locales: {"cs.json":"https:\/\/cdn.frontify.com\/locales\/cs.9f83fedbfe0e1ee6.json","da.json":"https:\/\/cdn.frontify.com\/locales\/da.43a7aacbc9e3bc0b.json","de.json":"https:\/\/cdn.frontify.com\/locales\/de.c4f67c7f49acbb4b.json","en.json":"https:\/\/cdn.frontify.com\/locales\/en.ef60ffa2a5314679.json","es.json":"https:\/\/cdn.frontify.com\/locales\/es.7b01cd13f0fa4517.json","fi.json":"https:\/\/cdn.frontify.com\/locales\/fi.170629d52a8533d7.json","fr.json":"https:\/\/cdn.frontify.com\/locales\/fr.3117d07f7894d682.json","it.json":"https:\/\/cdn.frontify.com\/locales\/it.44fb330befdc04f9.json","nl.json":"https:\/\/cdn.frontify.com\/locales\/nl.fee66991f8972f09.json","no.json":"https:\/\/cdn.frontify.com\/locales\/no.074546b1ced8ba27.json","pl.json":"https:\/\/cdn.frontify.com\/locales\/pl.007b0661ddd91629.json","pt.json":"https:\/\/cdn.frontify.com\/locales\/pt.dfa66e6ce054a942.json","sv.json":"https:\/\/cdn.frontify.com\/locales\/sv.d3f143a1efe5acbf.json"},
+        thirdParty: {
+            amplitude: {
+                enabled: true,
+                amplitudeId: "ebff31b9da313efd071a193786671111",
+                region: "EU",
+                accountId: 4002228,
+                enterpriseEnabled: true,
+                enterpriseId: 4002228,
+                plan: "ENTERPRISE",
+                isPaid: true,
+                isTrial: false,
+                user: {
+                    id: null,
+                    creator: null,
+                    signUpDate: null,
+                    referer: null,
+                    landing: null,
+                },
+            },
+            intercom: {
+                enabled: false,
+                settings: null,
+            },
+            pusher: {
+                enabled: false,
+                key: "ec4aa401293de48d4a15",
+                cluster: "eu",
+                projectIds: [],
+            },
+            segment: {
+                enabled: false, // Only enabled on Guidelines
+            },
+            sentry: {
+                enabled: true,
+                dsn: "https://07efd26759d575d252eb3fb4f5539d3d@sentryapp.appsupport.frontify.dev/51",
+            },
+        },
+    };
+</script>
+<script type="text/javascript" src="https://cdn.frontify.com/js/frontify-runtime.bfc5054df4da878d.js"></script>
+<script type="text/javascript" src="https://cdn.frontify.com/js/frontify-vendors.1844c62952d59a91.js"></script>
+<script type="text/javascript" src="https://cdn.frontify.com/js/frontify-bootstrap.9bc408281078a8b3.js"></script>
+
+    </body>
+</html>

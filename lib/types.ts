@@ -1,3 +1,38 @@
+// ── Hero carousel CMS types ───────────────────────────────────────────────
+
+export type HeroCtaStyle = 'amber' | 'green' | 'ghost';
+export type HeroCtaAction = 'link' | 'whatsapp' | 'demo-modal' | 'phone';
+
+export interface HeroStat {
+  num:   string;   // e.g. "10,000+"
+  label: string;   // e.g. "Students Placed"
+  color: string;   // hex e.g. "#D97706"
+}
+
+export interface HeroCta {
+  label:  string;
+  style:  HeroCtaStyle;
+  action: HeroCtaAction;
+  href?:  string;           // for action=link|phone
+}
+
+export interface HeroSlide {
+  id:               string;   // unique slug e.g. "study-abroad"
+  badge:            string;   // pill text e.g. "🎓 25+ Years of Trusted Expertise"
+  headingLines:     string[]; // up to 3 lines
+  headingHighlight: boolean[]; // which line gets highlight colour
+  highlightColor:   string;   // Tailwind class e.g. "text-amber-400"
+  subtext:          string;
+  trustBadges:      string[]; // short pill labels
+  ctaPrimary:       HeroCta;
+  ctaSecondary:     HeroCta;
+  imageUrl:         string;
+  imageAlt:         string;
+  stats:            HeroStat[];
+  accentGradient:   string;   // Tailwind from/via classes e.g. "from-blue-900/60 via-blue-800/30"
+  enabled:          boolean;
+}
+
 // ── Content block types for admin page builder ───────────────────────────
 export type BlockType =
   | 'hero' | 'text' | 'grid' | 'stats' | 'cta'
@@ -35,7 +70,15 @@ export interface RedirectRule {
 }
 
 // ── Site events (admin-managed, shown in EventsCarousel) ──────────────────
-export type EventType = 'webinar' | 'fair' | 'deadline' | 'workshop' | 'seminar';
+export type EventType = 'webinar' | 'fair' | 'deadline' | 'workshop' | 'seminar' | 'class';
+
+export type EventActionType = 'zoom' | 'webinar' | 'registration' | 'external' | 'whatsapp';
+
+export interface EventActionLink {
+  type:  EventActionType;  // determines icon + button label prefix
+  label: string;           // button label e.g. "Join Zoom", "Register for Webinar"
+  url:   string;           // destination URL
+}
 
 export interface SiteEvent {
   id:          string;
@@ -50,6 +93,7 @@ export interface SiteEvent {
   imageUrl?:   string;         // Optional card background image
   ctaLabel:    string;         // e.g. "Register Free"
   ctaUrl?:     string;         // Link for the CTA (legacy — detail page is /events/[id])
+  actionLinks?: EventActionLink[]; // Zoom, webinar, registration links shown on detail page
   seats?:      number;
   speakers?:   string[];       // Optional list of speaker names
   published:   boolean;
@@ -94,6 +138,7 @@ export interface SiteContent {
 export interface Stat {
   num:   string;
   label: string;
+  icon?: string;  // lucide icon name e.g. "GraduationCap"
 }
 
 // Editable service card — admin can change icon, title, desc without redeploy
@@ -180,12 +225,18 @@ export interface CompanyDetails {
 }
 
 export interface GlobalSettings {
-  brandName:      string;   // override display name (e.g. "ILOC" → custom)
-  heroImages:     string[]; // up to 3 carousel URLs
-  noticeBanner:   string;   // optional top-bar text; empty = hidden
-  linkedIn:       string;   // full URL
-  instagram:      string;   // full URL
-  whatsappUrl:    string;   // full wa.me URL
+  brandName:               string;   // override display name (e.g. "ILOC" → custom)
+  heroImages:              string[]; // up to 3 carousel URLs
+  noticeBanner:            string;   // optional top-bar text; empty = hidden
+  linkedIn:                string;   // full URL
+  instagram:               string;   // full URL
+  whatsappUrl:             string;   // full wa.me URL
+  mainLogoUrl?:            string;   // custom logo image URL (optional — falls back to SVG)
+  businessNameText?:       string;   // custom business name displayed in header
+  headerLogoUrl?:          string;   // hero-header-specific logo URL
+  headerBackgroundColor?:  string;   // hex color for hero header bg, e.g. "#2563FF"
+  headerVerticalPadding?:  string;   // e.g. "py-16 md:py-24" or a numeric rem value
+  businessNameDisplayName?: string;  // large title text in hero header
 }
 
 export interface NewsItem {

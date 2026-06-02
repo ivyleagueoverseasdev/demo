@@ -1,39 +1,46 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { DEFAULT_EVENTS } from '@/lib/data';
 import type { SiteEvent, EventType } from '@/lib/types';
 
 // ── Type config ────────────────────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
-  webinar:  { label: 'Webinar',   color: '#2D5A99', bg: '#EBF4FF', border: '#BFDBFE' },
+  webinar:  { label: 'Webinar',   color: '#246DFF', bg: '#EBF4FF', border: '#BFDBFE' },
   fair:     { label: 'Fair',      color: '#059669', bg: '#ECFDF5', border: '#6EE7B7' },
   deadline: { label: 'Deadline',  color: '#DC2626', bg: '#FEF2F2', border: '#FECACA' },
   workshop: { label: 'Workshop',  color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE' },
   seminar:  { label: 'Seminar',   color: '#D97706', bg: '#FFFBEB', border: '#FDE68A' },
+  class:    { label: 'Live Class', color: '#0891B2', bg: '#ECFEFF', border: '#A5F3FC' },
 };
 
 const COUNTRY_OPTIONS = [
   { value: '', label: 'All Countries' },
-  { value: 'usa',       label: '🇺🇸 USA' },
-  { value: 'uk',        label: '🇬🇧 UK' },
-  { value: 'canada',    label: '🇨🇦 Canada' },
-  { value: 'australia', label: '🇦🇺 Australia' },
-  { value: 'ireland',   label: '🇮🇪 Ireland' },
-  { value: 'singapore', label: '🇸🇬 Singapore' },
-  { value: 'europe',    label: '🇪🇺 Europe' },
+  { value: 'usa',          label: '🇺🇸 USA' },
+  { value: 'uk',           label: '🇬🇧 UK' },
+  { value: 'australia',    label: '🇦🇺 Australia' },
+  { value: 'canada',       label: '🇨🇦 Canada' },
+  { value: 'new-zealand',  label: '🇳🇿 New Zealand' },
+  { value: 'ireland',      label: '🇮🇪 Ireland' },
+  { value: 'europe',       label: '🇪🇺 Europe' },
+  { value: 'uae',          label: '🇦🇪 UAE' },
+  { value: 'japan',        label: '🇯🇵 Japan' },
+  { value: 'south-korea',  label: '🇰🇷 South Korea' },
+  { value: 'singapore',    label: '🇸🇬 Singapore' },
+  { value: 'russia',       label: '🇷🇺 Russia' },
 ];
 
 const TYPE_OPTIONS: { value: string; label: string }[] = [
-  { value: '', label: 'All Types' },
-  { value: 'webinar',  label: 'Webinar'  },
-  { value: 'fair',     label: 'Fair'     },
-  { value: 'workshop', label: 'Workshop' },
-  { value: 'seminar',  label: 'Seminar'  },
-  { value: 'deadline', label: 'Deadline' },
+  { value: '',         label: 'All Types'  },
+  { value: 'class',    label: '🎓 Live Classes' },
+  { value: 'webinar',  label: 'Webinar'    },
+  { value: 'fair',     label: 'Fair'       },
+  { value: 'workshop', label: 'Workshop'   },
+  { value: 'seminar',  label: 'Seminar'    },
+  { value: 'deadline', label: 'Deadline'   },
 ];
 
 function formatDate(iso: string) {
@@ -64,7 +71,7 @@ function EventCard({ event, index }: { event: SiteEvent; index: number }) {
     >
       <Link
         href={`/events/${event.id}`}
-        className="group block h-full rounded-2xl overflow-hidden border bg-white hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(26,54,93,0.13)] transition-all duration-300"
+        className="group block h-full rounded-2xl overflow-hidden border bg-white hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(36,109,255,0.13)] transition-all duration-300"
         style={{ borderColor: cfg.border, boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}
       >
         {/* Image */}
@@ -162,19 +169,51 @@ function EventCard({ event, index }: { event: SiteEvent; index: number }) {
   );
 }
 
+// ── Skeleton card ─────────────────────────────────────────────────────────
+function SkeletonCard() {
+  return (
+    <div className="rounded-2xl border border-slate-100 bg-white overflow-hidden animate-pulse">
+      <div className="h-44 bg-slate-100" />
+      <div className="p-5 space-y-3">
+        <div className="flex gap-2">
+          <div className="h-4 w-16 bg-slate-100 rounded-full" />
+          <div className="h-4 w-12 bg-slate-100 rounded-full" />
+        </div>
+        <div className="h-5 w-3/4 bg-slate-100 rounded-lg" />
+        <div className="h-3 w-full bg-slate-100 rounded-lg" />
+        <div className="h-3 w-2/3 bg-slate-100 rounded-lg" />
+        <div className="pt-3 border-t border-slate-100 flex justify-between">
+          <div className="h-3 w-20 bg-slate-100 rounded" />
+          <div className="h-7 w-24 bg-slate-100 rounded-lg" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Main page ──────────────────────────────────────────────────────────────
 export default function EventsHubPage() {
-  const [events,  setEvents]  = useState<SiteEvent[]>(DEFAULT_EVENTS);
+  const searchParams = useSearchParams();
+
+  const [events,  setEvents]  = useState<SiteEvent[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search,  setSearch]  = useState('');
   const [country, setCountry] = useState('');
-  const [type,    setType]    = useState('');
+  // Pre-filter from URL: /events?type=classes → show only live classes
+  const [type, setType] = useState<string>(() => {
+    const t = searchParams.get('type');
+    if (t === 'classes' || t === 'class') return 'class';
+    const valid = ['webinar','fair','workshop','seminar','deadline','class'];
+    return valid.includes(t ?? '') ? (t ?? '') : '';
+  });
 
   // Hydrate from KV
   useEffect(() => {
     fetch('/api/events')
       .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d?.events?.length) setEvents(d.events); })
-      .catch(() => {});
+      .then(d => { if (d?.events) setEvents(d.events); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   const published = useMemo(() => events.filter(e => e.published), [events]);
@@ -199,7 +238,7 @@ export default function EventsHubPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-20 lg:py-28"
-        style={{ background: 'linear-gradient(145deg,#0F2247 0%,#1A365D 55%,#2D5A99 100%)' }}
+        style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 55%,#246DFF 100%)' }}
       >
         {/* Dot grid */}
         <div className="absolute inset-0 opacity-[0.04] pointer-events-none" aria-hidden>
@@ -250,7 +289,7 @@ export default function EventsHubPage() {
             <div className="flex flex-wrap justify-center gap-4">
               {[
                 { icon: '📅', num: `${upcoming.length}`, label: 'Upcoming Events' },
-                { icon: '🎓', num: '2,500+',              label: 'Students Placed' },
+                { icon: '🎓', num: '10,000+',             label: 'Students Placed' },
                 { icon: '✅', num: '₹0',                  label: 'Event Cost' },
               ].map(s => (
                 <div
@@ -330,8 +369,15 @@ export default function EventsHubPage() {
       <section className="section bg-slate-50">
         <div className="container-xl">
 
+          {/* Loading skeleton */}
+          {loading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} />)}
+            </div>
+          )}
+
           {/* Upcoming */}
-          {upcoming.length > 0 && (
+          {!loading && upcoming.length > 0 && (
             <div className="mb-14">
               <div className="flex items-center gap-3 mb-7">
                 <div className="h-1 w-8 rounded-full bg-amber-400" />
@@ -350,7 +396,7 @@ export default function EventsHubPage() {
           )}
 
           {/* Past events */}
-          {past.length > 0 && (
+          {!loading && past.length > 0 && (
             <div>
               <div className="flex items-center gap-3 mb-7">
                 <div className="h-1 w-8 rounded-full bg-slate-300" />
@@ -369,7 +415,7 @@ export default function EventsHubPage() {
           )}
 
           {/* Empty state */}
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -411,7 +457,7 @@ export default function EventsHubPage() {
                 Can&apos;t find an event that works?
               </h2>
               <p className="font-jakarta text-white/70 max-w-lg mx-auto mb-7 leading-relaxed text-sm">
-                Book a one-on-one free counselling session with Rajib Paul. 30 minutes, zero pressure, fully personalised.
+                Book a one-on-one free counselling session with our expert team. 30 minutes, zero pressure, fully personalised.
               </p>
               <Link
                 href="/contact"

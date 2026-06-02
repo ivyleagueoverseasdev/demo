@@ -44,7 +44,7 @@ export default function ContactPage() {
 
     // Open WhatsApp with pre-filled message after showing success state briefly
     const waMsg = encodeURIComponent(
-      `Hi Rajib Sir! I just submitted a counselling request on your website.\n\nName: ${f.name}\nPhone: ${f.phone}\nCountry: ${f.country}\nProgram: ${f.program}${f.msg ? `\n\n${f.msg}` : ''}`
+      `Hi! I just submitted a counselling request on the ILOC website and would love to connect.\n\nName: ${f.name}\nPhone: ${f.phone}\nCountry of Interest: ${f.country}\nProgram: ${f.program}${f.msg ? `\n\nMessage: ${f.msg}` : ''}`
     );
     setTimeout(() => {
       window.open(`https://wa.me/919158577707?text=${waMsg}`, '_blank');
@@ -135,7 +135,7 @@ export default function ContactPage() {
                       <select value={f.country} onChange={e=>chg('country',e.target.value)} className={`${inp} cursor-pointer`}>
                         <option value="">Select country</option>
                         {COUNTRIES.map(c=><option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
-                        {['Germany','Singapore','Other'].map(c=><option key={c} value={c}>{c}</option>)}
+                        {['Other'].map(c=><option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>
                     <div>

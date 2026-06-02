@@ -1,10 +1,6 @@
 'use client';
 
-/**
- * Renders the event body markdown string into styled HTML.
- * Handles: ## headings, ### headings, - bullet lists, > blockquotes, **bold**, plain paragraphs.
- * No external markdown library required.
- */
+import React from 'react';
 
 interface Props {
   body: string;

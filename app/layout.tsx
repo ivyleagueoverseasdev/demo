@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: `%s | ${COMPANY.short}`,
   },
   description:
-    'Premium overseas education consulting from Pune. 2,500+ students placed, 97% visa approval rate. Free 30-min counselling. USA, UK, Canada, Australia & more.',
+    'Premium overseas education consulting from Pune. 10,000+ students placed over 25+ years, 97% visa approval rate. Free 30-min counselling. USA, UK, Canada, Australia & more.',
   keywords: [
     'study abroad consultancy Pune',
     'overseas education consultant India',
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     type:        'website',
     siteName:    COMPANY.name,
     title:       'Ivy League Overseas Consulting | Study Abroad from Pune',
-    description: 'Premium overseas education consulting. 2,500+ students, 97% visa approval. Free counselling available.',
+    description: 'Premium overseas education consulting. 10,000+ students placed, 97% visa approval. Free counselling available.',
   },
   robots: { index: true, follow: true },
 };
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width:        'device-width',
   initialScale: 1,
-  themeColor:   '#1A365D',
+  themeColor:   '#246DFF',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -63,9 +63,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
       </head>
-      <body className="font-jakarta antialiased bg-white text-slate-800">
+      <body className="font-jakarta antialiased bg-white text-slate-800" style={{ overflowX: 'hidden' }}>
         <Navbar />
-        <main>{children}</main>
+        <main style={{ paddingTop: '242px' }}>{children}</main>
         <Footer />
         <WhatsAppButton />
       </body>

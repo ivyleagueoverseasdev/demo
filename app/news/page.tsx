@@ -97,7 +97,7 @@ export default async function NewsPage() {
             Questions about the 2026 updates?
           </h2>
           <p className="font-jakarta text-slate-500 mb-6 max-w-md mx-auto text-sm">
-            Book a free 30-minute session with Rajib Sir — we will assess how the latest rules affect your specific profile.
+            Book a free 30-minute session with our expert counsellors — we will assess how the latest rules affect your specific profile.
           </p>
           <Link
             href="/contact"

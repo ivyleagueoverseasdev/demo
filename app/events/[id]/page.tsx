@@ -7,13 +7,14 @@ import { DEFAULT_EVENTS } from '@/lib/data';
 import type { SiteEvent, EventType } from '@/lib/types';
 import EventRegisterButton from './EventRegisterButton';
 import EventBodyRenderer from './EventBodyRenderer';
+import type { EventActionLink } from '@/lib/types';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 // ── Type config ────────────────────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
-  webinar:  { label: 'Webinar',   color: '#2D5A99', bg: '#EBF4FF', border: '#BFDBFE' },
+  webinar:  { label: 'Webinar',   color: '#246DFF', bg: '#EBF4FF', border: '#BFDBFE' },
   fair:     { label: 'Fair',      color: '#059669', bg: '#ECFDF5', border: '#6EE7B7' },
   deadline: { label: 'Deadline',  color: '#DC2626', bg: '#FEF2F2', border: '#FECACA' },
   workshop: { label: 'Workshop',  color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE' },
@@ -21,13 +22,18 @@ const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string;
 };
 
 const COUNTRY_LABELS: Record<string, string> = {
-  usa:       '🇺🇸 USA',
-  uk:        '🇬🇧 UK',
-  canada:    '🇨🇦 Canada',
-  australia: '🇦🇺 Australia',
-  ireland:   '🇮🇪 Ireland',
-  singapore: '🇸🇬 Singapore',
-  europe:    '🇪🇺 Europe',
+  usa:            '🇺🇸 USA',
+  uk:             '🇬🇧 UK',
+  australia:      '🇦🇺 Australia',
+  canada:         '🇨🇦 Canada',
+  'new-zealand':  '🇳🇿 New Zealand',
+  ireland:        '🇮🇪 Ireland',
+  europe:         '🇪🇺 Europe',
+  uae:            '🇦🇪 UAE',
+  japan:          '🇯🇵 Japan',
+  'south-korea':  '🇰🇷 South Korea',
+  singapore:      '🇸🇬 Singapore',
+  russia:         '🇷🇺 Russia',
 };
 
 async function getEvent(id: string): Promise<SiteEvent | null> {
@@ -49,6 +55,45 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       images: event.imageUrl ? [event.imageUrl] : [],
     },
   };
+}
+
+// ── Action link icon + colour map ─────────────────────────────────────────
+const ACTION_CONFIG: Record<string, { icon: string; color: string; bg: string; label: string }> = {
+  zoom:         { icon: '🎥', color: '#2D8CFF', bg: '#EBF4FF', label: 'Join Zoom'           },
+  webinar:      { icon: '📡', color: '#7C3AED', bg: '#F5F3FF', label: 'Join Webinar'         },
+  registration: { icon: '📋', color: '#059669', bg: '#ECFDF5', label: 'Register Now'         },
+  external:     { icon: '🌐', color: '#246DFF', bg: '#EBF4FF', label: 'Open Link'            },
+  whatsapp:     { icon: '💬', color: '#25D366', bg: '#ECFDF5', label: 'Register via WhatsApp' },
+};
+
+function ActionLinksBlock({ links }: { links: EventActionLink[] }) {
+  if (!links || links.length === 0) return null;
+  return (
+    <div className="bg-white rounded-2xl border border-slate-100 p-5 mb-8 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+      <h3 className="font-jakarta font-bold text-slate-800 text-sm mb-4">Join or Register</h3>
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+        {links.map((link, i) => {
+          const cfg = ACTION_CONFIG[link.type] ?? ACTION_CONFIG.external;
+          return (
+            <a
+              key={i}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 font-jakarta font-bold text-sm px-5 py-3 rounded-xl border transition-all hover:opacity-90 hover:shadow-md active:scale-95"
+              style={{ color: cfg.color, background: cfg.bg, borderColor: `${cfg.color}30` }}
+            >
+              <span className="text-base leading-none">{cfg.icon}</span>
+              {link.label || cfg.label}
+              <svg viewBox="0 0 16 16" className="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 function formatDate(iso: string) {
@@ -77,7 +122,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
       {/* ── Hero banner ────────────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-16 lg:py-20"
-        style={{ background: 'linear-gradient(145deg,#0F2247 0%,#1A365D 55%,#2D5A99 100%)' }}
+        style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 55%,#246DFF 100%)' }}
       >
         {event.imageUrl && (
           <div className="absolute inset-0">
@@ -202,6 +247,11 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                 </div>
               )}
 
+              {/* Action links — Zoom, Webinar, Registration */}
+              {event.actionLinks && event.actionLinks.length > 0 && (
+                <ActionLinksBlock links={event.actionLinks} />
+              )}
+
               {/* Rich body */}
               {event.body ? (
                 <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
@@ -235,8 +285,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                   background: 'rgba(255,255,255,0.95)',
                   backdropFilter: 'blur(16px)',
                   WebkitBackdropFilter: 'blur(16px)',
-                  border: '1px solid rgba(26,54,93,0.10)',
-                  boxShadow: '0 8px 40px rgba(26,54,93,0.10), 0 0 0 1px rgba(255,255,255,0.9) inset',
+                  border: '1px solid rgba(36,109,255,0.10)',
+                  boxShadow: '0 8px 40px rgba(36,109,255,0.10), 0 0 0 1px rgba(255,255,255,0.9) inset',
                 }}
               >
                 {/* Accent top bar */}
@@ -286,6 +336,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                   {!past ? (
                     <EventRegisterButton
                       ctaLabel={event.ctaLabel || 'Register for Free'}
+                      ctaUrl={event.ctaUrl}
                       cfg={cfg}
                     />
                   ) : (
@@ -294,8 +345,30 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                     </div>
                   )}
 
+                  {/* Action links in sidebar */}
+                  {event.actionLinks && event.actionLinks.length > 0 && !past && (
+                    <div className="mt-3 space-y-2">
+                      {event.actionLinks.map((link, i) => {
+                        const cfg2 = ACTION_CONFIG[link.type] ?? ACTION_CONFIG.external;
+                        return (
+                          <a
+                            key={i}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-sm py-2.5 rounded-xl border transition-all hover:opacity-90"
+                            style={{ color: cfg2.color, background: cfg2.bg, borderColor: `${cfg2.color}30` }}
+                          >
+                            <span>{cfg2.icon}</span>
+                            {link.label || cfg2.label}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <p className="font-jakarta text-center text-[11px] text-slate-400 mt-3">
-                    No obligation · Direct with Rajib Paul
+                    No obligation · Free expert consultation
                   </p>
 
                   {/* Divider + secondary option */}
@@ -306,7 +379,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                   </div>
 
                   <a
-                    href="https://wa.me/919158577707?text=Hi%20Rajib%20Sir!%20I%20want%20to%20register%20for%20an%20upcoming%20ILOC%20event."
+                    href="https://wa.me/919158577707?text=Hi!%20I%20am%20interested%20in%20registering%20for%20an%20upcoming%20ILOC%20event.%20Could%20you%20please%20share%20the%20details%3F"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-sm py-3 rounded-xl text-white transition-opacity hover:opacity-90"
@@ -319,7 +392,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
 
               {/* Trust badges */}
               <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                {['✅ 97% Visa Approval', '🎓 2,500+ Placed', '₹0 Event Fee'].map(b => (
+                {['✅ 97% Visa Approval', '🎓 10,000+ Placed', '₹0 Event Fee'].map(b => (
                   <span
                     key={b}
                     className="font-jakarta text-[11px] font-semibold text-slate-600 bg-white border border-slate-200 rounded-full px-3 py-1 shadow-sm"

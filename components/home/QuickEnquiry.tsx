@@ -39,7 +39,7 @@ export default function QuickEnquiry() {
     setOk(true);
 
     const waMsg = encodeURIComponent(
-      `Hi Rajib Sir! I just submitted a quick enquiry on your website.\n\nName: ${f.name}\nPhone: ${f.phone}\nCountry: ${f.country}${f.program ? `\nProgram: ${f.program}` : ''}`
+      `Hi! I just submitted a quick enquiry on the ILOC website and would love to connect.\n\nName: ${f.name}\nPhone: ${f.phone}\nCountry of Interest: ${f.country}${f.program ? `\nProgram: ${f.program}` : ''}`
     );
     setTimeout(() => {
       window.open(`https://wa.me/919158577707?text=${waMsg}`, '_blank');
@@ -113,7 +113,7 @@ export default function QuickEnquiry() {
                         className={`${inp} cursor-pointer`}>
                         <option value="">Select country</option>
                         {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
-                        {['Germany','Singapore','Other'].map(c => <option key={c} value={c}>{c}</option>)}
+                        {['Other'].map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>
                     <div>
