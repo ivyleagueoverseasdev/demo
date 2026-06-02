@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -191,8 +191,8 @@ function SkeletonCard() {
   );
 }
 
-// ── Main page ──────────────────────────────────────────────────────────────
-export default function EventsHubPage() {
+// ── Inner page — uses useSearchParams, must be inside <Suspense> ──────────
+function EventsHubInner() {
   const searchParams = useSearchParams();
 
   const [events,  setEvents]  = useState<SiteEvent[]>([]);
@@ -471,5 +471,37 @@ export default function EventsHubPage() {
         </div>
       </section>
     </>
+  );
+}
+
+// ── Skeleton shown while useSearchParams resolves ─────────────────────────
+function EventsPageSkeleton() {
+  return (
+    <div className="min-h-screen">
+      <div className="py-20 lg:py-28" style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 55%,#246DFF 100%)' }} />
+      <div className="section bg-slate-50">
+        <div className="container-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1,2,3,4,5,6].map(i => (
+            <div key={i} className="rounded-2xl border border-slate-100 bg-white overflow-hidden animate-pulse">
+              <div className="h-44 bg-slate-100" />
+              <div className="p-5 space-y-3">
+                <div className="h-4 w-16 bg-slate-100 rounded-full" />
+                <div className="h-5 w-3/4 bg-slate-100 rounded-lg" />
+                <div className="h-3 w-full bg-slate-100 rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Default export — Suspense boundary required by Next.js 15 for useSearchParams
+export default function EventsHubPage() {
+  return (
+    <Suspense fallback={<EventsPageSkeleton />}>
+      <EventsHubInner />
+    </Suspense>
   );
 }
