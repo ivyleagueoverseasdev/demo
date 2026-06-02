@@ -1,7 +1,17 @@
 export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 import { validateAdminToken } from '@/lib/kv';
+
+// R2 bucket shape — minimal surface we need
+interface R2Bucket {
+  put(
+    key: string,
+    value: ReadableStream | ArrayBuffer | ArrayBufferView | string | null | Blob,
+    options?: { httpMetadata?: { contentType?: string } }
+  ): Promise<void>;
+}
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -14,10 +24,8 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: NextRequest) {
-  // Validate Admin Token
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '');
-  const authed = await validateAdminToken(String(token || ''));
-  if (!authed) {
+  const token = req.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
+  if (!(await validateAdminToken(token))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS });
   }
 
@@ -29,36 +37,52 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400, headers: CORS });
     }
 
-    // Generate unique filename
-    const ext = file.name.split('.').pop() || 'png';
-    const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
+    // Enforce reasonable size limit (10 MB)
+    if (file.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: 'File too large (max 10 MB)' }, { status: 413, headers: CORS });
+    }
 
-    // OpenNext exposes R2 bindings via process.env at runtime
-    const bucket = (process.env as unknown as Record<string, unknown>)['R2_BUCKET'] as
-      | { put(k: string, v: unknown, opts?: { httpMetadata?: { contentType?: string } }): Promise<void> }
-      | undefined;
+    // Only allow images
+    if (!file.type.startsWith('image/')) {
+      return NextResponse.json({ error: 'Only image files are accepted' }, { status: 415, headers: CORS });
+    }
+
+    // Generate URL-safe unique key: uploads/2026/06/timestamp-random.ext
+    const ext       = (file.name.split('.').pop() ?? 'jpg').toLowerCase();
+    const now       = new Date();
+    const datePath  = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const key       = `uploads/${datePath}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+    // Resolve R2 bucket via @cloudflare/next-on-pages context
+    const ctx    = getOptionalRequestContext();
+    const bucket = (ctx?.env as unknown as Record<string, unknown>)?.['R2_BUCKET'] as R2Bucket | undefined;
 
     if (!bucket) {
-      console.warn('R2_BUCKET not found, bypassing upload for local dev.');
-      return NextResponse.json({ 
-        url: `https://fake-r2-url.dev/${filename}`, 
-        filename 
-      }, { headers: CORS });
+      // Local dev fallback — return a fake URL so the UI doesn't break
+      console.warn('[upload] R2_BUCKET not bound — local dev mode');
+      const fakeUrl = `https://localhost-r2-dev/${key}`;
+      return NextResponse.json({ url: fakeUrl, key, dev: true }, { headers: CORS });
     }
 
     // Upload to R2
-    await bucket.put(filename, file.stream(), {
-      httpMetadata: { contentType: file.type },
-    });
+    const bytes = await file.arrayBuffer();
+    await bucket.put(key, bytes, { httpMetadata: { contentType: file.type } });
 
-    // Determine the public URL (Use environment variable or fallback placeholder)
-    const publicDomain = process.env.R2_PUBLIC_DOMAIN || 'https://pub-your-r2-hash.r2.dev';
-    const url = `${publicDomain.replace(/\/$/, '')}/${filename}`;
+    // Build the public URL from the env var set in Cloudflare dashboard
+    const domain = (process.env.R2_PUBLIC_DOMAIN ?? '').replace(/\/$/, '');
+    if (!domain) {
+      return NextResponse.json(
+        { error: 'R2_PUBLIC_DOMAIN env var not set in Cloudflare Pages settings' },
+        { status: 500, headers: CORS }
+      );
+    }
 
-    return NextResponse.json({ url, filename }, { headers: CORS });
+    const url = `${domain}/${key}`;
+    return NextResponse.json({ url, key }, { headers: CORS });
 
-  } catch (err: any) {
-    console.error('R2 Upload error:', err);
-    return NextResponse.json({ error: 'Upload failed', details: err.message }, { status: 500, headers: CORS });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    console.error('[upload] R2 error:', msg);
+    return NextResponse.json({ error: 'Upload failed', details: msg }, { status: 500, headers: CORS });
   }
 }
