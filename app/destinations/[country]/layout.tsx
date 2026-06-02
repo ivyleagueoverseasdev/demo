@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { COUNTRIES_MAP, COMPANY } from '@/lib/data';
-import { getSiteMedia, getCountryMeta } from '@/lib/kv';
+import { getCountryPageData } from '@/lib/public-data';
 import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
 import SubNav from './SubNav';
 
@@ -16,18 +16,15 @@ export default async function CountryLayout({ children, params }: Props) {
   const c = COUNTRIES_MAP[country];
   if (!c) notFound();
 
-  const [media, kvMeta] = await Promise.all([
-    getSiteMedia().catch(() => null),
-    getCountryMeta(country).catch(() => null),
-  ]);
+  // public-data merges KV overrides onto static defaults cleanly
+  const { meta: kvMeta } = await getCountryPageData(country).catch(() => ({ meta: null, country: c, sections: {} }));
 
-  // Merge KV overrides onto static defaults — KV wins when set
   const intake      = kvMeta?.intake      || c.intake;
   const avgCost     = kvMeta?.avgCost     || c.avgCost;
   const visaRate    = kvMeta?.visaRate    || c.visaRate;
   const unis        = kvMeta?.unis        || c.unis;
   const tagline     = kvMeta?.tagline     || c.tagline;
-  const campusImage = kvMeta?.campusImage || media?.countryImages?.[country] || c.campusImage;
+  const campusImage = kvMeta?.campusImage || c.campusImage;
   const heroImage   = kvMeta?.heroImage   || c.heroImage;
   const color       = kvMeta?.color       || c.color;
 
