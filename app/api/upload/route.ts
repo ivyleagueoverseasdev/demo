@@ -68,11 +68,14 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     await bucket.put(key, bytes, { httpMetadata: { contentType: file.type } });
 
-    // Build the public URL from the env var set in Cloudflare dashboard
-    const domain = (process.env.R2_PUBLIC_DOMAIN ?? '').replace(/\/$/, '');
+    // Build the public URL — read from CF env first, fall back to process.env for local .dev.vars
+    const cfDomain   = (ctx?.env as unknown as Record<string, string>)?.['R2_PUBLIC_DOMAIN'];
+    const envDomain  = process.env.R2_PUBLIC_DOMAIN ?? '';
+    const domain     = (cfDomain ?? envDomain).replace(/\/$/, '');
+
     if (!domain) {
       return NextResponse.json(
-        { error: 'R2_PUBLIC_DOMAIN env var not set in Cloudflare Pages settings' },
+        { error: 'R2_PUBLIC_DOMAIN is not configured. Set it in Cloudflare Pages → Settings → Environment Variables.' },
         { status: 500, headers: CORS }
       );
     }
