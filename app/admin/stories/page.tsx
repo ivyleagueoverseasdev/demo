@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../layout';
 import ImagePicker from '@/components/admin/ImagePicker';
+import { apiCall } from '@/lib/edge-utils';
 import type { Testimonial } from '@/lib/types';
 
 // ── Defaults (fallback when KV is empty) ─────────────────────────────────────
@@ -358,32 +359,25 @@ export default function AdminStoriesPage() {
   const [starsFilter,  setStarsFilter]  = useState('');
   const formRef = useRef<HTMLDivElement>(null);
 
-  const hdrs = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-
   // ── Load — testimonials live inside siteContent ───────────────────────────
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/content', { headers: hdrs, cache: 'no-store' });
-      if (res.ok) {
-        const d = await res.json();
-        setItems(d.siteContent?.testimonials ?? []);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+      const res = await fetch('/api/content', {
+        headers: { Authorization: `Bearer ${token}` }, cache: 'no-store',
+      });
+      if (res.ok) { const d = await res.json(); setItems(d.siteContent?.testimonials ?? []); }
+    } finally { setLoading(false); }
+  }, [token]);
 
   useEffect(() => { void load(); }, [load]);
 
   // ── Save full list to KV ──────────────────────────────────────────────────
   async function saveList(list: Testimonial[]) {
-    const res = await fetch('/api/content', {
-      method:  'PUT',
-      headers: hdrs,
-      body:    JSON.stringify({ testimonials: list }),
+    const { ok, error } = await apiCall({
+      method: 'PUT', url: '/api/content', token, body: { testimonials: list },
     });
-    if (!res.ok) throw new Error('Save failed');
+    if (!ok) throw new Error(error ?? 'Unknown error');
     setItems(list);
   }
 
@@ -392,22 +386,15 @@ export default function AdminStoriesPage() {
     if (!data.name || !data.quote) { flash('Name and quote are required.', 'error'); return; }
     setBusy(true);
     try {
-      let next: Testimonial[];
-      if (editId) {
-        next = items.map(t => t.id === editId ? { ...t, ...data } : t);
-        flash('✓ Testimonial updated.', 'success');
-      } else {
-        const newT: Testimonial = { ...data, id: `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}` };
-        next = [...items, newT];
-        flash('✓ Testimonial added.', 'success');
-      }
+      const next = editId
+        ? items.map(t => t.id === editId ? { ...t, ...data } : t)
+        : [...items, { ...data, id: `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}` }];
       await saveList(next);
+      flash(editId ? '✓ Testimonial updated.' : '✓ Testimonial added.', 'success');
       closeForm();
-    } catch {
-      flash('Failed to save. Please try again.', 'error');
-    } finally {
-      setBusy(false);
-    }
+    } catch (e: unknown) {
+      flash(`Save failed: ${(e as Error).message}`, 'error');
+    } finally { setBusy(false); }
   }
 
   // ── Toggle publish ────────────────────────────────────────────────────────
@@ -417,9 +404,7 @@ export default function AdminStoriesPage() {
       await saveList(next);
       const t = next.find(x => x.id === id);
       flash(`Testimonial ${t?.published ? 'published' : 'unpublished'}.`, 'success');
-    } catch {
-      flash('Update failed.', 'error');
-    }
+    } catch (e: unknown) { flash(`Update failed: ${(e as Error).message}`, 'error'); }
   }
 
   // ── Delete ────────────────────────────────────────────────────────────────
@@ -428,9 +413,7 @@ export default function AdminStoriesPage() {
     try {
       await saveList(items.filter(t => t.id !== id));
       flash('Testimonial deleted.', 'info');
-    } catch {
-      flash('Delete failed.', 'error');
-    }
+    } catch (e: unknown) { flash(`Delete failed: ${(e as Error).message}`, 'error'); }
   }
 
   function openNew() {

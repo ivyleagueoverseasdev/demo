@@ -175,16 +175,31 @@ function LoginScreen({ onLogin }: { onLogin: (t: string) => void }) {
     setBusy(true); setErr('');
     try {
       const res = await fetch('/api/admin/login', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pw }),
+        body:    JSON.stringify({ password: pw }),
       });
-      if (!res.ok) { setErr('Invalid password.'); setBusy(false); return; }
-      const { token } = await res.json();
-      localStorage.setItem('iloc_admin_token', token);
-      onLogin(token);
-    } catch {
-      setErr('Network error. Please try again.');
+      if (!res.ok) {
+        // Surface the exact backend error (e.g. "CONTENT_KV binding is missing")
+        const body = await res.json().catch(() => ({}));
+        const msg  = body.error ?? body.details ?? `HTTP ${res.status}`;
+        setErr(msg);
+        console.error('[login] failed:', body);
+        setBusy(false);
+        return;
+      }
+      const data = await res.json();
+      if (!data.token) {
+        setErr('Login response missing token — check server logs.');
+        setBusy(false);
+        return;
+      }
+      localStorage.setItem('iloc_admin_token', data.token);
+      onLogin(data.token);
+    } catch (networkErr: unknown) {
+      const msg = networkErr instanceof Error ? networkErr.message : 'Network error';
+      setErr(`Network error: ${msg}`);
+      console.error('[login] network error:', networkErr);
     }
     setBusy(false);
   }

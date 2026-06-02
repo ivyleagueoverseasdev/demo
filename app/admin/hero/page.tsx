@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../layout';
 import ImagePicker from '@/components/admin/ImagePicker';
+import { apiCall } from '@/lib/edge-utils';
 import type { HeroSlide, HeroCta, HeroCtaStyle, HeroCtaAction, HeroStat } from '@/lib/types';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
@@ -270,8 +271,6 @@ export default function AdminHeroPage() {
   const [slides,  setSlides]  = useState<HeroSlide[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy,    setBusy]    = useState(false);
-  const hdrs = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -284,18 +283,12 @@ export default function AdminHeroPage() {
 
   async function save() {
     setBusy(true);
-    try {
-      const res = await fetch('/api/hero-slides', { method: 'PUT', headers: hdrs, body: JSON.stringify({ slides }) });
-      if (!res.ok) {
-        const e = await res.json().catch(() => ({}));
-        throw new Error(e.error ?? `HTTP ${res.status}`);
-      }
-      flash('✓ Hero slides saved — live immediately.', 'success');
-    } catch (e: unknown) {
-      flash(`Save failed: ${(e as Error).message}`, 'error');
-    } finally {
-      setBusy(false);
-    }
+    const { ok, error } = await apiCall({
+      method: 'PUT', url: '/api/hero-slides', token, body: { slides },
+    });
+    if (!ok) { flash(`Save failed: ${error}`, 'error'); setBusy(false); return; }
+    flash('✓ Hero slides saved — live immediately.', 'success');
+    setBusy(false);
   }
 
   return (

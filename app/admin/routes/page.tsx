@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth, useToast } from '../layout';
+import { apiCall } from '@/lib/edge-utils';
 import type { RedirectRule } from '@/lib/types';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
@@ -223,24 +224,23 @@ export default function AdminRoutesPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const formRef = useRef<HTMLDivElement>(null);
 
-  const hdrs = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/content', { headers: hdrs, cache: 'no-store' });
+      const res = await fetch('/api/content', {
+        headers: { Authorization: `Bearer ${token}` }, cache: 'no-store',
+      });
       if (res.ok) { const d = await res.json(); setRules(d.redirects ?? []); }
     } finally { setLoading(false); }
-  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [token]);
 
   useEffect(() => { void load(); }, [load]);
 
   async function saveRules(next: RedirectRule[]) {
-    const res = await fetch('/api/content', {
-      method: 'PUT', headers: hdrs,
-      body: JSON.stringify({ redirects: next }),
+    const { ok, error } = await apiCall({
+      method: 'PUT', url: '/api/content', token, body: { redirects: next },
     });
-    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error ?? `HTTP ${res.status}`); }
+    if (!ok) throw new Error(error ?? 'Unknown error');
     setRules(next);
   }
 

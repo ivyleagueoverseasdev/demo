@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../layout';
+import { apiCall } from '@/lib/edge-utils';
 import type { Lead } from '@/lib/types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -209,45 +210,35 @@ export default function AdminEnquiriesPage() {
   const [sourceFilter, setSourceFilter] = useState('');
   const [sortBy,       setSortBy]       = useState<'newest' | 'oldest' | 'status'>('newest');
 
-  const hdrs = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/leads', { headers: hdrs, cache: 'no-store' });
+      const res = await fetch('/api/leads', {
+        headers: { Authorization: `Bearer ${token}` }, cache: 'no-store',
+      });
       if (res.ok) { const d = await res.json(); setLeads(d.leads ?? []); }
     } finally { setLoading(false); }
-  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [token]);
 
   useEffect(() => { void load(); }, [load]);
-
-  // Auto-refresh every 30 s
   useEffect(() => {
     const t = setInterval(() => { void load(); }, 30_000);
     return () => clearInterval(t);
   }, [load]);
 
   async function handleUpdate(id: string, status: LeadStatus) {
-    try {
-      const res = await fetch('/api/leads', { method: 'PUT', headers: hdrs, body: JSON.stringify({ id, status }) });
-      if (!res.ok) throw new Error('API error');
-      setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-      flash(`Status updated to ${STATUS_CONFIG[status].label}.`, 'success');
-    } catch {
-      flash('Failed to update status.', 'error');
-    }
+    const { ok, error } = await apiCall({ method: 'PUT', url: '/api/leads', token, body: { id, status } });
+    if (!ok) { flash(`Failed to update status: ${error}`, 'error'); return; }
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+    flash(`Status updated to ${STATUS_CONFIG[status].label}.`, 'success');
   }
 
   async function handleDelete(id: string) {
     if (!confirm('Delete this lead permanently?')) return;
-    try {
-      const res = await fetch('/api/leads', { method: 'PUT', headers: hdrs, body: JSON.stringify({ id, delete: true }) });
-      if (!res.ok) throw new Error('API error');
-      setLeads(prev => prev.filter(l => l.id !== id));
-      flash('Lead deleted.', 'info');
-    } catch {
-      flash('Failed to delete.', 'error');
-    }
+    const { ok, error } = await apiCall({ method: 'PUT', url: '/api/leads', token, body: { id, delete: true } });
+    if (!ok) { flash(`Delete failed: ${error}`, 'error'); return; }
+    setLeads(prev => prev.filter(l => l.id !== id));
+    flash('Lead deleted.', 'info');
   }
 
   // Unique sources for filter dropdown

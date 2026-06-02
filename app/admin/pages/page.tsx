@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth, useToast } from '../layout';
+import { apiCall } from '@/lib/edge-utils';
 import ImagePicker from '@/components/admin/ImagePicker';
 import type { DynamicPage } from '@/lib/types';
 
@@ -382,25 +383,20 @@ export default function AdminPagesPage() {
 
   async function handleDelete(slug: string) {
     if (!confirm(`Delete /${slug} permanently?`)) return;
-    try {
-      const res = await fetch('/api/pages', { method: 'DELETE', headers: hdrs, body: JSON.stringify({ slug }) });
-      if (!res.ok) throw new Error('API error');
-      setPages(prev => prev.filter(p => p.slug !== slug));
-      flash('Page deleted.', 'info');
-    } catch {
-      flash('Delete failed.', 'error');
-    }
+    const { ok, error } = await apiCall({ method: 'DELETE', url: '/api/pages', token, body: { slug } });
+    if (!ok) { flash(`Delete failed: ${error}`, 'error'); return; }
+    setPages(prev => prev.filter(p => p.slug !== slug));
+    flash('Page deleted.', 'info');
   }
 
   async function handleToggle(page: DynamicPage) {
-    try {
-      const res = await fetch('/api/pages', { method: 'PUT', headers: hdrs, body: JSON.stringify({ ...page, published: !page.published }) });
-      if (!res.ok) throw new Error('API error');
-      setPages(prev => prev.map(p => p.slug === page.slug ? { ...p, published: !p.published } : p));
-      flash(`Page ${!page.published ? 'published' : 'unpublished'}.`, 'success');
-    } catch {
-      flash('Update failed.', 'error');
-    }
+    const { ok, error } = await apiCall({
+      method: 'PUT', url: '/api/pages', token,
+      body: { ...page, published: !page.published },
+    });
+    if (!ok) { flash(`Update failed: ${error}`, 'error'); return; }
+    setPages(prev => prev.map(p => p.slug === page.slug ? { ...p, published: !p.published } : p));
+    flash(`Page ${!page.published ? 'published' : 'unpublished'}.`, 'success');
   }
 
   function openNew() {

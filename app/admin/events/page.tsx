@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth, useToast } from '../layout';
 import ImagePicker from '@/components/admin/ImagePicker';
+import { apiCall } from '@/lib/edge-utils';
 import type { SiteEvent, EventType, EventActionType } from '@/lib/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -541,33 +542,25 @@ export default function AdminEventsPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const formRef = useRef<HTMLDivElement>(null);
 
-  const hdrs = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-
   // ── Load ──────────────────────────────────────────────────────────────────
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/events', { cache: 'no-store' });
-      if (res.ok) {
-        const d = await res.json();
-        setEvents(d.events ?? []);
-      }
-    } finally {
-      setLoading(false);
-    }
+      if (res.ok) { const d = await res.json(); setEvents(d.events ?? []); }
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
 
   // ── Save ──────────────────────────────────────────────────────────────────
-  async function saveEvents(next: SiteEvent[]) {
-    const res = await fetch('/api/events', {
-      method:  'PUT',
-      headers: hdrs,
-      body:    JSON.stringify({ events: next }),
+  async function saveEvents(next: SiteEvent[]): Promise<boolean> {
+    const { ok, error } = await apiCall({
+      method: 'PUT', url: '/api/events', token, body: { events: next },
     });
-    if (!res.ok) throw new Error('Save failed');
+    if (!ok) throw new Error(error ?? 'Unknown error');
     setEvents(next);
+    return true;
   }
 
   async function handleSave(data: Omit<SiteEvent, 'id' | 'createdAt'>, published: boolean) {
@@ -575,21 +568,15 @@ export default function AdminEventsPage() {
     setBusy(true);
     try {
       const payload = { ...data, published };
-      let next: SiteEvent[];
-      if (editId) {
-        next = events.map(e => e.id === editId ? { ...e, ...payload } : e);
-      } else {
-        const newEv: SiteEvent = { ...payload, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
-        next = [...events, newEv];
-      }
+      const next = editId
+        ? events.map(e => e.id === editId ? { ...e, ...payload } : e)
+        : [...events, { ...payload, id: crypto.randomUUID(), createdAt: new Date().toISOString() }];
       await saveEvents(next);
       flash(editId ? '✓ Event updated.' : '✓ Event published.', 'success');
       closeForm();
-    } catch {
-      flash('Failed to save. Please try again.', 'error');
-    } finally {
-      setBusy(false);
-    }
+    } catch (e: unknown) {
+      flash(`Save failed: ${(e as Error).message}`, 'error');
+    } finally { setBusy(false); }
   }
 
   async function handleDelete(id: string) {
@@ -597,9 +584,7 @@ export default function AdminEventsPage() {
     try {
       await saveEvents(events.filter(e => e.id !== id));
       flash('Event deleted.', 'info');
-    } catch {
-      flash('Delete failed.', 'error');
-    }
+    } catch (e: unknown) { flash(`Delete failed: ${(e as Error).message}`, 'error'); }
   }
 
   async function handleToggle(id: string) {
@@ -608,9 +593,7 @@ export default function AdminEventsPage() {
       await saveEvents(next);
       const ev = next.find(e => e.id === id);
       flash(`Event ${ev?.published ? 'published' : 'unpublished'}.`, 'success');
-    } catch {
-      flash('Update failed.', 'error');
-    }
+    } catch (e: unknown) { flash(`Update failed: ${(e as Error).message}`, 'error'); }
   }
 
   function openNew() {

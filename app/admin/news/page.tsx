@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../layout';
 import ImagePicker from '@/components/admin/ImagePicker';
+import { apiCall } from '@/lib/edge-utils';
 import type { NewsItem } from '@/lib/types';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -359,20 +360,13 @@ export default function AdminNewsPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const formRef = useRef<HTMLDivElement>(null);
 
-  const hdrs = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
-
   // ── Load ──────────────────────────────────────────────────────────────────
   const load = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/news', { cache: 'no-store' });
-      if (res.ok) {
-        const d = await res.json();
-        setItems(d.news ?? []);
-      }
-    } finally {
-      setLoading(false);
-    }
+      if (res.ok) { const d = await res.json(); setItems(d.news ?? []); }
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -381,56 +375,38 @@ export default function AdminNewsPage() {
   async function handleSave(data: Omit<NewsItem, 'id' | 'createdAt'>, published: boolean) {
     if (!data.title || !data.slug) { flash('Title and slug are required.', 'error'); return; }
     setBusy(true);
-    try {
-      const payload = { ...data, published };
-      let res: Response;
-      if (editId) {
-        res = await fetch('/api/news', { method: 'PUT', headers: hdrs, body: JSON.stringify({ ...payload, id: editId }) });
-      } else {
-        res = await fetch('/api/news', {
-          method:  'POST',
-          headers: hdrs,
-          body:    JSON.stringify({ ...payload, id: `news_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, createdAt: new Date().toISOString() }),
-        });
-      }
-      if (!res.ok) throw new Error('API error');
-      flash(editId ? '✓ Article updated.' : '✓ Article published.', 'success');
-      closeForm();
-      await load();
-    } catch {
-      flash('Failed to save. Please try again.', 'error');
-    } finally {
-      setBusy(false);
-    }
+    const payload = { ...data, published };
+    const { ok, error } = editId
+      ? await apiCall({ method: 'PUT',  url: '/api/news', token, body: { ...payload, id: editId } })
+      : await apiCall({ method: 'POST', url: '/api/news', token, body: { ...payload, id: `news_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, createdAt: new Date().toISOString() } });
+
+    if (!ok) { flash(`Save failed: ${error}`, 'error'); setBusy(false); return; }
+    flash(editId ? '✓ Article updated.' : '✓ Article published.', 'success');
+    closeForm();
+    await load();
+    setBusy(false);
   }
 
   // ── Toggle publish ────────────────────────────────────────────────────────
   async function handleToggle(item: NewsItem) {
-    try {
-      const res = await fetch('/api/news', {
-        method:  'PUT',
-        headers: hdrs,
-        body:    JSON.stringify({ ...item, published: !item.published }),
-      });
-      if (!res.ok) throw new Error();
-      flash(`Article ${!item.published ? 'published' : 'unpublished'}.`, 'success');
-      await load();
-    } catch {
-      flash('Update failed.', 'error');
-    }
+    const { ok, error } = await apiCall({
+      method: 'PUT', url: '/api/news', token,
+      body: { ...item, published: !item.published },
+    });
+    if (!ok) { flash(`Update failed: ${error}`, 'error'); return; }
+    flash(`Article ${!item.published ? 'published' : 'unpublished'}.`, 'success');
+    await load();
   }
 
   // ── Delete ────────────────────────────────────────────────────────────────
   async function handleDelete(id: string) {
     if (!confirm('Delete this article permanently?')) return;
-    try {
-      const res = await fetch('/api/news', { method: 'PUT', headers: hdrs, body: JSON.stringify({ id, delete: true }) });
-      if (!res.ok) throw new Error();
-      flash('Article deleted.', 'info');
-      await load();
-    } catch {
-      flash('Delete failed.', 'error');
-    }
+    const { ok, error } = await apiCall({
+      method: 'PUT', url: '/api/news', token, body: { id, delete: true },
+    });
+    if (!ok) { flash(`Delete failed: ${error}`, 'error'); return; }
+    flash('Article deleted.', 'info');
+    await load();
   }
 
   function openNew() {
