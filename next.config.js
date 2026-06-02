@@ -7,6 +7,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'flagcdn.com' },
       { protocol: 'https', hostname: 'picsum.photos' },
       { protocol: 'https', hostname: 'logo.clearbit.com' },
+      { protocol: 'https', hostname: 'upload.wikimedia.org' },
     ],
     // No Image Optimization worker on Cloudflare Pages free plan
     unoptimized: true,

@@ -123,9 +123,9 @@ const amberBtn = 'font-jakarta font-semibold text-sm px-5 py-2.5 rounded-xl text
 const ghostBtn = 'font-jakarta font-medium text-sm px-4 py-2 rounded-xl border border-slate-200 transition-all hover:bg-slate-50 text-slate-600 active:scale-95';
 const inp      = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-50 text-slate-800 placeholder-slate-400';
 
-const EVENT_TYPES: EventType[] = ['webinar','fair','deadline','workshop','seminar'];
+const EVENT_TYPES: EventType[] = ['webinar','fair','deadline','workshop','seminar','class'];
 const EVENT_TYPE_COLORS: Record<EventType,string> = {
-  webinar: '#246DFF', fair: '#059669', deadline: '#DC2626', workshop: '#7C3AED', seminar: '#D97706',
+  webinar: '#246DFF', fair: '#059669', deadline: '#DC2626', workshop: '#7C3AED', seminar: '#D97706', class: '#0891B2',
 };
 
 // ── Login screen ──────────────────────────────────────────────────────────

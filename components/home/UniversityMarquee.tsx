@@ -31,8 +31,12 @@ function UniLogoCard({ uni }: { uni: UniEntry }) {
 
   return (
     <div
-      className="flex-shrink-0 flex items-center justify-center mx-2 px-6 bg-white rounded-2xl border border-slate-100 shadow-sm"
-      style={{ height: '80px', minWidth: '160px', maxWidth: '220px' }}
+      className="flex-shrink-0 flex items-center justify-center mx-2 px-6 rounded-2xl border shadow-sm"
+      style={{
+        height: '80px', minWidth: '160px', maxWidth: '220px',
+        background: uni.darkBg ? '#003B5C' : '#ffffff',
+        borderColor: uni.darkBg ? '#003B5C' : '#f1f5f9',
+      }}
       title={`${uni.name} — ${uni.country}`}
     >
       {failed ? (

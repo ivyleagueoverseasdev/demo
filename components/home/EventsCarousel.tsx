@@ -10,11 +10,12 @@ import type { SiteEvent, EventType } from '@/lib/types';
 
 // ── Event type visual config ───────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
-  webinar:  { label: 'Webinar',  color: '#246DFF', bg: '#EBF4FF', border: '#BFDBFE' },
-  fair:     { label: 'Fair',     color: '#059669', bg: '#ECFDF5', border: '#6EE7B7' },
-  deadline: { label: 'Deadline', color: '#DC2626', bg: '#FEF2F2', border: '#FECACA' },
-  workshop: { label: 'Workshop', color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE' },
-  seminar:  { label: 'Seminar',  color: '#D97706', bg: '#FFFBEB', border: '#FDE68A' },
+  webinar:  { label: 'Webinar',    color: '#246DFF', bg: '#EBF4FF', border: '#BFDBFE' },
+  fair:     { label: 'Fair',       color: '#059669', bg: '#ECFDF5', border: '#6EE7B7' },
+  deadline: { label: 'Deadline',   color: '#DC2626', bg: '#FEF2F2', border: '#FECACA' },
+  workshop: { label: 'Workshop',   color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE' },
+  seminar:  { label: 'Seminar',    color: '#D97706', bg: '#FFFBEB', border: '#FDE68A' },
+  class:    { label: 'Live Class', color: '#0891B2', bg: '#ECFEFF', border: '#A5F3FC' },
 };
 
 function formatDate(iso: string) {
