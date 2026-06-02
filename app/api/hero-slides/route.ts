@@ -20,19 +20,39 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
-  const kv = await getHeroSlides();
-  const slides = kv ?? DEFAULT_HERO_SLIDES;
-  return NextResponse.json({ slides }, { headers: { ...CORS, 'Cache-Control': 'no-store' } });
+  try {
+    const kv = await getHeroSlides();
+    return NextResponse.json({ slides: kv ?? DEFAULT_HERO_SLIDES }, { headers: { ...CORS, 'Cache-Control': 'no-store' } });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error('[GET /api/hero-slides]', msg);
+    return json({ error: 'Failed to load slides', details: msg }, 500);
+  }
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
-    || (await req.clone().json().catch(() => ({}))).token;
-  const authed = await validateAdminToken(String(token || ''));
-  if (!authed) return json({ error: 'Unauthorized' }, 401);
+  // ── Auth: header-only ─────────────────────────────────────────────────────
+  const token = req.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
+  const authed = await validateAdminToken(token);
+  if (!authed) {
+    console.error('[PUT /api/hero-slides] Unauthorized');
+    return json({ error: 'Unauthorized' }, 401);
+  }
 
-  const body = await req.json();
-  const slides: HeroSlide[] = body.slides ?? [];
-  await setHeroSlides(slides);
-  return json({ ok: true });
+  let body: { slides?: HeroSlide[] };
+  try {
+    body = await req.json();
+  } catch (e) {
+    console.error('[PUT /api/hero-slides] Bad JSON:', e);
+    return json({ error: 'Invalid JSON body' }, 400);
+  }
+
+  try {
+    await setHeroSlides(body.slides ?? []);
+    return json({ ok: true });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error('[PUT /api/hero-slides] KV write failed:', msg);
+    return json({ error: 'Failed to save slides', details: msg }, 500);
+  }
 }

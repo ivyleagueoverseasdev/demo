@@ -14,7 +14,12 @@ interface CfKVNamespace {
 }
 
 // ── In-memory fallback for local dev ─────────────────────────────────────
-const DEV_STORE = new Map<string, string>();
+// Uses globalThis so the store survives across Next.js HMR module reloads.
+// This means tokens saved during login persist for the lifetime of the dev
+// server process — matching how a real KV works.
+const g = globalThis as unknown as { __iloc_dev_store?: Map<string, string> };
+if (!g.__iloc_dev_store) g.__iloc_dev_store = new Map<string, string>();
+const DEV_STORE = g.__iloc_dev_store;
 
 function getKV(): CfKVNamespace | null {
   try {

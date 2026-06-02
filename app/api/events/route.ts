@@ -21,45 +21,63 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
-  const kvEvents = await getEvents();
-  const events = kvEvents.length > 0 ? kvEvents : DEFAULT_EVENTS;
-  return NextResponse.json({ events }, {
-    headers: { ...CORS, 'Cache-Control': 'no-store' },
-  });
+  try {
+    const kvEvents = await getEvents();
+    const events = kvEvents.length > 0 ? kvEvents : DEFAULT_EVENTS;
+    return NextResponse.json({ events }, { headers: { ...CORS, 'Cache-Control': 'no-store' } });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error('[GET /api/events]', msg);
+    return json({ error: 'Failed to load events', details: msg }, 500);
+  }
 }
 
 export async function PUT(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
-    || (await req.clone().json().catch(() => ({}))).token;
-  const authed = await validateAdminToken(String(token || ''));
-  if (!authed) return json({ error: 'Unauthorized' }, 401);
+  // ── Auth: header-only — never read body before auth ───────────────────────
+  const token = req.headers.get('Authorization')?.replace('Bearer ', '') ?? '';
+  const authed = await validateAdminToken(token);
+  if (!authed) {
+    console.error('[PUT /api/events] Unauthorized — token:', token ? `${token.slice(0, 8)}…` : 'missing');
+    return json({ error: 'Unauthorized' }, 401);
+  }
 
-  const body = await req.json();
-  const before = await getEvents();
+  // ── Parse body once ───────────────────────────────────────────────────────
+  let body: { events?: SiteEvent[] };
+  try {
+    body = await req.json();
+  } catch (e) {
+    console.error('[PUT /api/events] Failed to parse body:', e);
+    return json({ error: 'Invalid JSON body' }, 400);
+  }
+
   const events: SiteEvent[] = body.events ?? [];
 
-  await setEvents(events);
+  try {
+    const before = await getEvents();
+    await setEvents(events);
 
-  // ── Audit log ──────────────────────────────────────────────────────────
-  // Detect what changed: find new/updated/deleted events by comparing IDs
-  const beforeIds = new Set(before.map(e => e.id));
-  const afterIds  = new Set(events.map(e => e.id));
+    // ── Audit log — detect diffs ──────────────────────────────────────────
+    const beforeIds = new Set(before.map(e => e.id));
+    const afterIds  = new Set(events.map(e => e.id));
 
-  // Deleted
-  for (const e of before) {
-    if (!afterIds.has(e.id)) {
-      await appendAuditLog({ action: 'Deleted Event', entity: 'event', entityId: e.id, entityName: e.title, before: e, after: null, published: false });
+    for (const e of before) {
+      if (!afterIds.has(e.id)) {
+        await appendAuditLog({ action: 'Deleted Event', entity: 'event', entityId: e.id, entityName: e.title, before: e, after: null, published: false });
+      }
     }
-  }
-  // Added or updated
-  for (const e of events) {
-    const prev = before.find(b => b.id === e.id);
-    if (!prev) {
-      await appendAuditLog({ action: e.published ? 'Published Event' : 'Saved Draft Event', entity: 'event', entityId: e.id, entityName: e.title, before: null, after: e, published: e.published });
-    } else if (JSON.stringify(prev) !== JSON.stringify(e)) {
-      await appendAuditLog({ action: e.published ? 'Updated Event' : 'Saved Draft Event', entity: 'event', entityId: e.id, entityName: e.title, before: prev, after: e, published: e.published });
+    for (const e of events) {
+      const prev = before.find(b => b.id === e.id);
+      if (!prev) {
+        await appendAuditLog({ action: e.published ? 'Published Event' : 'Saved Draft Event', entity: 'event', entityId: e.id, entityName: e.title, before: null, after: e, published: e.published });
+      } else if (JSON.stringify(prev) !== JSON.stringify(e)) {
+        await appendAuditLog({ action: e.published ? 'Updated Event' : 'Saved Draft Event', entity: 'event', entityId: e.id, entityName: e.title, before: prev, after: e, published: e.published });
+      }
     }
-  }
 
-  return json({ ok: true });
+    return json({ ok: true });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error('[PUT /api/events] KV write failed:', msg);
+    return json({ error: 'Failed to save events', details: msg }, 500);
+  }
 }
