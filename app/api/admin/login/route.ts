@@ -1,7 +1,7 @@
 export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { setAdminToken } from '@/lib/kv';
+import { createAdminSession } from '@/lib/kv';
 import { parseBody, CORS } from '@/lib/edge-utils';
 
 export async function OPTIONS() {
@@ -17,20 +17,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400, headers: CORS });
   }
 
-  const expected = process.env.ADMIN_PASSWORD || 'iloc-admin';
+  // Read password from CF env first (via request context), fall back to process.env for local dev
+  const { getOptionalRequestContext } = await import('@cloudflare/next-on-pages');
+  const ctx      = getOptionalRequestContext();
+  const cfPass   = (ctx?.env as Record<string, string> | undefined)?.ADMIN_PASSWORD;
+  const expected = cfPass ?? process.env.ADMIN_PASSWORD ?? 'iloc-admin';
+
   if (!body.password || body.password !== expected) {
+    console.warn('[POST /api/admin/login] Bad password attempt');
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401, headers: CORS });
   }
 
-  const arr = new Uint8Array(24);
+  // Generate a 48-character cryptographically random hex token
+  const arr   = new Uint8Array(24);
   crypto.getRandomValues(arr);
   const token = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
 
   try {
-    await setAdminToken(token);
+    // Write session:<token> = "1" to KV with 24h TTL.
+    // Each login creates its own KV key — multiple sessions are supported.
+    await createAdminSession(token);
+    console.log('[POST /api/admin/login] Session created, token prefix:', token.slice(0, 8));
   } catch (e: unknown) {
-    console.error('[POST /api/admin/login] KV write failed:', (e as Error).stack ?? e);
-    return NextResponse.json({ error: 'Failed to persist token', details: (e as Error).message }, { status: 500, headers: CORS });
+    console.error('[POST /api/admin/login] KV session write failed:', (e as Error).stack ?? e);
+    return NextResponse.json(
+      { error: 'Failed to create session — check CONTENT_KV binding in Cloudflare Pages settings', details: (e as Error).message },
+      { status: 500, headers: CORS }
+    );
   }
 
   return NextResponse.json({ token }, { status: 200, headers: CORS });

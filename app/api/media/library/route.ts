@@ -65,16 +65,13 @@ export async function PUT(req: NextRequest) {
     const kv  = (ctx?.env as Record<string, unknown> | undefined)?.CONTENT_KV as
       { put(k: string, v: string): Promise<void> } | undefined;
 
-    if (kv) {
-      await kv.put('mediaLibrary', JSON.stringify(body.urls));
-    } else {
-      // Local dev — use the kv wrapper which falls back to DEV_STORE
-      const { getMediaLibrary: _, addMediaToLibrary: __ } = await import('@/lib/kv');
-      // Re-build the list by abusing the existing helpers isn't clean;
-      // write directly to the globalThis store in dev.
-      const g = globalThis as unknown as { __iloc_dev_store?: Map<string, string> };
-      g.__iloc_dev_store?.set('mediaLibrary', JSON.stringify(body.urls));
+    if (!kv) {
+      // No KV in local next dev — log and return success so UI doesn't break
+      console.warn('[PUT /api/media/library] No CONTENT_KV — skipped (local dev)');
+      return json({ ok: true, urls: body.urls });
     }
+
+    await kv.put('mediaLibrary', JSON.stringify(body.urls));
     return json({ ok: true, urls: body.urls });
   } catch (e: unknown) {
     console.error('[PUT /api/media/library] KV write failed:', (e as Error).stack ?? e);

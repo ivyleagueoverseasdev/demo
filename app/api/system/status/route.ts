@@ -1,7 +1,7 @@
 export const runtime = 'edge';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { validateAdminToken, getAdminToken } from '@/lib/kv';
+import { validateAdminToken } from '@/lib/kv';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 import { getBearerToken, CORS } from '@/lib/edge-utils';
 
@@ -28,13 +28,17 @@ export async function GET(req: NextRequest) {
     return !!(env?.[key] ?? process.env[key]);
   }
 
-  // ── KV connectivity check ──────────────────────────────────────────────────
+  // ── KV connectivity check — try a direct get on a known-safe key ──────────
   let kvOk    = false;
   let kvError = '';
+  const kvBinding = env?.CONTENT_KV as { get(k: string): Promise<string | null> } | undefined;
   try {
-    const token = await getAdminToken();
-    kvOk = true; // getAdminToken() succeeded — KV is reachable
-    void token;  // suppress unused-var warning
+    if (kvBinding) {
+      await kvBinding.get('__health_check__'); // key won't exist, but the call succeeds if KV is bound
+      kvOk = true;
+    } else {
+      kvError = 'CONTENT_KV binding not found in env';
+    }
   } catch (e: unknown) {
     kvError = (e as Error).message;
   }

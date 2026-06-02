@@ -1,6 +1,13 @@
 /**
- * Cloudflare KV wrapper — falls back to in-memory store in local dev
+ * Cloudflare KV wrapper.
  * KV Namespace binding expected: CONTENT_KV
+ *
+ * IMPORTANT — Cloudflare Edge runtime constraints:
+ *   - Every request runs in a fresh V8 isolate. In-memory state (Maps, globals)
+ *     is NOT shared between requests. Never use globalThis for session storage.
+ *   - All persistent state MUST go through CONTENT_KV.
+ *   - Local dev without wrangler: KV is unavailable, so writes are no-ops and
+ *     reads return null. Use `wrangler pages dev` to test with real KV locally.
  */
 
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
@@ -9,22 +16,14 @@ import type { CompanyDetails, DynamicPage, GlobalSettings, HeroSlide, Lead, News
 // Minimal KV shape — avoids requiring @cloudflare/workers-types as a dep.
 interface CfKVNamespace {
   get(key: string): Promise<string | null>;
-  put(key: string, value: string): Promise<void>;
+  put(key: string, value: string, opts?: { expirationTtl?: number }): Promise<void>;
   delete(key: string): Promise<void>;
 }
-
-// ── In-memory fallback for local dev ─────────────────────────────────────
-// Uses globalThis so the store survives across Next.js HMR module reloads.
-// This means tokens saved during login persist for the lifetime of the dev
-// server process — matching how a real KV works.
-const g = globalThis as unknown as { __iloc_dev_store?: Map<string, string> };
-if (!g.__iloc_dev_store) g.__iloc_dev_store = new Map<string, string>();
-const DEV_STORE = g.__iloc_dev_store;
 
 function getKV(): CfKVNamespace | null {
   try {
     const ctx = getOptionalRequestContext();
-    return (ctx?.env as any)?.CONTENT_KV ?? null;
+    return (ctx?.env as Record<string, unknown>)?.CONTENT_KV as CfKVNamespace ?? null;
   } catch {
     return null;
   }
@@ -32,28 +31,40 @@ function getKV(): CfKVNamespace | null {
 
 async function kvGet<T>(key: string): Promise<T | null> {
   const kv = getKV();
+  if (!kv) return null; // No KV in local next dev — caller handles null
   try {
-    const raw = kv ? await kv.get(key) : DEV_STORE.get(key) ?? null;
-    return raw ? (JSON.parse(raw) as T) : null;
-  } catch {
+    const raw = await kv.get(key);
+    if (!raw) return null;
+    return JSON.parse(raw) as T;
+  } catch (e) {
+    console.error(`[kv] kvGet(${key}) failed:`, e);
     return null;
   }
 }
 
-async function kvPut(key: string, value: unknown): Promise<void> {
+async function kvPut(key: string, value: unknown, opts?: { expirationTtl?: number }): Promise<void> {
   const kv = getKV();
-  const serialized = JSON.stringify(value);
-  if (kv) {
-    await kv.put(key, serialized);
-  } else {
-    DEV_STORE.set(key, serialized);
+  if (!kv) {
+    // Local next dev without wrangler — log and continue so UI doesn't crash
+    console.warn(`[kv] No CONTENT_KV binding — kvPut("${key}") skipped (local dev)`);
+    return;
+  }
+  try {
+    await kv.put(key, JSON.stringify(value), opts);
+  } catch (e) {
+    console.error(`[kv] kvPut(${key}) failed:`, e);
+    throw e; // Re-throw so callers can surface the error to the client
   }
 }
 
 async function kvDelete(key: string): Promise<void> {
   const kv = getKV();
-  if (kv) await kv.delete(key);
-  else DEV_STORE.delete(key);
+  if (!kv) return;
+  try {
+    await kv.delete(key);
+  } catch (e) {
+    console.error(`[kv] kvDelete(${key}) failed:`, e);
+  }
 }
 
 // ── Page CRUD ─────────────────────────────────────────────────────────────
@@ -102,20 +113,74 @@ export async function resolveRedirect(path: string): Promise<RedirectRule | null
   return rules.find(r => r.active && r.from === path) ?? null;
 }
 
-// ── Admin token ───────────────────────────────────────────────────────────
+// ── Admin session auth ────────────────────────────────────────────────────
+//
+// Architecture: stateless KV sessions.
+//
+// WHY NOT in-memory / globalThis:
+//   Cloudflare Workers run in ephemeral V8 isolates. Each request gets a
+//   fresh isolate — in-memory state written by the login request is GONE
+//   by the time the next API call arrives. This caused every save to 401.
+//
+// HOW IT WORKS NOW:
+//   Login  → generates token → writes session:<token> = "1" to KV (24h TTL)
+//   Auth   → reads session:<token> from KV → present = valid, absent = 401
+//   Logout → deletes session:<token> from KV
 
+const SESSION_TTL = 86_400; // 24 hours in seconds
+
+/** Create a new admin session. Token must be a securely-generated hex string. */
+export async function createAdminSession(token: string): Promise<void> {
+  // Store the raw string "1" — no JSON serialisation needed, just a presence check.
+  const kv = getKV();
+  if (!kv) {
+    console.warn('[kv] No CONTENT_KV — createAdminSession skipped (local dev)');
+    return;
+  }
+  await kv.put(`session:${token}`, '1', { expirationTtl: SESSION_TTL });
+}
+
+/** Validate a session token against KV. Returns false if KV is unavailable. */
+export async function validateAdminToken(token: string): Promise<boolean> {
+  if (!token) return false;
+  const kv = getKV();
+  if (!kv) {
+    // Local next dev without wrangler: KV not available.
+    // Bypass auth ONLY in explicit local dev (no CF env).
+    // In production CONTENT_KV is always bound; if it's null there, something
+    // is misconfigured and we should hard-deny.
+    const isLocalDev = !process.env.CF_PAGES;
+    if (isLocalDev) {
+      console.warn('[kv] No CONTENT_KV — bypassing auth for local dev only');
+      return true;
+    }
+    return false;
+  }
+  try {
+    const val = await kv.get(`session:${token}`);
+    return val !== null; // Any non-null value = valid session
+  } catch (e) {
+    console.error('[kv] validateAdminToken KV read failed:', e);
+    return false;
+  }
+}
+
+/** Invalidate a session (logout). */
+export async function destroyAdminSession(token: string): Promise<void> {
+  if (!token) return;
+  await kvDelete(`session:${token}`);
+}
+
+// Legacy — kept for the system/status health check (reads admin:token key to test KV connectivity).
+// Not used for auth. Can be removed once health check is updated.
 export async function getAdminToken(): Promise<string | null> {
   return kvGet<string>('admin:token');
 }
 
-export async function setAdminToken(token: string): Promise<void> {
-  await kvPut('admin:token', token);
-}
-
-export async function validateAdminToken(token: string): Promise<boolean> {
-  if (!token) return false;
-  const stored = await getAdminToken();
-  return stored === token;
+/** @deprecated Use createAdminSession instead */
+export async function setAdminToken(_token: string): Promise<void> {
+  // No-op: superseded by createAdminSession + KV session keys.
+  // Kept to avoid import errors in callers that haven't been updated yet.
 }
 
 // ── Site content overrides ────────────────────────────────────────────────
