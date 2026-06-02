@@ -4,6 +4,8 @@
  */
 import type { AuditEntry } from './schemas';
 
+import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
+
 interface CfKVNamespace {
   get(key: string): Promise<string | null>;
   put(key: string, value: string): Promise<void>;
@@ -11,8 +13,8 @@ interface CfKVNamespace {
 
 function getKV(): CfKVNamespace | null {
   try {
-    const kv = (globalThis as any).CONTENT_KV ?? (process as any).env?.CONTENT_KV;
-    return kv ?? null;
+    const ctx = getOptionalRequestContext();
+    return (ctx?.env as any)?.CONTENT_KV ?? null;
   } catch {
     return null;
   }

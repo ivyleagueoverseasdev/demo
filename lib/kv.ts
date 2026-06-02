@@ -3,6 +3,7 @@
  * KV Namespace binding expected: CONTENT_KV
  */
 
+import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 import type { CompanyDetails, DynamicPage, GlobalSettings, HeroSlide, Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia, Stat } from './types';
 
 // Minimal KV shape — avoids requiring @cloudflare/workers-types as a dep.
@@ -17,10 +18,8 @@ const DEV_STORE = new Map<string, string>();
 
 function getKV(): CfKVNamespace | null {
   try {
-    // @cloudflare/next-on-pages injects bindings onto the global process.env
-    // proxy at runtime. Access CONTENT_KV directly from globalThis.
-    const kv = (globalThis as any).CONTENT_KV ?? (process as any).env?.CONTENT_KV;
-    return kv ?? null;
+    const ctx = getOptionalRequestContext();
+    return (ctx?.env as any)?.CONTENT_KV ?? null;
   } catch {
     return null;
   }
