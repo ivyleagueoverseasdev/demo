@@ -27,13 +27,18 @@ interface CfKVNamespace {
  * Use this for any write or auth operation — we NEED to know if it fails.
  */
 function getKVStrict(): CfKVNamespace {
-  const ctx = getRequestContext(); // throws if called outside a CF request
-  const kv  = (ctx.env as Record<string, unknown>).CONTENT_KV as CfKVNamespace | undefined;
+  // getRequestContext() throws if called outside a live CF Pages request.
+  // On production this always works. Locally it only works under `wrangler pages dev`.
+  const ctx = getRequestContext();
+  // ctx.env is typed as CloudflareEnv (see cloudflare-env.d.ts) — no cast needed.
+  const kv  = ctx.env.CONTENT_KV as CfKVNamespace | undefined;
   if (!kv) {
     throw new Error(
-      'CRITICAL: CONTENT_KV binding is missing. ' +
-      'Add the KV namespace binding in Cloudflare Pages → Settings → Functions → KV Namespace Bindings. ' +
-      'Variable name must be exactly "CONTENT_KV".'
+      'CRITICAL: CONTENT_KV binding is missing from this Cloudflare Pages deployment. ' +
+      'Go to Cloudflare Dashboard → Pages → iloc-web → Settings → Functions → ' +
+      'KV Namespace Bindings and add: Variable name = "CONTENT_KV", ' +
+      'KV Namespace = your namespace (ID: 5b410e671eb14b78bc6bd59b7fd6f827). ' +
+      'Then redeploy.'
     );
   }
   return kv;
@@ -47,7 +52,8 @@ function getKVOptional(): CfKVNamespace | null {
   try {
     const ctx = getOptionalRequestContext();
     if (!ctx) return null;
-    return (ctx.env as Record<string, unknown>).CONTENT_KV as CfKVNamespace ?? null;
+    // ctx.env is typed as CloudflareEnv — CONTENT_KV is KVNamespace | undefined
+    return (ctx.env.CONTENT_KV as CfKVNamespace | undefined) ?? null;
   } catch {
     return null;
   }

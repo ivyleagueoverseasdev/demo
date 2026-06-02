@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -211,7 +211,7 @@ function EventsHubInner() {
   useEffect(() => {
     fetch('/api/events')
       .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d?.events) setEvents(d.events); })
+      .then((d: any) => { if (d?.events) setEvents(d.events); })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

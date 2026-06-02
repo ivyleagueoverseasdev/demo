@@ -129,11 +129,11 @@ export default function AdminAnalyticsPage() {
         fetch('/api/admin/audit',  { headers: hdrs, cache: 'no-store' }),
       ]);
 
-      if (evRes.status    === 'fulfilled' && evRes.value.ok)    setEvents((await evRes.value.json()).events ?? []);
-      if (leadRes.status  === 'fulfilled' && leadRes.value.ok)  setLeads((await leadRes.value.json()).leads ?? []);
-      if (newsRes.status  === 'fulfilled' && newsRes.value.ok)  setNews((await newsRes.value.json()).news ?? []);
-      if (pageRes.status  === 'fulfilled' && pageRes.value.ok)  setPages((await pageRes.value.json()).pages ?? []);
-      if (auditRes.status === 'fulfilled' && auditRes.value.ok) setAuditLog((await auditRes.value.json()).log ?? []);
+      if (evRes.status    === 'fulfilled' && evRes.value.ok)    setEvents(((await evRes.value.json()) as { events?: SiteEvent[] }).events ?? []);
+      if (leadRes.status  === 'fulfilled' && leadRes.value.ok)  setLeads(((await leadRes.value.json()) as { leads?: Lead[] }).leads ?? []);
+      if (newsRes.status  === 'fulfilled' && newsRes.value.ok)  setNews(((await newsRes.value.json()) as { news?: NewsItem[] }).news ?? []);
+      if (pageRes.status  === 'fulfilled' && pageRes.value.ok)  setPages(((await pageRes.value.json()) as { pages?: DynamicPage[] }).pages ?? []);
+      if (auditRes.status === 'fulfilled' && auditRes.value.ok) setAuditLog(((await auditRes.value.json()) as { log?: AuditEntry[] }).log ?? []);
     } finally {
       setLoading(false);
       setRefreshed(new Date());

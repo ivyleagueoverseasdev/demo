@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../layout';
@@ -68,7 +68,7 @@ export default function AdminCountriesPage() {
     try {
       const res = await fetch(`/api/country-meta?country=${encodeURIComponent(code)}`, { cache: 'no-store' });
       if (res.ok) {
-        const d = await res.json();
+        const d = await res.json() as any;
         if (d?.meta) {
           setMeta({
             intake:      d.meta.intake      || defaults.intake,
@@ -92,7 +92,7 @@ export default function AdminCountriesPage() {
     setHtml('');
     try {
       const res = await fetch(`/api/country-content?country=${encodeURIComponent(code)}&section=${encodeURIComponent(section)}`, { cache: 'no-store' });
-      if (res.ok) { const d = await res.json(); setHtml(d.html ?? ''); }
+      if (res.ok) { const d = await res.json() as any; setHtml(d.html ?? ''); }
     } finally { setHtmlLoading(false); }
   }, []);
 
@@ -106,9 +106,9 @@ export default function AdminCountriesPage() {
         method: 'PUT', headers: hdrs,
         body: JSON.stringify({ country: activeCountry, meta }),
       });
-      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error ?? `HTTP ${res.status}`); }
+      if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
       flash('✓ Country stats saved — live on next page load.', 'success');
-    } catch (e: unknown) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
+    } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
     finally { setMetaBusy(false); }
   }
 
@@ -119,9 +119,9 @@ export default function AdminCountriesPage() {
         method: 'PUT', headers: hdrs,
         body: JSON.stringify({ country: activeCountry, section: activeSection, html }),
       });
-      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error ?? `HTTP ${res.status}`); }
+      if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
       flash('✓ Section content saved — live on next page load.', 'success');
-    } catch (e: unknown) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
+    } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
     finally { setHtmlBusy(false); }
   }
 

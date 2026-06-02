@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
@@ -275,7 +275,7 @@ export default function AdminHeroPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/hero-slides', { cache: 'no-store' });
-      if (res.ok) { const d = await res.json(); setSlides(d.slides ?? []); }
+      if (res.ok) { const d = await res.json() as any; setSlides(d.slides ?? []); }
     } finally { setLoading(false); }
   }, []);
 

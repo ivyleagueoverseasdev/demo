@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -125,7 +125,7 @@ export default function EventsCarousel() {
   useEffect(() => {
     fetch('/api/events')
       .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d?.events?.length) setEvents(d.events.filter((e: SiteEvent) => e.published)); })
+      .then((d: any) => { if (d?.events?.length) setEvents(d.events.filter((e: SiteEvent) => e.published)); })
       .catch(() => {});
   }, []);
 

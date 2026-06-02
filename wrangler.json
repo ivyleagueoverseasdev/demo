@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "iloc-web",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "pages_build_output_dir": ".vercel/output/static",
+  "kv_namespaces": [
+    {
+      "binding": "CONTENT_KV",
+      "id": "5b410e671eb14b78bc6bd59b7fd6f827"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "iloc-media"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
@@ -72,12 +72,12 @@ function UploadZone({
       setProgress(80);
 
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Upload failed' }));
+        const err = await res.json().catch(() => ({ error: 'Upload failed' })) as any;
         flash(err.error ?? 'Upload failed', 'error');
         return;
       }
 
-      const { url, key } = await res.json();
+      const { url, key } = await res.json() as { url: string; key: string };
 
       // Persist URL in KV media library
       await fetch('/api/media/library', {
@@ -340,7 +340,7 @@ export default function MediaLibraryPage() {
     try {
       const res = await fetch('/api/media/library', { cache: 'no-store' });
       if (res.ok) {
-        const data = await res.json();
+        const data = await res.json() as any;
         // KV stores plain string array; normalise to MediaItem[]
         const urls: string[] = data.urls ?? [];
         setItems(urls.map(url => ({ url, key: url.split('/').pop() ?? url })));

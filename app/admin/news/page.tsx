@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
@@ -365,7 +365,7 @@ export default function AdminNewsPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/news', { cache: 'no-store' });
-      if (res.ok) { const d = await res.json(); setItems(d.news ?? []); }
+      if (res.ok) { const d = await res.json() as any; setItems(d.news ?? []); }
     } finally { setLoading(false); }
   }, []);
 

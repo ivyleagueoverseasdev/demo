@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
@@ -547,7 +547,7 @@ export default function AdminEventsPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/events', { cache: 'no-store' });
-      if (res.ok) { const d = await res.json(); setEvents(d.events ?? []); }
+      if (res.ok) { const d = await res.json() as any; setEvents(d.events ?? []); }
     } finally { setLoading(false); }
   }, []);
 

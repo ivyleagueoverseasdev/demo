@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * ImagePicker — reusable image input used throughout the admin.
@@ -39,7 +39,7 @@ function LibraryModal({
   useEffect(() => {
     fetch('/api/media/library', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : { urls: [] })
-      .then(d => setUrls(d.urls ?? []))
+      .then((d: any) => setUrls(d.urls ?? []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -149,7 +149,7 @@ export default function ImagePicker({
         body:    fd,
       });
       if (!res.ok) return;
-      const { url } = await res.json();
+      const { url } = await res.json() as any;
       onChange(url);
       // Persist to library
       await fetch('/api/media/library', {

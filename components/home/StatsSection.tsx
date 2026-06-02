@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -35,7 +35,7 @@ export default function StatsSection() {
   useEffect(() => {
     fetch('/api/stats', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
-      .then(d => { if (d?.stats?.length) setStats(d.stats); })
+      .then((d: any) => { if (d?.stats?.length) setStats(d.stats); })
       .catch(() => {});
   }, []);
 

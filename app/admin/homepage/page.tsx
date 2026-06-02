@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../layout';
@@ -136,9 +136,9 @@ export default function AdminHomepagePage() {
         fetch('/api/stats',   { cache: 'no-store' }),
         fetch('/api/content', { headers: hdrs, cache: 'no-store' }),
       ]);
-      if (statsRes.ok)   { const d = await statsRes.json();   if (d.stats?.length)    setStats(d.stats); }
+      if (statsRes.ok)   { const d = await statsRes.json() as any;   if (d.stats?.length)    setStats(d.stats); }
       if (contentRes.ok) {
-        const d = await contentRes.json();
+        const d = await contentRes.json() as any;
         if (d.siteContent?.services?.length)      setServices(d.siteContent.services);
         if (d.siteContent?.processSteps?.length)  setSteps(d.siteContent.processSteps);
       }
@@ -151,9 +151,9 @@ export default function AdminHomepagePage() {
     setBusySt(true);
     try {
       const res = await fetch('/api/stats', { method: 'PUT', headers: hdrs, body: JSON.stringify({ stats }) });
-      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error ?? `HTTP ${res.status}`); }
+      if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
       flash('✓ Stats saved — live immediately.', 'success');
-    } catch (e: unknown) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
+    } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
     finally { setBusySt(false); }
   }
 
@@ -161,9 +161,9 @@ export default function AdminHomepagePage() {
     setBusySvc(true);
     try {
       const res = await fetch('/api/content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ services }) });
-      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error ?? `HTTP ${res.status}`); }
+      if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
       flash('✓ Services saved — live immediately.', 'success');
-    } catch (e: unknown) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
+    } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
     finally { setBusySvc(false); }
   }
 
@@ -171,9 +171,9 @@ export default function AdminHomepagePage() {
     setBusyProc(true);
     try {
       const res = await fetch('/api/content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ processSteps: steps }) });
-      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error ?? `HTTP ${res.status}`); }
+      if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
       flash('✓ Process steps saved — live immediately.', 'success');
-    } catch (e: unknown) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
+    } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
     finally { setBusyProc(false); }
   }
 

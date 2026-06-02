@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 // Admin layout — persistent sidebar + main content area.
 // The sidebar is client-only (uses localStorage for auth check).
@@ -181,14 +181,14 @@ function LoginScreen({ onLogin }: { onLogin: (t: string) => void }) {
       });
       if (!res.ok) {
         // Surface the exact backend error (e.g. "CONTENT_KV binding is missing")
-        const body = await res.json().catch(() => ({}));
+        const body = await res.json().catch(() => ({})) as { error?: string; details?: string };
         const msg  = body.error ?? body.details ?? `HTTP ${res.status}`;
         setErr(msg);
         console.error('[login] failed:', body);
         setBusy(false);
         return;
       }
-      const data = await res.json();
+      const data = await res.json() as { token?: string };
       if (!data.token) {
         setErr('Login response missing token — check server logs.');
         setBusy(false);

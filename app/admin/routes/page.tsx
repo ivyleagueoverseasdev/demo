@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth, useToast } from '../layout';
@@ -230,7 +230,7 @@ export default function AdminRoutesPage() {
       const res = await fetch('/api/content', {
         headers: { Authorization: `Bearer ${token}` }, cache: 'no-store',
       });
-      if (res.ok) { const d = await res.json(); setRules(d.redirects ?? []); }
+      if (res.ok) { const d = await res.json() as any; setRules(d.redirects ?? []); }
     } finally { setLoading(false); }
   }, [token]);
 

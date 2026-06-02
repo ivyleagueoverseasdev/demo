@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { UNIS_MARQUEE_DATA } from '@/lib/data';
@@ -106,7 +106,7 @@ export default function UniversityMarquee() {
   useEffect(() => {
     fetch('/api/marquee', { cache: 'no-store' })
       .then(r => (r.ok ? r.json() : null))
-      .then(data => {
+      .then((data: any) => {
         if (data?.settings) setSettings({ ...DEFAULT_SETTINGS, ...data.settings });
       })
       .catch(() => {});

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../layout';
@@ -216,7 +216,7 @@ export default function AdminEnquiriesPage() {
       const res = await fetch('/api/leads', {
         headers: { Authorization: `Bearer ${token}` }, cache: 'no-store',
       });
-      if (res.ok) { const d = await res.json(); setLeads(d.leads ?? []); }
+      if (res.ok) { const d = await res.json() as any; setLeads(d.leads ?? []); }
     } finally { setLoading(false); }
   }, [token]);
 

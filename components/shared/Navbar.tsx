@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -212,7 +212,7 @@ export default function Navbar() {
     setMounted(true);
     fetch('/api/content', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
-      .then(d => {
+      .then((d: any) => {
         const gs = d?.globalSettings;
         if (gs?.headerBackgroundColor) setHeaderBg(gs.headerBackgroundColor);
       })

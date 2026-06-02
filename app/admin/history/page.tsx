@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../layout';
@@ -111,7 +111,7 @@ export default function AdminHistoryPage() {
     setLogLoading(true);
     try {
       const res = await fetch('/api/admin/audit', { headers: hdrs, cache: 'no-store' });
-      if (res.ok) { const d = await res.json(); setLog(d.log ?? []); }
+      if (res.ok) { const d = await res.json() as any; setLog(d.log ?? []); }
     } finally { setLogLoading(false); }
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -119,7 +119,7 @@ export default function AdminHistoryPage() {
     setStatLoading(true);
     try {
       const res = await fetch('/api/system/status', { headers: hdrs, cache: 'no-store' });
-      if (res.ok) { const d = await res.json(); setStatus(d); }
+      if (res.ok) { const d = await res.json() as any; setStatus(d); }
     } finally { setStatLoading(false); }
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 

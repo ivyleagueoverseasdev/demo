@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
@@ -348,8 +348,8 @@ export default function AdminPagesPage() {
     setLoading(true);
     try {
       const res = await fetch('/api/pages', { headers: hdrs, cache: 'no-store' });
-      if (res.ok) { const d = await res.json(); setPages(d.pages ?? []); }
-      else { const e = await res.json().catch(() => ({})); flash(e.error ?? 'Failed to load pages', 'error'); }
+      if (res.ok) { const d = await res.json() as any; setPages(d.pages ?? []); }
+      else { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; flash(e.error ?? 'Failed to load pages', 'error'); }
     } finally { setLoading(false); }
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -367,14 +367,14 @@ export default function AdminPagesPage() {
         res = await fetch('/api/pages', { method: 'POST', headers: hdrs, body: JSON.stringify({ ...payload, id: crypto.randomUUID(), createdAt: new Date().toISOString() }) });
       }
       if (!res.ok) {
-        const e = await res.json().catch(() => ({}));
+        const e = await res.json().catch(() => ({})) as { error?: string; details?: string };
         throw new Error(e.error ?? `HTTP ${res.status}`);
       }
       flash(editSlug ? '✓ Page updated.' : '✓ Page published.', 'success');
       closeForm();
       await load();
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e);
+    } catch (e) {
+      const msg = e instanceof Error ? (e as Error).message : String(e);
       flash(`Save failed: ${msg}`, 'error');
     } finally {
       setBusy(false);

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * /admin — Overview dashboard.
@@ -77,10 +77,10 @@ export default function AdminOverview() {
         fetch('/api/events',                   { cache: 'no-store' }).catch(() => null),
         fetch('/api/leads',   { headers: hdrs, cache: 'no-store' }).catch(() => null),
       ]);
-      if (pRes?.ok)  { const d = await pRes.json();  setPages(d.pages      ?? []); }
-      if (cRes?.ok)  { const d = await cRes.json();  setRedirects(d.redirects ?? []); }
-      if (evRes?.ok) { const d = await evRes.json(); setEvents(d.events    ?? []); }
-      if (lRes?.ok)  { const d = await lRes.json();  setLeads(d.leads      ?? []); }
+      if (pRes?.ok)  { const d = await pRes.json() as any;  setPages(d.pages      ?? []); }
+      if (cRes?.ok)  { const d = await cRes.json() as any;  setRedirects(d.redirects ?? []); }
+      if (evRes?.ok) { const d = await evRes.json() as any; setEvents(d.events    ?? []); }
+      if (lRes?.ok)  { const d = await lRes.json() as any;  setLeads(d.leads      ?? []); }
     } finally {
       setLoading(false);
     }

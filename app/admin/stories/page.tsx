@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
@@ -366,7 +366,7 @@ export default function AdminStoriesPage() {
       const res = await fetch('/api/content', {
         headers: { Authorization: `Bearer ${token}` }, cache: 'no-store',
       });
-      if (res.ok) { const d = await res.json(); setItems(d.siteContent?.testimonials ?? []); }
+      if (res.ok) { const d = await res.json() as any; setItems(d.siteContent?.testimonials ?? []); }
     } finally { setLoading(false); }
   }, [token]);
 
