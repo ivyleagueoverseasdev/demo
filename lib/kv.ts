@@ -188,8 +188,14 @@ export async function validateAdminToken(token: string): Promise<boolean> {
     const val = await kv.get(`session:${token}`);
     if (val === null) {
       console.warn(`[kv] Token not found in KV: session:${token.slice(0, 8)}…`);
+      return false;
     }
-    return val !== null;
+    // Sliding expiry: each authenticated request renews the 24h window,
+    // so an actively-used admin session never dies mid-edit.
+    try {
+      await kv.put(`session:${token}`, '1', { expirationTtl: SESSION_TTL });
+    } catch { /* renewal is best-effort — validation already succeeded */ }
+    return true;
   } catch (e) {
     console.error('[kv] validateAdminToken KV.get failed:', e);
     return false;

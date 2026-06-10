@@ -2,8 +2,11 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { COUNTRIES } from '@/lib/data';
+import { getCountryMeta } from '@/lib/kv';
 
-export const revalidate = 3600;
+// Edge + dynamic so admin edits to country stats/images (KV) go live immediately.
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Study Destinations 2026 | USA, UK, Canada, Europe, UAE & More | ILOC',
@@ -11,14 +14,35 @@ export const metadata: Metadata = {
     'Explore 2026 visa guides, scholarships and career pathways for 12 top study destinations — USA, UK, Canada, Australia, Ireland, New Zealand, Europe, UAE, Japan, South Korea, Singapore and Russia. Expert advice from ILOC Pune.',
 };
 
-export default function DestinationsPage() {
+export default async function DestinationsPage() {
+  // Merge admin-edited KV overrides onto the static country defaults.
+  const metas = await Promise.all(
+    COUNTRIES.map(c => getCountryMeta(c.code).catch(() => null)),
+  );
+  const countries = COUNTRIES.map((c, i) => {
+    const m = metas[i];
+    return {
+      ...c,
+      intake:      m?.intake      || c.intake,
+      avgCost:     m?.avgCost     || c.avgCost,
+      visaRate:    m?.visaRate    || c.visaRate,
+      unis:        m?.unis        || c.unis,
+      tagline:     m?.tagline     || c.tagline,
+      description: m?.description || c.description,
+      highlights:  m?.highlights?.length ? m.highlights : c.highlights,
+      heroImage:   m?.heroImage   || c.heroImage,
+      campusImage: m?.campusImage || c.campusImage,
+      color:       m?.color       || c.color,
+    };
+  });
+
   return (
     <div className="bg-white">
       {/* ── Picture-based hero ── */}
       <section className="relative overflow-hidden min-h-[380px] flex items-end">
         {/* Background collage — top 4 country images */}
         <div className="absolute inset-0 grid grid-cols-4">
-          {COUNTRIES.slice(0, 4).map((c, i) => (
+          {countries.slice(0, 4).map((c, i) => (
             <div key={c.code} className="relative overflow-hidden">
               <Image
                 src={c.heroImage}
@@ -75,7 +99,7 @@ export default function DestinationsPage() {
 
             {/* Quick country flag strip */}
             <div className="flex flex-wrap gap-2 mt-6">
-              {COUNTRIES.map(c => (
+              {countries.map(c => (
                 <Link
                   key={c.code}
                   href={`/destinations/${c.code}`}
@@ -94,7 +118,7 @@ export default function DestinationsPage() {
       <section className="section bg-white">
         <div className="container-xl">
           <div className="space-y-6">
-            {COUNTRIES.map((c) => (
+            {countries.map((c) => (
               <Link key={c.code} href={`/destinations/${c.code}`}
                 className="group card flex flex-col sm:flex-row overflow-hidden hover:-translate-y-0.5 block">
                 {/* Picture panel */}

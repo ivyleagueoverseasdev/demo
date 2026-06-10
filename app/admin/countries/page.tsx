@@ -6,19 +6,25 @@ import RichTextEditor from '@/components/admin/RichTextEditor';
 import { useRouter } from 'next/navigation';
 import ImagePicker from '@/components/admin/ImagePicker';
 import { COUNTRIES_MAP } from '@/lib/data';
+import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
 
 const COUNTRY_CODES = Object.keys(COUNTRIES_MAP);
 
-const SECTIONS = [
-  { slug: 'overview',      label: '📋 Overview'         },
-  { slug: 'visa',          label: '🛂 Visa & Immigration' },
-  { slug: 'universities',  label: '🏛 Universities'       },
-  { slug: 'scholarships',  label: '🎓 Scholarships'       },
-  { slug: 'careers',       label: '💼 Careers'            },
-  { slug: 'faq',           label: '❓ FAQ'                },
-];
+// Section list MUST mirror the public site's slugs (lib/countrySubpages.ts) —
+// content saved under any other slug is never rendered.
+const SECTION_ICONS: Record<string, string> = {
+  'why-study':             '🎯',
+  'application-procedure': '📋',
+  'university-list':       '🏛',
+  'salient-features':      '✨',
+  'entry-criteria':        '🎓',
+};
+const SECTIONS = SECTION_SLUGS.map(slug => ({
+  slug: slug as string,
+  label: `${SECTION_ICONS[slug] ?? '📄'} ${SECTION_LABELS[slug]}`,
+}));
 
 interface CountryMetaForm {
   intake:      string;

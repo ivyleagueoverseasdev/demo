@@ -101,6 +101,15 @@ export async function apiCall<T = unknown>(opts: ApiCallOpts): Promise<ApiCallRe
     let errBody: Record<string, unknown> = {};
     try { errBody = await res.json(); } catch { /* body wasn't JSON */ }
 
+    // Session expired or token invalid: clear the stored token so the admin
+    // layout shows the login screen on next load instead of failing silently.
+    if (res.status === 401 && typeof window !== 'undefined') {
+      try { window.localStorage.removeItem('iloc_admin_token'); } catch { /* SSR / private mode */ }
+      console.error(`[apiCall] ${opts.method} ${opts.url} → 401: session expired, token cleared`);
+      setTimeout(() => window.location.reload(), 1800);
+      return { ok: false, data: null, error: 'Session expired — signing you out, please log in again.' };
+    }
+
     const errorMsg =
       (errBody.error  as string | undefined) ??
       (errBody.details as string | undefined) ??

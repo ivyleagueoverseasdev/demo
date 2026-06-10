@@ -260,13 +260,30 @@ export function useToast() { return useContext(ToastContext); }
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [token,     setToken]     = useState('');
   const [mounted,   setMounted]   = useState(false);
+  const [checking,  setChecking]  = useState(true);
   const [toast,     setToast]     = useState('');
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
 
   useEffect(() => {
     setMounted(true);
     const stored = localStorage.getItem('iloc_admin_token');
-    if (stored) setToken(stored);
+    if (!stored) { setChecking(false); return; }
+
+    // Verify the stored token is still a live KV session BEFORE showing the
+    // dashboard — otherwise an expired session looks logged-in but every
+    // save fails with "Unauthorized".
+    fetch('/api/system/status', { headers: { Authorization: `Bearer ${stored}` }, cache: 'no-store' })
+      .then(res => {
+        if (res.status === 401) {
+          localStorage.removeItem('iloc_admin_token');
+          setToken('');
+        } else {
+          // 200 (valid) or transient 5xx (don't log out on server hiccups)
+          setToken(stored);
+        }
+      })
+      .catch(() => setToken(stored)) // network blip — keep the session
+      .finally(() => setChecking(false));
   }, []);
 
   function handleLogin(t: string) { setToken(t); }
@@ -283,6 +300,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   if (!mounted) return null;
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+        <p className="font-jakarta text-sm text-slate-400 animate-pulse">Verifying session…</p>
+      </div>
+    );
+  }
   if (!token) return <LoginScreen onLogin={handleLogin} />;
 
   const toastColors = {

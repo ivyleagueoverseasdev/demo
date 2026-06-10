@@ -203,6 +203,9 @@ export default function Navbar() {
   const [partOpen,  setPartOpen]  = useState(false);
   const [mounted,   setMounted]   = useState(false);
   const [headerBg,  setHeaderBg]  = useState('#3F6212');
+  const [logoUrl,   setLogoUrl]   = useState('/logo2.png');
+  const [brandText, setBrandText] = useState('IVY LEAGUE OVERSEAS CONSULTING');
+  const [contact,   setContact]   = useState({ phone: COMPANY.phone, email: COMPANY.email, wa: COMPANY.wa });
 
   const pathname  = usePathname();
   const destTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -215,6 +218,19 @@ export default function Navbar() {
       .then((d: any) => {
         const gs = d?.globalSettings;
         if (gs?.headerBackgroundColor) setHeaderBg(gs.headerBackgroundColor);
+        if (gs?.mainLogoUrl)           setLogoUrl(gs.mainLogoUrl);
+        const name = gs?.businessNameText || gs?.businessNameDisplayName || gs?.brandName;
+        if (name) setBrandText(name);
+        const cd = d?.companyDetails;
+        if (cd) {
+          setContact(c => ({
+            phone: cd.phone    || c.phone,
+            email: cd.email    || c.email,
+            wa:    cd.whatsapp || gs?.whatsappUrl || c.wa,
+          }));
+        } else if (gs?.whatsappUrl) {
+          setContact(c => ({ ...c, wa: gs.whatsappUrl }));
+        }
       })
       .catch(() => {});
   }, []);
@@ -265,26 +281,26 @@ export default function Navbar() {
         >
           <div className="container-xl flex items-center justify-between h-9 text-white text-[11.5px] font-jakarta border-b border-white/[0.07]">
             <div className="flex items-center gap-6">
-              <a href={`tel:${COMPANY.phone}`}
+              <a href={`tel:${contact.phone}`}
                 className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
                 <svg className="w-3 h-3 text-white/50" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
                 </svg>
-                {COMPANY.phone}
+                {contact.phone}
               </a>
-              <a href={`mailto:${COMPANY.email}`}
+              <a href={`mailto:${contact.email}`}
                 className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors">
                 <svg className="w-3 h-3 text-white/50" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                 </svg>
-                {COMPANY.email}
+                {contact.email}
               </a>
             </div>
             <div className="hidden md:flex items-center gap-4">
               <span className="text-white/70 font-medium">Trusted by 10,000+ Students</span>
               <span className="w-px h-3 bg-white/20" />
-              <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
+              <a href={contact.wa} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-white/85 hover:text-white transition-colors font-medium">
                 <svg className="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -324,8 +340,8 @@ export default function Navbar() {
                   className="relative rounded-full overflow-hidden"
                 >
                   <Image
-                    src="/logo2.png"
-                    alt="Ivy League Overseas Consulting"
+                    src={logoUrl}
+                    alt={brandText}
                     fill
                     className="object-cover"
                     sizes="112px"
@@ -353,7 +369,7 @@ export default function Navbar() {
                   className="font-jakarta font-black text-white leading-tight tracking-tight"
                   style={{ textShadow: '0 2px 20px rgba(0,0,0,0.20)' }}
                 >
-                  IVY LEAGUE OVERSEAS CONSULTING
+                  {brandText}
                 </motion.div>
               </motion.div>
             </Link>
@@ -391,7 +407,7 @@ export default function Navbar() {
                   transition={{ duration: 0.22 }}
                   className="hidden lg:flex items-center gap-2 flex-shrink-0"
                 >
-                  <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
+                  <a href={contact.wa} target="_blank" rel="noopener noreferrer"
                     className="font-jakarta font-medium text-[13px] text-white/80 hover:text-white transition-colors px-3 py-2">
                     💬 WhatsApp
                   </a>
@@ -446,7 +462,7 @@ export default function Navbar() {
               openPart={openPart} closePart={closePart}
             />
             <div className="hidden lg:flex items-center gap-2 ml-auto">
-              <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
+              <a href={contact.wa} target="_blank" rel="noopener noreferrer"
                 className="font-jakarta font-medium text-sm text-white/80 hover:text-white transition-colors px-3 py-2">
                 💬 WhatsApp
               </a>
@@ -517,12 +533,12 @@ export default function Navbar() {
                 style={{ background: 'linear-gradient(135deg,#F59E0B,#D97706)' }}>
                 Book Free Session →
               </Link>
-              <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
+              <a href={contact.wa} target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-4 py-3 rounded-xl text-white mx-1 hover:opacity-90 transition-all"
                 style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
                 💬 Chat on WhatsApp
               </a>
-              <p className="text-center py-2 text-xs text-white/40 font-jakarta">📞 {COMPANY.phone}</p>
+              <p className="text-center py-2 text-xs text-white/40 font-jakarta">📞 {contact.phone}</p>
             </div>
           </motion.div>
         )}

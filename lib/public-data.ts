@@ -147,7 +147,8 @@ export async function getCountryPageData(code: string): Promise<{
   country:   (typeof COUNTRIES)[number] | undefined;
   sections:  Partial<Record<string, string>>;
 }> {
-  const SECTION_SLUGS = ['overview', 'visa', 'universities', 'scholarships', 'careers', 'faq'];
+  // Must mirror the public site's section slugs (lib/countrySubpages.ts)
+  const SECTION_SLUGS = ['why-study', 'application-procedure', 'university-list', 'salient-features', 'entry-criteria'];
   const country = COUNTRIES.find(c => c.code === code);
   const meta    = await getCountryMeta(code).catch(() => null);
 
