@@ -239,6 +239,52 @@ export interface GlobalSettings {
   businessNameDisplayName?: string;  // large title text in hero header
 }
 
+// ── About page settings (admin-editable via /admin/about) ─────────────────────
+export interface AboutPageSettings {
+  heroEyebrow:       string;   // e.g. "Est. 2000"
+  heroHeadingLine1:  string;   // "Honest guidance."
+  heroHeadingLine2:  string;   // "Proven results." (amber line)
+  heroParagraph:     string;
+  founderInitials:   string;   // avatar block, e.g. "RP"
+  founderName:       string;
+  founderRole:       string;
+  founderMeta:       string;   // "10+ Years Experience · Pune, India"
+  founderQuote:      string;
+  founderParagraph1: string;
+  founderParagraph2: string;
+  missionTitle:      string;
+  missionDesc:       string;
+  visionTitle:       string;
+  visionDesc:        string;
+  whyHeading:        string;
+  whyLabels:         string[]; // 4 recognition card labels (icons/colors fixed)
+  ctaHeading:        string;
+  ctaParagraph:      string;
+}
+
+// ── Services page settings (admin-editable via /admin/services) ───────────────
+export interface InstituteServiceItem {
+  icon:  string;   // emoji
+  title: string;
+  desc:  string;
+}
+
+export interface ServicesPageSettings {
+  heroEyebrow:       string;
+  heroHeadingLine1:  string;
+  heroHeadingLine2:  string;   // amber line
+  heroParagraph:     string;
+  studentHeading:    string;
+  extraServices:     ServiceItem[];          // appended after homepage services
+  instituteHeading:  string;
+  instituteIntro:    string;
+  instituteServices: InstituteServiceItem[];
+  partnerBoxHeading: string;
+  partnerBoxText:    string;
+  ctaHeading:        string;
+  ctaParagraph:      string;
+}
+
 export interface NewsItem {
   id:        string;
   title:     string;

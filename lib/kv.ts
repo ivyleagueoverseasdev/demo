@@ -11,8 +11,8 @@
 
 import { getRequestContext, getOptionalRequestContext } from '@cloudflare/next-on-pages';
 import type {
-  CompanyDetails, DynamicPage, GlobalSettings, HeroSlide,
-  Lead, NewsItem, RedirectRule, SiteEvent, SiteMedia, Stat,
+  AboutPageSettings, CompanyDetails, DynamicPage, GlobalSettings, HeroSlide,
+  Lead, NewsItem, RedirectRule, ServicesPageSettings, SiteEvent, SiteMedia, Stat,
 } from './types';
 
 // ── KV shape ──────────────────────────────────────────────────────────────────
@@ -436,4 +436,22 @@ export async function getPartnerSettings(page: 'institutions' | 'agent' | 'refer
 
 export async function setPartnerSettings(page: 'institutions' | 'agent' | 'referral', settings: PartnerPageSettings): Promise<void> {
   await kvPut(`partnerSettings:${page}`, settings);
+}
+
+// ── About / Services page settings ────────────────────────────────────────────
+
+export async function getAboutSettings(): Promise<AboutPageSettings | null> {
+  return kvGet<AboutPageSettings>('aboutSettings');
+}
+
+export async function setAboutSettings(settings: AboutPageSettings): Promise<void> {
+  await kvPut('aboutSettings', settings);
+}
+
+export async function getServicesSettings(): Promise<ServicesPageSettings | null> {
+  return kvGet<ServicesPageSettings>('servicesSettings');
+}
+
+export async function setServicesSettings(settings: ServicesPageSettings): Promise<void> {
+  await kvPut('servicesSettings', settings);
 }

@@ -34,6 +34,8 @@ const NAV: NavItem[] = [
   // Site
   { id: 'homepage',      label: 'Homepage',        icon: '🏠',  href: '/admin/homepage',        group: 'site'    },
   { id: 'hero',          label: 'Hero Slides',     icon: '🎠',  href: '/admin/hero',            group: 'site'    },
+  { id: 'about',         label: 'About Page',      icon: 'ℹ️',  href: '/admin/about',           group: 'site'    },
+  { id: 'services',      label: 'Services Page',   icon: '🛠',  href: '/admin/services',        group: 'site'    },
   { id: 'partners',      label: 'Partners B2B',    icon: '🤝',  href: '/admin/partners',        group: 'site'    },
   { id: 'countries',     label: 'Country Pages',   icon: '🌍',  href: '/admin/countries',       group: 'site'    },
   { id: 'general',       label: 'General Info',    icon: '🏢',  href: '/admin/general',         group: 'site'    },
