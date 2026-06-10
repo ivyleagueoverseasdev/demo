@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getCountryContent, setCountryContent, validateAdminToken } from '@/lib/kv';
+import { isValidSection, getSubpageContent } from '@/lib/countrySubpages';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
 
 function json(data: unknown, status = 200) {
@@ -19,8 +20,11 @@ export async function GET(req: NextRequest) {
     const country = searchParams.get('country');
     const section = searchParams.get('section');
     if (!country || !section) return json({ error: 'country and section params required' }, 400);
-    const html = await getCountryContent(country, section);
-    return json({ html });
+    const kvHtml = await getCountryContent(country, section);
+    // No KV override yet → return the built-in default that is actually live
+    // on the public page, so the admin editor shows existing content to edit.
+    const fallback = isValidSection(section) ? getSubpageContent(country, section) : null;
+    return json({ html: kvHtml ?? fallback ?? '', isDefault: kvHtml === null });
   } catch (e: unknown) {
     console.error('[GET /api/country-content]', (e as Error).stack ?? e);
     return json({ error: 'Failed to load content' }, 500);

@@ -3,6 +3,7 @@ import { COMPANY } from '@/lib/data';
 import AgentForm from './AgentForm';
 import { getPartnerSettings } from '@/lib/kv';
 import type { PartnerPageSettings } from '@/lib/kv';
+import { PARTNER_DEFAULTS, mergePartnerSettings } from '@/lib/partnerDefaults';
 
 export const metadata: Metadata = {
   title: `Agent & Franchisee Partnerships | ${COMPANY.name}`,
@@ -13,25 +14,7 @@ export const revalidate = 3600;
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
-const DEFAULTS: PartnerPageSettings = {
-  badge:       'B2B Franchise & Agent Network',
-  heading:     'Scale Your **Consultancy** with ILOC.',
-  subheading:  'Leverage our established brand, direct university tie-ups, and industry-leading CRM processing to multiply your revenue with absolute transparency.',
-  bodyHeading: 'Empower Your Business',
-  bodyIntro:   'The overseas education market is highly fragmented and competitive. Building direct relationships with top-tier universities takes years. By joining the ILOC Agent Network, you bypass the friction. You focus on recruiting students in your local market; we provide the portfolio, the processing power, and the payouts.',
-  stats: [
-    { value: '400+', label: 'Direct Tie-Ups',  desc: 'Offer your students immediate access to top universities across the globe without negotiating individual contracts.' },
-    { value: '100%', label: 'Transparency',    desc: 'Clear commission structures, real-time application tracking via our CRM, and guaranteed on-time payouts.' },
-  ],
-  listHeading: 'Partner Benefits',
-  listItems: [
-    'Industry-Leading Revenue Share: Maximise your earnings with our highly competitive commission models.',
-    'Dedicated Processing Team: Our expert back-office handles SOP reviews, application submissions, and visa prep.',
-    'Marketing & Brand Support: Utilize the trusted ILOC brand equity to convert high-value leads locally.',
-  ],
-  formHeading: 'Apply for Agency Partner',
-  formSubtext: 'Register your agency to get access to our commercial terms.',
-};
+const DEFAULTS: PartnerPageSettings = PARTNER_DEFAULTS['agent'];
 
 function renderHeading(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
@@ -46,9 +29,7 @@ function renderHeading(text: string) {
 
 export default async function AgentPartnerPage() {
   const kv = await getPartnerSettings('agent').catch(() => null);
-  const s: PartnerPageSettings = kv
-    ? { ...DEFAULTS, ...kv, stats: kv.stats?.length ? kv.stats : DEFAULTS.stats, listItems: kv.listItems?.length ? kv.listItems : DEFAULTS.listItems }
-    : DEFAULTS;
+  const s: PartnerPageSettings = mergePartnerSettings('agent', kv);
 
   return (
     <main className="bg-white">

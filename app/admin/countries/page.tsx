@@ -69,6 +69,7 @@ export default function AdminCountriesPage() {
   const [html,        setHtml]        = useState('');
   const [htmlBusy,    setHtmlBusy]    = useState(false);
   const [htmlLoading, setHtmlLoading] = useState(false);
+  const [isDefault,   setIsDefault]   = useState(false);
 
   // ── Load meta ─────────────────────────────────────────────────────────────
   const loadMeta = useCallback(async (code: string) => {
@@ -101,7 +102,11 @@ export default function AdminCountriesPage() {
     setHtml('');
     try {
       const res = await fetch(`/api/country-content?country=${encodeURIComponent(code)}&section=${encodeURIComponent(section)}`, { cache: 'no-store' });
-      if (res.ok) { const d = await res.json() as any; setHtml(d.html ?? ''); }
+      if (res.ok) {
+        const d = await res.json() as any;
+        setHtml(d.html ?? '');
+        setIsDefault(!!d.isDefault);
+      }
     } finally { setHtmlLoading(false); }
   }, []);
 
@@ -131,6 +136,7 @@ export default function AdminCountriesPage() {
       });
       if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
       flash('✓ Section content saved — live immediately.', 'success');
+      setIsDefault(false);
       router.refresh();
     } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
     finally { setHtmlBusy(false); }
@@ -244,6 +250,13 @@ export default function AdminCountriesPage() {
             ))}
           </div>
 
+          {!htmlLoading && isDefault && (
+            <div className="bg-lime-50 border border-lime-200 rounded-xl px-4 py-2.5">
+              <p className="font-jakarta text-xs text-lime-800">
+                ℹ Showing the built-in content currently live on the site. Edit and hit <strong>Save Section</strong> to override it.
+              </p>
+            </div>
+          )}
           {htmlLoading ? (
             <div className="h-48 bg-slate-100 rounded-xl animate-pulse" />
           ) : (

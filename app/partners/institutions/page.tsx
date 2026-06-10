@@ -3,6 +3,7 @@ import { COMPANY } from '@/lib/data';
 import InstitutionsForm from './InstitutionsForm';
 import { getPartnerSettings } from '@/lib/kv';
 import type { PartnerPageSettings } from '@/lib/kv';
+import { PARTNER_DEFAULTS, mergePartnerSettings } from '@/lib/partnerDefaults';
 
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
@@ -12,25 +13,7 @@ export const metadata: Metadata = {
   description: 'Partner with ILOC to recruit top-tier, rigorously screened international students from India. Join 400+ global universities trusting our 97% visa success rate.',
 };
 
-const DEFAULTS: PartnerPageSettings = {
-  badge:       'Global University Network',
-  heading:     'Recruit **High-Intent** Indian Students.',
-  subheading:  'Join over 400 prestigious global institutions that trust ILOC for rigorous student screening, authentic documentation, and a sustained 97% visa approval rate.',
-  bodyHeading: 'Why Partner with ILOC?',
-  bodyIntro:   "As India's student mobility accelerates, universities face the challenge of volume versus quality. At Ivy League Overseas Consulting, we solve this by operating as an extension of your admissions office. We do not just process applications; we curate academic profiles.",
-  stats: [
-    { value: '97%',  label: 'Visa Success Rate',  desc: 'Our meticulous financial and academic verification guarantees highly genuine students with exceptional visa conversion.' },
-    { value: '2.5k', label: 'Alumni Network',      desc: 'A thriving ecosystem of successful placements across the US, UK, Canada, and Australia generating constant organic referrals.' },
-  ],
-  listHeading: 'Our Commitment to Quality',
-  listItems: [
-    'Rigorous Academic Vetting: Direct verification of transcripts, test scores, and language proficiency.',
-    'Financial Authenticity: Strict pre-screening of funding sources before application submission.',
-    'Volume & Scale: Strategic marketing campaigns ensuring a steady pipeline of diverse applicants.',
-  ],
-  formHeading: 'Initiate Partnership',
-  formSubtext: 'Our institutional relations team will contact you within 24 hours.',
-};
+const DEFAULTS: PartnerPageSettings = PARTNER_DEFAULTS['institutions'];
 
 function renderHeading(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
@@ -45,9 +28,7 @@ function renderHeading(text: string) {
 
 export default async function InstitutionsPartnerPage() {
   const kv = await getPartnerSettings('institutions').catch(() => null);
-  const s: PartnerPageSettings = kv
-    ? { ...DEFAULTS, ...kv, stats: kv.stats?.length ? kv.stats : DEFAULTS.stats, listItems: kv.listItems?.length ? kv.listItems : DEFAULTS.listItems }
-    : DEFAULTS;
+  const s: PartnerPageSettings = mergePartnerSettings('institutions', kv);
 
   return (
     <main className="bg-white">

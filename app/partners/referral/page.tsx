@@ -3,6 +3,7 @@ import { COMPANY } from '@/lib/data';
 import ReferralForm from './ReferralForm';
 import { getPartnerSettings } from '@/lib/kv';
 import type { PartnerPageSettings } from '@/lib/kv';
+import { PARTNER_DEFAULTS, mergePartnerSettings } from '@/lib/partnerDefaults';
 
 export const metadata: Metadata = {
   title: `Student Referral Register | ${COMPANY.name}`,
@@ -13,26 +14,7 @@ export const revalidate = 3600;
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
-const DEFAULTS: PartnerPageSettings = {
-  badge:       'ILOC Alumni & Student Network',
-  heading:     'Share Success. **Earn Rewards.**',
-  subheading:  'Over 60% of our students come through referrals. Help your friends navigate their study abroad journey with Pune\'s most trusted consultants, and get rewarded for every successful enrollment.',
-  bodyHeading: 'How It Works',
-  bodyIntro:   'We believe that the best endorsement of our premium consulting services is the success of our students. If you or someone you know has benefited from our expertise, share the advantage. The process is completely transparent and seamless.',
-  stats: [
-    { value: '1', label: 'Submit Referral',   desc: 'Fill out the quick form with your friend\'s details.' },
-    { value: '2', label: 'Free Consultation', desc: 'Our expert team contacts them for a complimentary profile evaluation.' },
-    { value: '3', label: 'Earn Rewards',      desc: 'Once they successfully enroll, your referral reward is instantly processed.' },
-  ],
-  listHeading: 'Exclusive Alumni Rewards',
-  listItems: [
-    'Alumni Monetary Rewards: Exclusive cash rewards for our alumni network on every successful referral.',
-    'Premium Gifts: Special gifts and recognition for top referrers in our student community.',
-    'Priority Support: Alumni referrers get priority access to counselling sessions and visa updates.',
-  ],
-  formHeading: 'Register a Referral',
-  formSubtext: 'Enter the details below. We will handle the rest.',
-};
+const DEFAULTS: PartnerPageSettings = PARTNER_DEFAULTS['referral'];
 
 function renderHeading(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
@@ -50,9 +32,7 @@ const STEP_RING = ['ring-partner-200','ring-amber-200', 'ring-emerald-200'];
 
 export default async function ReferralPartnerPage() {
   const kv = await getPartnerSettings('referral').catch(() => null);
-  const s: PartnerPageSettings = kv
-    ? { ...DEFAULTS, ...kv, stats: kv.stats?.length ? kv.stats : DEFAULTS.stats, listItems: kv.listItems?.length ? kv.listItems : DEFAULTS.listItems }
-    : DEFAULTS;
+  const s: PartnerPageSettings = mergePartnerSettings('referral', kv);
 
   return (
     <main className="bg-white">
