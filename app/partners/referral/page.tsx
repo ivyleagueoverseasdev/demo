@@ -45,7 +45,7 @@ function renderHeading(text: string) {
   );
 }
 
-const STEP_BG   = ['bg-partner-500', 'bg-amber-500',   'bg-emerald-500'];
+const STEP_BG   = ['bg-partner-600', 'bg-amber-500',   'bg-emerald-500'];
 const STEP_RING = ['ring-partner-200','ring-amber-200', 'ring-emerald-200'];
 
 export default async function ReferralPartnerPage() {
@@ -58,7 +58,7 @@ export default async function ReferralPartnerPage() {
     <main className="bg-white">
 
       {/* ── Hero ── */}
-      <section className="relative text-white overflow-hidden py-24 sm:py-32" style={{ background: 'linear-gradient(135deg,#3B71F3 0%,#2458D9 60%,#1A43B0 100%)' }}>
+      <section className="relative text-white overflow-hidden py-24 sm:py-32" style={{ background: 'linear-gradient(135deg,#4D7C0F 0%,#3F6212 60%,#1A2E05 100%)' }}>
         <div className="absolute inset-0 opacity-[0.08] pointer-events-none"
           style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #ffffff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #ffffff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
@@ -87,7 +87,7 @@ export default async function ReferralPartnerPage() {
             <div className="space-y-8">
               <div>
                 <h2 className="font-jakarta font-extrabold text-3xl text-slate-900 mb-4">{s.bodyHeading}</h2>
-                <div className="w-16 h-1 rounded-full mb-6" style={{ background: 'linear-gradient(90deg,#3B71F3,#D97706)' }} />
+                <div className="w-16 h-1 rounded-full mb-6" style={{ background: 'linear-gradient(90deg,#CCFF00,#D97706)' }} />
                 <p className="font-jakarta text-slate-500 leading-relaxed">{s.bodyIntro}</p>
               </div>
 
@@ -135,7 +135,7 @@ export default async function ReferralPartnerPage() {
             {/* Right: Form */}
             <div className="sticky top-8">
               <div className="bg-white border border-slate-100 p-8 sm:p-10 rounded-3xl shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-40 h-40 rounded-bl-[80px] opacity-[0.06] pointer-events-none" style={{ background: '#3B71F3' }} />
+                <div className="absolute top-0 right-0 w-40 h-40 rounded-bl-[80px] opacity-[0.06] pointer-events-none" style={{ background: '#65A30D' }} />
                 <div className="absolute top-0 right-0 p-6 text-partner-300 opacity-30">
                   <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />

@@ -33,7 +33,7 @@ function Avatar({ name, imageUrl }: { name: string; imageUrl: string }) {
   if (!imageUrl || err) {
     return (
       <div className="w-11 h-11 rounded-full flex items-center justify-center font-jakarta font-bold text-sm text-white flex-shrink-0"
-        style={{ background: 'linear-gradient(135deg,#246DFF,#246DFF)' }}>
+        style={{ background: 'linear-gradient(135deg,#65A30D,#65A30D)' }}>
         {initials}
       </div>
     );
@@ -77,8 +77,8 @@ function TestimonialCard({ t }: { t: Testimonial }) {
           bg-white/80 backdrop-blur-md
           border border-slate-100
           rounded-2xl p-6
-          shadow-[0_2px_12px_rgba(36,109,255,0.06)]
-          hover:shadow-[0_8px_32px_rgba(36,109,255,0.14)]
+          shadow-[0_2px_12px_rgba(101,163,13,0.06)]
+          hover:shadow-[0_8px_32px_rgba(101,163,13,0.14)]
           transition-shadow duration-300
           flex flex-col gap-4
         "
@@ -133,7 +133,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
     <section
       id="testimonials"
       className="section overflow-hidden"
-      style={{ background: 'linear-gradient(160deg,#F8FAFC 0%,#EBF4FF 60%,#FFFBEB 100%)' }}
+      style={{ background: 'linear-gradient(160deg,#F8FAFC 0%,#F7FFDB 60%,#FFFBEB 100%)' }}
     >
       {/* Header */}
       <div className="container-xl mb-12">

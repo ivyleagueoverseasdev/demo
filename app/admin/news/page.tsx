@@ -478,7 +478,7 @@ export default function AdminNewsPage() {
             <button
               onClick={openNew}
               className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
-              style={{ background: 'linear-gradient(135deg,#246DFF,#1249C4)' }}
+              style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)' }}
             >
               Write First Article
             </button>

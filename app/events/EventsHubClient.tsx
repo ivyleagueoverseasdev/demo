@@ -9,7 +9,7 @@ import type { SiteEvent, EventType } from '@/lib/types';
 
 // ── Type config ────────────────────────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
-  webinar:  { label: 'Webinar',    color: '#246DFF', bg: '#EBF4FF', border: '#BFDBFE' },
+  webinar:  { label: 'Webinar',    color: '#65A30D', bg: '#F7FFDB', border: '#D9F99D' },
   fair:     { label: 'Fair',       color: '#059669', bg: '#ECFDF5', border: '#6EE7B7' },
   deadline: { label: 'Deadline',   color: '#DC2626', bg: '#FEF2F2', border: '#FECACA' },
   workshop: { label: 'Workshop',   color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE' },
@@ -70,7 +70,7 @@ function EventCard({ event, index }: { event: SiteEvent; index: number }) {
     >
       <Link
         href={`/events/${event.id}`}
-        className="group block h-full rounded-2xl overflow-hidden border bg-white hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(36,109,255,0.13)] transition-all duration-300"
+        className="group block h-full rounded-2xl overflow-hidden border bg-white hover:-translate-y-1.5 hover:shadow-[0_12px_40px_rgba(101,163,13,0.13)] transition-all duration-300"
         style={{ borderColor: cfg.border, boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}
       >
         {/* Image */}
@@ -196,7 +196,7 @@ export default function EventsHubClient({ initialEvents }: { initialEvents: Site
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden py-20 lg:py-28" style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 55%,#246DFF 100%)' }}>
+      <section className="relative overflow-hidden py-20 lg:py-28" style={{ background: 'linear-gradient(145deg,#1A2E05 0%,#3F6212 55%,#4D7C0F 100%)' }}>
         <div className="absolute inset-0 opacity-[0.04] pointer-events-none" aria-hidden>
           <svg width="100%" height="100%">
             <defs><pattern id="edots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="white" /></pattern></defs>
@@ -326,7 +326,7 @@ export default function EventsHubClient({ initialEvents }: { initialEvents: Site
       <section className="section bg-white border-t border-slate-100">
         <div className="container-xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-primary-700 to-primary-500 rounded-3xl px-8 sm:px-14 py-12 text-center overflow-hidden relative">
+            className="bg-gradient-to-br from-primary-900 to-primary-700 rounded-3xl px-8 sm:px-14 py-12 text-center overflow-hidden relative">
             <div className="absolute top-0 right-0 w-56 h-56 rounded-full -translate-y-1/2 translate-x-1/2 opacity-10" style={{ background: 'radial-gradient(circle,#D97706,transparent 70%)' }} />
             <div className="relative z-10">
               <h2 className="font-jakarta font-extrabold text-white mb-3" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)' }}>

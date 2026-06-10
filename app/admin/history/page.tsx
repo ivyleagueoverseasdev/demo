@@ -58,7 +58,7 @@ function AuditRow({ entry }: { entry: AuditEntry }) {
 
   const ACTION_COLORS: Record<string, string> = {
     Published:  'text-green-600 bg-green-50 border-green-200',
-    Updated:    'text-blue-600 bg-blue-50 border-blue-200',
+    Updated:    'text-lime-600 bg-lime-50 border-lime-200',
     Deleted:    'text-red-600 bg-red-50 border-red-200',
     Saved:      'text-amber-600 bg-amber-50 border-amber-200',
     Reset:      'text-slate-600 bg-slate-100 border-slate-200',

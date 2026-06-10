@@ -7,7 +7,7 @@ import type { Lead } from '@/lib/types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
-  new:       { label: 'New',       bg: 'bg-blue-50',   text: 'text-blue-700',   border: 'border-blue-200'  },
+  new:       { label: 'New',       bg: 'bg-lime-50',   text: 'text-lime-700',   border: 'border-lime-200'  },
   contacted: { label: 'Contacted', bg: 'bg-amber-50',  text: 'text-amber-700',  border: 'border-amber-200' },
   closed:    { label: 'Closed',    bg: 'bg-green-50',  text: 'text-green-700',  border: 'border-green-200' },
 };
@@ -24,7 +24,7 @@ function StatsBar({ leads }: { leads: Lead[] }) {
   const today  = new Date().toISOString().slice(0, 10);
   const stats = [
     { label: 'Total Leads',    value: leads.length,                                         bg: 'bg-slate-50 border-slate-200',   text: 'text-slate-700' },
-    { label: 'New',            value: leads.filter(l => l.status === 'new').length,         bg: 'bg-blue-50 border-blue-200',     text: 'text-blue-700'  },
+    { label: 'New',            value: leads.filter(l => l.status === 'new').length,         bg: 'bg-lime-50 border-lime-200',     text: 'text-lime-700'  },
     { label: 'Contacted',      value: leads.filter(l => l.status === 'contacted').length,   bg: 'bg-amber-50 border-amber-200',   text: 'text-amber-700' },
     { label: 'Closed/Won',     value: leads.filter(l => l.status === 'closed').length,      bg: 'bg-green-50 border-green-200',   text: 'text-green-700' },
     { label: 'Today',          value: leads.filter(l => l.createdAt?.startsWith(today)).length, bg: 'bg-violet-50 border-violet-200', text: 'text-violet-700' },
@@ -77,7 +77,7 @@ function LeadRow({ lead, onUpdate, onDelete }: {
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="flex items-start gap-3 p-4 sm:p-5">
         {/* Avatar initials */}
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center font-jakarta font-bold text-white text-xs flex-shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-lime-600 to-lime-500 flex items-center justify-center font-jakarta font-bold text-white text-xs flex-shrink-0">
           {lead.name.split(' ').slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase()}
         </div>
 
@@ -91,10 +91,10 @@ function LeadRow({ lead, onUpdate, onDelete }: {
           {/* Row 2: contact + meta */}
           <div className="font-jakarta text-xs text-slate-400 flex flex-wrap items-center gap-x-3 gap-y-0.5">
             {lead.phone && (
-              <a href={`tel:${lead.phone}`} className="hover:text-blue-600 transition-colors">📞 {lead.phone}</a>
+              <a href={`tel:${lead.phone}`} className="hover:text-lime-600 transition-colors">📞 {lead.phone}</a>
             )}
             {lead.email && (
-              <a href={`mailto:${lead.email}`} className="hover:text-blue-600 transition-colors truncate max-w-[180px]">✉ {lead.email}</a>
+              <a href={`mailto:${lead.email}`} className="hover:text-lime-600 transition-colors truncate max-w-[180px]">✉ {lead.email}</a>
             )}
             {lead.country  && <span>🌍 {lead.country}</span>}
             {lead.program  && <span>📚 {lead.program}</span>}

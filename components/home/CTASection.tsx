@@ -11,13 +11,13 @@ export default function CTASection() {
         <motion.div
           initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '0px 0px -80px 0px' }} transition={{ duration: 0.5 }}
-          className="relative bg-gradient-to-br from-primary-700 to-primary-500 rounded-3xl overflow-hidden px-8 sm:px-14 py-14 sm:py-20 text-center"
+          className="relative bg-gradient-to-br from-primary-900 to-primary-700 rounded-3xl overflow-hidden px-8 sm:px-14 py-14 sm:py-20 text-center"
         >
           {/* Decorative blobs */}
           <div className="absolute top-0 right-0 w-64 h-64 rounded-full -translate-y-1/2 translate-x-1/2 opacity-15"
             style={{ background: 'radial-gradient(circle,#D97706,transparent 70%)' }} />
           <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full translate-y-1/2 -translate-x-1/2 opacity-10"
-            style={{ background: 'radial-gradient(circle,#60A5FA,transparent 70%)' }} />
+            style={{ background: 'radial-gradient(circle,#CCFF00,transparent 70%)' }} />
 
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">

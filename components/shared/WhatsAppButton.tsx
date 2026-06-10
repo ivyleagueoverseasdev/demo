@@ -278,7 +278,7 @@ export default function WhatsAppButton() {
                 <div className="flex-shrink-0 flex items-center gap-3 px-4 py-3 border-b border-slate-100 bg-white">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center font-jakarta font-black text-sm text-white flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg,#246DFF 0%,#246DFF 100%)' }}
+                    style={{ background: 'linear-gradient(135deg,#4D7C0F 0%,#65A30D 100%)' }}
                   >
                     RP
                   </div>
@@ -332,7 +332,7 @@ export default function WhatsAppButton() {
                         {/* Visa & Policies */}
                         <button
                           onClick={() => goTo('visa-qa', 1)}
-                          className="w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xl border border-blue-100 bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all text-left"
+                          className="w-full flex items-center gap-2.5 px-3.5 py-3 rounded-xl border border-lime-100 bg-lime-50 text-lime-700 hover:bg-lime-100 transition-all text-left"
                         >
                           <span className="text-base">🛂</span>
                           <span className="font-jakarta text-sm font-semibold flex-1">Visa & Policies (2026)</span>
@@ -442,8 +442,8 @@ export default function WhatsAppButton() {
                             }}
                             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-jakarta font-bold text-sm text-white transition-opacity hover:opacity-90"
                             style={{
-                              background: 'linear-gradient(135deg,#246DFF 0%,#246DFF 100%)',
-                              boxShadow: '0 4px 16px rgba(36,109,255,0.25)',
+                              background: 'linear-gradient(135deg,#4D7C0F 0%,#65A30D 100%)',
+                              boxShadow: '0 4px 16px rgba(101,163,13,0.25)',
                             }}
                           >
                             📖 Read Full {activeCountry.name} Guide
@@ -483,9 +483,9 @@ export default function WhatsAppButton() {
                             <button
                               key={qa.q}
                               onClick={() => openAnswer(qa)}
-                              className="w-full flex items-start gap-2.5 px-3.5 py-3 rounded-xl border border-slate-100 bg-slate-50 hover:border-blue-200 hover:bg-blue-50 transition-all text-left group"
+                              className="w-full flex items-start gap-2.5 px-3.5 py-3 rounded-xl border border-slate-100 bg-slate-50 hover:border-lime-200 hover:bg-lime-50 transition-all text-left group"
                             >
-                              <span className="font-jakarta text-xs font-semibold text-slate-700 flex-1 leading-snug group-hover:text-blue-700 transition-colors">{qa.q}</span>
+                              <span className="font-jakarta text-xs font-semibold text-slate-700 flex-1 leading-snug group-hover:text-lime-700 transition-colors">{qa.q}</span>
                               <ChevronRight />
                             </button>
                           ))}
@@ -504,7 +504,7 @@ export default function WhatsAppButton() {
                         exit="exit"
                         className="px-4 pt-4 pb-4"
                       >
-                        <p className="font-jakarta text-[10px] text-blue-600 font-semibold uppercase tracking-wide mb-2">Quick Answer</p>
+                        <p className="font-jakarta text-[10px] text-lime-600 font-semibold uppercase tracking-wide mb-2">Quick Answer</p>
                         <p className="font-jakarta text-[12px] text-slate-800 leading-snug mb-3 font-semibold">{activeAnswer.q}</p>
                         <div className="bg-green-50 border border-green-200 rounded-xl p-3.5 mb-4">
                           <p className="font-jakarta text-xs text-slate-700 leading-relaxed">{activeAnswer.answer}</p>

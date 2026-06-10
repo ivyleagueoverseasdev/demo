@@ -61,7 +61,7 @@ export default function Footer() {
     <footer className="bg-slate-900 text-white/75">
 
       {/* ── CTA Strip ── */}
-      <div className="bg-gradient-to-r from-blue-700 to-blue-600 border-b border-white/10">
+      <div className="bg-gradient-to-r from-lime-700 to-lime-600 border-b border-white/10">
         <div className="container-xl py-8 flex flex-col md:flex-row items-center justify-between gap-5">
           <div>
             <p className="font-jakarta font-bold text-xl text-white leading-tight">

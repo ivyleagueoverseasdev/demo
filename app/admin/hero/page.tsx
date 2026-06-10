@@ -23,7 +23,7 @@ function emptySlide(): HeroSlide {
     imageUrl:         '',
     imageAlt:         '',
     stats:            [{ num: '10,000+', label: 'Students Placed', color: '#D97706' }],
-    accentGradient:   'from-blue-900/60 via-blue-800/30',
+    accentGradient:   'from-lime-900/60 via-lime-800/30',
     enabled:          true,
   };
 }
@@ -44,7 +44,7 @@ const CTA_STYLES: { value: HeroCtaStyle; label: string }[] = [
 const HIGHLIGHT_COLORS = [
   { value: 'text-amber-400',   label: 'Amber'   },
   { value: 'text-emerald-400', label: 'Emerald' },
-  { value: 'text-sky-400',     label: 'Sky Blue' },
+  { value: 'text-lime-300',    label: 'Neon Lime' },
   { value: 'text-rose-400',    label: 'Rose'    },
 ];
 
@@ -251,7 +251,7 @@ function SlideForm({ slide, index, token, onChange, onRemove, total }: {
                   )}
                 </div>
               ))}
-              <button onClick={() => p('stats', [...slide.stats, { num: '', label: '', color: '#246DFF' }])}
+              <button onClick={() => p('stats', [...slide.stats, { num: '', label: '', color: '#65A30D' }])}
                 className="font-jakarta text-xs font-semibold px-4 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
                 + Add Stat
               </button>
@@ -324,7 +324,7 @@ export default function AdminHeroPage() {
           <h3 className="font-jakarta font-bold text-slate-700 mb-2">No slides yet</h3>
           <button onClick={() => setSlides([emptySlide()])}
             className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl mt-2"
-            style={{ background: 'linear-gradient(135deg,#246DFF,#1249C4)' }}>
+            style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)' }}>
             Create First Slide
           </button>
         </div>

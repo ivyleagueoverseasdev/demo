@@ -93,7 +93,7 @@
            px-4 py-2.5 outline-none placeholder-slate-400 text-slate-800 transition-all;
   }
   .input:focus {
-    @apply border-blue-400 ring-2 ring-blue-50;
+    @apply border-lime-400 ring-2 ring-lime-100;
   }
 }
 
@@ -124,7 +124,7 @@
 
   /* Gradient text */
   .text-gradient-blue {
-    background: linear-gradient(135deg,#246DFF,#246DFF);
+    background: linear-gradient(135deg,#65A30D,#A3E635);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -150,7 +150,7 @@
     border: 1px solid rgba(255,255,255,0.60);
   }
   .glass-dark {
-    background: rgba(10,25,55,0.55);
+    background: rgba(26,46,5,0.55);
     backdrop-filter: blur(18px) saturate(160%);
     -webkit-backdrop-filter: blur(18px) saturate(160%);
     border: 1px solid rgba(255,255,255,0.12);
@@ -160,13 +160,13 @@
   .shadow-review {
     box-shadow:
       0 2px 8px rgba(0,0,0,0.06),
-      0 8px 32px rgba(36,109,255,0.08),
+      0 8px 32px rgba(132,204,22,0.10),
       0 0 0 1px rgba(255,255,255,0.9) inset;
   }
   .shadow-review-hover {
     box-shadow:
       0 4px 16px rgba(0,0,0,0.10),
-      0 20px 48px rgba(36,109,255,0.14),
+      0 20px 48px rgba(132,204,22,0.16),
       0 0 0 1px rgba(255,255,255,0.9) inset;
   }
 

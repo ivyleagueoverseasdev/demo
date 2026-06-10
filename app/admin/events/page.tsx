@@ -12,7 +12,7 @@ import type { SiteEvent, EventType, EventActionType } from '@/lib/types';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const EVENT_TYPES: { value: EventType; label: string; color: string }[] = [
-  { value: 'webinar',  label: 'Webinar',    color: '#246DFF' },
+  { value: 'webinar',  label: 'Webinar',    color: '#65A30D' },
   { value: 'fair',     label: 'Fair',       color: '#059669' },
   { value: 'workshop', label: 'Workshop',   color: '#7C3AED' },
   { value: 'seminar',  label: 'Seminar',    color: '#D97706' },
@@ -83,7 +83,7 @@ function StatsBar({ events }: { events: SiteEvent[] }) {
     { label: 'Total',     value: events.length,                               bg: 'bg-slate-50 border-slate-200',   text: 'text-slate-700' },
     { label: 'Published', value: events.filter(e => e.published).length,      bg: 'bg-green-50 border-green-200',   text: 'text-green-700' },
     { label: 'Drafts',    value: events.filter(e => !e.published).length,     bg: 'bg-slate-50 border-slate-200',   text: 'text-slate-500' },
-    { label: 'Upcoming',  value: upcoming,                                     bg: 'bg-blue-50 border-blue-200',     text: 'text-blue-700'  },
+    { label: 'Upcoming',  value: upcoming,                                     bg: 'bg-lime-50 border-lime-200',     text: 'text-lime-700'  },
     { label: 'Classes',   value: events.filter(e => e.type === 'class').length, bg: 'bg-cyan-50 border-cyan-200',   text: 'text-cyan-700'  },
   ];
   return (
@@ -148,7 +148,7 @@ function EventRow({
             {ev.location && <span>📍 {ev.location}</span>}
             {ev.seats    && <span>🪑 {ev.seats} seats</span>}
             {ev.country  && (
-              <span className="font-jakarta text-[10px] font-medium bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded-full">
+              <span className="font-jakarta text-[10px] font-medium bg-lime-50 text-lime-600 border border-lime-100 px-2 py-0.5 rounded-full">
                 {COUNTRIES.find(c => c.value === ev.country)?.label ?? ev.country}
               </span>
             )}
@@ -707,7 +707,7 @@ export default function AdminEventsPage() {
             <button
               onClick={openNew}
               className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
-              style={{ background: 'linear-gradient(135deg,#246DFF,#1249C4)' }}
+              style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)' }}
             >
               Create First Event
             </button>

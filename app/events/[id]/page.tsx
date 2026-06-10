@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 
 // ── Type config ────────────────────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
-  webinar:  { label: 'Webinar',    color: '#246DFF', bg: '#EBF4FF', border: '#BFDBFE' },
+  webinar:  { label: 'Webinar',    color: '#65A30D', bg: '#F7FFDB', border: '#D9F99D' },
   fair:     { label: 'Fair',       color: '#059669', bg: '#ECFDF5', border: '#6EE7B7' },
   deadline: { label: 'Deadline',   color: '#DC2626', bg: '#FEF2F2', border: '#FECACA' },
   workshop: { label: 'Workshop',   color: '#7C3AED', bg: '#F5F3FF', border: '#DDD6FE' },
@@ -60,10 +60,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 // ── Action link icon + colour map ─────────────────────────────────────────
 const ACTION_CONFIG: Record<string, { icon: string; color: string; bg: string; label: string }> = {
-  zoom:         { icon: '🎥', color: '#2D8CFF', bg: '#EBF4FF', label: 'Join Zoom'           },
+  zoom:         { icon: '🎥', color: '#2D8CFF', bg: '#F7FFDB', label: 'Join Zoom'           },
   webinar:      { icon: '📡', color: '#7C3AED', bg: '#F5F3FF', label: 'Join Webinar'         },
   registration: { icon: '📋', color: '#059669', bg: '#ECFDF5', label: 'Register Now'         },
-  external:     { icon: '🌐', color: '#246DFF', bg: '#EBF4FF', label: 'Open Link'            },
+  external:     { icon: '🌐', color: '#65A30D', bg: '#F7FFDB', label: 'Open Link'            },
   whatsapp:     { icon: '💬', color: '#25D366', bg: '#ECFDF5', label: 'Register via WhatsApp' },
 };
 
@@ -123,7 +123,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
       {/* ── Hero banner ────────────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-16 lg:py-20"
-        style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 55%,#246DFF 100%)' }}
+        style={{ background: 'linear-gradient(145deg,#1A2E05 0%,#3F6212 55%,#4D7C0F 100%)' }}
       >
         {event.imageUrl && (
           <div className="absolute inset-0">
@@ -286,8 +286,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                   background: 'rgba(255,255,255,0.95)',
                   backdropFilter: 'blur(16px)',
                   WebkitBackdropFilter: 'blur(16px)',
-                  border: '1px solid rgba(36,109,255,0.10)',
-                  boxShadow: '0 8px 40px rgba(36,109,255,0.10), 0 0 0 1px rgba(255,255,255,0.9) inset',
+                  border: '1px solid rgba(101,163,13,0.10)',
+                  boxShadow: '0 8px 40px rgba(101,163,13,0.10), 0 0 0 1px rgba(255,255,255,0.9) inset',
                 }}
               >
                 {/* Accent top bar */}

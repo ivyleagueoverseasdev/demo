@@ -9,16 +9,16 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50:  '#EBF2FF', 100: '#D6E6FF', 200: '#ADCCFF',
-          300: '#7AADFF', 500: '#246DFF', 600: '#1A5CE8',
-          700: '#1249C4', 800: '#0C37A0', 900: '#07257C',
-          DEFAULT: '#246DFF',
+          50:  '#FAFFE5', 100: '#F4FFC9', 200: '#E9FF8F',
+          300: '#CCFF00', 400: '#B5FF00', 500: '#A3E635',
+          600: '#65A30D', 700: '#4D7C0F', 800: '#3F6212',
+          900: '#1A2E05', DEFAULT: '#CCFF00',
         },
         partner: {
-          50:  '#EEF3FE', 100: '#D5E1FC', 200: '#ABBFFB',
-          300: '#7B98F7', 400: '#5A7CF5', 500: '#3B71F3',
-          600: '#2458D9', 700: '#1A43B0', 800: '#12308A',
-          900: '#0C2168', DEFAULT: '#3B71F3',
+          50:  '#FAFFE5', 100: '#F4FFC9', 200: '#E9FF8F',
+          300: '#CCFF00', 400: '#B5FF00', 500: '#A3E635',
+          600: '#65A30D', 700: '#4D7C0F', 800: '#3F6212',
+          900: '#1A2E05', DEFAULT: '#B5FF00',
         },
         amber: {
           50: '#FFFBEB', 100: '#FEF3C7', 200: '#FDE68A',
@@ -38,7 +38,8 @@ module.exports = {
       boxShadow: {
         card:       '0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.06)',
         'card-hover':'0 4px 12px rgba(0,0,0,0.08),0 16px 40px rgba(0,0,0,0.10)',
-        blue:       '0 8px 30px rgba(26,54,93,0.20)',
+        blue:       '0 8px 30px rgba(77,124,15,0.25)',
+        lime:       '0 8px 30px rgba(204,255,0,0.35)',
         amber:      '0 8px 30px rgba(217,119,6,0.30)',
       },
       animation: {

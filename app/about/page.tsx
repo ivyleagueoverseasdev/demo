@@ -28,10 +28,10 @@ const WHY_ILOC = [
   {
     Icon:  TrendingUp,
     label: '97% Visa Approval',
-    color: '#246DFF',
-    glow:  'rgba(36,109,255,0.35)',
-    bg:    '#EBF4FF',
-    border:'#BFDBFE',
+    color: '#65A30D',
+    glow:  'rgba(101,163,13,0.35)',
+    bg:    '#F7FFDB',
+    border:'#D9F99D',
   },
   {
     Icon:  ShieldCheck,
@@ -63,8 +63,8 @@ const MISSION_VISION = [
   {
     Icon:  Globe,
     title: 'Our Vision',
-    color: '#246DFF',
-    glow:  'rgba(36,109,255,0.30)',
+    color: '#65A30D',
+    glow:  'rgba(101,163,13,0.30)',
     desc:  'To be the most trusted overseas education consulting brand in India — known for ethical practices, zero hidden fees, personalised service and outstanding student outcomes.',
   },
 ];

@@ -48,7 +48,7 @@ export default function AgentForm() {
       <button
         type="submit"
         className="w-full mt-2 text-white font-jakarta font-bold text-sm py-4 rounded-xl transition-all active:scale-[0.98] hover:opacity-90"
-        style={{ background: 'linear-gradient(135deg,#3B71F3,#2458D9)' }}
+        style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)' }}
       >
         Submit Agent Application →
       </button>

@@ -104,7 +104,7 @@ export default function AdminOverview() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon="📄" label="Pages"            value={loading ? '…' : pages.length}                         color="#246DFF" href="/admin/pages"    />
+        <StatCard icon="📄" label="Pages"            value={loading ? '…' : pages.length}                         color="#65A30D" href="/admin/pages"    />
         <StatCard icon="📅" label="Upcoming Events"  value={loading ? '…' : upcoming}                             color="#D97706" href="/admin/events"   />
         <StatCard icon="📬" label="New Leads Today"  value={loading ? '…' : `+${newToday}`}                       color="#059669" href="/admin/enquiries"/>
         <StatCard icon="↗"  label="Active Redirects" value={loading ? '…' : redirects.filter(r => r.active).length} color="#7C3AED" href="/admin/routes"   />
@@ -146,7 +146,7 @@ export default function AdminOverview() {
                     <p className="font-jakarta text-xs text-slate-400 truncate">{l.country} · {l.phone}</p>
                   </div>
                   <span className={`flex-shrink-0 font-jakarta text-[10px] font-bold px-2 py-0.5 rounded-full ml-2 ${
-                    l.status === 'new'       ? 'bg-blue-50 text-blue-600'
+                    l.status === 'new'       ? 'bg-lime-50 text-lime-600'
                     : l.status === 'contacted' ? 'bg-amber-50 text-amber-600'
                     : 'bg-green-50 text-green-600'
                   }`}>

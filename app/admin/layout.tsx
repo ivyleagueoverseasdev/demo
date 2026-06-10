@@ -288,7 +288,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const toastColors = {
     success: 'bg-emerald-600',
     error:   'bg-red-600',
-    info:    'bg-blue-600',
+    info:    'bg-lime-600',
   };
 
   return (

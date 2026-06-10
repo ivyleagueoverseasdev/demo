@@ -53,7 +53,7 @@ export default async function InstitutionsPartnerPage() {
     <main className="bg-white">
 
       {/* ── Hero ── */}
-      <section className="relative text-white overflow-hidden py-24 sm:py-32" style={{ background: 'linear-gradient(135deg,#3B71F3 0%,#2458D9 60%,#1A43B0 100%)' }}>
+      <section className="relative text-white overflow-hidden py-24 sm:py-32" style={{ background: 'linear-gradient(135deg,#4D7C0F 0%,#3F6212 60%,#1A2E05 100%)' }}>
         <div className="absolute inset-0 opacity-[0.08] pointer-events-none"
           style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #ffffff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #ffffff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
@@ -82,7 +82,7 @@ export default async function InstitutionsPartnerPage() {
             <div className="space-y-8">
               <div>
                 <h2 className="font-jakarta font-extrabold text-3xl text-slate-900 mb-4">{s.bodyHeading}</h2>
-                <div className="w-16 h-1 rounded-full mb-6" style={{ background: 'linear-gradient(90deg,#3B71F3,#D97706)' }} />
+                <div className="w-16 h-1 rounded-full mb-6" style={{ background: 'linear-gradient(90deg,#CCFF00,#D97706)' }} />
                 <p className="font-jakarta text-slate-500 leading-relaxed">{s.bodyIntro}</p>
               </div>
 
@@ -90,7 +90,7 @@ export default async function InstitutionsPartnerPage() {
               <div className="grid sm:grid-cols-2 gap-5">
                 {s.stats.map((stat, i) => (
                   <div key={i} className="group bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-lg hover:border-partner-100 transition-all duration-200">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 font-black text-lg transition-all duration-200 ${i % 2 === 0 ? 'bg-partner-50 text-partner-600 group-hover:bg-partner-500 group-hover:text-white' : 'bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white'}`}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 font-black text-lg transition-all duration-200 ${i % 2 === 0 ? 'bg-partner-50 text-partner-600 group-hover:bg-partner-600 group-hover:text-white' : 'bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white'}`}>
                       {stat.value}
                     </div>
                     <h3 className="font-jakarta font-bold text-slate-800 mb-1.5">{stat.label}</h3>
@@ -121,7 +121,7 @@ export default async function InstitutionsPartnerPage() {
             {/* Right: Form */}
             <div className="sticky top-8">
               <div className="bg-white border border-slate-100 p-8 sm:p-10 rounded-3xl shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-40 h-40 rounded-bl-[80px] opacity-[0.06] pointer-events-none" style={{ background: '#3B71F3' }} />
+                <div className="absolute top-0 right-0 w-40 h-40 rounded-bl-[80px] opacity-[0.06] pointer-events-none" style={{ background: '#65A30D' }} />
                 <div className="absolute top-0 right-0 p-6 text-partner-300 opacity-30">
                   <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />

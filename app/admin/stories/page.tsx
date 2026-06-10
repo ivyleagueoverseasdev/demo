@@ -65,7 +65,7 @@ function Avatar({ t, size = 48 }: { t: Pick<Testimonial, 'name' | 'imageUrl'>; s
   const initials = t.name.split(' ').slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase();
   return (
     <div
-      className="rounded-full overflow-hidden flex-shrink-0 border-2 border-slate-100 bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center font-jakarta font-bold text-white"
+      className="rounded-full overflow-hidden flex-shrink-0 border-2 border-slate-100 bg-gradient-to-br from-lime-600 to-lime-500 flex items-center justify-center font-jakarta font-bold text-white"
       style={{ width: size, height: size, fontSize: size * 0.28 }}
     >
       {t.imageUrl && !err ? (
@@ -449,7 +449,7 @@ export default function AdminStoriesPage() {
         <div>
           <h1 className="font-jakarta font-extrabold text-slate-800 text-2xl">⭐ Testimonials</h1>
           <p className="font-jakarta text-sm text-slate-400 mt-1">
-            Student success stories shown on the homepage. Saved to Cloudflare KV — live on next page load.
+            Student success stories shown on the homepage. Saved to Cloudflare KV — live immediately.
           </p>
         </div>
         {!showForm && (
@@ -502,7 +502,7 @@ export default function AdminStoriesPage() {
             <button
               onClick={openNew}
               className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
-              style={{ background: 'linear-gradient(135deg,#246DFF,#1249C4)' }}
+              style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)' }}
             >
               Add First Testimonial
             </button>

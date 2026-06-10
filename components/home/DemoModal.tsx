@@ -98,7 +98,7 @@ export default function DemoModal({ open, onClose }: Props) {
     setTimeout(() => window.open(`https://wa.me/${COMPANY.phone.replace(/\D/g, '')}?text=${msg}`, '_blank'), 1400);
   };
 
-  const inp = 'w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm font-jakarta focus:ring-2 focus:ring-blue-300 focus:border-blue-500 outline-none transition-all placeholder-slate-400 text-slate-800';
+  const inp = 'w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm font-jakarta focus:ring-2 focus:ring-lime-300 focus:border-lime-500 outline-none transition-all placeholder-slate-400 text-slate-800';
   const lbl = 'block font-jakarta text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5';
 
   return (
@@ -130,7 +130,7 @@ export default function DemoModal({ open, onClose }: Props) {
             {/* Header */}
             <div
               className="sticky top-0 z-10 px-6 pt-6 pb-4 rounded-t-3xl"
-              style={{ background: 'linear-gradient(135deg,#1249C4 0%,#2563FF 100%)' }}
+              style={{ background: 'linear-gradient(135deg,#1A2E05 0%,#4D7C0F 100%)' }}
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -197,7 +197,7 @@ export default function DemoModal({ open, onClose }: Props) {
                     <button
                       onClick={onClose}
                       className="font-jakarta font-bold text-sm text-white px-8 py-3 rounded-xl transition-all"
-                      style={{ background: 'linear-gradient(135deg,#1249C4,#2563FF)' }}
+                      style={{ background: 'linear-gradient(135deg,#3F6212,#65A30D)' }}
                     >
                       Close
                     </button>
@@ -290,7 +290,7 @@ export default function DemoModal({ open, onClose }: Props) {
 
                     <p className="font-jakarta text-[11px] text-slate-400 text-center leading-relaxed">
                       By submitting, you agree to be contacted by ILOC. No spam — ever.{' '}
-                      <span className="text-blue-500">Free · No credit card · Zero obligation.</span>
+                      <span className="text-lime-500">Free · No credit card · Zero obligation.</span>
                     </p>
                   </motion.form>
                 )}

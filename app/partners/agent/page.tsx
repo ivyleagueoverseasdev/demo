@@ -54,7 +54,7 @@ export default async function AgentPartnerPage() {
     <main className="bg-white">
 
       {/* ── Hero ── */}
-      <section className="relative text-white overflow-hidden py-24 sm:py-32" style={{ background: 'linear-gradient(135deg,#3B71F3 0%,#2458D9 60%,#1A43B0 100%)' }}>
+      <section className="relative text-white overflow-hidden py-24 sm:py-32" style={{ background: 'linear-gradient(135deg,#4D7C0F 0%,#3F6212 60%,#1A2E05 100%)' }}>
         <div className="absolute inset-0 opacity-[0.08] pointer-events-none"
           style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #ffffff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #ffffff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
@@ -83,7 +83,7 @@ export default async function AgentPartnerPage() {
             <div className="space-y-8">
               <div>
                 <h2 className="font-jakarta font-extrabold text-3xl text-slate-900 mb-4">{s.bodyHeading}</h2>
-                <div className="w-16 h-1 rounded-full mb-6" style={{ background: 'linear-gradient(90deg,#3B71F3,#D97706)' }} />
+                <div className="w-16 h-1 rounded-full mb-6" style={{ background: 'linear-gradient(90deg,#CCFF00,#D97706)' }} />
                 <p className="font-jakarta text-slate-500 leading-relaxed">{s.bodyIntro}</p>
               </div>
 
@@ -91,7 +91,7 @@ export default async function AgentPartnerPage() {
               <div className="grid sm:grid-cols-2 gap-5">
                 {s.stats.map((stat, i) => (
                   <div key={i} className="group bg-white border border-slate-100 p-6 rounded-2xl shadow-sm hover:shadow-lg hover:border-partner-100 transition-all duration-200">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 font-black text-lg transition-all duration-200 ${i % 2 === 0 ? 'bg-partner-50 text-partner-600 group-hover:bg-partner-500 group-hover:text-white' : 'bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white'}`}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 font-black text-lg transition-all duration-200 ${i % 2 === 0 ? 'bg-partner-50 text-partner-600 group-hover:bg-partner-600 group-hover:text-white' : 'bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white'}`}>
                       {stat.value}
                     </div>
                     <h3 className="font-jakarta font-bold text-slate-800 mb-1.5">{stat.label}</h3>
@@ -123,7 +123,7 @@ export default async function AgentPartnerPage() {
             <div className="sticky top-8">
               <div className="bg-white border border-slate-100 p-8 sm:p-10 rounded-3xl shadow-xl relative overflow-hidden">
                 {/* Decorative corner accent */}
-                <div className="absolute top-0 right-0 w-40 h-40 rounded-bl-[80px] opacity-[0.06] pointer-events-none" style={{ background: '#3B71F3' }} />
+                <div className="absolute top-0 right-0 w-40 h-40 rounded-bl-[80px] opacity-[0.06] pointer-events-none" style={{ background: '#65A30D' }} />
                 <div className="absolute top-0 right-0 p-6 text-partner-300 opacity-30">
                   <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />

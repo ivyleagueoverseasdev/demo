@@ -18,7 +18,7 @@ export const metadata: Metadata = buildPageMeta({
 function EventsPageSkeleton() {
   return (
     <div className="min-h-screen">
-      <div className="py-20 lg:py-28" style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 100%)' }} />
+      <div className="py-20 lg:py-28" style={{ background: 'linear-gradient(145deg,#1A2E05 0%,#4D7C0F 100%)' }} />
       <div className="section bg-slate-50">
         <div className="container-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[1,2,3,4,5,6].map(i => (

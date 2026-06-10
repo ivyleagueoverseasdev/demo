@@ -40,7 +40,7 @@ function StatsBar({ pages }: { pages: DynamicPage[] }) {
     { label: 'Total',     value: pages.length,                            bg: 'bg-slate-50 border-slate-200', text: 'text-slate-700' },
     { label: 'Published', value: pages.filter(p => p.published).length,   bg: 'bg-green-50 border-green-200', text: 'text-green-700' },
     { label: 'Drafts',    value: pages.filter(p => !p.published).length,  bg: 'bg-slate-50 border-slate-200', text: 'text-slate-500' },
-    { label: 'Articles',  value: layouts.article ?? 0,                    bg: 'bg-blue-50 border-blue-200',   text: 'text-blue-700'  },
+    { label: 'Articles',  value: layouts.article ?? 0,                    bg: 'bg-lime-50 border-lime-200',   text: 'text-lime-700'  },
     { label: 'Landing',   value: layouts.landing  ?? 0,                   bg: 'bg-violet-50 border-violet-200', text: 'text-violet-700' },
   ];
   return (
@@ -64,7 +64,7 @@ function PageRow({ page, onEdit, onDelete, onToggle }: {
 }) {
   const layoutColors: Record<string, string> = {
     default: 'bg-slate-100 text-slate-600',
-    article: 'bg-blue-50 text-blue-600',
+    article: 'bg-lime-50 text-lime-600',
     landing: 'bg-violet-50 text-violet-600',
     country: 'bg-emerald-50 text-emerald-600',
   };
@@ -459,7 +459,7 @@ export default function AdminPagesPage() {
           {pages.length === 0 && (
             <button onClick={openNew}
               className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
-              style={{ background: 'linear-gradient(135deg,#246DFF,#1249C4)' }}>
+              style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)' }}>
               Create First Page
             </button>
           )}

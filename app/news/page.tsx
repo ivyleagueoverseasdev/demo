@@ -27,7 +27,7 @@ export default async function NewsPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
         className="relative overflow-hidden py-20 lg:py-28"
-        style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 55%,#246DFF 100%)' }}
+        style={{ background: 'linear-gradient(145deg,#1A2E05 0%,#3F6212 55%,#4D7C0F 100%)' }}
       >
         {/* Dot grid */}
         <div className="absolute inset-0 opacity-[0.04] pointer-events-none" aria-hidden>
@@ -72,7 +72,7 @@ export default async function NewsPage() {
                 <Link
                   key={item.id}
                   href={`/news/${item.slug}`}
-                  className="group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-[0_12px_40px_rgba(36,109,255,0.10)] hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                  className="group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-[0_12px_40px_rgba(101,163,13,0.10)] hover:-translate-y-1 transition-all duration-300 flex flex-col"
                 >
                   {/* Thumbnail */}
                   {item.imageUrl ? (

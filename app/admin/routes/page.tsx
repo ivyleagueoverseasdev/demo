@@ -17,7 +17,7 @@ function StatsBar({ rules }: { rules: RedirectRule[] }) {
     { label: 'Total',    value: rules.length,                          bg: 'bg-slate-50 border-slate-200', text: 'text-slate-700' },
     { label: 'Active',   value: rules.filter(r => r.active).length,   bg: 'bg-green-50 border-green-200', text: 'text-green-700' },
     { label: 'Inactive', value: rules.filter(r => !r.active).length,  bg: 'bg-slate-50 border-slate-200', text: 'text-slate-500' },
-    { label: '301',      value: rules.filter(r => r.type === 301).length, bg: 'bg-blue-50 border-blue-200',  text: 'text-blue-700'  },
+    { label: '301',      value: rules.filter(r => r.type === 301).length, bg: 'bg-lime-50 border-lime-200',  text: 'text-lime-700'  },
     { label: '302',      value: rules.filter(r => r.type === 302).length, bg: 'bg-violet-50 border-violet-200', text: 'text-violet-700' },
   ];
   return (
@@ -108,7 +108,7 @@ function RedirectForm({ initial, editId, onSave, onCancel, busy }: {
         {form.from && form.to && (
           <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 font-jakarta text-xs text-slate-600">
             <span className="font-semibold">{form.type}</span>{' '}
-            <code className="text-blue-600">{form.from}</code>
+            <code className="text-lime-600">{form.from}</code>
             {' → '}
             <code className="text-green-600">{form.to}</code>
           </div>
@@ -142,14 +142,14 @@ function RedirectRow({ rule, onEdit, onDelete, onToggle }: {
   return (
     <div className={`bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-3 hover:shadow-md transition-all ${rule.active ? 'border-slate-100' : 'border-slate-100 opacity-60'}`}>
       {/* Type badge */}
-      <span className={`flex-shrink-0 font-jakarta text-xs font-bold px-2.5 py-1 rounded-lg mt-0.5 ${rule.type === 301 ? 'bg-blue-100 text-blue-700' : 'bg-violet-100 text-violet-700'}`}>
+      <span className={`flex-shrink-0 font-jakarta text-xs font-bold px-2.5 py-1 rounded-lg mt-0.5 ${rule.type === 301 ? 'bg-lime-100 text-lime-700' : 'bg-violet-100 text-violet-700'}`}>
         {rule.type}
       </span>
 
       {/* Route display */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <code className="font-mono text-sm text-blue-600 font-semibold">{rule.from}</code>
+          <code className="font-mono text-sm text-lime-600 font-semibold">{rule.from}</code>
           <span className="text-slate-400 text-xs">→</span>
           <code className="font-mono text-sm text-green-600 font-semibold truncate max-w-xs">{rule.to}</code>
           {!rule.active && <span className="font-jakarta text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Inactive</span>}
@@ -314,11 +314,11 @@ export default function AdminRoutesPage() {
       </div>
 
       {/* SEO tip */}
-      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3">
+      <div className="bg-lime-50 border border-lime-200 rounded-2xl p-4 flex items-start gap-3">
         <span className="text-xl flex-shrink-0">💡</span>
         <div>
-          <p className="font-jakarta text-sm font-semibold text-blue-800">Use 301 for permanent moves (SEO-safe)</p>
-          <p className="font-jakarta text-xs text-blue-700 mt-0.5">
+          <p className="font-jakarta text-sm font-semibold text-lime-800">Use 301 for permanent moves (SEO-safe)</p>
+          <p className="font-jakarta text-xs text-lime-700 mt-0.5">
             301 redirects pass link equity. Use 302 only for temporary redirects (e.g. seasonal campaigns).
             Next.js middleware will read these rules from KV at the Edge with zero latency.
           </p>
@@ -351,7 +351,7 @@ export default function AdminRoutesPage() {
           {rules.length === 0 && (
             <button onClick={openNew}
               className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
-              style={{ background: 'linear-gradient(135deg,#246DFF,#1249C4)' }}>
+              style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)' }}>
               Add First Redirect
             </button>
           )}

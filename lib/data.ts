@@ -218,7 +218,7 @@ export const COUNTRIES: Country2026[] = [
     code: 'usa', name: 'USA', flag: '🇺🇸',
     heroImage:   'https://images.unsplash.com/photo-1562774053-701939374585?w=1200&q=80',
     campusImage: 'https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=80',
-    color: '#1d4ed8', tagline: 'The Global Leader in Higher Education',
+    color: '#4D7C0F', tagline: 'The Global Leader in Higher Education',
     intake: 'Aug / Jan', avgCost: '$20,000–$55,000/yr', visaRate: '94%', unis: '4,000+',
     description: 'The USA offers the world\'s most diverse and prestigious university system. With OPT work authorization for 3 years post-graduation and globally recognised STEM programs, it remains the #1 destination for Indian students in 2026.',
     highlights: ['MIT, Harvard, Stanford, NYU & 4,000+ institutions','OPT work visa for 3 years post-graduation (STEM)','World-class research & co-op programs','Huge scholarship & financial aid ecosystem'],
@@ -1046,9 +1046,9 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     stats:            [
       { num: '10,000+', label: 'Students Placed',  color: '#D97706' },
       { num: '97%',     label: 'Visa Approval',    color: '#059669' },
-      { num: '25+',     label: 'Years of Expertise', color: '#246DFF' },
+      { num: '25+',     label: 'Years of Expertise', color: '#CCFF00' },
     ],
-    accentGradient:   'from-blue-900/60 via-blue-800/30',
+    accentGradient:   'from-lime-900/60 via-lime-800/30',
     enabled:          true,
   },
   {
@@ -1064,11 +1064,11 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     imageUrl:         'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1600&auto=format&fit=crop',
     imageAlt:         'Diverse students thriving on a prestigious world-class campus',
     stats:            [
-      { num: '400+',   label: 'Partner Universities', color: '#246DFF' },
+      { num: '400+',   label: 'Partner Universities', color: '#CCFF00' },
       { num: '12',     label: 'Countries',            color: '#7C3AED' },
       { num: '1,200+', label: 'Top-100 Placed',       color: '#D97706' },
     ],
-    accentGradient:   'from-indigo-900/60 via-indigo-800/30',
+    accentGradient:   'from-lime-950/60 via-lime-900/30',
     enabled:          true,
   },
   {
@@ -1086,7 +1086,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     stats:            [
       { num: '14,000+', label: 'IELTS Cleared',  color: '#059669' },
       { num: '96%',     label: 'Success Rate',   color: '#D97706' },
-      { num: '8+',      label: 'Avg Band Score', color: '#246DFF' },
+      { num: '8+',      label: 'Avg Band Score', color: '#CCFF00' },
     ],
     accentGradient:   'from-emerald-900/60 via-emerald-800/30',
     enabled:          true,
@@ -1106,7 +1106,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     stats:            [
       { num: '6',       label: 'Subjects Available', color: '#FBBF24' },
       { num: '100%',    label: 'Live & Online',      color: '#34D399' },
-      { num: '₹0',      label: 'Demo Session Cost',  color: '#60A5FA' },
+      { num: '₹0',      label: 'Demo Session Cost',  color: '#CCFF00' },
     ],
     accentGradient:   'from-violet-900/60 via-violet-800/30',
     enabled:          true,

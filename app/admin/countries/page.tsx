@@ -43,7 +43,7 @@ function emptyMeta(code: string): CountryMetaForm {
     description: d?.description ?? '',
     heroImage:   d?.heroImage   ?? '',
     campusImage: d?.campusImage ?? '',
-    color:       d?.color       ?? '#246DFF',
+    color:       d?.color       ?? '#65A30D',
   };
 }
 
@@ -181,7 +181,7 @@ export default function AdminCountriesPage() {
                 <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Accent Color</label>
                 <div className="flex items-center gap-2">
                   <input type="color" value={meta.color} onChange={e => setMeta(m => ({ ...m, color: e.target.value }))} className="w-10 h-10 rounded-lg border border-slate-200 cursor-pointer" />
-                  <input value={meta.color} onChange={e => setMeta(m => ({ ...m, color: e.target.value }))} className={`${inp} flex-1`} placeholder="#246DFF" />
+                  <input value={meta.color} onChange={e => setMeta(m => ({ ...m, color: e.target.value }))} className={`${inp} flex-1`} placeholder="#65A30D" />
                 </div>
               </div>
             </div>
@@ -232,7 +232,7 @@ export default function AdminCountriesPage() {
           <div className="flex flex-wrap gap-2">
             {SECTIONS.map(s => (
               <button key={s.slug} onClick={() => setActiveSection(s.slug)}
-                className={`font-jakarta text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all ${activeSection === s.slug ? 'bg-blue-600 text-white border-blue-600' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                className={`font-jakarta text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all ${activeSection === s.slug ? 'bg-lime-600 text-white border-lime-600' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
                 {s.label}
               </button>
             ))}

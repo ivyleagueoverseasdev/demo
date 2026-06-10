@@ -344,7 +344,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
         ref={sectionRef}
         className="relative overflow-hidden flex items-center"
         style={{
-          background: 'linear-gradient(160deg,#1249C4 0%,#1249C4 18%,#1a56e8 55%,#2563FF 100%)',
+          background: 'linear-gradient(160deg,#1A2E05 0%,#1A2E05 18%,#365314 55%,#4D7C0F 100%)',
           minHeight: '100vh',
           marginTop: `-${HEADER_HEIGHT}px`,
           paddingTop: `${HEADER_HEIGHT}px`,
@@ -526,7 +526,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                     {[
                       { target: 10000, suffix: '+', label: 'Students Placed',    color: '#F59E0B', decimals: 0 },
                       { target: 97,    suffix: '%', label: 'Visa Approval Rate', color: '#34D399', decimals: 0 },
-                      { target: 25,    suffix: '+', label: 'Years of Expertise', color: '#60A5FA', decimals: 0 },
+                      { target: 25,    suffix: '+', label: 'Years of Expertise', color: '#CCFF00', decimals: 0 },
                     ].map((stat, si) => (
                       <div key={stat.label} className="flex flex-col">
                         <span
@@ -652,7 +652,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 </div>
 
                 {/* Gradient fallback */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-blue-900" />
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-lime-900" />
 
                 {/* Crossfading image with zoom-out reveal */}
                 <AnimatePresence mode="wait">
@@ -777,7 +777,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 className="object-cover object-top"
                 sizes="100vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/96 via-blue-900/55 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-lime-900/96 via-lime-900/55 to-transparent" />
             </motion.div>
           </AnimatePresence>
         </div>

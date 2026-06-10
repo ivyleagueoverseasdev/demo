@@ -32,7 +32,7 @@ const CLASSES: LiveClass[] = [
     time:     '8:00 PM – 9:30 PM',
     imageUrl: 'https://images.unsplash.com/photo-1527866959252-deab85ef7d1b?q=80&w=1600&auto=format&fit=crop',
     imageAlt: 'German A1 Online Class promotional poster',
-    color:    '#2563FF',
+    color:    '#4D7C0F',
     tag:      'Language',
     whatsapp: 'https://wa.me/919158577707?text=Hi!%20I%27d%20like%20to%20register%20for%20the%20FREE%20German%20A1%20Demo%20on%202%20June%202026.',
   },
@@ -483,7 +483,7 @@ export default function LiveClassesBoard() {
               whileTap={{ scale: 0.96 }}
               onClick={() => CLASSES[0] && setActiveModal(CLASSES[0])}
               className="flex-shrink-0 font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl"
-              style={{ background: 'linear-gradient(135deg,#2563FF,#1249C4)', boxShadow: '0 4px 14px rgba(37,99,255,0.35)' }}
+              style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)', boxShadow: '0 4px 14px rgba(101,163,13,0.35)' }}
             >
               Reserve My Free Seat →
             </motion.button>

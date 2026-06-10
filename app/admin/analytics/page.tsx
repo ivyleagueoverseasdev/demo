@@ -86,10 +86,10 @@ function ActivityRow({ entry }: { entry: AuditEntry }) {
 
 // ── LeadRow ───────────────────────────────────────────────────────────────────
 function RecentLeadRow({ lead }: { lead: Lead }) {
-  const STATUS = { new: 'bg-blue-50 text-blue-700', contacted: 'bg-amber-50 text-amber-700', closed: 'bg-green-50 text-green-700' };
+  const STATUS = { new: 'bg-lime-50 text-lime-700', contacted: 'bg-amber-50 text-amber-700', closed: 'bg-green-50 text-green-700' };
   return (
     <div className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-0">
-      <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center font-jakarta font-bold text-white text-[10px] flex-shrink-0">
+      <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center font-jakarta font-bold text-white text-[10px] flex-shrink-0">
         {lead.name.split(' ').slice(0,2).map(w => w[0] ?? '').join('').toUpperCase()}
       </div>
       <div className="flex-1 min-w-0">
@@ -205,7 +205,7 @@ export default function AdminAnalyticsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon="📬" label="Total Leads"      value={leads.length}     sub={`+${newLeads.length} today · +${weekLeads.length} this week`} color="#7C3AED" />
         <StatCard icon="📅" label="Upcoming Events"  value={upcomingEv.length} sub={`${pubEvents.length} published of ${events.length} total`}    color="#D97706" />
-        <StatCard icon="📰" label="Published Articles" value={pubNews.length}  sub={`${news.length} total articles`}                               color="#246DFF" />
+        <StatCard icon="📰" label="Published Articles" value={pubNews.length}  sub={`${news.length} total articles`}                               color="#65A30D" />
         <StatCard icon="📄" label="Live Pages"        value={pubPages.length}  sub={`${pages.length} total pages`}                                 color="#059669" />
       </div>
 
@@ -216,7 +216,7 @@ export default function AdminAnalyticsPage() {
           <div className="font-jakarta text-xs text-slate-500 mt-1">Lead Conversion</div>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
-          <div className="font-jakarta font-extrabold text-2xl text-blue-600">{leads.filter(l => l.status === 'new').length}</div>
+          <div className="font-jakarta font-extrabold text-2xl text-lime-600">{leads.filter(l => l.status === 'new').length}</div>
           <div className="font-jakarta text-xs text-slate-500 mt-1">New Leads</div>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
@@ -303,13 +303,13 @@ export default function AdminAnalyticsPage() {
       )}
 
       {/* Cloudflare dashboard link */}
-      <div className="bg-gradient-to-r from-blue-900 to-indigo-800 rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-lime-950 to-lime-800 rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <h3 className="font-jakarta font-bold text-lg mb-1">⚡ Cloudflare Web Analytics</h3>
-          <p className="font-jakarta text-blue-200 text-sm">Real-time page views, visitor geography and referrers live in the Cloudflare dashboard.</p>
+          <p className="font-jakarta text-lime-200 text-sm">Real-time page views, visitor geography and referrers live in the Cloudflare dashboard.</p>
         </div>
         <a href="https://dash.cloudflare.com/?to=/:account/web-analytics" target="_blank" rel="noopener noreferrer"
-          className="font-jakarta font-bold text-sm bg-white text-indigo-900 px-5 py-2.5 rounded-xl hover:bg-blue-50 transition-colors flex-shrink-0 shadow">
+          className="font-jakarta font-bold text-sm bg-white text-lime-900 px-5 py-2.5 rounded-xl hover:bg-lime-50 transition-colors flex-shrink-0 shadow">
           Open Dashboard ↗
         </a>
       </div>

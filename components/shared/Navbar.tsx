@@ -72,7 +72,7 @@ function DestDropdown({
           <div className="grid grid-cols-2 gap-0.5 px-2 pb-2">
             {DESTINATIONS.map(d => (
               <Link key={d.href} href={d.href}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors font-jakarta font-medium rounded-xl">
+                className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-lime-50 hover:text-lime-700 transition-colors font-jakarta font-medium rounded-xl">
                 {d.label}
               </Link>
             ))}
@@ -100,7 +100,7 @@ function PartDropdown({
         >
           {PARTNERS.map(d => (
             <Link key={d.href} href={d.href}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors font-jakarta font-medium">
+              className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-lime-50 hover:text-lime-700 transition-colors font-jakarta font-medium">
               {d.label}
             </Link>
           ))}
@@ -202,7 +202,7 @@ export default function Navbar() {
   const [destOpen,  setDestOpen]  = useState(false);
   const [partOpen,  setPartOpen]  = useState(false);
   const [mounted,   setMounted]   = useState(false);
-  const [headerBg,  setHeaderBg]  = useState('#1249C4');
+  const [headerBg,  setHeaderBg]  = useState('#3F6212');
 
   const pathname  = usePathname();
   const destTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -232,7 +232,7 @@ export default function Navbar() {
   const openPart  = () => { if (partTimer.current) clearTimeout(partTimer.current); setPartOpen(true); };
   const closePart = () => { partTimer.current = setTimeout(() => setPartOpen(false), 150); };
 
-  const bg = mounted ? headerBg : '#1249C4';
+  const bg = mounted ? headerBg : '#3F6212';
 
   return (
     <>

@@ -29,7 +29,7 @@ export interface HeroSlide {
   imageUrl:         string;
   imageAlt:         string;
   stats:            HeroStat[];
-  accentGradient:   string;   // Tailwind from/via classes e.g. "from-blue-900/60 via-blue-800/30"
+  accentGradient:   string;   // Tailwind from/via classes e.g. "from-lime-900/60 via-lime-800/30"
   enabled:          boolean;
 }
 
@@ -234,7 +234,7 @@ export interface GlobalSettings {
   mainLogoUrl?:            string;   // custom logo image URL (optional — falls back to SVG)
   businessNameText?:       string;   // custom business name displayed in header
   headerLogoUrl?:          string;   // hero-header-specific logo URL
-  headerBackgroundColor?:  string;   // hex color for hero header bg, e.g. "#2563FF"
+  headerBackgroundColor?:  string;   // hex color for hero header bg, e.g. "#4D7C0F"
   headerVerticalPadding?:  string;   // e.g. "py-16 md:py-24" or a numeric rem value
   businessNameDisplayName?: string;  // large title text in hero header
 }
