@@ -21,7 +21,7 @@ export default function Updates2026() {
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse-dot" />
             2026 Immigration Policy Updates
           </div>
-          <h2 className="font-jakarta font-extrabold text-primary-600 mb-4"
+          <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4"
             style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
             What changed for 2026.
           </h2>
@@ -44,7 +44,7 @@ export default function Updates2026() {
                 <div className="flex items-start gap-3 mb-3">
                   <span className="text-3xl group-hover:scale-110 transition-transform">{h.flag}</span>
                   <div>
-                    <div className="font-jakarta font-bold text-primary-600 text-sm">{h.country} 2026</div>
+                    <div className="font-jakarta font-bold text-homeblue-600 text-sm">{h.country} 2026</div>
                     <div className="badge-amber text-[10px] mt-0.5">Policy Update</div>
                   </div>
                 </div>

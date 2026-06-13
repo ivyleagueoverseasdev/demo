@@ -7,6 +7,7 @@ import type { UniEntry } from '@/lib/data';
 interface MarqueeSettings {
   speedRow1:  number;
   speedRow2:  number;
+  speedRow3?: number;
   heading:    string;
   subheading: string;
   unis?: UniEntry[];
@@ -15,6 +16,7 @@ interface MarqueeSettings {
 const DEFAULT_SETTINGS: MarqueeSettings = {
   speedRow1:  38,
   speedRow2:  44,
+  speedRow3:  50,
   heading:    'Students Placed in Top Universities',
   subheading: "Join 10,000+ students we've placed at the world's finest institutions across 12 countries.",
 };
@@ -31,9 +33,9 @@ function UniLogoCard({ uni }: { uni: UniEntry }) {
 
   return (
     <div
-      className="flex-shrink-0 flex items-center justify-center mx-2 px-6 rounded-2xl border shadow-sm"
+      className="flex-shrink-0 flex items-center justify-center mx-2.5 px-7 rounded-2xl border shadow-sm"
       style={{
-        height: '80px', minWidth: '160px', maxWidth: '220px',
+        height: '92px', minWidth: '180px', maxWidth: '240px',
         background: uni.darkBg ? '#003B5C' : '#ffffff',
         borderColor: uni.darkBg ? '#003B5C' : '#f1f5f9',
       }}
@@ -53,8 +55,8 @@ function UniLogoCard({ uni }: { uni: UniEntry }) {
           loading="lazy"
           onError={() => setFailed(true)}
           style={{
-            maxHeight: '48px',
-            maxWidth:  '140px',
+            maxHeight: '56px',
+            maxWidth:  '160px',
             width:     'auto',
             height:    'auto',
             objectFit: 'contain',
@@ -112,10 +114,11 @@ export default function UniversityMarquee() {
       .catch(() => {});
   }, []);
 
-  const unis     = settings.unis?.length ? settings.unis : UNIS_MARQUEE_DATA;
-  const midpoint = Math.ceil(unis.length / 2);
-  const row1     = unis.slice(0, midpoint);
-  const row2     = unis.slice(midpoint);
+  const unis  = settings.unis?.length ? settings.unis : UNIS_MARQUEE_DATA;
+  const third = Math.ceil(unis.length / 3);
+  const row1  = unis.slice(0, third);
+  const row2  = unis.slice(third, third * 2);
+  const row3  = unis.slice(third * 2);
 
   return (
     <section className="uni-marquee-section py-14 bg-gradient-to-b from-slate-50 to-white border-y border-slate-100 overflow-hidden">
@@ -135,10 +138,11 @@ export default function UniversityMarquee() {
         </p>
       </div>
 
-      {/* ── Two scrolling rows ── */}
+      {/* ── Three scrolling rows ── */}
       <div className="space-y-3">
         <MarqueeRow unis={row1} reverse={false} speed={settings.speedRow1} />
         <MarqueeRow unis={row2} reverse={true}  speed={settings.speedRow2} />
+        <MarqueeRow unis={row3} reverse={false} speed={settings.speedRow3 ?? 50} />
       </div>
 
       {/* ── Stats strip ── */}
@@ -149,7 +153,7 @@ export default function UniversityMarquee() {
           { num: '10,000+', label: 'Students Placed' },
         ].map(s => (
           <div key={s.label} className="text-center">
-            <div className="font-jakarta font-extrabold text-2xl text-primary-600">{s.num}</div>
+            <div className="font-jakarta font-extrabold text-2xl text-homeblue-600">{s.num}</div>
             <div className="font-jakarta text-xs text-slate-500 mt-0.5">{s.label}</div>
           </div>
         ))}

@@ -6,7 +6,7 @@ export const COMPANY = {
   short:     'ILOC',
   phone:     '+91-9158577707',
   email:     'ivyleagueoverseas@gmail.com',
-  founder:   'Rajib Paul Choudhury',
+  founder:   'Our Founder',
   since:     '2000',
   address:   '1st Floor, Govind Chambers, Karve Rd, opp. Lagu Bandhu, near Nal Stop, Erandwane, Pune, Maharashtra 411004, India',
   tagline:   'From Pune to the World\'s Best Universities.',
@@ -683,7 +683,7 @@ export const DEFAULT_EVENTS: SiteEvent[] = [
     location: 'Online (Zoom)',
     description: 'Meet admission representatives from 15+ top US universities. Free registration. Seats filling fast.',
     country: 'usa',
-    speakers: ['Rajib Paul Choudhury', 'USA Partner University Reps'],
+    speakers: ['ILOC Founder & Head Counsellor', 'USA Partner University Reps'],
     body: `## About This Event
 
 The USA University Fair 2026 is ILOC's flagship annual event — bringing together admission representatives from **15+ top US universities** including University of South Florida, Texas Tech University, Northeastern University, and the University of Illinois Chicago.
@@ -706,7 +706,7 @@ This is a **zero-cost, zero-obligation** event. Whether you're a student just be
 
 ## Speakers
 
-**Rajib Paul Choudhury** — Founder & Head Counsellor, ILOC (7+ years, 2,500+ students placed)
+**ILOC Founder & Head Counsellor** (7+ years, 2,500+ students placed)
 
 **University Representatives** from partner institutions across Florida, Texas, New York, Illinois and Massachusetts.
 
@@ -729,12 +729,12 @@ Live Zoom session with Q&A. A recording will be shared with all registered atten
     date: '2026-06-21',
     time: '4:00 PM – 5:30 PM IST',
     location: 'Online (Google Meet)',
-    description: 'Deep dive into UCAS, personal statements, scholarships and 2026 visa changes with Rajib Paul.',
+    description: 'Deep dive into UCAS, personal statements, scholarships and 2026 visa changes with our Founder.',
     country: 'uk',
-    speakers: ['Rajib Paul Choudhury'],
+    speakers: ['ILOC Founder & Head Counsellor'],
     body: `## About This Webinar
 
-The UK Admissions Masterclass is a 90-minute deep-dive session designed specifically for students targeting **September 2026 UK intake**. Led personally by Rajib Paul Choudhury, this is not a sales pitch — it's a practical, no-nonsense walkthrough of everything you need to know before you apply.
+The UK Admissions Masterclass is a 90-minute deep-dive session designed specifically for students targeting **September 2026 UK intake**. Led personally by ILOC's Founder & Head Counsellor, this is not a sales pitch — it's a practical, no-nonsense walkthrough of everything you need to know before you apply.
 
 ## What We Cover
 
@@ -831,7 +831,7 @@ Our trainers have helped students achieve **Band 7.5+ across all modules**, with
     location: 'Online (Zoom)',
     description: 'Understanding PGWP, Express Entry CRS scores and Provincial Nominee Programs for 2026 intake.',
     country: 'canada',
-    speakers: ['Rajib Paul Choudhury'],
+    speakers: ['ILOC Founder & Head Counsellor'],
     body: `## About This Seminar
 
 Canada is unique among study destinations: it doesn't just offer a world-class education — it offers a **clear, well-defined pathway to Permanent Residency**. But this pathway is changing rapidly in 2026, and most students arrive without a plan.
@@ -1072,43 +1072,83 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     enabled:          true,
   },
   {
-    id:               'ielts',
-    badge:            '📝 IELTS Coaching — Live Classes & Online Batches',
-    headingLines:     ['Achieve an', '8+ Band Score', 'on Your First Attempt'],
+    id:               'scholarships',
+    badge:            '🎓 Scholarship Application Support — Maximise Your Funding',
+    headingLines:     ['Win Scholarships That', 'Fund Your', 'Global Education'],
     headingHighlight: [false, true, false],
     highlightColor:   'text-emerald-400',
-    subtext:          'Join 14,000+ students who cleared IELTS with a 96% success rate. Expert faculty, personalised score feedback, real exam simulations, and guaranteed band improvement.',
-    trustBadges:      ['14,000+ IELTS Cleared', '96% Success Rate', 'Live + Online Batches', 'Free Demo Class'],
-    ctaPrimary:       { label: 'Book a Free DEMO Class →', style: 'green', action: 'demo-modal' },
+    subtext:          'Our counsellors identify, shortlist and help you apply for merit & need-based scholarships across 400+ universities — maximising funding so finances never stand between you and your dream university.',
+    trustBadges:      ['Merit & Need-Based', '400+ Universities', 'Application Support', 'Free Eligibility Check'],
+    ctaPrimary:       { label: 'Check Scholarship Eligibility →', style: 'green', action: 'demo-modal' },
     ctaSecondary:     { label: '📞 Call Us Now', style: 'ghost', action: 'phone', href: 'tel:+919158577707' },
-    imageUrl:         'https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=1600&auto=format&fit=crop',
-    imageAlt:         'Student studying for IELTS exam with expert coaching support',
+    imageUrl:         'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop',
+    imageAlt:         'Happy student celebrating a scholarship offer for overseas studies',
     stats:            [
-      { num: '14,000+', label: 'IELTS Cleared',  color: '#059669' },
-      { num: '96%',     label: 'Success Rate',   color: '#D97706' },
-      { num: '8+',      label: 'Avg Band Score', color: '#CCFF00' },
+      { num: '10,000+', label: 'Students Guided',   color: '#059669' },
+      { num: '400+',    label: 'Partner Universities', color: '#D97706' },
+      { num: '₹0',      label: 'Eligibility Check Cost', color: '#CCFF00' },
     ],
     accentGradient:   'from-emerald-900/60 via-emerald-800/30',
     enabled:          true,
   },
   {
-    id:               'live-classes',
-    badge:            '🎁 First Session Always FREE — No Commitment Required',
-    headingLines:     ['Ace Your Exams with', 'Expert Live', 'Online Classes'],
+    id:               'visa-success',
+    badge:            '✅ 97% Visa Approval Rate — Trusted Visa Guidance',
+    headingLines:     ['Visa Approvals Made', 'Simple &', 'Stress-Free'],
     headingHighlight: [false, true, false],
     highlightColor:   'text-amber-400',
-    subtext:          'Join online batches for GRE, TOEFL, IELTS, and German. Every new batch starts with a 🎁 FREE Demo Session. No commitment required.',
-    trustBadges:      ['GRE · GMAT · SAT', 'TOEFL · IELTS', 'German A1–B2', 'Free Demo Session'],
-    ctaPrimary:       { label: 'Explore Live Classes →', style: 'amber', action: 'link', href: '/events?type=classes' },
-    ctaSecondary:     { label: '💬 Book via WhatsApp', style: 'ghost', action: 'whatsapp' },
-    imageUrl:         'https://images.unsplash.com/photo-1610484826967-09c5720778c7?q=80&w=1600&auto=format&fit=crop',
-    imageAlt:         'Students attending live online coaching classes from ILOC',
+    subtext:          'From documentation to mock interviews, our visa experts have guided 10,000+ students to a 97% visa success rate across the USA, UK, Canada, Australia and beyond.',
+    trustBadges:      ['97% Visa Approval', '10,000+ Visas Filed', 'Mock Interviews', 'End-to-End Support'],
+    ctaPrimary:       { label: 'Get Visa Guidance →', style: 'amber', action: 'link', href: '/contact' },
+    ctaSecondary:     { label: '💬 Chat on WhatsApp', style: 'ghost', action: 'whatsapp' },
+    imageUrl:         'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1600&auto=format&fit=crop',
+    imageAlt:         'Student holding passport and visa approval, ready for overseas studies',
     stats:            [
-      { num: '6',       label: 'Subjects Available', color: '#FBBF24' },
-      { num: '100%',    label: 'Live & Online',      color: '#34D399' },
-      { num: '₹0',      label: 'Demo Session Cost',  color: '#CCFF00' },
+      { num: '97%',     label: 'Visa Approval',     color: '#34D399' },
+      { num: '10,000+', label: 'Visas Filed',       color: '#D97706' },
+      { num: '12',      label: 'Countries Covered', color: '#CCFF00' },
+    ],
+    accentGradient:   'from-lime-950/60 via-lime-900/30',
+    enabled:          true,
+  },
+  {
+    id:               'sop-lor',
+    badge:            '✍️ Expert SOP & LOR Drafting and Review',
+    headingLines:     ['Documentation That', 'Makes Your', 'Application Stand Out'],
+    headingHighlight: [false, true, false],
+    highlightColor:   'text-amber-400',
+    subtext:          'Our experts draft and review your Statement of Purpose and Letters of Recommendation — tailored to each university and program, so your application reflects your true potential.',
+    trustBadges:      ['Custom SOPs', 'LOR Review', 'University-Specific', 'Unlimited Revisions'],
+    ctaPrimary:       { label: 'Get Your SOP Reviewed →', style: 'amber', action: 'link', href: '/contact' },
+    ctaSecondary:     { label: '💬 Chat on WhatsApp', style: 'ghost', action: 'whatsapp' },
+    imageUrl:         'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1600&auto=format&fit=crop',
+    imageAlt:         'Student working on application documents with a counsellor',
+    stats:            [
+      { num: '10,000+', label: 'SOPs Drafted',     color: '#FBBF24' },
+      { num: '100%',    label: 'Custom Written',   color: '#34D399' },
+      { num: '0', label: 'Templates Used',  color: '#CCFF00' },
     ],
     accentGradient:   'from-violet-900/60 via-violet-800/30',
+    enabled:          true,
+  },
+  {
+    id:               'allied-services',
+    badge:            '🌍 Allied Services — Loans, Forex & Accommodation',
+    headingLines:     ['Everything You Need,', 'Sorted Under', 'One Roof'],
+    headingHighlight: [false, true, false],
+    highlightColor:   'text-emerald-400',
+    subtext:          'Beyond admissions and visas, we help arrange education loans, forex & banking setup, and safe accommodation near your campus — so your move overseas is completely stress-free.',
+    trustBadges:      ['Education Loans', 'Forex & Banking', 'Accommodation', 'Pre-Departure Support'],
+    ctaPrimary:       { label: 'Explore Allied Services →', style: 'amber', action: 'link', href: '/services' },
+    ctaSecondary:     { label: '📞 Call Us Now', style: 'ghost', action: 'phone', href: 'tel:+919158577707' },
+    imageUrl:         'https://images.unsplash.com/photo-1529390079861-591de354faf5?q=80&w=1600&auto=format&fit=crop',
+    imageAlt:         'Students packing and preparing for their move abroad',
+    stats:            [
+      { num: '3',    label: 'Allied Services', color: '#FBBF24' },
+      { num: '100%', label: 'Hassle-Free',     color: '#34D399' },
+      { num: '1',    label: 'Single Point Contact', color: '#CCFF00' },
+    ],
+    accentGradient:   'from-emerald-900/60 via-emerald-800/30',
     enabled:          true,
   },
 ];

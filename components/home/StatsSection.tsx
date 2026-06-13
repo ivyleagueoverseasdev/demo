@@ -8,14 +8,14 @@ import type { Stat } from '@/lib/types';
 
 // Icon pool — cycles through if there are more stats than icons
 const ICON_POOL = [
-  { Icon: GraduationCap, color: '#65A30D', glow: 'rgba(101,163,13,0.40)'  },
+  { Icon: GraduationCap, color: '#246DFF', glow: 'rgba(36,109,255,0.40)'  },
   { Icon: TrendingUp,    color: '#059669', glow: 'rgba(5,150,105,0.40)'  },
   { Icon: Star,          color: '#D97706', glow: 'rgba(217,119,6,0.40)'  },
   { Icon: Clock,         color: '#7C3AED', glow: 'rgba(124,58,237,0.35)' },
-  { Icon: Globe,         color: '#65A30D', glow: 'rgba(101,163,13,0.40)' },
+  { Icon: Globe,         color: '#246DFF', glow: 'rgba(36,109,255,0.40)' },
   { Icon: ShieldCheck,   color: '#059669', glow: 'rgba(5,150,105,0.40)'  },
   { Icon: Award,         color: '#D97706', glow: 'rgba(217,119,6,0.40)'  },
-  { Icon: Users,         color: '#65A30D', glow: 'rgba(101,163,13,0.40)' },
+  { Icon: Users,         color: '#246DFF', glow: 'rgba(36,109,255,0.40)' },
   { Icon: BookOpen,      color: '#7C3AED', glow: 'rgba(124,58,237,0.35)' },
   { Icon: Building,      color: '#059669', glow: 'rgba(5,150,105,0.40)'  },
 ];
@@ -74,7 +74,7 @@ export default function StatsSection() {
                   />
                 </div>
                 <div
-                  className="font-jakarta font-extrabold leading-none mb-1.5 text-gradient-blue group-hover:text-gradient-amber transition-all"
+                  className="font-jakarta font-extrabold leading-none mb-1.5 text-gradient-homeblue group-hover:text-gradient-amber transition-all"
                   style={{ fontSize: 'clamp(1.5rem,3vw,2rem)' }}
                 >
                   {s.num}

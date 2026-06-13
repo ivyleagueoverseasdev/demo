@@ -121,8 +121,8 @@ export default function AdminAboutPage() {
 
       <Section title="👤 Founder Section">
         <div className="grid sm:grid-cols-4 gap-4">
-          <Field label="Initials" hint="Avatar block, e.g. RP">
-            <input value={s.founderInitials} onChange={e => set({ founderInitials: e.target.value })} className={inp} maxLength={3} />
+          <Field label="Initials" hint="Avatar block, e.g. ILOC">
+            <input value={s.founderInitials} onChange={e => set({ founderInitials: e.target.value })} className={inp} maxLength={6} />
           </Field>
           <Field label="Name">
             <input value={s.founderName} onChange={e => set({ founderName: e.target.value })} className={inp} />

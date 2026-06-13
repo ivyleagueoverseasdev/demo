@@ -20,6 +20,13 @@ module.exports = {
           600: '#65A30D', 700: '#4D7C0F', 800: '#3F6212',
           900: '#1A2E05', DEFAULT: '#B5FF00',
         },
+        // Homepage body sections only — header/hero/footer keep the lime "primary" palette above.
+        homeblue: {
+          50:  '#EBF2FF', 100: '#D6E6FF', 200: '#ADCCFF',
+          300: '#7AADFF', 400: '#5A8CFF', 500: '#246DFF',
+          600: '#1A5CE8', 700: '#1249C4', 800: '#0C37A0',
+          900: '#07257C', DEFAULT: '#246DFF',
+        },
         amber: {
           50: '#FFFBEB', 100: '#FEF3C7', 200: '#FDE68A',
           300: '#FCD34D', 400: '#FBBF24', 500: '#D97706',

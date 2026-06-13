@@ -12,7 +12,7 @@ export const ABOUT_DEFAULTS: AboutPageSettings = {
   heroHeadingLine1:  'Honest guidance.',
   heroHeadingLine2:  'Proven results.',
   heroParagraph:     `${COMPANY.name} (ILOC) is a premium overseas education consultancy founded by ${COMPANY.founder} in ${COMPANY.since}. Based in Pune, we've placed 10,000+ students at 400+ universities worldwide — with a 97% visa approval rate and zero hidden fees.`,
-  founderInitials:   'RP',
+  founderInitials:   'ILOC',
   founderName:       COMPANY.founder,
   founderRole:       'Founder & Head Counsellor',
   founderMeta:       '10+ Years Experience · Pune, India',

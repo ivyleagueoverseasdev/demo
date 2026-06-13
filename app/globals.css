@@ -116,15 +116,17 @@
   .uni-marquee-track-reverse {
     animation: marqueeReverse var(--uni-marquee-speed, 44s) linear infinite;
   }
-  /* Pause the entire section on hover */
-  .uni-marquee-section:hover .uni-marquee-track,
-  .uni-marquee-section:hover .uni-marquee-track-reverse {
-    animation-play-state: paused;
-  }
 
   /* Gradient text */
   .text-gradient-blue {
     background: linear-gradient(135deg,#65A30D,#A3E635);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  /* Homepage-only blue gradient (sections below the hero) */
+  .text-gradient-homeblue {
+    background: linear-gradient(135deg,#1A5CE8,#7AADFF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

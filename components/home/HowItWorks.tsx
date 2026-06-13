@@ -44,7 +44,7 @@ export default function HowItWorks({ steps }: Props) {
   return (
     <section
       className="section relative overflow-hidden"
-      style={{ background: 'linear-gradient(145deg,#1A2E05 0%,#3F6212 50%,#4D7C0F 100%)' }}
+      style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 50%,#246DFF 100%)' }}
     >
       {/* Dot pattern */}
       <div className="absolute inset-0 opacity-[0.035] pointer-events-none" aria-hidden>
@@ -60,7 +60,7 @@ export default function HowItWorks({ steps }: Props) {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.07] pointer-events-none"
         style={{ background: 'radial-gradient(circle,#D97706,transparent 68%)', transform: 'translate(30%,-30%)' }} aria-hidden />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-[0.06] pointer-events-none"
-        style={{ background: 'radial-gradient(circle,#CCFF00,transparent 70%)', transform: 'translate(-30%,30%)' }} aria-hidden />
+        style={{ background: 'radial-gradient(circle,#93C5FD,transparent 70%)', transform: 'translate(-30%,30%)' }} aria-hidden />
 
       <div className="container-xl relative z-10">
 
@@ -133,7 +133,7 @@ export default function HowItWorks({ steps }: Props) {
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
                     style={{ background: 'radial-gradient(ellipse at 50% 0%,rgba(251,191,36,0.10),transparent 70%)' }} />
                   <div className="absolute bottom-0 left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 ease-out rounded-full"
-                    style={{ background: 'linear-gradient(to right,#FBBF24,#D97706,#A3E635)' }} />
+                    style={{ background: 'linear-gradient(to right,#FBBF24,#D97706,#246DFF)' }} />
 
                   <div className="relative p-6">
                     {/* Ghost number */}

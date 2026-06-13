@@ -387,7 +387,7 @@ export default function LiveClassesBoard() {
               <div className="divider-amber" />
               <p className="label mb-3">Live Online Classes</p>
               <h2
-                className="font-jakarta font-extrabold text-primary-600"
+                className="font-jakarta font-extrabold text-homeblue-600"
                 style={{ fontSize: 'clamp(1.8rem,4vw,2.9rem)' }}
               >
                 Upcoming Live Classes<br className="hidden sm:block" /> &amp; Events
@@ -409,7 +409,7 @@ export default function LiveClassesBoard() {
                   onClick={() => scrollTo(carouselIdx + dir)}
                   disabled={(dir === -1 && carouselIdx === 0) || (dir === 1 && carouselIdx === CLASSES.length - 1)}
                   aria-label={label}
-                  className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-slate-600 hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50 transition-all disabled:opacity-30 disabled:cursor-default"
+                  className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-slate-600 hover:border-homeblue-400 hover:text-homeblue-600 hover:bg-homeblue-50 transition-all disabled:opacity-30 disabled:cursor-default"
                 >
                   <Icon className="w-4 h-4" strokeWidth={2.5} />
                 </button>

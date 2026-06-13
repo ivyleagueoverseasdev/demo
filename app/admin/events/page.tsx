@@ -405,7 +405,7 @@ function EventForm({
                 value={sp}
                 onChange={e => setSpeaker(i, e.target.value)}
                 className={inp}
-                placeholder="e.g. Rajib Paul Choudhury — Study Abroad Expert"
+                placeholder="e.g. ILOC Founder & Head Counsellor — Study Abroad Expert"
               />
               <button
                 type="button"

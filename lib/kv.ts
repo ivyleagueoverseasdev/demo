@@ -376,6 +376,7 @@ export async function setCountryMeta(country: string, meta: CountryMeta): Promis
 export interface MarqueeSettings {
   speedRow1:   number;
   speedRow2:   number;
+  speedRow3?:  number;
   heading:     string;
   subheading:  string;
   unis?: { name: string; src: string; country: string }[];

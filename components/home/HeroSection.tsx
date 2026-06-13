@@ -10,6 +10,7 @@ import {
 } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import { GraduationCap } from 'lucide-react';
 import { COMPANY, DEFAULT_HERO_SLIDES } from '@/lib/data';
 import type { HeroSlide } from '@/lib/types';
 import DemoModal from './DemoModal';
@@ -561,13 +562,13 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                   >
                     <div className="
                       w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center
-                      font-jakarta font-bold text-xs text-white flex-shrink-0
+                      flex-shrink-0
                       shadow-[0_4px_14px_rgba(245,158,11,0.50)]
                     ">
-                      RP
+                      <GraduationCap className="w-5 h-5 text-white" strokeWidth={2} />
                     </div>
                     <div>
-                      <div className="font-jakarta font-semibold text-white text-sm">{COMPANY.founder}</div>
+                      <div className="font-jakarta font-semibold text-white text-sm">{COMPANY.short} Expert Team</div>
                       <div className="font-jakarta text-xs text-white/50">Founder & Head Counsellor · 25+ yrs</div>
                     </div>
                     <div className="ml-auto hidden sm:flex items-center gap-2 bg-white/10 rounded-xl px-3 py-1.5 border border-white/15">

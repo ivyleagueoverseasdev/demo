@@ -11,7 +11,6 @@ import { buildPageMeta } from '@/lib/public-data';
 import HeroSection       from '@/components/home/HeroSection';
 import StatsSection      from '@/components/home/StatsSection';
 import DestinationsStrip from '@/components/home/DestinationsStrip';
-import ServicesSection   from '@/components/home/ServicesSection';
 import HowItWorks        from '@/components/home/HowItWorks';
 
 // ── Below-fold: lazy-loaded ───────────────────────────────────────────────
@@ -21,7 +20,6 @@ const LiveClassesBoard    = lazyLoad(() => import('@/components/home/LiveClasses
 const EventsCarousel      = lazyLoad(() => import('@/components/home/EventsCarousel'));
 const Updates2026         = lazyLoad(() => import('@/components/home/Updates2026'));
 const QuickEnquiry        = lazyLoad(() => import('@/components/home/QuickEnquiry'));
-const CTASection          = lazyLoad(() => import('@/components/home/CTASection'));
 
 export const metadata: Metadata = buildPageMeta({
   title:       'Ivy League Overseas Consulting | Study Abroad from Pune',
@@ -31,7 +29,7 @@ export const metadata: Metadata = buildPageMeta({
 
 export default async function HomePage() {
   // Single call via public-data — all error handling + defaults are centralised there.
-  const { heroSlides, services, processSteps, testimonials, noticeBanner } =
+  const { heroSlides, processSteps, testimonials, noticeBanner } =
     await getHomepageData();
 
   return (
@@ -44,15 +42,13 @@ export default async function HomePage() {
       <HeroSection slides={heroSlides} />
       <StatsSection />
       <DestinationsStrip />
-      <ServicesSection services={services} />
-      <HowItWorks     steps={processSteps} />
+      <HowItWorks    steps={processSteps} />
       <UniversityMarquee />
       <TestimonialsSection testimonials={testimonials} />
       <LiveClassesBoard />
       <EventsCarousel />
       <Updates2026 />
       <QuickEnquiry />
-      <CTASection />
     </>
   );
 }

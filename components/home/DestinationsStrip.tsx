@@ -97,7 +97,7 @@ function DestinationCard({ c, i }: { c: Country; i: number }) {
 
 export default function DestinationsStrip() {
   return (
-    <section className="section bg-white">
+    <section className="section bg-slate-50">
       <div className="container-xl">
         {/* Header */}
         <motion.div
@@ -109,7 +109,7 @@ export default function DestinationsStrip() {
         >
           <div className="divider-amber mx-auto" />
           <p className="label mb-3">Study Destinations</p>
-          <h2 className="font-jakarta font-extrabold text-primary-600 mb-4"
+          <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4"
             style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
             Where will you go?
           </h2>

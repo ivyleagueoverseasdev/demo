@@ -49,7 +49,7 @@ export default function QuickEnquiry() {
   const inp = 'input text-sm';
 
   return (
-    <section id="enquiry" className="section bg-primary-50 border-y border-primary-100">
+    <section id="enquiry" className="section bg-homeblue-50 border-y border-homeblue-100">
       <div className="container-xl">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left */}
@@ -61,7 +61,7 @@ export default function QuickEnquiry() {
           >
             <div className="divider-amber" />
             <p className="label mb-3">Quick Enquiry</p>
-            <h2 className="font-jakarta font-extrabold text-primary-600 mb-4"
+            <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4"
               style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
               Start your journey<br />with one message.
             </h2>
@@ -71,10 +71,10 @@ export default function QuickEnquiry() {
             <div className="space-y-3">
               {[['📞', COMPANY.phone, `tel:${COMPANY.phone}`], ['✉', COMPANY.email, `mailto:${COMPANY.email}`]].map(([icon, label, href]) => (
                 <a key={href as string} href={href as string} className="flex items-center gap-3 group">
-                  <div className="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center text-base flex-shrink-0 group-hover:bg-primary-600 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-homeblue-100 flex items-center justify-center text-base flex-shrink-0 group-hover:bg-homeblue-600 transition-colors">
                     <span>{icon}</span>
                   </div>
-                  <span className="font-jakarta text-sm text-slate-700 group-hover:text-primary-600 transition-colors">{label as string}</span>
+                  <span className="font-jakarta text-sm text-slate-700 group-hover:text-homeblue-600 transition-colors">{label as string}</span>
                 </a>
               ))}
             </div>
@@ -90,7 +90,7 @@ export default function QuickEnquiry() {
             <div className="bg-white rounded-3xl shadow-card p-7 sm:p-9 border border-slate-100">
               {!ok ? (
                 <form onSubmit={submit} className="space-y-4" noValidate>
-                  <h3 className="font-jakarta font-bold text-primary-600 text-xl mb-1">Request Free Counselling</h3>
+                  <h3 className="font-jakarta font-bold text-homeblue-600 text-xl mb-1">Request Free Counselling</h3>
                   <p className="font-jakarta text-sm text-slate-400 mb-4">30 min · Zero pressure · No hidden fees</p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -150,7 +150,7 @@ export default function QuickEnquiry() {
               ) : (
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-8 text-center">
                   <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center text-4xl mx-auto mb-5">🎉</div>
-                  <h3 className="font-jakarta font-bold text-primary-600 text-xl mb-2">Enquiry Received!</h3>
+                  <h3 className="font-jakarta font-bold text-homeblue-600 text-xl mb-2">Enquiry Received!</h3>
                   <p className="font-jakarta text-slate-500 text-sm leading-relaxed">
                     Our counsellor will contact you at <strong className="text-slate-700">{f.phone}</strong> within 24 hours.
                     {f.country && <><br />We'll prepare a personalised plan for <strong className="text-amber-600">{f.country}</strong>.</>}

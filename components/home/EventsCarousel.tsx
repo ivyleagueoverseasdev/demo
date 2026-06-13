@@ -165,7 +165,7 @@ export default function EventsCarousel() {
           <div>
             <div className="divider-amber" />
             <p className="label mb-3">Events &amp; Deadlines</p>
-            <h2 className="font-jakarta font-extrabold text-primary-600" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
+            <h2 className="font-jakarta font-extrabold text-homeblue-600" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
               Upcoming events<br />you don&apos;t want to miss.
             </h2>
           </div>
@@ -179,7 +179,7 @@ export default function EventsCarousel() {
               <button
                 key={label}
                 onClick={() => setActive(i => Math.min(Math.max(i + (di === 0 ? -1 : 1), 0), total - 1))}
-                className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-slate-600 hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50 transition-all disabled:opacity-30 disabled:cursor-default"
+                className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-slate-600 hover:border-homeblue-400 hover:text-homeblue-600 hover:bg-homeblue-50 transition-all disabled:opacity-30 disabled:cursor-default"
                 disabled={(di === 0 && active === 0) || (di === 1 && active === total - 1)}
                 aria-label={label}
               >
@@ -227,7 +227,7 @@ export default function EventsCarousel() {
 
         {/* View all */}
         <div className="text-center mt-6">
-          <Link href="/events" className="font-jakarta text-sm font-semibold text-primary-600 hover:text-amber-600 transition-colors">
+          <Link href="/events" className="font-jakarta text-sm font-semibold text-homeblue-600 hover:text-amber-600 transition-colors">
             View all events &amp; masterclasses →
           </Link>
         </div>
