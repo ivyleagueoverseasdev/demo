@@ -104,16 +104,16 @@ export default function Footer() {
   const social = SOCIAL(links);
 
   return (
-    <footer className="bg-slate-900 text-white/75">
+    <footer className="text-slate-700" style={{ backgroundColor: '#C7FBA0' }}>
 
       {/* ── CTA Strip ── */}
-      <div className="bg-gradient-to-r from-lime-700 to-lime-600 border-b border-white/10">
+      <div className="border-b border-slate-900/10">
         <div className="container-xl py-8 flex flex-col md:flex-row items-center justify-between gap-5">
           <div>
-            <p className="font-jakarta font-bold text-xl text-white leading-tight">
+            <p className="font-jakarta font-bold text-xl text-slate-900 leading-tight">
               Ready to study abroad?
             </p>
-            <p className="text-white/75 text-sm mt-1">
+            <p className="text-slate-700 text-sm mt-1">
               Book a free 30-minute counselling session — zero pressure, zero fees.
             </p>
           </div>
@@ -128,7 +128,7 @@ export default function Footer() {
               href={contact.wa}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-white border border-white/25 hover:bg-white/10 transition-colors"
+              className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-slate-900 border border-slate-900/20 hover:bg-slate-900/5 transition-colors"
             >
               💬 WhatsApp Us
             </a>
@@ -142,29 +142,29 @@ export default function Footer() {
         {/* Brand column */}
         <div className="col-span-2 md:col-span-4">
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-white/20">
+            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-slate-900/15">
               <Image src="/logo2.png" alt="ILOC" width={40} height={40} className="object-cover w-full h-full" />
             </div>
             <div>
-              <p className="font-jakarta font-extrabold text-white text-sm leading-tight">IVY LEAGUE</p>
-              <p className="font-jakarta font-extrabold text-white text-sm leading-tight">OVERSEAS CONSULTING</p>
+              <p className="font-jakarta font-extrabold text-slate-900 text-sm leading-tight">IVY LEAGUE</p>
+              <p className="font-jakarta font-extrabold text-slate-900 text-sm leading-tight">OVERSEAS CONSULTING</p>
             </div>
           </div>
-          <p className="font-jakarta text-sm leading-7 text-white/55 mb-6 max-w-xs">
+          <p className="font-jakarta text-sm leading-7 text-slate-700 mb-6 max-w-xs">
             {COMPANY.tagline} Trusted by 10,000+ students across 12 countries for 25+ years of excellence.
           </p>
 
           {/* Contact */}
           <div className="space-y-2.5 text-sm">
-            <a href={`tel:${contact.phone}`} className="flex items-center gap-2.5 text-white/55 hover:text-white transition-colors">
+            <a href={`tel:${contact.phone}`} className="flex items-center gap-2.5 text-slate-700 hover:text-slate-900 transition-colors">
               <span className="text-base">📞</span>
               <span>{contact.phone}</span>
             </a>
-            <a href={`mailto:${contact.email}`} className="flex items-center gap-2.5 text-white/55 hover:text-white transition-colors">
+            <a href={`mailto:${contact.email}`} className="flex items-center gap-2.5 text-slate-700 hover:text-slate-900 transition-colors">
               <span className="text-base">✉️</span>
               <span>{contact.email}</span>
             </a>
-            <a href={contact.mapsLink} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2.5 text-white/55 hover:text-amber-400 transition-colors">
+            <a href={contact.mapsLink} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2.5 text-slate-700 hover:text-amber-700 transition-colors">
               <span className="text-base flex-shrink-0 mt-0.5">📍</span>
               <span className="leading-relaxed">{contact.address}</span>
             </a>
@@ -179,7 +179,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                className="w-9 h-9 rounded-xl bg-white/8 hover:bg-white/15 border border-white/10 flex items-center justify-center text-white/60 hover:text-white transition-all"
+                className="w-9 h-9 rounded-xl bg-slate-900/5 hover:bg-slate-900/10 border border-slate-900/10 flex items-center justify-center text-slate-700 hover:text-slate-900 transition-all"
               >
                 {s.icon}
               </a>
@@ -189,11 +189,11 @@ export default function Footer() {
 
         {/* Quick links */}
         <div className="col-span-1 md:col-span-2">
-          <h4 className="font-jakarta font-bold text-white text-sm mb-5 tracking-wide">Company</h4>
+          <h4 className="font-jakarta font-bold text-slate-900 text-sm mb-5 tracking-wide">Company</h4>
           <ul className="space-y-3">
             {QUICK_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <Link href={href} className="font-jakarta text-sm text-white/55 hover:text-white transition-colors">
+                <Link href={href} className="font-jakarta text-sm text-slate-700 hover:text-slate-900 transition-colors">
                   {label}
                 </Link>
               </li>
@@ -203,11 +203,11 @@ export default function Footer() {
 
         {/* Services */}
         <div className="col-span-1 md:col-span-2">
-          <h4 className="font-jakarta font-bold text-white text-sm mb-5 tracking-wide">Services</h4>
+          <h4 className="font-jakarta font-bold text-slate-900 text-sm mb-5 tracking-wide">Services</h4>
           <ul className="space-y-3">
             {SERVICE_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <Link href={href} className="font-jakarta text-sm text-white/55 hover:text-white transition-colors">
+                <Link href={href} className="font-jakarta text-sm text-slate-700 hover:text-slate-900 transition-colors">
                   {label}
                 </Link>
               </li>
@@ -217,18 +217,18 @@ export default function Footer() {
 
         {/* Destinations */}
         <div className="col-span-2 md:col-span-4">
-          <h4 className="font-jakarta font-bold text-white text-sm mb-5 tracking-wide">Study Destinations</h4>
+          <h4 className="font-jakarta font-bold text-slate-900 text-sm mb-5 tracking-wide">Study Destinations</h4>
           <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
             {DEST_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <Link href={href} className="font-jakarta text-sm text-white/55 hover:text-white transition-colors">
+                <Link href={href} className="font-jakarta text-sm text-slate-700 hover:text-slate-900 transition-colors">
                   {label}
                 </Link>
               </li>
             ))}
           </ul>
-          <div className="mt-5 pt-5 border-t border-white/10">
-            <Link href="/destinations" className="font-jakarta text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors">
+          <div className="mt-5 pt-5 border-t border-slate-900/10">
+            <Link href="/destinations" className="font-jakarta text-xs font-semibold text-amber-700 hover:text-amber-800 transition-colors">
               View all destinations →
             </Link>
           </div>
@@ -236,7 +236,7 @@ export default function Footer() {
       </div>
 
       {/* ── Trust badges ── */}
-      <div className="border-t border-white/8">
+      <div className="border-t border-slate-900/10">
         <div className="container-xl py-5 flex flex-wrap items-center justify-center gap-6">
           {[
             { num: '10,000+', label: 'Students Placed' },
@@ -245,21 +245,21 @@ export default function Footer() {
             { num: '12',      label: 'Countries'        },
           ].map(s => (
             <div key={s.label} className="flex items-center gap-2">
-              <span className="font-jakarta font-extrabold text-white text-sm">{s.num}</span>
-              <span className="font-jakarta text-xs text-white/40">{s.label}</span>
+              <span className="font-jakarta font-extrabold text-slate-900 text-sm">{s.num}</span>
+              <span className="font-jakarta text-xs text-slate-600">{s.label}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── Bottom bar ── */}
-      <div className="border-t border-white/8">
-        <div className="container-xl py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/35">
+      <div className="border-t border-slate-900/10">
+        <div className="container-xl py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600">
           <p>© {COMPANY.since}–{new Date().getFullYear()} {COMPANY.name}. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <Link href="/contact" className="hover:text-white/60 transition-colors">Privacy Policy</Link>
-            <Link href="/contact" className="hover:text-white/60 transition-colors">Terms of Service</Link>
-            <p>Founded by <span className="text-white/50">{COMPANY.founder}</span> · Pune, India</p>
+            <Link href="/contact" className="hover:text-slate-900 transition-colors">Privacy Policy</Link>
+            <Link href="/contact" className="hover:text-slate-900 transition-colors">Terms of Service</Link>
+            <p>Founded by <span className="text-slate-700">{COMPANY.founder}</span> · Pune, India</p>
           </div>
         </div>
       </div>
