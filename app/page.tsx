@@ -29,7 +29,7 @@ export const metadata: Metadata = buildPageMeta({
 
 export default async function HomePage() {
   // Single call via public-data — all error handling + defaults are centralised there.
-  const { heroSlides, processSteps, testimonials, noticeBanner } =
+  const { heroSlides, processSteps, testimonials, noticeBanner, globalSettings } =
     await getHomepageData();
 
   return (
@@ -41,11 +41,11 @@ export default async function HomePage() {
       )}
       <HeroSection slides={heroSlides} />
       <StatsSection />
-      <DestinationsStrip />
+      <DestinationsStrip gridCols={globalSettings?.destinationsCols} />
       <HowItWorks    steps={processSteps} />
       <UniversityMarquee />
       <TestimonialsSection testimonials={testimonials} />
-      <LiveClassesBoard />
+      <LiveClassesBoard gridCols={globalSettings?.classesCols} />
       <EventsCarousel />
       <Updates2026 />
       <QuickEnquiry />

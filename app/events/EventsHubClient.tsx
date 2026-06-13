@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { SiteEvent, EventType } from '@/lib/types';
 import PageHero from '@/components/shared/PageHero';
+import { GRID_COLS_MD, GRID_COLS_LG, clampCols } from '@/lib/gridCols';
 
 // ── Type config ────────────────────────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
@@ -20,8 +21,8 @@ const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string;
 
 const COUNTRY_OPTIONS = [
   { value: '',             label: 'All Countries' },
-  { value: 'usa',         label: '🇺🇸 USA' },
-  { value: 'uk',          label: '🇬🇧 UK' },
+  { value: 'usa',         label: '🇺🇸 United States' },
+  { value: 'uk',          label: '🇬🇧 United Kingdom' },
   { value: 'australia',   label: '🇦🇺 Australia' },
   { value: 'canada',      label: '🇨🇦 Canada' },
   { value: 'new-zealand', label: '🇳🇿 New Zealand' },
@@ -164,8 +165,10 @@ function SkeletonCard() {
 }
 
 // ── Main client component ─────────────────────────────────────────────────────
-export default function EventsHubClient({ initialEvents }: { initialEvents: SiteEvent[] }) {
+export default function EventsHubClient({ initialEvents, gridCols }: { initialEvents: SiteEvent[]; gridCols?: number }) {
   const searchParams = useSearchParams();
+  const cols = clampCols(gridCols, 3);
+  const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${GRID_COLS_MD[cols]} ${GRID_COLS_LG[cols]} gap-5`;
 
   const [search,  setSearch]  = useState('');
   const [country, setCountry] = useState('');
@@ -285,7 +288,7 @@ export default function EventsHubClient({ initialEvents }: { initialEvents: Site
                 <h2 className="font-jakarta font-extrabold text-primary-600 text-xl">Upcoming ({upcoming.length})</h2>
               </div>
               <AnimatePresence mode="popLayout">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className={gridClass}>
                   {upcoming.map((ev, i) => <EventCard key={ev.id} event={ev} index={i} />)}
                 </div>
               </AnimatePresence>
@@ -300,7 +303,7 @@ export default function EventsHubClient({ initialEvents }: { initialEvents: Site
                 <h2 className="font-jakarta font-extrabold text-slate-500 text-xl">Past Events ({past.length})</h2>
               </div>
               <AnimatePresence mode="popLayout">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 opacity-70">
+                <div className={`${gridClass} opacity-70`}>
                   {past.map((ev, i) => <EventCard key={ev.id} event={ev} index={i} />)}
                 </div>
               </AnimatePresence>

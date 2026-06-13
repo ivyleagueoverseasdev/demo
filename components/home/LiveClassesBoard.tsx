@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, Clock, Video, X, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { GRID_COLS_LG, clampCols } from '@/lib/gridCols';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface LiveClass {
@@ -358,11 +359,12 @@ function ClassCard({ cls, index, onBook }: { cls: LiveClass; index: number; onBo
 }
 
 // ── LiveClassesBoard (main export) ────────────────────────────────────────
-export default function LiveClassesBoard() {
+export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
   const [activeModal, setActiveModal] = useState<LiveClass | null>(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const CARD_W = 316;
+  const cols = clampCols(gridCols, 3);
 
   function scrollTo(idx: number) {
     const clamped = Math.min(Math.max(idx, 0), CLASSES.length - 1);
@@ -419,8 +421,8 @@ export default function LiveClassesBoard() {
 
           {/* ── Cards grid (desktop 3-col) / carousel (mobile) ── */}
 
-          {/* Desktop: static grid */}
-          <div className="hidden lg:grid grid-cols-3 gap-6">
+          {/* Desktop: static grid — admin-configurable column count */}
+          <div className={`hidden lg:grid ${GRID_COLS_LG[cols]} gap-6`}>
             {CLASSES.map((cls, i) => (
               <ClassCard key={cls.id} cls={cls} index={i} onBook={setActiveModal} />
             ))}

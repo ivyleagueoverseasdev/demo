@@ -16,6 +16,7 @@ interface MarqueeSettings {
   heading:    string;
   subheading: string;
   unis?: UniEntry[];
+  rows?: number;
 }
 
 const DEFAULT_SETTINGS: MarqueeSettings = {
@@ -24,6 +25,7 @@ const DEFAULT_SETTINGS: MarqueeSettings = {
   speedRow3:  50,
   heading:    'Students Placed in Top Universities',
   subheading: "Join 10,000+ students we've placed at the world's finest institutions across 12 countries.",
+  rows:       3,
 };
 
 function emptyUni(): UniEntry {
@@ -209,7 +211,13 @@ export default function AdminMarqueePage() {
               <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Subheading</label>
               <textarea value={settings.subheading} onChange={e => p('subheading', e.target.value)} rows={2} className={`${inp} resize-none`} />
             </div>
-            <div className="grid sm:grid-cols-3 gap-3">
+            <div className="grid sm:grid-cols-4 gap-3">
+              <div>
+                <label className="block font-jakarta text-[10px] text-slate-400 mb-1">Scrolling Rows</label>
+                <select value={settings.rows ?? 3} onChange={e => p('rows', Number(e.target.value))} className={`${inp} py-2 text-xs`}>
+                  {[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n}>{n}</option>)}
+                </select>
+              </div>
               <div>
                 <label className="block font-jakarta text-[10px] text-slate-400 mb-1">Row 1 Speed (sec, lower = faster)</label>
                 <input type="number" value={settings.speedRow1} onChange={e => p('speedRow1', Number(e.target.value))} className={`${inp} py-2 text-xs`} />
@@ -223,6 +231,9 @@ export default function AdminMarqueePage() {
                 <input type="number" value={settings.speedRow3 ?? 50} onChange={e => p('speedRow3', Number(e.target.value))} className={`${inp} py-2 text-xs`} />
               </div>
             </div>
+            <p className="font-jakarta text-[11px] text-slate-400">
+              Rows beyond 3 reuse a default speed progression. Universities are split evenly across all rows.
+            </p>
           </div>
 
           {/* University list */}

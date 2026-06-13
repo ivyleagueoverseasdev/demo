@@ -12,7 +12,7 @@ import type { Testimonial } from '@/lib/types';
 const STAR_OPTIONS = [5, 4, 3, 2, 1];
 
 const COUNTRIES = [
-  'USA 🇺🇸', 'UK 🇬🇧', 'Canada 🇨🇦', 'Australia 🇦🇺',
+  'United States 🇺🇸', 'United Kingdom 🇬🇧', 'Canada 🇨🇦', 'Australia 🇦🇺',
   'New Zealand 🇳🇿', 'Ireland 🇮🇪', 'Germany 🇩🇪', 'UAE 🇦🇪',
   'Singapore 🇸🇬', 'Japan 🇯🇵', 'South Korea 🇰🇷', 'Other',
 ];

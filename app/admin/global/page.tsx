@@ -24,7 +24,12 @@ const EMPTY: GlobalSettings = {
   headerBackgroundColor:   '#C7FBA0',
   headerVerticalPadding:   '',
   businessNameDisplayName: '',
+  destinationsCols:        4,
+  eventsCols:              3,
+  classesCols:             3,
 };
+
+const COL_OPTIONS = [1, 2, 3, 4, 5, 6];
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -146,6 +151,31 @@ export default function AdminGlobalPage() {
         <div className="p-6 grid sm:grid-cols-2 gap-4">
           <Field label="Notice Banner" hint="Optional announcement text. Leave empty to hide.">
             <input value={gs.noticeBanner ?? ''} onChange={e => set({ noticeBanner: e.target.value })} className={inp} placeholder="🎉 Fall 2026 intake applications now open!" />
+          </Field>
+        </div>
+      </div>
+
+      {/* Grid Layouts */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60">
+          <h3 className="font-jakarta font-bold text-slate-700">📐 Grid Layouts</h3>
+          <p className="font-jakarta text-xs text-slate-400 mt-0.5">Number of columns shown on tablet &amp; desktop (md/lg). Mobile always falls back to 1–2 columns.</p>
+        </div>
+        <div className="p-6 grid sm:grid-cols-3 gap-4">
+          <Field label="Destinations Grid" hint="Homepage 'Where will you go?' country cards.">
+            <select value={gs.destinationsCols ?? 4} onChange={e => set({ destinationsCols: Number(e.target.value) })} className={inp}>
+              {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
+            </select>
+          </Field>
+          <Field label="Events Grid" hint="/events hub — Upcoming &amp; Past Events.">
+            <select value={gs.eventsCols ?? 3} onChange={e => set({ eventsCols: Number(e.target.value) })} className={inp}>
+              {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
+            </select>
+          </Field>
+          <Field label="Live Classes Grid" hint="Homepage Live Classes board (desktop).">
+            <select value={gs.classesCols ?? 3} onChange={e => set({ classesCols: Number(e.target.value) })} className={inp}>
+              {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
+            </select>
           </Field>
         </div>
       </div>

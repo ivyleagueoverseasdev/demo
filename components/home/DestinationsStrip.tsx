@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { COUNTRIES } from '@/lib/data';
+import { GRID_COLS_MD, GRID_COLS_LG, clampCols } from '@/lib/gridCols';
 
 type Country = (typeof COUNTRIES)[number];
 
@@ -95,7 +96,9 @@ function DestinationCard({ c, i }: { c: Country; i: number }) {
   );
 }
 
-export default function DestinationsStrip() {
+export default function DestinationsStrip({ gridCols }: { gridCols?: number }) {
+  const cols = clampCols(gridCols, 4);
+
   return (
     <section className="section bg-slate-50">
       <div className="container-xl">
@@ -119,8 +122,8 @@ export default function DestinationsStrip() {
           </p>
         </motion.div>
 
-        {/* Country cards — 4-column grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {/* Country cards — admin-configurable column count on md/lg */}
+        <div className={`grid grid-cols-1 sm:grid-cols-2 ${GRID_COLS_MD[cols]} ${GRID_COLS_LG[cols]} gap-5`}>
           {COUNTRIES.map((c, i) => (
             <DestinationCard key={c.code} c={c} i={i} />
           ))}

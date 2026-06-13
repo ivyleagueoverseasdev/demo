@@ -29,8 +29,8 @@ export default function ReferralForm() {
         <label className="block font-jakarta text-sm font-semibold text-slate-700 mb-1.5">Target Country <span className="font-normal text-slate-400">(Optional)</span></label>
         <select className={fieldCls}>
           <option value="">Select a country…</option>
-          <option value="USA">USA</option>
-          <option value="UK">UK</option>
+          <option value="United States">United States</option>
+          <option value="United Kingdom">United Kingdom</option>
           <option value="Canada">Canada</option>
           <option value="Australia">Australia</option>
           <option value="Other">Other / Not Sure</option>

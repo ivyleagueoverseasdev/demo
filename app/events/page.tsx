@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { getPublicEvents, buildPageMeta } from '@/lib/public-data';
+import { getPublicEvents, getPublicGlobalSettings, buildPageMeta } from '@/lib/public-data';
 import { DEFAULT_EVENTS } from '@/lib/data';
 import type { SiteEvent } from '@/lib/types';
 import EventsHubClient from './EventsHubClient';
@@ -39,11 +39,14 @@ function EventsPageSkeleton() {
 
 export default async function EventsPage() {
   // Fetch server-side so the page renders with real data immediately
-  const events: SiteEvent[] = await getPublicEvents({ publishedOnly: true }).catch(() => DEFAULT_EVENTS);
+  const [events, globalSettings] = await Promise.all([
+    getPublicEvents({ publishedOnly: true }).catch(() => DEFAULT_EVENTS) as Promise<SiteEvent[]>,
+    getPublicGlobalSettings(),
+  ]);
 
   return (
     <Suspense fallback={<EventsPageSkeleton />}>
-      <EventsHubClient initialEvents={events} />
+      <EventsHubClient initialEvents={events} gridCols={globalSettings?.eventsCols} />
     </Suspense>
   );
 }

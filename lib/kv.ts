@@ -380,6 +380,7 @@ export interface MarqueeSettings {
   heading:     string;
   subheading:  string;
   unis?: { name: string; src: string; country: string; darkBg?: boolean }[];
+  rows?: number; // number of horizontal scrolling rows (1–6) — default 3
 }
 
 export async function getMarqueeSettings(): Promise<MarqueeSettings | null> {

@@ -196,7 +196,7 @@ export interface Testimonial {
   name:       string;
   role:       string;
   uni:        string;
-  country:    string;   // display label e.g. "USA 🇺🇸"
+  country:    string;   // display label e.g. "United States 🇺🇸"
   quote:      string;
   imageUrl:   string;   // avatar URL — empty string = show initials
   stars:      number;   // 1–5
@@ -236,6 +236,11 @@ export interface GlobalSettings {
   headerBackgroundColor?:  string;   // hex color for hero header bg, e.g. "#4D7C0F"
   headerVerticalPadding?:  string;   // e.g. "py-16 md:py-24" or a numeric rem value
   businessNameDisplayName?: string;  // large title text in hero header
+
+  // ── Admin-configurable grid layouts (1–6 columns, applied at md/lg) ────────
+  destinationsCols?: number;  // homepage "Where will you go?" destinations grid — default 4
+  eventsCols?:       number;  // /events hub — Upcoming & Past Events grids — default 3
+  classesCols?:      number;  // homepage Live Classes board desktop grid — default 3
 }
 
 // ── About page settings (admin-editable via /admin/about) ─────────────────────

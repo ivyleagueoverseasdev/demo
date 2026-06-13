@@ -23,8 +23,8 @@ const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string;
 };
 
 const COUNTRY_LABELS: Record<string, string> = {
-  usa:            '🇺🇸 USA',
-  uk:             '🇬🇧 UK',
+  usa:            '🇺🇸 United States',
+  uk:             '🇬🇧 United Kingdom',
   australia:      '🇦🇺 Australia',
   canada:         '🇨🇦 Canada',
   'new-zealand':  '🇳🇿 New Zealand',

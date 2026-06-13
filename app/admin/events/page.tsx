@@ -22,8 +22,8 @@ const EVENT_TYPES: { value: EventType; label: string; color: string }[] = [
 
 const COUNTRIES = [
   { value: '',             label: 'All Countries' },
-  { value: 'usa',         label: '🇺🇸 USA' },
-  { value: 'uk',          label: '🇬🇧 UK' },
+  { value: 'usa',         label: '🇺🇸 United States' },
+  { value: 'uk',          label: '🇬🇧 United Kingdom' },
   { value: 'australia',   label: '🇦🇺 Australia' },
   { value: 'canada',      label: '🇨🇦 Canada' },
   { value: 'new-zealand', label: '🇳🇿 New Zealand' },

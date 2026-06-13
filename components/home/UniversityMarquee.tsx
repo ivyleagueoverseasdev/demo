@@ -11,6 +11,7 @@ interface MarqueeSettings {
   heading:    string;
   subheading: string;
   unis?: UniEntry[];
+  rows?: number;
 }
 
 const DEFAULT_SETTINGS: MarqueeSettings = {
@@ -19,6 +20,7 @@ const DEFAULT_SETTINGS: MarqueeSettings = {
   speedRow3:  50,
   heading:    'Students Placed in Top Universities',
   subheading: "Join 10,000+ students we've placed at the world's finest institutions across 12 countries.",
+  rows:       3,
 };
 
 function UniLogoCard({ uni }: { uni: UniEntry }) {
@@ -115,10 +117,13 @@ export default function UniversityMarquee() {
   }, []);
 
   const unis  = settings.unis?.length ? settings.unis : UNIS_MARQUEE_DATA;
-  const third = Math.ceil(unis.length / 3);
-  const row1  = unis.slice(0, third);
-  const row2  = unis.slice(third, third * 2);
-  const row3  = unis.slice(third * 2);
+  const rows  = Math.min(6, Math.max(1, Math.round(settings.rows ?? 3)));
+  const chunk = Math.ceil(unis.length / rows);
+  const rowGroups = Array.from({ length: rows }, (_, i) => unis.slice(i * chunk, (i + 1) * chunk))
+    .filter(group => group.length > 0);
+
+  const speeds = [settings.speedRow1, settings.speedRow2, settings.speedRow3 ?? 50];
+  const speedFor = (i: number) => speeds[i] ?? 38 + i * 6;
 
   return (
     <section className="uni-marquee-section py-14 bg-gradient-to-b from-slate-50 to-white border-y border-slate-100 overflow-hidden">
@@ -138,11 +143,11 @@ export default function UniversityMarquee() {
         </p>
       </div>
 
-      {/* ── Three scrolling rows ── */}
+      {/* ── Scrolling rows (admin-configurable count, 1–6) ── */}
       <div className="space-y-3">
-        <MarqueeRow unis={row1} reverse={false} speed={settings.speedRow1} />
-        <MarqueeRow unis={row2} reverse={true}  speed={settings.speedRow2} />
-        <MarqueeRow unis={row3} reverse={false} speed={settings.speedRow3 ?? 50} />
+        {rowGroups.map((group, i) => (
+          <MarqueeRow key={i} unis={group} reverse={i % 2 === 1} speed={speedFor(i)} />
+        ))}
       </div>
 
       {/* ── Stats strip ── */}

@@ -26,12 +26,12 @@ interface Country {
 // ── Static data ───────────────────────────────────────────────────────────
 const COUNTRIES: Country[] = [
   {
-    code: 'usa', flag: '🇺🇸', name: 'USA',
+    code: 'usa', flag: '🇺🇸', name: 'United States',
     highlight: '2026 Intakes: Jan & Aug. STEM OPT 36-month extension active. H-1B lottery opens March.',
     waText: 'Hi! I am interested in studying in the USA for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },
   {
-    code: 'uk', flag: '🇬🇧', name: 'UK',
+    code: 'uk', flag: '🇬🇧', name: 'United Kingdom',
     highlight: '2026 Intakes: Jan & Sep. Graduate Route (2-yr PSW) confirmed active. Maintenance: £1,334/mo London.',
     waText: 'Hi! I am interested in studying in the UK for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },

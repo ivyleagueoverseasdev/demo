@@ -20,8 +20,8 @@ const NAV = [
 ];
 
 const DESTINATIONS = [
-  { label: '🇺🇸 USA',         href: '/destinations/usa'         },
-  { label: '🇬🇧 UK',          href: '/destinations/uk'          },
+  { label: '🇺🇸 United States', href: '/destinations/usa'        },
+  { label: '🇬🇧 United Kingdom', href: '/destinations/uk'        },
   { label: '🇨🇦 Canada',      href: '/destinations/canada'      },
   { label: '🇦🇺 Australia',   href: '/destinations/australia'   },
   { label: '🇮🇪 Ireland',     href: '/destinations/ireland'     },
