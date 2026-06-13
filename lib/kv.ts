@@ -379,7 +379,7 @@ export interface MarqueeSettings {
   speedRow3?:  number;
   heading:     string;
   subheading:  string;
-  unis?: { name: string; src: string; country: string }[];
+  unis?: { name: string; src: string; country: string; darkBg?: boolean }[];
 }
 
 export async function getMarqueeSettings(): Promise<MarqueeSettings | null> {
