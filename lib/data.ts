@@ -1048,7 +1048,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
       { num: '97%',     label: 'Visa Approval',    color: '#059669' },
       { num: '25+',     label: 'Years of Expertise', color: '#CCFF00' },
     ],
-    accentGradient:   'from-lime-900/60 via-lime-800/30',
+    accentGradient:   'from-homeblue-900/60 via-homeblue-800/30',
     enabled:          true,
   },
   {
@@ -1068,7 +1068,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
       { num: '12',     label: 'Countries',            color: '#7C3AED' },
       { num: '1,200+', label: 'Top-100 Placed',       color: '#D97706' },
     ],
-    accentGradient:   'from-lime-950/60 via-lime-900/30',
+    accentGradient:   'from-homeblue-950/60 via-homeblue-900/30',
     enabled:          true,
   },
   {
@@ -1088,7 +1088,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
       { num: '400+',    label: 'Partner Universities', color: '#D97706' },
       { num: '₹0',      label: 'Eligibility Check Cost', color: '#CCFF00' },
     ],
-    accentGradient:   'from-emerald-900/60 via-emerald-800/30',
+    accentGradient:   'from-homeblue-900/60 via-homeblue-800/30',
     enabled:          true,
   },
   {
@@ -1108,7 +1108,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
       { num: '10,000+', label: 'Visas Filed',       color: '#D97706' },
       { num: '12',      label: 'Countries Covered', color: '#CCFF00' },
     ],
-    accentGradient:   'from-lime-950/60 via-lime-900/30',
+    accentGradient:   'from-homeblue-950/60 via-homeblue-900/30',
     enabled:          true,
   },
   {
@@ -1128,7 +1128,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
       { num: '100%',    label: 'Custom Written',   color: '#34D399' },
       { num: '0', label: 'Templates Used',  color: '#CCFF00' },
     ],
-    accentGradient:   'from-violet-900/60 via-violet-800/30',
+    accentGradient:   'from-homeblue-900/60 via-homeblue-800/30',
     enabled:          true,
   },
   {
@@ -1148,7 +1148,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
       { num: '100%', label: 'Hassle-Free',     color: '#34D399' },
       { num: '1',    label: 'Single Point Contact', color: '#CCFF00' },
     ],
-    accentGradient:   'from-emerald-900/60 via-emerald-800/30',
+    accentGradient:   'from-homeblue-900/60 via-homeblue-800/30',
     enabled:          true,
   },
 ];

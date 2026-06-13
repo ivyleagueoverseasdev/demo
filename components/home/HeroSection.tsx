@@ -345,7 +345,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
         ref={sectionRef}
         className="relative overflow-hidden flex items-center"
         style={{
-          background: 'linear-gradient(160deg,#1A2E05 0%,#1A2E05 18%,#365314 55%,#4D7C0F 100%)',
+          background: 'linear-gradient(160deg,#07257C 0%,#0C37A0 18%,#1249C4 55%,#1A5CE8 100%)',
           minHeight: '100vh',
           marginTop: `-${HEADER_HEIGHT}px`,
           paddingTop: `${HEADER_HEIGHT}px`,
@@ -653,7 +653,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 </div>
 
                 {/* Gradient fallback */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-lime-900" />
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-homeblue-900" />
 
                 {/* Crossfading image with zoom-out reveal */}
                 <AnimatePresence mode="wait">
@@ -778,7 +778,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 className="object-cover object-top"
                 sizes="100vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-lime-900/96 via-lime-900/55 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-homeblue-900/96 via-homeblue-900/55 to-transparent" />
             </motion.div>
           </AnimatePresence>
         </div>
