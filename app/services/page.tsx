@@ -4,6 +4,7 @@ import { SERVICES } from '@/lib/data';
 import { getServicesSettings, getSiteContent } from '@/lib/kv';
 import { mergeServicesSettings } from '@/lib/pageDefaults';
 import type { ServiceItem } from '@/lib/types';
+import PageHero from '@/components/shared/PageHero';
 
 // Edge + dynamic so admin edits (Services editor, Homepage services list)
 // go live immediately.
@@ -30,23 +31,27 @@ export default async function ServicesPage() {
   return (
     <div className="bg-white">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-800 to-primary-600 text-white py-20">
-        <div className="container-xl">
-          <nav className="flex items-center gap-2 text-xs text-white/50 font-jakarta mb-8">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span>›</span><span className="text-white/80">Services</span>
-          </nav>
-          <div className="max-w-3xl">
-            <p className="font-jakarta text-xs font-semibold tracking-widest uppercase text-amber-400 mb-4">{s.heroEyebrow}</p>
-            <h1 className="font-jakarta font-extrabold text-white mb-5" style={{ fontSize: 'clamp(2.2rem,5vw,4rem)' }}>
-              {s.heroHeadingLine1}<br /><span className="text-amber-400">{s.heroHeadingLine2}</span>
-            </h1>
-            <p className="font-jakarta text-white/75 text-lg leading-relaxed max-w-2xl">
-              {s.heroParagraph}
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        gradient="linear-gradient(150deg,#051A57 0%,#0C37A0 50%,#1A5CE8 100%)"
+        breadcrumbLabel="Services"
+        eyebrow={s.heroEyebrow}
+        eyebrowColor="#B5FF00"
+        heading={
+          <>
+            {s.heroHeadingLine1}<br />
+            <span style={{ background: 'linear-gradient(135deg,#B5FF00,#CCFF00)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              {s.heroHeadingLine2}
+            </span>
+          </>
+        }
+        paragraph={s.heroParagraph}
+        image={{
+          src: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80&auto=format&fit=crop',
+          alt: 'Counsellor guiding a student through university options',
+        }}
+        badge={{ value: '97%', label: 'Visa approval rate' }}
+        blobColor="#B5FF00"
+      />
 
       {/* Services grid */}
       <section className="section bg-white">
@@ -106,7 +111,7 @@ export default async function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="section bg-primary-600 text-white">
+      <section className="section text-white" style={{ background: 'linear-gradient(135deg,#0C37A0,#246DFF)' }}>
         <div className="container-xl text-center">
           <h2 className="font-jakarta font-extrabold text-white mb-4" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
             {s.ctaHeading}

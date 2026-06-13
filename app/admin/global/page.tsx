@@ -16,9 +16,8 @@ const EMPTY: GlobalSettings = {
   brandName:               '',
   heroImages:              [],
   noticeBanner:            '',
-  linkedIn:                '',
-  instagram:               '',
   whatsappUrl:             '',
+  whatsappMessage:         '',
   mainLogoUrl:             '',
   businessNameText:        '',
   headerLogoUrl:           '',
@@ -122,22 +121,29 @@ export default function AdminGlobalPage() {
         </div>
       </div>
 
+      {/* WhatsApp */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60">
+          <h3 className="font-jakarta font-bold text-slate-700">💬 WhatsApp</h3>
+          <p className="font-jakarta text-xs text-slate-400 mt-0.5">Powers every WhatsApp button site-wide (header, footer, About &amp; Contact pages).</p>
+        </div>
+        <div className="p-6 grid sm:grid-cols-2 gap-4">
+          <Field label="WhatsApp Number / URL" hint="wa.me link — any ?text= here is ignored in favour of the message below.">
+            <input value={gs.whatsappUrl ?? ''} onChange={e => set({ whatsappUrl: e.target.value })} className={inp} placeholder="https://wa.me/919158577707" />
+          </Field>
+          <Field label="Pre-filled Message" hint="Sent automatically when a visitor taps any WhatsApp button.">
+            <input value={gs.whatsappMessage ?? ''} onChange={e => set({ whatsappMessage: e.target.value })} className={inp} placeholder="Hi! 👋 I am browsing the ILOC website and would like to learn more about your overseas education services." />
+          </Field>
+        </div>
+      </div>
+
       {/* Links */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60">
-          <h3 className="font-jakarta font-bold text-slate-700">🔗 Social &amp; Contact Links</h3>
-          <p className="font-jakarta text-xs text-slate-400 mt-0.5">Used by the footer social icons and WhatsApp buttons.</p>
+          <h3 className="font-jakarta font-bold text-slate-700">🔗 Other Settings</h3>
+          <p className="font-jakarta text-xs text-slate-400 mt-0.5">Site-wide announcement banner.</p>
         </div>
         <div className="p-6 grid sm:grid-cols-2 gap-4">
-          <Field label="WhatsApp URL" hint="Full wa.me link incl. pre-filled message.">
-            <input value={gs.whatsappUrl ?? ''} onChange={e => set({ whatsappUrl: e.target.value })} className={inp} placeholder="https://wa.me/919158577707?text=Hi…" />
-          </Field>
-          <Field label="Instagram URL">
-            <input value={gs.instagram ?? ''} onChange={e => set({ instagram: e.target.value })} className={inp} placeholder="https://instagram.com/ivyleagueoverseas" />
-          </Field>
-          <Field label="LinkedIn URL">
-            <input value={gs.linkedIn ?? ''} onChange={e => set({ linkedIn: e.target.value })} className={inp} placeholder="https://linkedin.com/company/ivyleagueoverseas" />
-          </Field>
           <Field label="Notice Banner" hint="Optional announcement text. Leave empty to hide.">
             <input value={gs.noticeBanner ?? ''} onChange={e => set({ noticeBanner: e.target.value })} className={inp} placeholder="🎉 Fall 2026 intake applications now open!" />
           </Field>

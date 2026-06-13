@@ -5,9 +5,10 @@ import {
   Target, GraduationCap, TrendingUp,
   Clock, Phone, Mail,
 } from 'lucide-react';
-import { COMPANY, STATS } from '@/lib/data';
-import { getAboutSettings, getStats, getCompanyDetails } from '@/lib/kv';
+import { COMPANY, STATS, buildWhatsAppLink } from '@/lib/data';
+import { getAboutSettings, getStats, getCompanyDetails, getGlobalSettings } from '@/lib/kv';
 import { mergeAboutSettings } from '@/lib/pageDefaults';
+import PageHero from '@/components/shared/PageHero';
 
 // Edge + dynamic so admin edits (About editor, Homepage stats, Company details)
 // go live immediately.
@@ -38,17 +39,21 @@ const MV_VISUALS = [
 const STAT_ICONS = [GraduationCap, TrendingUp, Award, Clock, Globe, ShieldCheck];
 
 export default async function AboutPage() {
-  const [kvSettings, kvStats, kvCompany] = await Promise.all([
+  const [kvSettings, kvStats, kvCompany, kvGlobal] = await Promise.all([
     getAboutSettings().catch(() => null),
     getStats().catch(() => null),
     getCompanyDetails().catch(() => null),
+    getGlobalSettings().catch(() => null),
   ]);
 
   const s     = mergeAboutSettings(kvSettings);
   const stats = kvStats?.length ? kvStats : STATS;
   const phone = kvCompany?.phone    || COMPANY.phone;
   const email = kvCompany?.email    || COMPANY.email;
-  const wa    = kvCompany?.whatsapp || COMPANY.wa;
+  const wa    = buildWhatsAppLink(
+    kvCompany?.whatsapp || COMPANY.wa,
+    kvGlobal?.whatsappMessage || COMPANY.whatsappMessage,
+  );
 
   const missionVision = [
     { ...MV_VISUALS[0], title: s.missionTitle, desc: s.missionDesc },
@@ -59,30 +64,27 @@ export default async function AboutPage() {
     <div className="bg-white">
 
       {/* ── Hero ── */}
-      <section className="bg-gradient-to-br from-primary-800 to-primary-600 text-white py-20">
-        <div className="container-xl">
-          <nav className="flex items-center gap-2 text-xs text-white/50 font-jakarta mb-8">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span>›</span>
-            <span className="text-white/80">About Us</span>
-          </nav>
-          <div className="max-w-3xl">
-            <p className="font-jakarta text-xs font-semibold tracking-widest uppercase text-amber-400 mb-4">
-              {s.heroEyebrow}
-            </p>
-            <h1
-              className="font-jakarta font-extrabold text-white mb-5"
-              style={{ fontSize: 'clamp(2.2rem,5vw,4rem)' }}
-            >
-              {s.heroHeadingLine1}<br />
-              <span className="text-amber-400">{s.heroHeadingLine2}</span>
-            </h1>
-            <p className="font-jakarta text-white/75 text-lg leading-relaxed max-w-2xl">
-              {s.heroParagraph}
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        gradient="linear-gradient(135deg,#0C37A0 0%,#1249C4 55%,#246DFF 100%)"
+        breadcrumbLabel="About Us"
+        eyebrow={s.heroEyebrow}
+        eyebrowColor="#CCFF00"
+        heading={
+          <>
+            {s.heroHeadingLine1}<br />
+            <span style={{ background: 'linear-gradient(135deg,#CCFF00,#A3E635)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              {s.heroHeadingLine2}
+            </span>
+          </>
+        }
+        paragraph={s.heroParagraph}
+        image={{
+          src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80&auto=format&fit=crop',
+          alt: 'Students collaborating in a modern library',
+        }}
+        badge={{ value: '10,000+', label: 'Students placed worldwide' }}
+        blobColor="#CCFF00"
+      />
 
       {/* ── Stats ── */}
       <section className="bg-white border-b border-slate-100">

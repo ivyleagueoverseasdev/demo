@@ -1,14 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { COMPANY, COUNTRIES } from '@/lib/data';
+import { COMPANY, COUNTRIES, buildWhatsAppLink } from '@/lib/data';
+import PageHero from '@/components/shared/PageHero';
 
 export default function ContactPage() {
   const [f,    setF]    = useState({ name:'', email:'', phone:'', country:'', program:'', msg:'' });
   const [ok,   setOk]   = useState(false);
   const [busy, setBusy] = useState(false);
   const [err,  setErr]  = useState('');
+  const [wa,   setWa]   = useState(buildWhatsAppLink(COMPANY.wa, COMPANY.whatsappMessage));
+
+  useEffect(() => {
+    fetch('/api/content', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: any) => {
+        const cd = d?.companyDetails;
+        const gs = d?.globalSettings;
+        const waBase = cd?.whatsapp || gs?.whatsappUrl || COMPANY.wa;
+        const waMsg  = gs?.whatsappMessage || COMPANY.whatsappMessage;
+        setWa(buildWhatsAppLink(waBase, waMsg));
+      })
+      .catch(() => {});
+  }, []);
 
   const chg = (k: keyof typeof f, v: string) => setF(p => ({ ...p, [k]: v }));
 
@@ -56,20 +71,28 @@ export default function ContactPage() {
   return (
     <div className="bg-white">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-800 to-primary-600 text-white py-20">
-        <div className="container-xl">
-          <nav className="flex items-center gap-2 text-xs text-white/50 font-jakarta mb-8">
-            <Link href="/" className="hover:text-white">Home</Link>
-            <span>›</span><span className="text-white/80">Contact</span>
-          </nav>
-          <h1 className="font-jakarta font-extrabold text-white mb-4" style={{ fontSize: 'clamp(2.2rem,5vw,4rem)' }}>
-            Get in touch.
-          </h1>
-          <p className="font-jakarta text-white/70 text-lg max-w-lg">
-            Book a free counselling session or send us a message. We'll respond within 24 hours.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        gradient="linear-gradient(115deg,#1249C4 0%,#246DFF 55%,#5A8CFF 100%)"
+        breadcrumbLabel="Contact"
+        eyebrow="We're Here to Help"
+        eyebrowColor="#CCFF00"
+        heading={
+          <>
+            Get in{' '}
+            <span style={{ background: 'linear-gradient(135deg,#CCFF00,#A3E635)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              touch.
+            </span>
+          </>
+        }
+        paragraph="Book a free counselling session or send us a message. We'll respond within 24 hours."
+        image={{
+          src: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop',
+          alt: 'ILOC counselling office desk'
+        }}
+        imagePosition="left"
+        badge={{ value: '24h', label: 'Average response time' }}
+        blobColor="#CCFF00"
+      />
 
       <section className="section bg-white">
         <div className="container-xl">
@@ -101,7 +124,7 @@ export default function ContactPage() {
                   </div>
                 ))}
               </div>
-              <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
+              <a href={wa} target="_blank" rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2 font-jakarta font-bold text-sm py-3.5 rounded-xl text-white"
                 style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
                 💬 Instant Response on WhatsApp
@@ -168,7 +191,7 @@ export default function ContactPage() {
                     Our counsellor will call you at <strong>{f.phone}</strong> within 24 hours.
                     {f.country && <> We'll prepare a personalised plan for <strong className="text-amber-600">{f.country}</strong>.</>}
                   </p>
-                  <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
+                  <a href={wa} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-white"
                     style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
                     💬 Connect on WhatsApp for instant help

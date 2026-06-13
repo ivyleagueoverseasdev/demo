@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getPublicNews, buildPageMeta } from '@/lib/public-data';
+import PageHero from '@/components/shared/PageHero';
 
 export const metadata: Metadata = buildPageMeta({
   title:       'News & Updates 2026 | ILOC — Overseas Education from Pune',
@@ -25,37 +26,27 @@ export default async function NewsPage() {
     <main className="bg-white min-h-screen">
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section
-        className="relative overflow-hidden py-20 lg:py-28"
-        style={{ background: 'linear-gradient(145deg,#1A2E05 0%,#3F6212 55%,#4D7C0F 100%)' }}
-      >
-        {/* Dot grid */}
-        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" aria-hidden>
-          <svg width="100%" height="100%">
-            <defs>
-              <pattern id="ndots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="1.5" fill="white" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#ndots)" />
-          </svg>
-        </div>
-        <div className="container-xl relative z-10 text-center">
-          <div className="inline-block h-1 w-12 rounded-full bg-gradient-to-r from-amber-400 to-amber-300 mb-5" />
-          <p className="font-jakarta text-xs font-semibold tracking-widest uppercase text-amber-400 mb-4">
-            ILOC Intelligence
-          </p>
-          <h1
-            className="font-jakarta font-extrabold text-white mb-5 leading-tight"
-            style={{ fontSize: 'clamp(2rem,5vw,3.5rem)' }}
-          >
-            News &amp; Updates 2026
-          </h1>
-          <p className="font-jakarta text-white/75 max-w-xl mx-auto leading-relaxed text-base">
-            Visa rule changes, scholarship deadlines, and study-abroad intelligence — curated weekly by our counselling team.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        gradient="linear-gradient(160deg,#07257C 0%,#1249C4 60%,#1A5CE8 100%)"
+        breadcrumbLabel="News"
+        eyebrow="ILOC Intelligence"
+        eyebrowColor="#CCFF00"
+        heading={
+          <>
+            News &amp; Updates{' '}
+            <span style={{ background: 'linear-gradient(135deg,#CCFF00,#A3E635)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              2026
+            </span>
+          </>
+        }
+        paragraph="Visa rule changes, scholarship deadlines, and study-abroad intelligence — curated weekly by our counselling team."
+        image={{
+          src: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1200&q=80&auto=format&fit=crop',
+          alt: 'Student reading the latest study-abroad news',
+        }}
+        badge={{ value: 'Weekly', label: 'Fresh visa & scholarship updates' }}
+        blobColor="#A3E635"
+      />
 
       {/* ── Articles grid ────────────────────────────────────────────────── */}
       <section className="section bg-slate-50">

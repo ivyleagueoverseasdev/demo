@@ -12,8 +12,22 @@ export const COMPANY = {
   tagline:   'From Pune to the World\'s Best Universities.',
   website:   'https://www.ivyleagueoverseas.com/',
   wa:        'https://wa.me/919158577707?text=Hi%21%20%F0%9F%91%8B%20I%20am%20browsing%20the%20ILOC%20website%20and%20would%20like%20to%20learn%20more%20about%20your%20overseas%20education%20services.',
+  // Default pre-filled WhatsApp greeting — admin-editable via /admin/global (GlobalSettings.whatsappMessage).
+  whatsappMessage: 'Hi! 👋 I am browsing the ILOC website and would like to learn more about your overseas education services.',
   mapsLink:  'https://share.google/g3DURuQ8R1TbBPXzR',
 } as const;
+
+/**
+ * Build a wa.me link from a base WhatsApp URL (with or without an existing
+ * ?text= query) and a pre-filled message. Used so the admin-configurable
+ * greeting text (GlobalSettings.whatsappMessage) can be applied to any
+ * WhatsApp CTA across the site without hardcoding the message per component.
+ */
+export function buildWhatsAppLink(base: string, message?: string): string {
+  const url = base.split('?')[0];
+  const msg = message?.trim();
+  return msg ? `${url}?text=${encodeURIComponent(msg)}` : url;
+}
 
 export const STATS: Stat[] = [
   { num: '10,000+', label: 'Students Placed'               },

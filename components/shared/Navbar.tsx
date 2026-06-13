@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { COMPANY } from '@/lib/data';
+import { COMPANY, buildWhatsAppLink } from '@/lib/data';
 
 // ── Nav data ──────────────────────────────────────────────────────────────
 const NAV = [
@@ -205,7 +205,7 @@ export default function Navbar() {
   const [headerBg,  setHeaderBg]  = useState('#C7FBA0');
   const [logoUrl,   setLogoUrl]   = useState('/logo2.png');
   const [brandText, setBrandText] = useState('IVY LEAGUE OVERSEAS CONSULTING');
-  const [contact,   setContact]   = useState({ phone: COMPANY.phone, email: COMPANY.email, wa: COMPANY.wa });
+  const [contact,   setContact]   = useState<{ phone: string; email: string; wa: string }>({ phone: COMPANY.phone, email: COMPANY.email, wa: COMPANY.wa });
 
   const pathname  = usePathname();
   const destTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -222,14 +222,17 @@ export default function Navbar() {
         const name = gs?.businessNameText || gs?.businessNameDisplayName || gs?.brandName;
         if (name) setBrandText(name);
         const cd = d?.companyDetails;
+        const waBase = cd?.whatsapp || gs?.whatsappUrl || COMPANY.wa;
+        const waMsg  = gs?.whatsappMessage || COMPANY.whatsappMessage;
+        const wa     = buildWhatsAppLink(waBase, waMsg);
         if (cd) {
           setContact(c => ({
-            phone: cd.phone    || c.phone,
-            email: cd.email    || c.email,
-            wa:    cd.whatsapp || gs?.whatsappUrl || c.wa,
+            phone: cd.phone || c.phone,
+            email: cd.email || c.email,
+            wa,
           }));
-        } else if (gs?.whatsappUrl) {
-          setContact(c => ({ ...c, wa: gs.whatsappUrl }));
+        } else if (gs?.whatsappUrl || gs?.whatsappMessage) {
+          setContact(c => ({ ...c, wa }));
         }
       })
       .catch(() => {});

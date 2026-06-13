@@ -228,9 +228,8 @@ export interface GlobalSettings {
   brandName:               string;   // override display name (e.g. "ILOC" → custom)
   heroImages:              string[]; // up to 3 carousel URLs
   noticeBanner:            string;   // optional top-bar text; empty = hidden
-  linkedIn:                string;   // full URL
-  instagram:               string;   // full URL
   whatsappUrl:             string;   // full wa.me URL
+  whatsappMessage?:        string;   // pre-filled greeting text appended to every WhatsApp link as ?text=
   mainLogoUrl?:            string;   // custom logo image URL (optional — falls back to SVG)
   businessNameText?:       string;   // custom business name displayed in header
   headerLogoUrl?:          string;   // hero-header-specific logo URL

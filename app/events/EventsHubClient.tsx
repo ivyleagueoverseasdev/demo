@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { SiteEvent, EventType } from '@/lib/types';
+import PageHero from '@/components/shared/PageHero';
 
 // ── Type config ────────────────────────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
@@ -196,47 +197,47 @@ export default function EventsHubClient({ initialEvents }: { initialEvents: Site
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden py-20 lg:py-28" style={{ background: 'linear-gradient(145deg,#1A2E05 0%,#3F6212 55%,#4D7C0F 100%)' }}>
-        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" aria-hidden>
-          <svg width="100%" height="100%">
-            <defs><pattern id="edots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="white" /></pattern></defs>
-            <rect width="100%" height="100%" fill="url(#edots)" />
-          </svg>
-        </div>
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.08] pointer-events-none" style={{ background: 'radial-gradient(circle,#D97706,transparent 68%)', transform: 'translate(30%,-30%)' }} />
-
-        <div className="container-xl relative z-10 text-center">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
-            <div className="inline-block h-1 w-12 rounded-full bg-gradient-to-r from-amber-400 to-amber-300 mb-5" />
-            <p className="font-jakarta text-xs font-semibold tracking-widest uppercase text-amber-400 mb-4">
-              Events & Masterclasses
-            </p>
-            <h1 className="font-jakarta font-extrabold text-white mb-5 leading-tight" style={{ fontSize: 'clamp(2rem,5vw,3.5rem)' }}>
-              Upcoming Events &amp; Classes.{' '}
-              <span style={{ background: 'linear-gradient(135deg,#FBBF24,#F59E0B)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                Don&apos;t miss out.
-              </span>
-            </h1>
-            <p className="font-jakarta text-white/75 max-w-xl mx-auto leading-relaxed text-base mb-8">
-              Free webinars, live coaching classes, and university fairs — all designed to give Indian students a clear roadmap to global opportunities.
-            </p>
-            {/* Live stats */}
-            <div className="flex flex-wrap justify-center gap-4">
-              {[
-                { icon: '📅', num: `${upcoming.length}`, label: 'Upcoming' },
-                { icon: '🎓', num: '10,000+',            label: 'Students Placed' },
-                { icon: '🎁', num: 'Free',               label: 'Demo Sessions' },
-              ].map(s => (
-                <div key={s.label} className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-2">
-                  <span className="text-base">{s.icon}</span>
-                  <span className="font-jakarta font-bold text-white text-sm">{s.num}</span>
-                  <span className="font-jakarta text-white/65 text-xs">{s.label}</span>
-                </div>
-              ))}
-            </div>
+      <PageHero
+        gradient="linear-gradient(140deg,#051A57 0%,#07257C 45%,#246DFF 100%)"
+        breadcrumbLabel="Events"
+        eyebrow="Events & Masterclasses"
+        eyebrowColor="#A3E635"
+        heading={
+          <>
+            Upcoming Events &amp; Classes.{' '}
+            <span style={{ background: 'linear-gradient(135deg,#A3E635,#CCFF00)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              Don&apos;t miss out.
+            </span>
+          </>
+        }
+        paragraph="Free webinars, live coaching classes, and university fairs — all designed to give Indian students a clear roadmap to global opportunities."
+        image={{
+          src: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80&auto=format&fit=crop',
+          alt: 'Students attending a live masterclass',
+        }}
+        badge={{ value: `${upcoming.length}`, label: 'Live events this month' }}
+        blobColor="#A3E635"
+        extra={
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-wrap gap-3 mt-7"
+          >
+            {[
+              { icon: '📅', num: `${upcoming.length}`, label: 'Upcoming' },
+              { icon: '🎓', num: '10,000+',            label: 'Students Placed' },
+              { icon: '🎁', num: 'Free',               label: 'Demo Sessions' },
+            ].map(s => (
+              <div key={s.label} className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-2">
+                <span className="text-base">{s.icon}</span>
+                <span className="font-jakarta font-bold text-white text-sm">{s.num}</span>
+                <span className="font-jakarta text-white/65 text-xs">{s.label}</span>
+              </div>
+            ))}
           </motion.div>
-        </div>
-      </section>
+        }
+      />
 
       {/* ── Sticky filter bar ─────────────────────────────────────────────── */}
       <div className="sticky top-0 z-30 border-b border-slate-200" style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}>
