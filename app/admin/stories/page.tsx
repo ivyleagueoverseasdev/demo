@@ -13,7 +13,7 @@ const STAR_OPTIONS = [5, 4, 3, 2, 1];
 
 const COUNTRIES = [
   'United States 🇺🇸', 'United Kingdom 🇬🇧', 'Canada 🇨🇦', 'Australia 🇦🇺',
-  'New Zealand 🇳🇿', 'Ireland 🇮🇪', 'Germany 🇩🇪', 'UAE 🇦🇪',
+  'New Zealand 🇳🇿', 'Ireland 🇮🇪', 'Germany 🇩🇪', 'United Arab Emirates 🇦🇪',
   'Singapore 🇸🇬', 'Japan 🇯🇵', 'South Korea 🇰🇷', 'Other',
 ];
 

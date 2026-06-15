@@ -61,9 +61,9 @@ const COUNTRIES: Country[] = [
     waText: 'Hi! I am interested in studying in Europe (Germany/Netherlands/France) for 2026 intake. Could I get a free consultation with ILOC?',
   },
   {
-    code: 'uae', flag: '🇦🇪', name: 'UAE',
+    code: 'uae', flag: '🇦🇪', name: 'United Arab Emirates',
     highlight: '2026 Intakes: Jan & Sep. NYU Abu Dhabi, Heriot-Watt Dubai. Zero income tax. 4-hr flight from India.',
-    waText: 'Hi! I am interested in studying in the UAE for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
+    waText: 'Hi! I am interested in studying in the United Arab Emirates for 2026 intake. Could I get a free consultation with ILOC to understand my options?',
   },
   {
     code: 'japan', flag: '🇯🇵', name: 'Japan',

@@ -9,9 +9,9 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Study Destinations 2026 | USA, UK, Canada, Europe, UAE & More | ILOC',
+  title: 'Study Destinations 2026 | USA, UK, Canada, Europe, United Arab Emirates & More | ILOC',
   description:
-    'Explore 2026 visa guides, scholarships and career pathways for 12 top study destinations — USA, UK, Canada, Australia, Ireland, New Zealand, Europe, UAE, Japan, South Korea, Singapore and Russia. Expert advice from ILOC Pune.',
+    'Explore 2026 visa guides, scholarships and career pathways for 12 top study destinations — USA, UK, Canada, Australia, Ireland, New Zealand, Europe, United Arab Emirates, Japan, South Korea, Singapore and Russia. Expert advice from ILOC Pune.',
 };
 
 export default async function DestinationsPage() {

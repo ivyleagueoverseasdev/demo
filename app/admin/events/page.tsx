@@ -29,7 +29,7 @@ const COUNTRIES = [
   { value: 'new-zealand', label: '🇳🇿 New Zealand' },
   { value: 'ireland',     label: '🇮🇪 Ireland' },
   { value: 'europe',      label: '🇪🇺 Europe' },
-  { value: 'uae',         label: '🇦🇪 UAE' },
+  { value: 'uae',         label: '🇦🇪 United Arab Emirates' },
   { value: 'japan',       label: '🇯🇵 Japan' },
   { value: 'south-korea', label: '🇰🇷 South Korea' },
   { value: 'singapore',   label: '🇸🇬 Singapore' },

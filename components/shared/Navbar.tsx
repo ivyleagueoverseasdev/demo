@@ -27,7 +27,7 @@ const DESTINATIONS = [
   { label: '🇮🇪 Ireland',     href: '/destinations/ireland'     },
   { label: '🇳🇿 New Zealand', href: '/destinations/new-zealand' },
   { label: '🇪🇺 Europe',      href: '/destinations/europe'      },
-  { label: '🇦🇪 UAE',         href: '/destinations/uae'         },
+  { label: '🇦🇪 United Arab Emirates', href: '/destinations/uae' },
   { label: '🇯🇵 Japan',       href: '/destinations/japan'       },
   { label: '🇰🇷 South Korea', href: '/destinations/south-korea' },
   { label: '🇸🇬 Singapore',   href: '/destinations/singapore'   },
@@ -356,7 +356,7 @@ export default function Navbar() {
             </Link>
 
             {/* Business title: fade + slide from left, staggered */}
-            <Link href="/" className="flex-shrink-0 min-w-0">
+            <Link href="/" className="min-w-0">
               <motion.div
                 initial={{ opacity: 0, x: -22 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -369,7 +369,7 @@ export default function Navbar() {
                 <motion.div
                   animate={{ fontSize: scrolled ? '1.2rem' : 'clamp(1.5rem,2.8vw,2.6rem)' }}
                   transition={{ duration: 0.32, ease: 'easeInOut' }}
-                  className="font-jakarta font-black text-slate-900 leading-tight tracking-tight"
+                  className="font-jakarta font-black text-slate-900 leading-tight tracking-tight truncate"
                 >
                   {brandText}
                 </motion.div>

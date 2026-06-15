@@ -823,31 +823,31 @@ const EUROPE: CountryContent = {
 // ── UAE ────────────────────────────────────────────────────────────────────────
 const UAE: CountryContent = {
   'why-study': `
-<h2>Why Study in the UAE in 2026?</h2>
+<h2>Why Study in the United Arab Emirates in 2026?</h2>
 <p>The United Arab Emirates has transformed itself into one of the world's most dynamic international education hubs in less than a decade. Dubai and Abu Dhabi now host branch campuses of globally ranked institutions — NYU Abu Dhabi, Heriot-Watt University Dubai, Middlesex University Dubai, and the University of Birmingham Dubai — offering authentic, accredited international degrees within a 4-hour flight from India.</p>
 <h3>Zero Income Tax: The Financial Advantage</h3>
-<p>The UAE levies <strong>no personal income tax</strong>. A graduate earning AED 150,000/year retains every dirham — making UAE salaries among the highest real-value compensation packages globally. For Indian students weighing 3 years of US OPT against immediate UAE employment, the tax-free salary is a compelling equaliser.</p>
+<p>The United Arab Emirates levies <strong>no personal income tax</strong>. A graduate earning AED 150,000/year retains every dirham — making United Arab Emirates salaries among the highest real-value compensation packages globally. For Indian students weighing 3 years of US OPT against immediate United Arab Emirates employment, the tax-free salary is a compelling equaliser.</p>
 <h3>Proximity to India & Cultural Familiarity</h3>
-<p>The UAE hosts the world's largest Indian diaspora — over 3.5 million Indians. Hindi, Malayalam, Tamil, and Punjabi are widely spoken. Vegetarian food is universally available. The 4-hour direct flight from Mumbai means families can visit cheaply and frequently — a psychological comfort that matters enormously for first-time international students.</p>
-<h3>2026: UAE Golden Visa for Graduates</h3>
-<p>Top-performing graduates from accredited UAE universities are now eligible for the <strong>10-year UAE Golden Visa</strong> — a landmark long-term residency permit that allows living, working, and studying without a national sponsor. This is a game-changer for Indian students seeking long-term Middle East career pathways.</p>
-<blockquote><p><strong>ILOC Insight (2026):</strong> The UAE is the fastest-growing destination in our portfolio for 2026. Students from Maharashtra and Gujarat with strong commerce or engineering backgrounds are finding the UAE combination of global degree + tax-free salary + proximity to India genuinely compelling.</p></blockquote>
+<p>The United Arab Emirates hosts the world's largest Indian diaspora — over 3.5 million Indians. Hindi, Malayalam, Tamil, and Punjabi are widely spoken. Vegetarian food is universally available. The 4-hour direct flight from Mumbai means families can visit cheaply and frequently — a psychological comfort that matters enormously for first-time international students.</p>
+<h3>2026: United Arab Emirates Golden Visa for Graduates</h3>
+<p>Top-performing graduates from accredited United Arab Emirates universities are now eligible for the <strong>10-year United Arab Emirates Golden Visa</strong> — a landmark long-term residency permit that allows living, working, and studying without a national sponsor. This is a game-changer for Indian students seeking long-term Middle East career pathways.</p>
+<blockquote><p><strong>ILOC Insight (2026):</strong> The United Arab Emirates is the fastest-growing destination in our portfolio for 2026. Students from Maharashtra and Gujarat with strong commerce or engineering backgrounds are finding the United Arab Emirates combination of global degree + tax-free salary + proximity to India genuinely compelling.</p></blockquote>
 `,
   'application-procedure': `
-<h2>UAE Application Procedure (2026 Intake)</h2>
+<h2>United Arab Emirates Application Procedure (2026 Intake)</h2>
 <h3>Step 1 — University Selection (Month 1)</h3>
-<p>ILOC maps your degree objective to the strongest available UAE institution:</p>
+<p>ILOC maps your degree objective to the strongest available United Arab Emirates institution:</p>
 <ul>
   <li><strong>NYU Abu Dhabi:</strong> Liberal arts, Science, Engineering — highly selective, generous scholarships</li>
   <li><strong>Heriot-Watt University Dubai:</strong> Engineering, Business, Actuarial Science — UK-accredited degree</li>
   <li><strong>Middlesex University Dubai:</strong> Business, IT, Arts — UK degree, more accessible entry</li>
   <li><strong>University of Birmingham Dubai:</strong> Engineering, Business — Russell Group degree in Dubai</li>
-  <li><strong>UAEU (UAE University):</strong> Engineering, Medicine — flagship national university</li>
+  <li><strong>UAEU (United Arab Emirates University):</strong> Engineering, Medicine — flagship national university</li>
 </ul>
 <h3>Step 2 — Application Submission (Month 1–2)</h3>
-<p>Most UAE universities have rolling admissions. ILOC prepares your complete package: transcripts (attested), English proficiency scores, personal statement, and references. Applications are typically reviewed within 2–4 weeks.</p>
+<p>Most United Arab Emirates universities have rolling admissions. ILOC prepares your complete package: transcripts (attested), English proficiency scores, personal statement, and references. Applications are typically reviewed within 2–4 weeks.</p>
 <h3>Step 3 — Student Entry Permit & Visa (Month 2–3)</h3>
-<p>Upon receiving your offer letter, your university sponsors your UAE Student Entry Permit. ILOC guides:</p>
+<p>Upon receiving your offer letter, your university sponsors your United Arab Emirates Student Entry Permit. ILOC guides:</p>
 <ul>
   <li>Medical fitness test (blood test + chest X-ray) — required for all entrants</li>
   <li>Emirates ID registration at GDRFA within 30 days of arrival</li>
@@ -865,7 +865,7 @@ const UAE: CountryContent = {
 </table>
 `,
   'university-list': `
-<h2>Top UAE Universities for Indian Students (2026)</h2>
+<h2>Top United Arab Emirates Universities for Indian Students (2026)</h2>
 <h3>International Branch Campuses</h3>
 <ul>
   <li><strong>NYU Abu Dhabi</strong> — Ranked among the most selective universities globally; full scholarships available; offers degrees in Science, Engineering, Liberal Arts, and Social Science identical to NYU New York</li>
@@ -874,9 +874,9 @@ const UAE: CountryContent = {
   <li><strong>Middlesex University Dubai</strong> — Business, IT, Media, Psychology; UK degree, accessible entry requirements</li>
   <li><strong>Murdoch University Dubai</strong> — Australian degree; Business, IT, Media</li>
 </ul>
-<h3>National UAE Universities</h3>
+<h3>National United Arab Emirates Universities</h3>
 <ul>
-  <li><strong>UAE University (UAEU)</strong> — Flagship national university; Medicine, Engineering, Business; QS ranked</li>
+  <li><strong>United Arab Emirates University (UAEU)</strong> — Flagship national university; Medicine, Engineering, Business; QS ranked</li>
   <li><strong>Khalifa University</strong> — Abu Dhabi; focused on Engineering, AI, Energy; strong industry ties with ADNOC, Mubadala</li>
   <li><strong>American University of Sharjah (AUS)</strong> — Architecture, Engineering, Business; ABET-accredited programs</li>
   <li><strong>University of Sharjah</strong> — Medicine, Pharmacy, Dentistry — growing popularity among Indian students</li>
@@ -888,20 +888,20 @@ const UAE: CountryContent = {
 </ul>
 `,
   'salient-features': `
-<h2>Salient Features of Studying in the UAE</h2>
+<h2>Salient Features of Studying in the United Arab Emirates</h2>
 <ul>
   <li><strong>Zero income tax:</strong> Graduates retain 100% of their salary — no PAYE, no income deductions beyond social contributions.</li>
   <li><strong>World-class infrastructure:</strong> State-of-the-art campuses, cutting-edge labs, and smart-city environments that mirror the innovation culture of Singapore and Switzerland.</li>
-  <li><strong>Indian community support:</strong> Over 3.5 million Indians in the UAE — the largest diaspora globally. Malayalam, Hindi, Gujarati, and Tamil widely spoken.</li>
+  <li><strong>Indian community support:</strong> Over 3.5 million Indians in the United Arab Emirates — the largest diaspora globally. Malayalam, Hindi, Gujarati, and Tamil widely spoken.</li>
   <li><strong>Part-time work (2026):</strong> Student visa holders may now work 20 hours/week — enabling students to gain professional experience and offset living costs simultaneously.</li>
-  <li><strong>Safety & stability:</strong> UAE consistently ranks among the world's safest countries — a major factor for Indian parents.</li>
+  <li><strong>Safety & stability:</strong> The United Arab Emirates consistently ranks among the world's safest countries — a major factor for Indian parents.</li>
   <li><strong>English-medium instruction:</strong> All international branch campuses and most national universities operate in English.</li>
   <li><strong>Cost of living:</strong> AED 3,000–6,000/month including accommodation, transport and food — comparable to UK, lower than USA.</li>
-  <li><strong>Golden Visa pathway:</strong> High-performing graduates eligible for the 10-year UAE Golden Visa, enabling long-term career building without annual visa renewals.</li>
+  <li><strong>Golden Visa pathway:</strong> High-performing graduates eligible for the 10-year United Arab Emirates Golden Visa, enabling long-term career building without annual visa renewals.</li>
 </ul>
 `,
   'entry-criteria': `
-<h2>Entry Criteria for UAE Universities (2026)</h2>
+<h2>Entry Criteria for United Arab Emirates Universities (2026)</h2>
 <h3>Undergraduate Programs</h3>
 <table>
   <thead><tr><th>Requirement</th><th>NYU Abu Dhabi / Khalifa</th><th>Heriot-Watt / Middlesex</th><th>UAEU / AUS</th></tr></thead>

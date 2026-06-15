@@ -30,7 +30,7 @@ const COUNTRY_LABELS: Record<string, string> = {
   'new-zealand':  '🇳🇿 New Zealand',
   ireland:        '🇮🇪 Ireland',
   europe:         '🇪🇺 Europe',
-  uae:            '🇦🇪 UAE',
+  uae:            '🇦🇪 United Arab Emirates',
   japan:          '🇯🇵 Japan',
   'south-korea':  '🇰🇷 South Korea',
   singapore:      '🇸🇬 Singapore',
