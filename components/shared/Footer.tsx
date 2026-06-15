@@ -25,7 +25,7 @@ const SERVICE_LINKS = [
 
 // Top 8 destinations for footer
 const DEST_LINKS = COUNTRIES.slice(0, 8).map(c => ({
-  label: `${c.flag} ${c.name}`,
+  label: c.name,
   href:  `/destinations/${c.code}`,
 }));
 
