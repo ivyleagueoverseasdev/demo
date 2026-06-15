@@ -20,18 +20,18 @@ const NAV = [
 ];
 
 const DESTINATIONS = [
-  { label: '🇺🇸 United States', href: '/destinations/usa'        },
-  { label: '🇬🇧 United Kingdom', href: '/destinations/uk'        },
-  { label: '🇨🇦 Canada',      href: '/destinations/canada'      },
-  { label: '🇦🇺 Australia',   href: '/destinations/australia'   },
-  { label: '🇮🇪 Ireland',     href: '/destinations/ireland'     },
-  { label: '🇳🇿 New Zealand', href: '/destinations/new-zealand' },
-  { label: '🇪🇺 Europe',      href: '/destinations/europe'      },
-  { label: '🇦🇪 United Arab Emirates', href: '/destinations/uae' },
-  { label: '🇯🇵 Japan',       href: '/destinations/japan'       },
-  { label: '🇰🇷 South Korea', href: '/destinations/south-korea' },
-  { label: '🇸🇬 Singapore',   href: '/destinations/singapore'   },
-  { label: '🇷🇺 Russia',      href: '/destinations/russia'      },
+  { label: 'United States', href: '/destinations/usa'        },
+  { label: 'United Kingdom', href: '/destinations/uk'        },
+  { label: 'Canada',      href: '/destinations/canada'      },
+  { label: 'Australia',   href: '/destinations/australia'   },
+  { label: 'Ireland',     href: '/destinations/ireland'     },
+  { label: 'New Zealand', href: '/destinations/new-zealand' },
+  { label: 'Europe',      href: '/destinations/europe'      },
+  { label: 'United Arab Emirates', href: '/destinations/uae' },
+  { label: 'Japan',       href: '/destinations/japan'       },
+  { label: 'South Korea', href: '/destinations/south-korea' },
+  { label: 'Singapore',   href: '/destinations/singapore'   },
+  { label: 'Russia',      href: '/destinations/russia'      },
 ];
 
 const PARTNERS = [
