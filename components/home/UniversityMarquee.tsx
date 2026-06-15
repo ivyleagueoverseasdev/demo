@@ -116,7 +116,8 @@ export default function UniversityMarquee() {
       .catch(() => {});
   }, []);
 
-  const unis  = settings.unis?.length ? settings.unis : UNIS_MARQUEE_DATA;
+  const validUnis = settings.unis?.filter(u => u.src?.trim()) ?? [];
+  const unis  = validUnis.length ? validUnis : UNIS_MARQUEE_DATA;
   const rows  = Math.min(6, Math.max(1, Math.round(settings.rows ?? 3)));
   const chunk = Math.ceil(unis.length / rows);
   const rowGroups = Array.from({ length: rows }, (_, i) => unis.slice(i * chunk, (i + 1) * chunk))
