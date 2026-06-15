@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { COMPANY } from '@/lib/data';
 import InstitutionsForm from './InstitutionsForm';
+import PageHero from '@/components/shared/PageHero';
 import { getPartnerSettings } from '@/lib/kv';
 import type { PartnerPageSettings } from '@/lib/kv';
 import { PARTNER_DEFAULTS, mergePartnerSettings } from '@/lib/partnerDefaults';
@@ -19,7 +20,7 @@ function renderHeading(text: string) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((p, i) =>
     p.startsWith('**') ? (
-      <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">
+      <span key={i} style={{ background: 'linear-gradient(135deg,#B5FF00,#CCFF00)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
         {p.slice(2, -2)}
       </span>
     ) : p
@@ -34,25 +35,18 @@ export default async function InstitutionsPartnerPage() {
     <main className="bg-white">
 
       {/* ── Hero ── */}
-      <section className="relative text-white overflow-hidden py-24 sm:py-32" style={{ background: 'linear-gradient(135deg,#4D7C0F 0%,#3F6212 60%,#1A2E05 100%)' }}>
-        <div className="absolute inset-0 opacity-[0.08] pointer-events-none"
-          style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #ffffff 1px, transparent 1px), radial-gradient(circle at 80% 20%, #ffffff 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="container-xl relative z-10 text-center max-w-4xl mx-auto px-4">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
-            <span className="font-jakarta text-xs font-semibold text-white/90 tracking-wide uppercase">{s.badge}</span>
-          </div>
-          <h1 className="font-jakarta font-extrabold text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
-            {renderHeading(s.heading)}
-          </h1>
-          <p className="font-jakarta text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            {s.subheading}
-          </p>
-        </div>
-      </section>
+      <PageHero
+        gradient="linear-gradient(150deg,#051A57 0%,#0C37A0 55%,#246DFF 100%)"
+        breadcrumbLabel="Institutions"
+        eyebrow={s.badge}
+        eyebrowColor="#B5FF00"
+        heading={renderHeading(s.heading)}
+        paragraph={s.subheading}
+        image={{ src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80&auto=format&fit=crop', alt: 'Diverse group of international students walking on a university campus' }}
+        imagePosition="left"
+        badge={{ value: s.stats[0]?.value ?? '97%', label: s.stats[0]?.label ?? 'Visa Success Rate' }}
+        blobColor="#B5FF00"
+      />
 
       {/* ── Content & Form Layout ── */}
       <section className="py-20">
