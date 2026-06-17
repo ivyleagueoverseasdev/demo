@@ -71,24 +71,39 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
   }
 
   const origin = new URL(req.url).origin;
+  const payload = JSON.stringify({
+    name:     lead.name,
+    phone:    lead.phone,
+    email:    lead.email,
+    country:  lead.country,
+    program:  lead.program,
+    message:  lead.message,
+    source:   lead.source,
+    id:       lead.id,
+    adminUrl: `${origin}/admin/enquiries`,
+    time:     new Date(lead.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST',
+  });
 
   try {
-    const res = await fetch(scriptUrl, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name:     lead.name,
-        phone:    lead.phone,
-        email:    lead.email,
-        country:  lead.country,
-        program:  lead.program,
-        message:  lead.message,
-        source:   lead.source,
-        id:       lead.id,
-        adminUrl: `${origin}/admin/enquiries`,
-        time:     new Date(lead.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST',
-      }),
+    // GAS /exec returns a 302 redirect. The Edge fetch follows it as GET (per RFC),
+    // dropping the body. We use redirect:'manual', then re-POST to the Location URL.
+    let res = await fetch(scriptUrl, {
+      method:   'POST',
+      headers:  { 'Content-Type': 'application/json' },
+      body:     payload,
+      redirect: 'manual',
     });
+
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers.get('location');
+      if (location) {
+        res = await fetch(location, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    payload,
+        });
+      }
+    }
 
     if (!res.ok) {
       const err = await res.text().catch(() => 'unknown');
