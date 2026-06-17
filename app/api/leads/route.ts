@@ -85,39 +85,20 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
   });
 
   try {
-    // Step 1: hit GAS /exec with redirect:'manual' so we intercept the 302
-    // (no Content-Type header — keeps the request simple and avoids preflight issues)
-    const probe = await fetch(scriptUrl, {
+    // Send as form-urlencoded so the body survives GAS's 302 redirect.
+    // Edge runtimes preserve POST bodies on redirect with this content-type.
+    const res = await fetch(scriptUrl, {
       method:   'POST',
-      body:     payload,
-      redirect: 'manual',
+      headers:  { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:     new URLSearchParams({ data: payload }).toString(),
+      redirect: 'follow',
     });
 
-    // Step 2: GAS always returns 302/303 → re-POST to Location with body intact
-    if (probe.status === 302 || probe.status === 303) {
-      const location = probe.headers.get('location');
-      if (location) {
-        const res = await fetch(location, {
-          method: 'POST',
-          body:   payload,
-        });
-        if (res.ok) {
-          console.log('[leads/email] Notification sent for lead:', lead.id);
-        } else {
-          const err = await res.text().catch(() => 'unknown');
-          console.error('[leads/email] Google Script error:', res.status, err);
-        }
-      } else {
-        console.error('[leads/email] GAS 302 had no Location header');
-      }
+    if (res.ok) {
+      console.log('[leads/email] Notification sent for lead:', lead.id);
     } else {
-      // Unexpected: GAS responded directly (no redirect)
-      if (probe.ok) {
-        console.log('[leads/email] Notification sent (no redirect) for lead:', lead.id);
-      } else {
-        const err = await probe.text().catch(() => 'unknown');
-        console.error('[leads/email] Google Script error (no redirect):', probe.status, err);
-      }
+      const err = await res.text().catch(() => 'unknown');
+      console.error('[leads/email] Google Script error:', res.status, err);
     }
   } catch (e) {
     console.error('[leads/email] Google Script fetch failed:', (e as Error).stack ?? e);
