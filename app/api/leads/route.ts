@@ -58,15 +58,19 @@ export async function POST(req: NextRequest) {
 
 // -- Email notification via Google Apps Script --------------------------------
 async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
-  // Read GOOGLE_SCRIPT_URL from Cloudflare env (set via Pages dashboard or wrangler secret)
   const { getOptionalRequestContext } = await import('@cloudflare/next-on-pages');
   const ctx = getOptionalRequestContext();
-  const scriptUrl = (ctx?.env as Record<string, string> | undefined)?.GOOGLE_SCRIPT_URL
-    ?? process.env.GOOGLE_SCRIPT_URL
-    ?? '';
+  const cfUrl   = (ctx?.env as Record<string, string> | undefined)?.GOOGLE_SCRIPT_URL ?? '';
+  const procUrl = process.env.GOOGLE_SCRIPT_URL ?? '';
+  const scriptUrl = cfUrl || procUrl;
+
+  // Aggressive diagnostics — visible in Cloudflare Pages real-time logs
+  console.log('[leads/email] CF env URL exists:  ', !!cfUrl);
+  console.log('[leads/email] process.env URL exists:', !!procUrl);
+  console.log('[leads/email] scriptUrl resolved:  ', !!scriptUrl);
 
   if (!scriptUrl) {
-    console.warn('[leads/email] GOOGLE_SCRIPT_URL not configured -- skipping notification');
+    console.error('[leads/email] GOOGLE_SCRIPT_URL is empty in BOTH CF env and process.env — email skipped');
     return;
   }
 
@@ -84,9 +88,9 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
     time:     new Date(lead.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST',
   });
 
+  console.log('[leads/email] Attempting fetch to GAS for lead:', lead.id);
+
   try {
-    // Send as form-urlencoded so the body survives GAS's 302 redirect.
-    // Edge runtimes preserve POST bodies on redirect with this content-type.
     const res = await fetch(scriptUrl, {
       method:   'POST',
       headers:  { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -94,14 +98,19 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
       redirect: 'follow',
     });
 
+    console.log('[leads/email] GAS response status:', res.status, res.statusText);
+
     if (res.ok) {
+      const body = await res.text().catch(() => '');
+      console.log('[leads/email] GAS response body:', body);
       console.log('[leads/email] Notification sent for lead:', lead.id);
     } else {
-      const err = await res.text().catch(() => 'unknown');
-      console.error('[leads/email] Google Script error:', res.status, err);
+      const err = await res.text().catch(() => 'unreadable');
+      console.error('[leads/email] GAS returned error:', res.status, res.statusText, '|', err);
     }
   } catch (e) {
-    console.error('[leads/email] Google Script fetch failed:', (e as Error).stack ?? e);
+    console.error('[leads/email] fetch threw an exception:', (e as Error).message);
+    console.error('[leads/email] stack:', (e as Error).stack ?? 'no stack');
   }
 }
 
