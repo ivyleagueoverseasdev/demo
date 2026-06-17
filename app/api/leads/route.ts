@@ -48,8 +48,13 @@ export async function POST(req: NextRequest) {
     return json({ error: 'Failed to save enquiry', details: (e as Error).message }, 500);
   }
 
-  // Fire-and-forget -- a failed email must never block the lead from being saved.
-  void sendLeadEmail(lead, req).catch(e =>
+  // Await the email fetch before returning — Cloudflare Workers kill the isolate
+  // the moment a response is sent, so fire-and-forget never completes.
+  // Promise.race gives GAS up to 8 s; after that we return anyway (lead is saved).
+  await Promise.race([
+    sendLeadEmail(lead, req),
+    new Promise<void>(resolve => setTimeout(resolve, 8000)),
+  ]).catch(e =>
     console.error('[POST /api/leads] Email send failed:', (e as Error).stack ?? e)
   );
 
