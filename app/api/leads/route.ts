@@ -1,4 +1,4 @@
-﻿export const runtime = 'edge';
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -14,7 +14,7 @@ export async function OPTIONS() {
   return new Response(null, { status: 204, headers: CORS });
 }
 
-// â”€â”€ POST â€” public: save a new lead and send email notification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- POST: public -- save a new lead and send email notification ---------------
 export async function POST(req: NextRequest) {
   let body: Record<string, string>;
   try {
@@ -48,8 +48,7 @@ export async function POST(req: NextRequest) {
     return json({ error: 'Failed to save enquiry', details: (e as Error).message }, 500);
   }
 
-  // â”€â”€ Email notification via Resend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // Fire-and-forget â€” a failed email must never block the lead from being saved.
+  // Fire-and-forget -- a failed email must never block the lead from being saved.
   void sendLeadEmail(lead, req).catch(e =>
     console.error('[POST /api/leads] Email send failed:', (e as Error).stack ?? e)
   );
@@ -57,56 +56,52 @@ export async function POST(req: NextRequest) {
   return json({ ok: true, id: lead.id }, 201);
 }
 
+// -- Email notification via Google Apps Script --------------------------------
 async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
-  // Read RESEND_API_KEY from Cloudflare env (injected via wrangler.toml secret)
+  // Read GOOGLE_SCRIPT_URL from Cloudflare env (set via Pages dashboard or wrangler secret)
   const { getOptionalRequestContext } = await import('@cloudflare/next-on-pages');
   const ctx = getOptionalRequestContext();
-  const apiKey = (ctx?.env as Record<string, string> | undefined)?.RESEND_API_KEY
-    ?? process.env.RESEND_API_KEY
+  const scriptUrl = (ctx?.env as Record<string, string> | undefined)?.GOOGLE_SCRIPT_URL
+    ?? process.env.GOOGLE_SCRIPT_URL
     ?? '';
 
-  if (!apiKey) {
-    console.warn('[leads/email] RESEND_API_KEY not configured â€” skipping notification');
+  if (!scriptUrl) {
+    console.warn('[leads/email] GOOGLE_SCRIPT_URL not configured -- skipping notification');
     return;
   }
 
-  const html = `
-    <h2>New Enquiry â€” ILOC Website</h2>
-    <table cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
-      <tr><td style="font-weight:bold;color:#555">Name</td><td>${lead.name}</td></tr>
-      <tr><td style="font-weight:bold;color:#555">Phone</td><td><a href="tel:${lead.phone}">${lead.phone}</a></td></tr>
-      <tr><td style="font-weight:bold;color:#555">Email</td><td><a href="mailto:${lead.email}">${lead.email}</a></td></tr>
-      <tr><td style="font-weight:bold;color:#555">Country</td><td>${lead.country || 'â€”'}</td></tr>
-      <tr><td style="font-weight:bold;color:#555">Program</td><td>${lead.program || 'â€”'}</td></tr>
-      <tr><td style="font-weight:bold;color:#555">Source</td><td>${lead.source}</td></tr>
-      <tr><td style="font-weight:bold;color:#555">Message</td><td style="max-width:420px">${lead.message || 'â€”'}</td></tr>
-      <tr><td style="font-weight:bold;color:#555">Time</td><td>${new Date(lead.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</td></tr>
-    </table>
-    <p style="margin-top:16px;font-size:12px;color:#999">
-      Lead ID: ${lead.id} Â· View in admin: ${new URL(req.url).origin}/admin/enquiries
-    </p>
-  `;
+  const origin = new URL(req.url).origin;
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method:  'POST',
-    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from:    'ILOC Enquiries <notifications@resend.dev>',
-      to:      ['ivyleagueoverseas@gmail.com'],
-      subject: `ðŸŽ“ New Enquiry: ${lead.name} (${lead.country || lead.source})`,
-      html,
-    }),
-  });
+  try {
+    const res = await fetch(scriptUrl, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:     lead.name,
+        phone:    lead.phone,
+        email:    lead.email,
+        country:  lead.country,
+        program:  lead.program,
+        message:  lead.message,
+        source:   lead.source,
+        id:       lead.id,
+        adminUrl: `${origin}/admin/enquiries`,
+        time:     new Date(lead.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST',
+      }),
+    });
 
-  if (!res.ok) {
-    const err = await res.text().catch(() => 'unknown');
-    console.error('[leads/email] Resend API error:', res.status, err);
-  } else {
-    console.log('[leads/email] Notification sent for lead:', lead.id);
+    if (!res.ok) {
+      const err = await res.text().catch(() => 'unknown');
+      console.error('[leads/email] Google Script error:', res.status, err);
+    } else {
+      console.log('[leads/email] Notification sent for lead:', lead.id);
+    }
+  } catch (e) {
+    console.error('[leads/email] Google Script fetch failed:', (e as Error).stack ?? e);
   }
 }
 
-// â”€â”€ GET â€” admin: list all leads â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- GET: admin -- list all leads ----------------------------------------------
 export async function GET(req: NextRequest) {
   if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
   try {
@@ -118,7 +113,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// â”€â”€ PUT â€” admin: update status or delete â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- PUT: admin -- update status or delete ------------------------------------
 export async function PUT(req: NextRequest) {
   if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
 
