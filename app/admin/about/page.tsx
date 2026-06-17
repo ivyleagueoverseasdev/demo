@@ -10,6 +10,7 @@ import { useAuth, useToast } from '../layout';
 import { apiCall } from '@/lib/edge-utils';
 import type { AboutPageSettings } from '@/lib/types';
 import { ABOUT_DEFAULTS, mergeAboutSettings } from '@/lib/pageDefaults';
+import ImagePicker from '@/components/admin/ImagePicker';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
 
@@ -116,6 +117,14 @@ export default function AdminAboutPage() {
         </div>
         <Field label="Hero Paragraph">
           <textarea value={s.heroParagraph} onChange={e => set({ heroParagraph: e.target.value })} rows={3} className={`${inp} resize-none`} />
+        </Field>
+        <Field label="Hero Banner Image" hint="The large photo shown on the right side of the About page hero. Paste a URL, upload a file, or pick from the library.">
+          <ImagePicker
+            value={s.heroImageUrl ?? ABOUT_DEFAULTS.heroImageUrl ?? ''}
+            onChange={url => set({ heroImageUrl: url })}
+            label=""
+            token={token}
+          />
         </Field>
       </Section>
 

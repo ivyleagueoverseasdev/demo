@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -362,12 +362,40 @@ function ClassCard({ cls, index, onBook }: { cls: LiveClass; index: number; onBo
 export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
   const [activeModal, setActiveModal] = useState<LiveClass | null>(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
+  const [classes, setClasses] = useState<LiveClass[]>(CLASSES);
   const trackRef = useRef<HTMLDivElement>(null);
   const CARD_W = 316;
   const cols = clampCols(gridCols, 3);
 
+  useEffect(() => {
+    fetch('/api/events', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: any) => {
+        const kvClasses = (d?.events ?? []).filter(
+          (e: any) => e.type === 'class' && e.published
+        );
+        if (kvClasses.length > 0) {
+          setClasses(kvClasses.map((e: any) => ({
+            id:       e.id,
+            eventId:  e.id,
+            subject:  e.title,
+            date:     e.date,
+            time:     e.time,
+            imageUrl: e.imageUrl || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=1600&auto=format&fit=crop',
+            imageAlt: `${e.title} promotional poster`,
+            color:    '#0891B2',
+            tag:      'Live Class',
+            whatsapp: e.ctaUrl?.startsWith('https://wa.me/')
+              ? e.ctaUrl
+              : `https://wa.me/919158577707?text=${encodeURIComponent(`Hi! I'd like to register for ${e.title}.`)}`,
+          })));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   function scrollTo(idx: number) {
-    const clamped = Math.min(Math.max(idx, 0), CLASSES.length - 1);
+    const clamped = Math.min(Math.max(idx, 0), classes.length - 1);
     setCarouselIdx(clamped);
     trackRef.current?.scrollTo({ left: clamped * CARD_W, behavior: 'smooth' });
   }
@@ -409,7 +437,7 @@ export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
                 <button
                   key={label}
                   onClick={() => scrollTo(carouselIdx + dir)}
-                  disabled={(dir === -1 && carouselIdx === 0) || (dir === 1 && carouselIdx === CLASSES.length - 1)}
+                  disabled={(dir === -1 && carouselIdx === 0) || (dir === 1 && carouselIdx === classes.length - 1)}
                   aria-label={label}
                   className="w-11 h-11 rounded-xl border-2 border-slate-200 flex items-center justify-center text-slate-600 hover:border-homeblue-400 hover:text-homeblue-600 hover:bg-homeblue-50 transition-all disabled:opacity-30 disabled:cursor-default"
                 >
@@ -423,7 +451,7 @@ export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
 
           {/* Desktop: static grid — admin-configurable column count */}
           <div className={`hidden lg:grid ${GRID_COLS_LG[cols]} gap-6`}>
-            {CLASSES.map((cls, i) => (
+            {classes.map((cls, i) => (
               <ClassCard key={cls.id} cls={cls} index={i} onBook={setActiveModal} />
             ))}
           </div>
@@ -440,7 +468,7 @@ export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
               }}
             >
               <div className="flex gap-4" style={{ width: 'max-content' }}>
-                {CLASSES.map((cls, i) => (
+                {classes.map((cls, i) => (
                   <div key={cls.id} style={{ scrollSnapAlign: 'start', width: 300 }}>
                     <ClassCard cls={cls} index={i} onBook={setActiveModal} />
                   </div>
@@ -450,7 +478,7 @@ export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
 
             {/* Dot indicators */}
             <div className="flex justify-center gap-2 mt-6">
-              {CLASSES.map((_, i) => (
+              {classes.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => scrollTo(i)}
@@ -483,7 +511,7 @@ export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              onClick={() => CLASSES[0] && setActiveModal(CLASSES[0])}
+              onClick={() => classes[0] && setActiveModal(classes[0])}
               className="flex-shrink-0 font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl"
               style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)', boxShadow: '0 4px 14px rgba(101,163,13,0.35)' }}
             >

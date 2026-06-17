@@ -1,17 +1,16 @@
 'use client';
 
-// Services page editor — full control over /services copy.
-// Core student services (first 5 cards) are managed in /admin/homepage; this
-// editor owns the page headings, the extra service cards, the institute
-// section and the CTA. Saves via PUT /api/page-settings — live immediately.
+// Services page editor — full control over /services copy and the 4×3 image grid.
+// Saves via PUT /api/page-settings { page: 'services', settings: s } — live immediately.
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth, useToast } from '../layout';
 import { apiCall } from '@/lib/edge-utils';
-import type { ServicesPageSettings, ServiceItem, InstituteServiceItem } from '@/lib/types';
+import type { ServicesPageSettings, ServiceItem, InstituteServiceItem, StudentServiceCard } from '@/lib/types';
 import { SERVICES_DEFAULTS, mergeServicesSettings } from '@/lib/pageDefaults';
+import ImagePicker from '@/components/admin/ImagePicker';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
 
@@ -72,7 +71,21 @@ export default function AdminServicesPage() {
     router.refresh();
   }
 
-  // ── Extra services helpers ─────────────────────────────────────────────────
+  // ── Student services grid helpers ──────────────────────────────────────────
+  function setSvc(i: number, patch: Partial<StudentServiceCard>) {
+    setS(prev => ({ ...prev, studentServices: prev.studentServices.map((it, j) => j === i ? { ...it, ...patch } : it) }));
+  }
+  function addSvc() {
+    setS(prev => ({
+      ...prev,
+      studentServices: [...prev.studentServices, { id: `svc_${Date.now()}`, title: '', description: '', imageUrl: '' }],
+    }));
+  }
+  function delSvc(i: number) {
+    setS(prev => ({ ...prev, studentServices: prev.studentServices.filter((_, j) => j !== i) }));
+  }
+
+  // ── Legacy extra services helpers ──────────────────────────────────────────
   function setExtra(i: number, patch: Partial<ServiceItem>) {
     setS(prev => ({ ...prev, extraServices: prev.extraServices.map((it, j) => j === i ? { ...it, ...patch } : it) }));
   }
@@ -105,13 +118,13 @@ export default function AdminServicesPage() {
 
   return (
     <div className="space-y-6">
+
+      {/* ── Page Header ── */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h1 className="font-jakarta font-extrabold text-slate-800 text-2xl">🛠 Services Page</h1>
           <p className="font-jakarta text-sm text-slate-400 mt-1">
-            Edit all copy on /services. The first 5 student service cards are managed in{' '}
-            <Link href="/admin/homepage" className="text-amber-600 font-semibold hover:underline">Homepage → Services</Link>.
-            Saved to KV — live immediately.
+            Edit the hero, the 12-card student services grid, and the bottom CTA. Saved to KV — live immediately.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -127,6 +140,7 @@ export default function AdminServicesPage() {
         </div>
       </div>
 
+      {/* ── Hero Section ── */}
       <Section title="🎯 Hero Section">
         <div className="grid sm:grid-cols-3 gap-4">
           <Field label="Eyebrow">
@@ -142,15 +156,94 @@ export default function AdminServicesPage() {
         <Field label="Hero Paragraph">
           <textarea value={s.heroParagraph} onChange={e => set({ heroParagraph: e.target.value })} rows={2} className={`${inp} resize-none`} />
         </Field>
+        <Field label="Hero Banner Image" hint="Large photo shown on the right side of the hero. Paste a URL, upload a file, or pick from the library.">
+          <ImagePicker
+            value={s.heroImageUrl ?? SERVICES_DEFAULTS.heroImageUrl ?? ''}
+            onChange={url => set({ heroImageUrl: url })}
+            label=""
+            token={token}
+          />
+        </Field>
       </Section>
 
+      {/* ── Student Services Grid (4×3) ── */}
       <Section
-        title="✨ Extra Service Cards"
-        action={<button onClick={addExtra} className={addBtn}>+ Add Service</button>}
+        title="🎓 Student Services Grid"
+        action={<button onClick={addSvc} className={addBtn}>+ Add Card</button>}
       >
-        <Field label="Section Heading" hint="Heading above the full services grid.">
-          <input value={s.studentHeading} onChange={e => set({ studentHeading: e.target.value })} className={inp} />
-        </Field>
+        <div className="pb-1">
+          <Field label="Section Heading" hint="The heading above the 4-column services grid on /services.">
+            <input value={s.studentHeading} onChange={e => set({ studentHeading: e.target.value })} className={inp} />
+          </Field>
+        </div>
+
+        <p className="font-jakarta text-[11px] text-slate-400">
+          {s.studentServices.length} card{s.studentServices.length !== 1 ? 's' : ''} — displayed as a 4-column grid on desktop. Changes save instantly to the live page.
+        </p>
+
+        <div className="space-y-4">
+          {s.studentServices.map((svc, i) => (
+            <div key={svc.id || i} className="border border-slate-200 rounded-2xl p-5 bg-slate-50/40 space-y-4">
+              {/* Card header */}
+              <div className="flex items-center justify-between">
+                <span className="font-jakarta text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+                  Card {i + 1}{svc.title ? ` — ${svc.title}` : ''}
+                </span>
+                <button onClick={() => delSvc(i)}
+                  className="font-jakarta text-xs font-semibold text-red-400 hover:text-red-600 transition-colors">
+                  ✕ Remove
+                </button>
+              </div>
+
+              {/* Title */}
+              <Field label="Title">
+                <input
+                  value={svc.title}
+                  onChange={e => setSvc(i, { title: e.target.value })}
+                  className={inp}
+                  placeholder="e.g. Undergraduate Admissions"
+                />
+              </Field>
+
+              {/* Description */}
+              <Field label="Description" hint="2–3 lines shown below the title on the card.">
+                <textarea
+                  value={svc.description}
+                  onChange={e => setSvc(i, { description: e.target.value })}
+                  rows={3}
+                  className={`${inp} resize-none`}
+                  placeholder="Short description of this service…"
+                />
+              </Field>
+
+              {/* Image */}
+              <Field label="Card Image" hint="Displayed as a full-width image at the top of the card (aspect-video).">
+                <ImagePicker
+                  value={svc.imageUrl}
+                  onChange={url => setSvc(i, { imageUrl: url })}
+                  label=""
+                  token={token}
+                />
+              </Field>
+            </div>
+          ))}
+
+          {s.studentServices.length === 0 && (
+            <div className="text-center py-8 text-slate-400 font-jakarta text-sm">
+              No service cards yet. Click <strong>+ Add Card</strong> to start building the grid.
+            </div>
+          )}
+        </div>
+      </Section>
+
+      {/* ── Legacy Extra Service Cards (kept for backward-compat, not shown on page) ── */}
+      <Section
+        title="✨ Extra Service Cards (Legacy)"
+        action={<button onClick={addExtra} className={addBtn}>+ Add</button>}
+      >
+        <p className="font-jakarta text-[11px] text-amber-700 bg-amber-50 border border-amber-100 px-3 py-2 rounded-xl">
+          These cards are no longer shown on the services page — use the <strong>Student Services Grid</strong> above instead. Data is preserved in KV.
+        </p>
         {s.extraServices.map((svc, i) => (
           <div key={svc.id || i} className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3">
             <div className="flex items-center justify-between">
@@ -165,9 +258,10 @@ export default function AdminServicesPage() {
             <textarea value={svc.desc} onChange={e => setExtra(i, { desc: e.target.value })} rows={2} className={`${inp} resize-none`} placeholder="Short description…" />
           </div>
         ))}
-        {s.extraServices.length === 0 && <p className="font-jakarta text-sm text-slate-400 text-center py-3">No extra services — add one above.</p>}
+        {s.extraServices.length === 0 && <p className="font-jakarta text-sm text-slate-400 text-center py-3">No legacy cards.</p>}
       </Section>
 
+      {/* ── For Institutes ── */}
       <Section
         title="🏫 For Institutes"
         action={<button onClick={addInst} className={addBtn}>+ Add Card</button>}
@@ -204,6 +298,7 @@ export default function AdminServicesPage() {
         </div>
       </Section>
 
+      {/* ── Bottom CTA ── */}
       <Section title="📣 Bottom CTA">
         <div className="grid sm:grid-cols-2 gap-4">
           <Field label="CTA Heading">
@@ -222,6 +317,7 @@ export default function AdminServicesPage() {
           {busy ? 'Saving…' : 'Save Page'}
         </button>
       </div>
+
     </div>
   );
 }

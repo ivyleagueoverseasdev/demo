@@ -10,7 +10,12 @@ export default function ContactPage() {
   const [ok,   setOk]   = useState(false);
   const [busy, setBusy] = useState(false);
   const [err,  setErr]  = useState('');
-  const [wa,   setWa]   = useState(buildWhatsAppLink(COMPANY.wa, COMPANY.whatsappMessage));
+  const [wa,         setWa]         = useState(buildWhatsAppLink(COMPANY.wa, COMPANY.whatsappMessage));
+  const [phone,      setPhone]      = useState(COMPANY.phone);
+  const [email,      setEmail]      = useState(COMPANY.email);
+  const [address,    setAddress]    = useState(COMPANY.address);
+  const [mapsLink,   setMapsLink]   = useState(COMPANY.mapsLink);
+  const [heroImage,  setHeroImage]  = useState('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop');
 
   useEffect(() => {
     fetch('/api/content', { cache: 'no-store' })
@@ -21,6 +26,11 @@ export default function ContactPage() {
         const waBase = cd?.whatsapp || gs?.whatsappUrl || COMPANY.wa;
         const waMsg  = gs?.whatsappMessage || COMPANY.whatsappMessage;
         setWa(buildWhatsAppLink(waBase, waMsg));
+        if (cd?.phone)               setPhone(cd.phone);
+        if (cd?.email)               setEmail(cd.email);
+        if (cd?.address)             setAddress(cd.address);
+        if (cd?.mapsLink)            setMapsLink(cd.mapsLink);
+        if (cd?.contactHeroImageUrl) setHeroImage(cd.contactHeroImageUrl);
       })
       .catch(() => {});
   }, []);
@@ -86,7 +96,7 @@ export default function ContactPage() {
         }
         paragraph="Book a free counselling session or send us a message. We'll respond within 24 hours."
         image={{
-          src: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop',
+          src: heroImage,
           alt: 'ILOC counselling office desk'
         }}
         imagePosition="left"
@@ -105,9 +115,9 @@ export default function ContactPage() {
               </h2>
               <div className="space-y-4 mb-8">
                 {[
-                  { icon:'📞', label:'Phone',         value: COMPANY.phone,   href:`tel:${COMPANY.phone}` },
-                  { icon:'✉',  label:'Email',         value: COMPANY.email,   href:`mailto:${COMPANY.email}` },
-                  { icon:'📍', label:'Office',        value: COMPANY.address, href: COMPANY.mapsLink },
+                  { icon:'📞', label:'Phone',         value: phone,           href:`tel:${phone}` },
+                  { icon:'✉',  label:'Email',         value: email,           href:`mailto:${email}` },
+                  { icon:'📍', label:'Office',        value: address,         href: mapsLink },
                   { icon:'⏰', label:'Response Time', value:'Within 24 hours', href: null },
                 ].map(item => (
                   <div key={item.label} className="flex items-start gap-4 card p-4">

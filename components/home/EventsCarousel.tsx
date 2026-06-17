@@ -123,7 +123,7 @@ export default function EventsCarousel() {
   const CARD_W = 316;
 
   useEffect(() => {
-    fetch('/api/events')
+    fetch('/api/events', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then((d: any) => { if (d?.events?.length) setEvents(d.events.filter((e: SiteEvent) => e.published)); })
       .catch(() => {});

@@ -79,7 +79,7 @@ export default async function AboutPage() {
         }
         paragraph={s.heroParagraph}
         image={{
-          src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80&auto=format&fit=crop',
+          src: s.heroImageUrl || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80&auto=format&fit=crop',
           alt: 'Students collaborating in a modern library',
         }}
         badge={{ value: '10,000+', label: 'Students placed worldwide' }}

@@ -9,6 +9,7 @@ import { useAuth, useToast } from '../layout';
 import { apiCall } from '@/lib/edge-utils';
 import { COMPANY } from '@/lib/data';
 import type { CompanyDetails } from '@/lib/types';
+import ImagePicker from '@/components/admin/ImagePicker';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
 
@@ -76,14 +77,20 @@ export default function AdminGeneralPage() {
         <div>
           <h1 className="font-jakarta font-extrabold text-slate-800 text-2xl">🏢 General Info</h1>
           <p className="font-jakarta text-sm text-slate-400 mt-1">
-            Contact details shown in the footer and navbar info bar. Saved to KV — live immediately.
+            Contact details shown in the Footer, Navbar info bar, and Contact page. Saved to KV — live immediately.
           </p>
         </div>
-        <button onClick={save} disabled={busy}
-          className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl disabled:opacity-50 hover:opacity-90 transition-opacity flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg,#D97706,#F59E0B)' }}>
-          {busy ? 'Saving…' : 'Save Details'}
-        </button>
+        <div className="flex items-center gap-2">
+          <a href="/contact" target="_blank" rel="noopener noreferrer"
+            className="font-jakarta font-semibold text-xs text-slate-500 border border-slate-200 px-4 py-2.5 rounded-xl hover:bg-slate-50 transition-colors">
+            View Contact ↗
+          </a>
+          <button onClick={save} disabled={busy}
+            className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl disabled:opacity-50 hover:opacity-90 transition-opacity"
+            style={{ background: 'linear-gradient(135deg,#D97706,#F59E0B)' }}>
+            {busy ? 'Saving…' : 'Save Details'}
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -107,6 +114,14 @@ export default function AdminGeneralPage() {
           </Field>
           <Field label="Google Maps Link">
             <input value={cd.mapsLink} onChange={e => set({ mapsLink: e.target.value })} className={inp} placeholder="https://maps.app.goo.gl/…" />
+          </Field>
+          <Field label="Contact Page Hero Image" hint="The large photo shown in the banner at the top of the /contact page. Paste a URL, upload, or pick from the library.">
+            <ImagePicker
+              value={cd.contactHeroImageUrl ?? ''}
+              onChange={url => set({ contactHeroImageUrl: url })}
+              label=""
+              token={token}
+            />
           </Field>
         </div>
       </div>

@@ -217,11 +217,12 @@ export interface Lead {
 }
 
 export interface CompanyDetails {
-  phone:     string;
-  whatsapp:  string;  // full wa.me URL
-  email:     string;
-  address:   string;
-  mapsLink:  string;
+  phone:               string;
+  whatsapp:            string;  // full wa.me URL
+  email:               string;
+  address:             string;
+  mapsLink:            string;
+  contactHeroImageUrl?: string; // hero banner on the /contact page
 }
 
 export interface GlobalSettings {
@@ -245,6 +246,7 @@ export interface GlobalSettings {
 
 // ── About page settings (admin-editable via /admin/about) ─────────────────────
 export interface AboutPageSettings {
+  heroImageUrl?:     string;   // hero banner image — falls back to built-in Unsplash photo
   heroEyebrow:       string;   // e.g. "Est. 2000"
   heroHeadingLine1:  string;   // "Honest guidance."
   heroHeadingLine2:  string;   // "Proven results." (amber line)
@@ -267,6 +269,14 @@ export interface AboutPageSettings {
 }
 
 // ── Services page settings (admin-editable via /admin/services) ───────────────
+
+export interface StudentServiceCard {
+  id:          string;
+  title:       string;
+  description: string;
+  imageUrl:    string;
+}
+
 export interface InstituteServiceItem {
   icon:  string;   // emoji
   title: string;
@@ -274,12 +284,14 @@ export interface InstituteServiceItem {
 }
 
 export interface ServicesPageSettings {
+  heroImageUrl?:     string;   // hero banner image — falls back to built-in Unsplash photo
   heroEyebrow:       string;
   heroHeadingLine1:  string;
   heroHeadingLine2:  string;   // amber line
   heroParagraph:     string;
   studentHeading:    string;
-  extraServices:     ServiceItem[];          // appended after homepage services
+  studentServices:   StudentServiceCard[];   // 4×3 image-led grid — replaces old coreServices+extraServices
+  extraServices:     ServiceItem[];          // legacy — kept in KV schema for backwards compat
   instituteHeading:  string;
   instituteIntro:    string;
   instituteServices: InstituteServiceItem[];
