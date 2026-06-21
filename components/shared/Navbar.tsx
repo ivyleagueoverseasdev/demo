@@ -375,27 +375,27 @@ export default function Navbar() {
                     animate="rest"
                     className="relative cursor-pointer select-none"
                   >
-                    {/* Outer aura — wide, very soft, low opacity → premium halo */}
+                    {/* Layer 1 — Outer white aura: wide diffuse halo behind the black text */}
                     <motion.div
                       variants={{
-                        rest: { opacity: 0.14, scale: 1.00, filter: 'blur(36px)' },
-                        glow: { opacity: 0.42, scale: 1.72, filter: 'blur(56px)' },
+                        rest: { opacity: 0.32, scale: 1.00, filter: 'blur(40px)' },
+                        glow: { opacity: 0.75, scale: 1.70, filter: 'blur(52px)' },
                       }}
-                      transition={{ duration: 0.46, ease: [0.22, 1, 0.36, 1] }}
-                      className="absolute inset-x-[-20px] inset-y-[-14px] pointer-events-none rounded-full"
-                      style={{ background: 'linear-gradient(135deg,#5eead4,#34d399,#a7f3d0)' }}
+                      transition={{ duration: 0.44, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute inset-x-[-22px] inset-y-[-16px] pointer-events-none rounded-full"
+                      style={{ background: '#ffffff' }}
                     />
-                    {/* Inner core — tighter, slightly brighter, higher contrast edge */}
+                    {/* Layer 2 — Inner white core: tight bright centre that punches through green bg */}
                     <motion.div
                       variants={{
-                        rest: { opacity: 0.18, scale: 1.00, filter: 'blur(14px)' },
-                        glow: { opacity: 0.46, scale: 1.28, filter: 'blur(26px)' },
+                        rest: { opacity: 0.50, scale: 1.00, filter: 'blur(16px)' },
+                        glow: { opacity: 0.95, scale: 1.28, filter: 'blur(22px)' },
                       }}
-                      transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
-                      className="absolute inset-x-[-8px] inset-y-[-5px] pointer-events-none rounded-xl"
-                      style={{ background: 'linear-gradient(135deg,#6ee7b7,#22c55e,#4ade80)' }}
+                      transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute inset-x-[-10px] inset-y-[-6px] pointer-events-none rounded-xl"
+                      style={{ background: 'rgba(255,255,255,0.96)' }}
                     />
-                    {/* Brand text — crisp black on white navbar; glow sits fully behind */}
+                    {/* Text — stark black; white halo behind it creates maximum contrast on green */}
                     <motion.span
                       variants={{
                         rest: { scale: 1 },
