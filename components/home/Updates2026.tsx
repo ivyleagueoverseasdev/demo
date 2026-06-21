@@ -40,7 +40,7 @@ export default function Updates2026() {
               transition={{ duration: 0.4, delay: i * 0.05 }}
             >
               <Link href={`/destinations/${h.code}`}
-                className="group card p-5 hover:-translate-y-1 block transition-all duration-300">
+                className="group card p-5 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(36,109,255,0.14),0_8px_32px_rgba(0,0,0,0.08)] block transition-all duration-300">
                 <div className="flex items-start gap-3 mb-3">
                   <span className="text-3xl group-hover:scale-110 transition-transform">{h.flag}</span>
                   <div>

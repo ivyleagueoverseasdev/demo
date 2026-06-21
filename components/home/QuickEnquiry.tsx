@@ -49,7 +49,7 @@ export default function QuickEnquiry() {
   const inp = 'input text-sm';
 
   return (
-    <section id="enquiry" className="section bg-homeblue-50 border-y border-homeblue-100">
+    <section id="enquiry" className="section bg-gradient-to-b from-white to-homeblue-50/60">
       <div className="container-xl">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left */}

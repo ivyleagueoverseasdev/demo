@@ -46,7 +46,7 @@ export default function StatsSection() {
     'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6';
 
   return (
-    <section className="bg-white border-b border-slate-100">
+    <section className="bg-gradient-to-b from-white to-slate-50/60">
       <div className="container-xl py-10">
         <motion.div
           variants={container}
@@ -62,7 +62,7 @@ export default function StatsSection() {
               <motion.div
                 key={`stat-${i}`}
                 variants={item}
-                className="text-center py-5 px-3 rounded-2xl border border-slate-100 hover:border-amber-200 hover:shadow-card transition-all duration-300 group"
+                className="text-center py-5 px-3 rounded-2xl border border-slate-100 hover:border-amber-200 hover:shadow-[0_0_24px_rgba(217,119,6,0.16),0_4px_16px_rgba(0,0,0,0.06)] transition-all duration-300 group"
               >
                 <div className="w-9 h-9 rounded-xl bg-slate-50 group-hover:bg-amber-50 flex items-center justify-center mx-auto mb-3 transition-colors duration-300">
                   <Icon

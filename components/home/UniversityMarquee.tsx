@@ -127,7 +127,7 @@ export default function UniversityMarquee() {
   const speedFor = (i: number) => speeds[i] ?? 38 + i * 6;
 
   return (
-    <section className="uni-marquee-section py-14 bg-gradient-to-b from-slate-50 to-white border-y border-slate-100 overflow-hidden">
+    <section className="uni-marquee-section py-14 bg-gradient-to-b from-slate-50 to-white overflow-hidden">
 
       {/* ── Heading ── */}
       <div className="text-center mb-10 px-4">

@@ -21,7 +21,7 @@ function DestinationCard({ c, i }: { c: Country; i: number }) {
     >
       <Link
         href={`/destinations/${c.code}`}
-        className="group block rounded-2xl overflow-hidden relative h-64 shadow-card hover:shadow-card-hover hover:-translate-y-1.5 transition-all duration-300"
+        className="group block rounded-2xl overflow-hidden relative h-64 shadow-card hover:shadow-[0_8px_40px_rgba(36,109,255,0.18),0_4px_16px_rgba(0,0,0,0.10)] hover:-translate-y-1.5 transition-all duration-300"
       >
         {/* Campus photo — falls back to branded gradient on load error */}
         {!imgError ? (

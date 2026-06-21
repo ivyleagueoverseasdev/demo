@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans, DM_Sans } from 'next/font/google';
+import { Plus_Jakarta_Sans, DM_Sans, Cinzel_Decorative } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
@@ -20,6 +20,14 @@ const dmFont = DM_Sans({
   weight:   ['300', '400', '500'],
   style:    ['normal', 'italic'],
   variable: '--font-dm',
+  display:  'swap',
+  preload:  false,
+});
+
+const cinzelFont = Cinzel_Decorative({
+  subsets:  ['latin'],
+  weight:   ['900'],
+  variable: '--font-cinzel',
   display:  'swap',
   preload:  false,
 });
@@ -58,7 +66,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`scroll-smooth ${jakartaFont.variable} ${dmFont.variable}`}>
+    <html lang="en" className={`scroll-smooth ${jakartaFont.variable} ${dmFont.variable} ${cinzelFont.variable}`}>
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />

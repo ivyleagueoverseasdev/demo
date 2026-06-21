@@ -402,7 +402,7 @@ export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
 
   return (
     <>
-      <section id="classes" className="section bg-white border-y border-slate-100">
+      <section id="classes" className="section bg-white">
         <div className="container-xl">
 
           {/* ── Section header ── */}

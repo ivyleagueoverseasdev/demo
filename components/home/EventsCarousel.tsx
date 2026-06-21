@@ -152,7 +152,7 @@ export default function EventsCarousel() {
   if (!publishedEvents.length) return null;
 
   return (
-    <section className="section bg-slate-50 border-y border-slate-100">
+    <section className="section bg-gradient-to-b from-white to-slate-50/70">
       <div className="container-xl">
         {/* Header */}
         <motion.div

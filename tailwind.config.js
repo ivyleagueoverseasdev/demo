@@ -37,6 +37,7 @@ module.exports = {
       fontFamily: {
         jakarta: ['var(--font-jakarta)', 'system-ui', 'sans-serif'],
         dm:      ['var(--font-dm)',      'system-ui', 'sans-serif'],
+        cinzel:  ['var(--font-cinzel)',  'Georgia',   'serif'],
       },
       screens: {
         xs: '480px', sm: '640px', md: '768px',
