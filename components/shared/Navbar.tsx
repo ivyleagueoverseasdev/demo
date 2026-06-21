@@ -375,17 +375,27 @@ export default function Navbar() {
                     animate="rest"
                     className="relative cursor-pointer select-none"
                   >
-                    {/* Glow engine — absolute, sits behind text, animated via variants */}
+                    {/* Outer aura — wide, very soft, low opacity → premium halo */}
                     <motion.div
                       variants={{
-                        rest: { opacity: 0.30, scale: 1.0,  filter: 'blur(18px)' },
-                        glow: { opacity: 1.00, scale: 1.55, filter: 'blur(40px)' },
+                        rest: { opacity: 0.14, scale: 1.00, filter: 'blur(36px)' },
+                        glow: { opacity: 0.42, scale: 1.72, filter: 'blur(56px)' },
                       }}
-                      transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-                      className="absolute inset-x-[-14px] inset-y-[-10px] pointer-events-none rounded-full"
-                      style={{ background: 'linear-gradient(135deg,#86efac,#22c55e,#86efac)' }}
+                      transition={{ duration: 0.46, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute inset-x-[-20px] inset-y-[-14px] pointer-events-none rounded-full"
+                      style={{ background: 'linear-gradient(135deg,#5eead4,#34d399,#a7f3d0)' }}
                     />
-                    {/* Brand text — black, sits on top via z-10, scale spring on hover */}
+                    {/* Inner core — tighter, slightly brighter, higher contrast edge */}
+                    <motion.div
+                      variants={{
+                        rest: { opacity: 0.18, scale: 1.00, filter: 'blur(14px)' },
+                        glow: { opacity: 0.46, scale: 1.28, filter: 'blur(26px)' },
+                      }}
+                      transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute inset-x-[-8px] inset-y-[-5px] pointer-events-none rounded-xl"
+                      style={{ background: 'linear-gradient(135deg,#6ee7b7,#22c55e,#4ade80)' }}
+                    />
+                    {/* Brand text — crisp black on white navbar; glow sits fully behind */}
                     <motion.span
                       variants={{
                         rest: { scale: 1 },

@@ -166,7 +166,6 @@ function ChevronRight() {
 export default function WhatsAppButton() {
   const router = useRouter();
 
-  const [visible,        setVisible]        = useState(false);
   const [open,           setOpen]           = useState(false);
   const [screen,         setScreen]         = useState<Screen>('menu');
   const [navDir,         setNavDir]         = useState(1);   // 1 = forward, -1 = back
@@ -174,16 +173,9 @@ export default function WhatsAppButton() {
   const [activeCountry,  setActiveCountry]  = useState<Country | null>(null);
   const [menuSelected,   setMenuSelected]   = useState(0);
 
-  // Appear after 200px scroll
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 200);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   // External trigger: "Chat on WhatsApp" hero button
   useEffect(() => {
-    const handleOpen = () => { setVisible(true); setOpen(true); goTo('menu', 1); };
+    const handleOpen = () => { setOpen(true); goTo('menu', 1); };
     window.addEventListener('open-iloc-chat', handleOpen);
     return () => window.removeEventListener('open-iloc-chat', handleOpen);
   }, []);
@@ -206,15 +198,7 @@ export default function WhatsAppButton() {
   const isMenu = screen === 'menu';
 
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-3"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0  }}
-          exit={{    opacity: 0, y: 20  }}
-          transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-        >
+    <>
           {/* ── Chat card ── */}
           <AnimatePresence>
             {open && (
@@ -533,10 +517,16 @@ export default function WhatsAppButton() {
           {/* ── FAB ── */}
           <motion.button
             onClick={() => { setOpen(o => !o); if (open) goTo('menu', 1); }}
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.94 }}
+            animate={open ? { y: 0 } : { y: [0, -6, 0] }}
+            transition={
+              open
+                ? { duration: 0.2, ease: 'easeOut' }
+                : { repeat: Infinity, duration: 2.6, ease: 'easeInOut' }
+            }
+            whileHover={{ scale: 1.10 }}
+            whileTap={{ scale: 0.92 }}
             className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl relative flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg,#25D366 0%,#128C7E 100%)' }}
+            style={{ background: 'linear-gradient(135deg,#25D366 0%,#128C7E 100%)', boxShadow: '0 4px 24px rgba(37,211,102,0.40)' }}
             aria-label={open ? 'Close WhatsApp widget' : 'Open WhatsApp widget'}
           >
             <AnimatePresence mode="wait">
@@ -576,8 +566,6 @@ export default function WhatsAppButton() {
               />
             )}
           </motion.button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    </>
   );
 }

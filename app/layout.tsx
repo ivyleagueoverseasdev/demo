@@ -3,7 +3,7 @@ import { Plus_Jakarta_Sans, DM_Sans, Bruno_Ace_SC } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
-import WhatsAppButton from '@/components/shared/WhatsAppButton';
+import FloatingActions from '@/components/shared/FloatingActions';
 import { COMPANY } from '@/lib/data';
 
 const jakartaFont = Plus_Jakarta_Sans({
@@ -73,9 +73,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-jakarta antialiased bg-white text-slate-800" style={{ overflowX: 'hidden' }}>
         <Navbar />
-        <main style={{ paddingTop: '242px' }}>{children}</main>
+        {/*
+          pt-[130px]: clears info-bar + brand row on mobile (no nav strip below lg)
+          lg:pt-[242px]: matches HEADER_HEIGHT on desktop (info 36 + brand 148 + nav 58)
+          overflow-x-hidden guards every page against accidental horizontal bleed
+        */}
+        <main className="pt-[130px] lg:pt-[242px] overflow-x-hidden">{children}</main>
         <Footer />
-        <WhatsAppButton />
+        <FloatingActions />
       </body>
     </html>
   );
