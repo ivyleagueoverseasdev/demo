@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 // Services page editor — full control over /services copy and the 4×3 image grid.
 // Saves via PUT /api/page-settings { page: 'services', settings: s } — live immediately.
@@ -206,7 +206,7 @@ export default function AdminServicesPage() {
               </Field>
 
               {/* Description */}
-              <Field label="Description" hint="2–3 lines shown below the title on the card.">
+              <Field label="Card Description" hint="2–3 lines shown below the title on the grid card at /services.">
                 <textarea
                   value={svc.description}
                   onChange={e => setSvc(i, { description: e.target.value })}
@@ -216,8 +216,22 @@ export default function AdminServicesPage() {
                 />
               </Field>
 
+              {/* Body — shown on /services/[id] detail page */}
+              <Field
+                label="Full Page Content"
+                hint={`Appears on the detail page at /services/${svc.id || '…'}. Press Enter twice between paragraphs. Leave blank to hide the content section.`}
+              >
+                <textarea
+                  value={svc.body ?? ''}
+                  onChange={e => setSvc(i, { body: e.target.value })}
+                  rows={6}
+                  className={`${inp} resize-y`}
+                  placeholder="Write the full content for this service's detail page. Press Enter twice to start a new paragraph."
+                />
+              </Field>
+
               {/* Image */}
-              <Field label="Card Image" hint="Displayed as a full-width image at the top of the card (aspect-video).">
+              <Field label="Card & Hero Image" hint="Used on the /services grid card AND as the hero banner on the /services/[id] detail page.">
                 <ImagePicker
                   value={svc.imageUrl}
                   onChange={url => setSvc(i, { imageUrl: url })}

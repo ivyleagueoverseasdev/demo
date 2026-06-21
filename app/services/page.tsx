@@ -61,7 +61,7 @@ export default async function ServicesPage() {
             {services.map((svc) => (
               <Link
                 key={svc.id}
-                href="/contact"
+                href={`/services/${svc.id}`}
                 className="group card overflow-hidden flex flex-col hover:-translate-y-1 transition-all duration-300"
               >
                 {/* Image */}
@@ -86,7 +86,7 @@ export default async function ServicesPage() {
                     {svc.description}
                   </p>
                   <div className="mt-4 font-jakarta text-xs font-semibold text-amber-500 group-hover:text-amber-600 transition-colors">
-                    Book session →
+                    Learn more →
                   </div>
                 </div>
               </Link>

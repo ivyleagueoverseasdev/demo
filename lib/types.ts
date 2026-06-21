@@ -273,8 +273,9 @@ export interface AboutPageSettings {
 export interface StudentServiceCard {
   id:          string;
   title:       string;
-  description: string;
-  imageUrl:    string;
+  description: string;  // short — shown on the /services grid card
+  imageUrl:    string;  // hero image for both the card and the /services/[id] detail page
+  body?:       string;  // full content shown on the /services/[id] detail page (plain text, double-newline = new paragraph)
 }
 
 export interface InstituteServiceItem {
