@@ -355,26 +355,48 @@ export default function Navbar() {
               </motion.div>
             </Link>
 
-            {/* Business title: fade + slide from left, staggered */}
+            {/* Business title: fade + slide from left, layered green glow */}
             <Link href="/" className="min-w-0">
+              {/* Layer 1 — entrance animation */}
               <motion.div
                 initial={{ opacity: 0, x: -22 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.68, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
-                whileHover={{
-                  textShadow: '0 0 20px rgba(18,73,196,0.35), 0 0 60px rgba(18,73,196,0.15)',
-                  transition: { duration: 0.25 },
-                }}
               >
+                {/* Layer 2 — responsive font size (scrolled → compact) */}
                 <motion.div
                   animate={{ fontSize: scrolled ? '1.1rem' : 'clamp(1.3rem,2.4vw,2.2rem)' }}
                   transition={{ duration: 0.32, ease: 'easeInOut' }}
-                  className="font-cinzel font-black text-slate-900 leading-tight tracking-wide"
-                  style={{
-                    textShadow: '0 0 32px rgba(18,73,196,0.16), 0 2px 6px rgba(0,0,0,0.10)',
-                  }}
                 >
-                  {brandText}
+                  {/* Layer 3 — hover variant group: triggers glow + text scale */}
+                  <motion.div
+                    whileHover="glow"
+                    initial="rest"
+                    animate="rest"
+                    className="relative cursor-pointer select-none"
+                  >
+                    {/* Glow engine — absolute, sits behind text, animated via variants */}
+                    <motion.div
+                      variants={{
+                        rest: { opacity: 0.30, scale: 1.0,  filter: 'blur(18px)' },
+                        glow: { opacity: 1.00, scale: 1.55, filter: 'blur(40px)' },
+                      }}
+                      transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute inset-x-[-14px] inset-y-[-10px] pointer-events-none rounded-full"
+                      style={{ background: 'linear-gradient(135deg,#86efac,#22c55e,#86efac)' }}
+                    />
+                    {/* Brand text — black, sits on top via z-10, scale spring on hover */}
+                    <motion.span
+                      variants={{
+                        rest: { scale: 1 },
+                        glow: { scale: 1.04 },
+                      }}
+                      transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+                      className="relative z-10 font-bruno text-black leading-tight tracking-wide block"
+                    >
+                      {brandText}
+                    </motion.span>
+                  </motion.div>
                 </motion.div>
               </motion.div>
             </Link>
