@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans, DM_Sans, Cinzel_Decorative } from 'next/font/google';
+import { Plus_Jakarta_Sans, DM_Sans, Cinzel } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
@@ -24,7 +24,7 @@ const dmFont = DM_Sans({
   preload:  false,
 });
 
-const cinzelFont = Cinzel_Decorative({
+const cinzelFont = Cinzel({
   subsets:  ['latin'],
   weight:   ['900'],
   variable: '--font-cinzel',
