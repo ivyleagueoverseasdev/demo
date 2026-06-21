@@ -203,7 +203,7 @@ export default function Navbar() {
   const [partOpen,  setPartOpen]  = useState(false);
   const [mounted,   setMounted]   = useState(false);
   const [headerBg,  setHeaderBg]  = useState('#C7FBA0');
-  const [logoUrl,   setLogoUrl]   = useState('/logo2.png');
+  const [logoUrl,   setLogoUrl]   = useState('/logo3.png');
   const [brandText, setBrandText] = useState('IVY LEAGUE OVERSEAS CONSULTING');
   const [contact,   setContact]   = useState<{ phone: string; email: string; wa: string }>({ phone: COMPANY.phone, email: COMPANY.email, wa: COMPANY.wa });
 

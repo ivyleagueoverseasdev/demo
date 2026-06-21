@@ -105,7 +105,7 @@ export default function Footer() {
         <div className="col-span-2 md:col-span-4">
           <div className="flex items-center gap-3 mb-5">
             <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-slate-900/15">
-              <Image src="/logo2.png" alt="ILOC" width={40} height={40} className="object-cover w-full h-full" />
+              <Image src="/logo3.png" alt="ILOC" width={40} height={40} className="object-cover w-full h-full" />
             </div>
             <div>
               <p className="font-jakarta font-extrabold text-slate-900 text-sm leading-tight">IVY LEAGUE</p>
