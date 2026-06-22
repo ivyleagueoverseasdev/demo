@@ -165,9 +165,10 @@ function SkeletonCard() {
 }
 
 // ── Main client component ─────────────────────────────────────────────────────
-export default function EventsHubClient({ initialEvents, gridCols }: { initialEvents: SiteEvent[]; gridCols?: number }) {
+export default function EventsHubClient({ initialEvents, gridCols, gridRows }: { initialEvents: SiteEvent[]; gridCols?: number; gridRows?: number }) {
   const searchParams = useSearchParams();
-  const cols = clampCols(gridCols, 3);
+  const cols      = clampCols(gridCols, 3);
+  const rowLimit  = Math.max(1, gridRows ?? 2);
   const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${GRID_COLS_MD[cols]} ${GRID_COLS_LG[cols]} gap-5`;
 
   const [search,  setSearch]  = useState('');
@@ -289,7 +290,7 @@ export default function EventsHubClient({ initialEvents, gridCols }: { initialEv
               </div>
               <AnimatePresence mode="popLayout">
                 <div className={gridClass}>
-                  {upcoming.map((ev, i) => <EventCard key={ev.id} event={ev} index={i} />)}
+                  {upcoming.slice(0, cols * rowLimit).map((ev, i) => <EventCard key={ev.id} event={ev} index={i} />)}
                 </div>
               </AnimatePresence>
             </div>
@@ -304,7 +305,7 @@ export default function EventsHubClient({ initialEvents, gridCols }: { initialEv
               </div>
               <AnimatePresence mode="popLayout">
                 <div className={`${gridClass} opacity-70`}>
-                  {past.map((ev, i) => <EventCard key={ev.id} event={ev} index={i} />)}
+                  {past.slice(0, cols * rowLimit).map((ev, i) => <EventCard key={ev.id} event={ev} index={i} />)}
                 </div>
               </AnimatePresence>
             </div>

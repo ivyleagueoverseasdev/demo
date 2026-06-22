@@ -9,6 +9,7 @@ import {
 } from '@/lib/kv';
 import { appendAuditLog } from '@/lib/audit';
 import { parseBody, getBearerToken } from '@/lib/edge-utils';
+import { revalidatePath } from 'next/cache';
 import type { CompanyDetails, GlobalSettings, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
 
 const CORS = {
@@ -100,6 +101,8 @@ export async function PUT(req: NextRequest) {
       await appendAuditLog({ action: 'Updated Global Settings', entity: 'globalSettings', entityId: 'globalSettings', entityName: 'Global Settings', before: null, after: body.globalSettings, published: true });
     }
 
+    revalidatePath('/');
+    revalidatePath('/contact');
     return NextResponse.json({ ok: true }, { headers: CORS });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);

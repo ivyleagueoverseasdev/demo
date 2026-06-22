@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { upsertPage, deletePage, getAllPages, validateAdminToken } from '@/lib/kv';
 import type { DynamicPage } from '@/lib/types';
+import { revalidatePath } from 'next/cache';
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -64,6 +65,8 @@ export async function POST(req: NextRequest) {
       updatedAt:       new Date().toISOString(),
     };
     await upsertPage(page);
+    revalidatePath(`/${page.slug}`);
+    revalidatePath('/');
     return json({ ok: true, page }, 201);
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -88,6 +91,8 @@ export async function PUT(req: NextRequest) {
   try {
     const patch = { ...body, updatedAt: new Date().toISOString() } as DynamicPage;
     await upsertPage(patch);
+    revalidatePath(`/${patch.slug}`);
+    revalidatePath('/');
     return json({ ok: true });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -110,6 +115,8 @@ export async function DELETE(req: NextRequest) {
 
   try {
     await deletePage(String(body.slug));
+    revalidatePath(`/${String(body.slug)}`);
+    revalidatePath('/');
     return json({ ok: true });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);

@@ -41,11 +41,11 @@ export default async function HomePage() {
       )}
       <HeroSection slides={heroSlides} />
       <StatsSection />
-      <DestinationsStrip gridCols={globalSettings?.destinationsCols} />
+      <DestinationsStrip gridCols={globalSettings?.destinationsCols} gridRows={globalSettings?.destinationsRows} />
       <HowItWorks    steps={processSteps} />
       <UniversityMarquee />
       <TestimonialsSection testimonials={testimonials} />
-      <LiveClassesBoard gridCols={globalSettings?.classesCols} />
+      <LiveClassesBoard gridCols={globalSettings?.classesCols} gridRows={globalSettings?.classesRows} />
       <EventsCarousel />
       <Updates2026 />
       <QuickEnquiry />

@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getNews, upsertNews, deleteNews, validateAdminToken } from '@/lib/kv';
 import { appendAuditLog } from '@/lib/audit';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
+import { revalidatePath } from 'next/cache';
 import type { NewsItem } from '@/lib/types';
 
 function json(data: unknown, status = 200) {
@@ -53,6 +54,8 @@ export async function POST(req: NextRequest) {
   try {
     await upsertNews(item);
     await appendAuditLog({ action: item.published ? 'Published News Article' : 'Saved Draft News Article', entity: 'news', entityId: item.id, entityName: item.title, before: null, after: item, published: item.published });
+    revalidatePath('/news');
+    revalidatePath('/');
     return json({ ok: true, item }, 201);
   } catch (e: unknown) {
     console.error('[POST /api/news] KV write failed:', (e as Error).stack ?? e);
@@ -81,6 +84,8 @@ export async function PUT(req: NextRequest) {
       if (toDelete) {
         await appendAuditLog({ action: 'Deleted News Article', entity: 'news', entityId: body.id, entityName: toDelete.title, before: toDelete, after: null, published: false });
       }
+      revalidatePath('/news');
+      revalidatePath('/');
       return json({ ok: true, deleted: body.id });
     }
 
@@ -91,6 +96,8 @@ export async function PUT(req: NextRequest) {
     const updated = { ...existing, ...body, id: existing.id, createdAt: existing.createdAt };
     await upsertNews(updated);
     await appendAuditLog({ action: updated.published ? 'Updated News Article' : 'Saved Draft News Article', entity: 'news', entityId: updated.id, entityName: updated.title, before: existing, after: updated, published: updated.published });
+    revalidatePath('/news');
+    revalidatePath('/');
     return json({ ok: true });
   } catch (e: unknown) {
     console.error('[PUT /api/news] KV write failed:', (e as Error).stack ?? e);

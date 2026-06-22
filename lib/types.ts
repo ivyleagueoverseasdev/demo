@@ -238,10 +238,13 @@ export interface GlobalSettings {
   headerVerticalPadding?:  string;   // e.g. "py-16 md:py-24" or a numeric rem value
   businessNameDisplayName?: string;  // large title text in hero header
 
-  // ── Admin-configurable grid layouts (1–6 columns, applied at md/lg) ────────
-  destinationsCols?: number;  // homepage "Where will you go?" destinations grid — default 4
-  eventsCols?:       number;  // /events hub — Upcoming & Past Events grids — default 3
+  // ── Admin-configurable grid layouts (1–6 columns, 1–4 rows, applied at md/lg) ─
+  destinationsCols?: number;  // homepage "Where will you go?" — default 4
+  destinationsRows?: number;  // max rows to show (cards = cols × rows) — default 3
+  eventsCols?:       number;  // /events hub — Upcoming & Past grids — default 3
+  eventsRows?:       number;  // max rows per section — default 2
   classesCols?:      number;  // homepage Live Classes board desktop grid — default 3
+  classesRows?:      number;  // max rows to show on desktop grid — default 2
 }
 
 // ── About page settings (admin-editable via /admin/about) ─────────────────────

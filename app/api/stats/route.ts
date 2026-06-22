@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getStats, setStats, validateAdminToken } from '@/lib/kv';
 import { STATS } from '@/lib/data';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
+import { revalidatePath } from 'next/cache';
 import type { Stat } from '@/lib/types';
 
 function json(data: unknown, status = 200) {
@@ -40,6 +41,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     await setStats(body.stats);
+    revalidatePath('/');
     return json({ ok: true });
   } catch (e: unknown) {
     console.error('[PUT /api/stats] KV write failed:', (e as Error).stack ?? e);

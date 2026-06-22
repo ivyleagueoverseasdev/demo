@@ -359,13 +359,14 @@ function ClassCard({ cls, index, onBook }: { cls: LiveClass; index: number; onBo
 }
 
 // ── LiveClassesBoard (main export) ────────────────────────────────────────
-export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
+export default function LiveClassesBoard({ gridCols, gridRows }: { gridCols?: number; gridRows?: number }) {
   const [activeModal, setActiveModal] = useState<LiveClass | null>(null);
   const [carouselIdx, setCarouselIdx] = useState(0);
   const [classes, setClasses] = useState<LiveClass[]>(CLASSES);
   const trackRef = useRef<HTMLDivElement>(null);
   const CARD_W = 316;
-  const cols = clampCols(gridCols, 3);
+  const cols  = clampCols(gridCols, 3);
+  const limit = cols * Math.max(1, gridRows ?? 2);
 
   useEffect(() => {
     fetch('/api/events', { cache: 'no-store' })
@@ -449,9 +450,9 @@ export default function LiveClassesBoard({ gridCols }: { gridCols?: number }) {
 
           {/* ── Cards grid (desktop 3-col) / carousel (mobile) ── */}
 
-          {/* Desktop: static grid — admin-configurable column count */}
+          {/* Desktop: static grid — admin-configurable columns × rows */}
           <div className={`hidden lg:grid ${GRID_COLS_LG[cols]} gap-6`}>
-            {classes.map((cls, i) => (
+            {classes.slice(0, limit).map((cls, i) => (
               <ClassCard key={cls.id} cls={cls} index={i} onBook={setActiveModal} />
             ))}
           </div>

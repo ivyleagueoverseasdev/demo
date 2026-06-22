@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getPartnerSettings, setPartnerSettings, validateAdminToken } from '@/lib/kv';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
+import { revalidatePath } from 'next/cache';
 import type { PartnerPageSettings } from '@/lib/kv';
 
 type Page = 'institutions' | 'agent' | 'referral';
@@ -48,6 +49,8 @@ export async function PUT(req: NextRequest) {
 
   try {
     await setPartnerSettings(body.page, body.settings);
+    revalidatePath(`/partners/${body.page}`);
+    revalidatePath('/');
     return json({ ok: true });
   } catch (e: unknown) {
     console.error('[PUT /api/partner-settings] KV write failed:', (e as Error).stack ?? e);

@@ -46,7 +46,7 @@ export default async function EventsPage() {
 
   return (
     <Suspense fallback={<EventsPageSkeleton />}>
-      <EventsHubClient initialEvents={events} gridCols={globalSettings?.eventsCols} />
+      <EventsHubClient initialEvents={events} gridCols={globalSettings?.eventsCols} gridRows={globalSettings?.eventsRows} />
     </Suspense>
   );
 }

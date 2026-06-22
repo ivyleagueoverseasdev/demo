@@ -96,8 +96,9 @@ function DestinationCard({ c, i }: { c: Country; i: number }) {
   );
 }
 
-export default function DestinationsStrip({ gridCols }: { gridCols?: number }) {
-  const cols = clampCols(gridCols, 4);
+export default function DestinationsStrip({ gridCols, gridRows }: { gridCols?: number; gridRows?: number }) {
+  const cols  = clampCols(gridCols, 4);
+  const limit = cols * Math.max(1, gridRows ?? 3);
 
   return (
     <section className="section bg-slate-50">
@@ -124,7 +125,7 @@ export default function DestinationsStrip({ gridCols }: { gridCols?: number }) {
 
         {/* Country cards — admin-configurable column count on md/lg */}
         <div className={`grid grid-cols-1 sm:grid-cols-2 ${GRID_COLS_MD[cols]} ${GRID_COLS_LG[cols]} gap-5`}>
-          {COUNTRIES.map((c, i) => (
+          {COUNTRIES.slice(0, limit).map((c, i) => (
             <DestinationCard key={c.code} c={c} i={i} />
           ))}
         </div>

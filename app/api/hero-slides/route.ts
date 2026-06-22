@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getHeroSlides, setHeroSlides, validateAdminToken } from '@/lib/kv';
 import { DEFAULT_HERO_SLIDES } from '@/lib/data';
+import { revalidatePath } from 'next/cache';
 import type { HeroSlide } from '@/lib/types';
 
 const CORS = {
@@ -50,6 +51,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     await setHeroSlides(body.slides ?? []);
+    revalidatePath('/');
     return json({ ok: true });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);

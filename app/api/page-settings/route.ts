@@ -13,6 +13,7 @@ import {
 } from '@/lib/kv';
 import { appendAuditLog } from '@/lib/audit';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
+import { revalidatePath } from 'next/cache';
 import type { AboutPageSettings, ServicesPageSettings } from '@/lib/types';
 
 type Page = 'about' | 'services';
@@ -70,6 +71,8 @@ export async function PUT(req: NextRequest) {
       after:      body.settings,
       published:  true,
     });
+    revalidatePath(body.page === 'about' ? '/about' : '/services');
+    revalidatePath('/');
     return json({ ok: true });
   } catch (e: unknown) {
     console.error('[PUT /api/page-settings] KV write failed:', (e as Error).stack ?? e);

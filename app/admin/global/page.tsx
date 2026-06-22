@@ -25,11 +25,15 @@ const EMPTY: GlobalSettings = {
   headerVerticalPadding:   '',
   businessNameDisplayName: '',
   destinationsCols:        4,
+  destinationsRows:        3,
   eventsCols:              3,
+  eventsRows:              2,
   classesCols:             3,
+  classesRows:             2,
 };
 
 const COL_OPTIONS = [1, 2, 3, 4, 5, 6];
+const ROW_OPTIONS = [1, 2, 3, 4];
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -159,24 +163,48 @@ export default function AdminGlobalPage() {
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60">
           <h3 className="font-jakarta font-bold text-slate-700">📐 Grid Layouts</h3>
-          <p className="font-jakarta text-xs text-slate-400 mt-0.5">Number of columns shown on tablet &amp; desktop (md/lg). Mobile always falls back to 1–2 columns.</p>
+          <p className="font-jakarta text-xs text-slate-400 mt-0.5">Columns and rows shown on tablet &amp; desktop (md/lg). Visible cards = cols × rows. Mobile always falls back to 1–2 columns.</p>
         </div>
-        <div className="p-6 grid sm:grid-cols-3 gap-4">
-          <Field label="Destinations Grid" hint="Homepage 'Where will you go?' country cards.">
-            <select value={gs.destinationsCols ?? 4} onChange={e => set({ destinationsCols: Number(e.target.value) })} className={inp}>
-              {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
-            </select>
-          </Field>
-          <Field label="Events Grid" hint="/events hub — Upcoming &amp; Past Events.">
-            <select value={gs.eventsCols ?? 3} onChange={e => set({ eventsCols: Number(e.target.value) })} className={inp}>
-              {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
-            </select>
-          </Field>
-          <Field label="Live Classes Grid" hint="Homepage Live Classes board (desktop).">
-            <select value={gs.classesCols ?? 3} onChange={e => set({ classesCols: Number(e.target.value) })} className={inp}>
-              {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
-            </select>
-          </Field>
+        <div className="p-6 grid sm:grid-cols-3 gap-6">
+          {/* Destinations */}
+          <div className="space-y-3">
+            <Field label="Destinations Grid — Columns" hint="Homepage 'Where will you go?' country cards.">
+              <select value={gs.destinationsCols ?? 4} onChange={e => set({ destinationsCols: Number(e.target.value) })} className={inp}>
+                {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
+              </select>
+            </Field>
+            <Field label="Destinations Grid — Rows">
+              <select value={gs.destinationsRows ?? 3} onChange={e => set({ destinationsRows: Number(e.target.value) })} className={inp}>
+                {ROW_OPTIONS.map(n => <option key={n} value={n}>{n} row{n > 1 ? 's' : ''}</option>)}
+              </select>
+            </Field>
+          </div>
+          {/* Events */}
+          <div className="space-y-3">
+            <Field label="Events Grid — Columns" hint="/events hub — Upcoming &amp; Past Events.">
+              <select value={gs.eventsCols ?? 3} onChange={e => set({ eventsCols: Number(e.target.value) })} className={inp}>
+                {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
+              </select>
+            </Field>
+            <Field label="Events Grid — Rows">
+              <select value={gs.eventsRows ?? 2} onChange={e => set({ eventsRows: Number(e.target.value) })} className={inp}>
+                {ROW_OPTIONS.map(n => <option key={n} value={n}>{n} row{n > 1 ? 's' : ''}</option>)}
+              </select>
+            </Field>
+          </div>
+          {/* Live Classes */}
+          <div className="space-y-3">
+            <Field label="Live Classes Grid — Columns" hint="Homepage Live Classes board (desktop).">
+              <select value={gs.classesCols ?? 3} onChange={e => set({ classesCols: Number(e.target.value) })} className={inp}>
+                {COL_OPTIONS.map(n => <option key={n} value={n}>{n} column{n > 1 ? 's' : ''}</option>)}
+              </select>
+            </Field>
+            <Field label="Live Classes Grid — Rows">
+              <select value={gs.classesRows ?? 2} onChange={e => set({ classesRows: Number(e.target.value) })} className={inp}>
+                {ROW_OPTIONS.map(n => <option key={n} value={n}>{n} row{n > 1 ? 's' : ''}</option>)}
+              </select>
+            </Field>
+          </div>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { getMarqueeSettings, setMarqueeSettings, validateAdminToken } from '@/lib/kv';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
+import { revalidatePath } from 'next/cache';
 import type { MarqueeSettings } from '@/lib/kv';
 
 function json(data: unknown, status = 200) {
@@ -39,6 +40,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     await setMarqueeSettings(settings as MarqueeSettings);
+    revalidatePath('/');
     return json({ ok: true });
   } catch (e: unknown) {
     console.error('[PUT /api/marquee] KV write failed:', (e as Error).stack ?? e);
