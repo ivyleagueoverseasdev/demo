@@ -44,8 +44,6 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 // Full expanded header height: infobar(36) + brand(148) + nav(58) = 242px
 export const HEADER_HEIGHT = 242;
-// Compact sticky height when scrolled
-const STICKY_H = 68;
 
 // ── Dropdown menu — rendered outside any overflow-hidden ancestor ─────────
 // By placing it as `fixed` we escape any clipping context entirely.
@@ -242,6 +240,16 @@ export default function Navbar() {
   useMotionValueEvent(scrollY, 'change', v => setScrolled(v > 60));
 
   useEffect(() => { setMOpen(false); setDestOpen(false); setPartOpen(false); }, [pathname]);
+
+  // Body scroll lock — prevents background page from scrolling while menu is open
+  useEffect(() => {
+    if (mOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mOpen]);
 
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : (pathname?.startsWith(href) ?? false);
@@ -461,9 +469,10 @@ export default function Navbar() {
 
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden p-2 rounded-xl hover:bg-slate-900/5 transition-colors flex-shrink-0"
+              className="lg:hidden min-h-[44px] min-w-[44px] p-2.5 rounded-xl hover:bg-slate-900/5 transition-colors flex-shrink-0 flex items-center justify-center"
               onClick={() => setMOpen(o => !o)}
-              aria-label="Toggle menu"
+              aria-label={mOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mOpen}
             >
               <div className="w-5 space-y-1.5">
                 <motion.span animate={{ rotate: mOpen ? 45 : 0, y: mOpen ? 7 : 0 }}
@@ -515,69 +524,145 @@ export default function Navbar() {
         </motion.div>
       </header>
 
-      {/* ── Mobile drawer ─────────────────────────────────────────────── */}
+      {/* ── Mobile drawer — full-screen takeover ──────────────────────────
+          Rules:
+          • fixed inset-0 + h-[100dvh]: fills the entire visual viewport,
+            including behind the browser's dynamic address bar on iOS/Android.
+          • z-[110]: sits above the sticky header (z-[100]) so nothing bleeds through.
+          • lg:hidden: the panel never renders on desktop regardless of state.
+          • Flex column: header strip (flex-shrink-0) + scrollable content (flex-1).
+          • overflow-y-auto + pb-24 on the scroll container: lets users reach the
+            last destination without it hiding behind the phone's home indicator.
+          • Body scroll lock is handled by the useEffect above.
+      ────────────────────────────────────────────────────────────────── */}
       <AnimatePresence>
         {mOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-0 z-[90] shadow-2xl"
+            key="mobile-drawer"
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[110] h-[100dvh] lg:hidden flex flex-col"
             style={{
-              top: scrolled ? `${STICKY_H}px` : `${HEADER_HEIGHT}px`,
               backgroundColor: bg,
-              backdropFilter: 'blur(16px)',
-              overflow: 'hidden',
+              backdropFilter: 'blur(20px) saturate(1.8)',
+              WebkitBackdropFilter: 'blur(20px) saturate(1.8)',
             }}
           >
-            <div className="container-xl py-4 flex flex-col gap-1">
-              {NAV.filter(n => n.href !== '/destinations' && n.href !== '/partners').map(({ label, href }) => (
-                <Link key={href} href={href}
-                  className={`font-jakarta font-medium text-sm px-4 py-3 rounded-xl transition-colors ${
-                    isActive(href) ? 'text-lime-900 bg-slate-900/10' : 'text-slate-800 hover:bg-slate-900/5'
-                  }`}>
-                  {label}
+            {/* ── Drawer header strip ──────────────────────────────────── */}
+            <div className="flex-shrink-0 flex items-center justify-between px-5 py-3 border-b border-slate-900/10">
+              {/* Mini logo */}
+              <Link href="/" onClick={() => setMOpen(false)} aria-label="Go to homepage">
+                <div className="relative w-11 h-11 rounded-full overflow-hidden border border-slate-900/10">
+                  <Image src={logoUrl} alt={brandText} fill className="object-cover" unoptimized />
+                </div>
+              </Link>
+
+              {/* Close button — 44×44 tap target */}
+              <button
+                onClick={() => setMOpen(false)}
+                className="w-11 h-11 rounded-full flex items-center justify-center bg-slate-900/8 hover:bg-slate-900/15 active:bg-slate-900/20 transition-colors"
+                aria-label="Close menu"
+              >
+                <svg className="w-5 h-5 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* ── Scrollable content ───────────────────────────────────── */}
+            <div className="flex-1 overflow-y-auto pb-24">
+
+              {/* Primary nav links */}
+              <nav className="flex flex-col px-4 pt-3 gap-0.5" aria-label="Mobile navigation">
+                {NAV.filter(n => n.href !== '/destinations' && n.href !== '/partners').map(({ label, href }) => (
+                  <Link key={href} href={href}
+                    className={`font-jakarta font-semibold text-xl px-4 py-4 rounded-2xl transition-colors ${
+                      isActive(href)
+                        ? 'text-lime-900 bg-slate-900/10'
+                        : 'text-slate-800 hover:bg-slate-900/5 active:bg-slate-900/10'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+
+              {/* ── Destinations sub-section ─────────────────────────── */}
+              <div className="px-4 mt-5">
+                <div className="border-t border-slate-900/10 pt-4">
+                  <Link href="/destinations"
+                    className="flex items-center justify-between px-4 mb-3 font-jakarta font-bold text-[11px] text-slate-500 uppercase tracking-widest hover:text-slate-800 transition-colors"
+                  >
+                    <span>Study Destinations</span>
+                    <span className="text-slate-400 text-base">→</span>
+                  </Link>
+                  {/* 2-col grid with generous gap — readable and thumb-friendly */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {DESTINATIONS.map(d => (
+                      <Link key={d.href} href={d.href}
+                        className="font-jakarta font-medium text-base px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
+                      >
+                        {d.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Partners sub-section ─────────────────────────────── */}
+              <div className="px-4 mt-5">
+                <div className="border-t border-slate-900/10 pt-4">
+                  <Link href="/partners"
+                    className="flex items-center justify-between px-4 mb-3 font-jakarta font-bold text-[11px] text-slate-500 uppercase tracking-widest hover:text-slate-800 transition-colors"
+                  >
+                    <span>Partners</span>
+                    <span className="text-slate-400 text-base">→</span>
+                  </Link>
+                  {/* Single column — only 3 items, no need for a grid */}
+                  <div className="flex flex-col gap-0.5">
+                    {PARTNERS.map(d => (
+                      <Link key={d.href} href={d.href}
+                        className="font-jakarta font-medium text-base px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
+                      >
+                        {d.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── CTA buttons ──────────────────────────────────────── */}
+              <div className="px-4 mt-6 flex flex-col gap-3">
+                <Link href="/contact"
+                  className="font-jakarta font-bold text-base text-white py-4 rounded-2xl text-center hover:opacity-90 active:scale-[0.98] transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg,#F59E0B,#D97706)',
+                    boxShadow: '0 4px 20px rgba(245,158,11,0.40)',
+                  }}
+                >
+                  Book Free Session →
                 </Link>
-              ))}
-              <div className="border-t border-slate-900/10 my-2" />
-              <Link href="/destinations"
-                className="px-4 pb-1 font-jakarta text-[10px] font-bold text-slate-600 uppercase tracking-wider hover:text-slate-900 transition-colors">
-                Destinations →
-              </Link>
-              <div className="grid grid-cols-2 gap-1 px-1">
-                {DESTINATIONS.map(d => (
-                  <Link key={d.href} href={d.href}
-                    className="font-jakarta font-medium text-xs px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 transition-colors">
-                    {d.label}
-                  </Link>
-                ))}
+                <a href={contact.wa} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2.5 font-jakarta font-semibold text-base py-4 rounded-2xl text-white hover:opacity-90 active:scale-[0.98] transition-all"
+                  style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                  </svg>
+                  Chat on WhatsApp
+                </a>
+                <a href={`tel:${contact.phone}`}
+                  className="flex items-center justify-center gap-2 font-jakarta font-medium text-sm py-3.5 rounded-2xl text-slate-700 bg-slate-900/5 hover:bg-slate-900/8 active:bg-slate-900/12 transition-colors"
+                >
+                  <svg className="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                  </svg>
+                  {contact.phone}
+                </a>
               </div>
-              <div className="border-t border-slate-900/10 my-2" />
-              <Link href="/partners"
-                className="px-4 pb-1 font-jakarta text-[10px] font-bold text-slate-600 uppercase tracking-wider hover:text-slate-900 transition-colors">
-                Partners →
-              </Link>
-              <div className="grid grid-cols-2 gap-1 px-1">
-                {PARTNERS.map(d => (
-                  <Link key={d.href} href={d.href}
-                    className="font-jakarta font-medium text-xs px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-900/5 hover:text-slate-900 transition-colors">
-                    {d.label}
-                  </Link>
-                ))}
-              </div>
-              <div className="border-t border-slate-900/10 my-2" />
-              <Link href="/contact"
-                className="font-jakarta font-bold text-sm text-white py-3 rounded-xl mx-1 text-center hover:opacity-90 transition-all"
-                style={{ background: 'linear-gradient(135deg,#F59E0B,#D97706)' }}>
-                Book Free Session →
-              </Link>
-              <a href={contact.wa} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-4 py-3 rounded-xl text-white mx-1 hover:opacity-90 transition-all"
-                style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
-                💬 Chat on WhatsApp
-              </a>
-              <p className="text-center py-2 text-xs text-slate-600 font-jakarta">📞 {contact.phone}</p>
+
             </div>
           </motion.div>
         )}
