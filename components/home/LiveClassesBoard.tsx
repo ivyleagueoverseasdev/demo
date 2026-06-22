@@ -5,7 +5,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, Clock, Video, X, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { GRID_COLS_LG, clampCols } from '@/lib/gridCols';
+import { clampCols } from '@/lib/gridCols';
+
+// Full literal strings — never build these via template literals.
+// The desktop grid (hidden lg:grid) uses only the lg: variant.
+// Mobile/tablet render a horizontal scroll carousel instead.
+const LG_COLS: Record<number, string> = {
+  1: 'lg:grid-cols-1',
+  2: 'lg:grid-cols-2',
+  3: 'lg:grid-cols-3',
+  4: 'lg:grid-cols-4',
+  5: 'lg:grid-cols-5',
+  6: 'lg:grid-cols-6',
+};
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface LiveClass {
@@ -365,6 +377,7 @@ export default function LiveClassesBoard({ gridCols, gridRows }: { gridCols?: nu
   const [classes, setClasses] = useState<LiveClass[]>(CLASSES);
   const trackRef = useRef<HTMLDivElement>(null);
   const CARD_W = 316;
+  // cols × limit drives the desktop grid slice. Mobile carousel shows all.
   const cols  = clampCols(gridCols, 3);
   const limit = cols * Math.max(1, gridRows ?? 2);
 
@@ -450,8 +463,9 @@ export default function LiveClassesBoard({ gridCols, gridRows }: { gridCols?: nu
 
           {/* ── Cards grid (desktop 3-col) / carousel (mobile) ── */}
 
-          {/* Desktop: static grid — admin-configurable columns × rows */}
-          <div className={`hidden lg:grid ${GRID_COLS_LG[cols]} gap-6`}>
+          {/* Desktop: static grid — admin-configurable columns × rows.
+              Orphaned last-row cards left-align naturally (grid auto-flow, no justify-content override). */}
+          <div className={`hidden lg:grid ${LG_COLS[cols] ?? 'lg:grid-cols-3'} gap-6`}>
             {classes.slice(0, limit).map((cls, i) => (
               <ClassCard key={cls.id} cls={cls} index={i} onBook={setActiveModal} />
             ))}

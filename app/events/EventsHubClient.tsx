@@ -7,7 +7,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { SiteEvent, EventType } from '@/lib/types';
 import PageHero from '@/components/shared/PageHero';
-import { GRID_COLS_MD, GRID_COLS_LG, clampCols } from '@/lib/gridCols';
+import { clampCols } from '@/lib/gridCols';
+
+// Full literal strings — never build these via template literals.
+// mobile (<640px): 1 col  |  tablet (640-1023px): 2 cols  |  desktop (lg+): admin value
+const LG_COLS: Record<number, string> = {
+  1: 'lg:grid-cols-1',
+  2: 'lg:grid-cols-2',
+  3: 'lg:grid-cols-3',
+  4: 'lg:grid-cols-4',
+  5: 'lg:grid-cols-5',
+  6: 'lg:grid-cols-6',
+};
 
 // ── Type config ────────────────────────────────────────────────────────────────
 const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string; border: string }> = {
@@ -167,9 +178,11 @@ function SkeletonCard() {
 // ── Main client component ─────────────────────────────────────────────────────
 export default function EventsHubClient({ initialEvents, gridCols, gridRows }: { initialEvents: SiteEvent[]; gridCols?: number; gridRows?: number }) {
   const searchParams = useSearchParams();
+  // cols × rowLimit drives slice(0, n) — NO CSS row properties are set.
   const cols      = clampCols(gridCols, 3);
   const rowLimit  = Math.max(1, gridRows ?? 2);
-  const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${GRID_COLS_MD[cols]} ${GRID_COLS_LG[cols]} gap-5`;
+  // md: intentionally absent — tablet stays 2-col until lg breakpoint.
+  const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${LG_COLS[cols] ?? 'lg:grid-cols-3'} gap-5`;
 
   const [search,  setSearch]  = useState('');
   const [country, setCountry] = useState('');

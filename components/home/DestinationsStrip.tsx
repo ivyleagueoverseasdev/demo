@@ -5,7 +5,18 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { COUNTRIES } from '@/lib/data';
-import { GRID_COLS_MD, GRID_COLS_LG, clampCols } from '@/lib/gridCols';
+import { clampCols } from '@/lib/gridCols';
+
+// Full literal strings — Tailwind JIT requires these to be statically visible.
+// DO NOT replace with template literals like `lg:grid-cols-${cols}`.
+const LG_COLS: Record<number, string> = {
+  1: 'lg:grid-cols-1',
+  2: 'lg:grid-cols-2',
+  3: 'lg:grid-cols-3',
+  4: 'lg:grid-cols-4',
+  5: 'lg:grid-cols-5',
+  6: 'lg:grid-cols-6',
+};
 
 type Country = (typeof COUNTRIES)[number];
 
@@ -97,8 +108,10 @@ function DestinationCard({ c, i }: { c: Country; i: number }) {
 }
 
 export default function DestinationsStrip({ gridCols, gridRows }: { gridCols?: number; gridRows?: number }) {
+  // cols is always 1–6 after clamp; limit = cols × rows drives the slice.
   const cols  = clampCols(gridCols, 4);
-  const limit = cols * Math.max(1, gridRows ?? 3);
+  const rows  = Math.max(1, gridRows ?? 3);
+  const limit = cols * rows;
 
   return (
     <section className="section bg-slate-50">
@@ -123,8 +136,15 @@ export default function DestinationsStrip({ gridCols, gridRows }: { gridCols?: n
           </p>
         </motion.div>
 
-        {/* Country cards — admin-configurable column count on md/lg */}
-        <div className={`grid grid-cols-1 sm:grid-cols-2 ${GRID_COLS_MD[cols]} ${GRID_COLS_LG[cols]} gap-5`}>
+        {/* Country cards
+            Layout contract:
+              mobile  (<640px)   → 1 col  (grid-cols-1)
+              tablet  (640-1023) → 2 cols (sm:grid-cols-2)
+              desktop (1024px+)  → admin-configured cols (lg:)
+            md: intentionally omitted — tablet stays at 2 cols until lg.
+            Limit = cols × rows; orphaned last-row cards left-align naturally
+            via standard grid auto-flow (no justify-content override needed). */}
+        <div className={`grid grid-cols-1 sm:grid-cols-2 ${LG_COLS[cols] ?? 'lg:grid-cols-4'} gap-5`}>
           {COUNTRIES.slice(0, limit).map((c, i) => (
             <DestinationCard key={c.code} c={c} i={i} />
           ))}
