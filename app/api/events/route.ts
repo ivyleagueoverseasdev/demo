@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getEvents, setEvents, validateAdminToken } from '@/lib/kv';
 import { DEFAULT_EVENTS } from '@/lib/data';
 import { appendAuditLog } from '@/lib/audit';
@@ -74,6 +75,11 @@ export async function PUT(req: NextRequest) {
         await appendAuditLog({ action: e.published ? 'Updated Event' : 'Saved Draft Event', entity: 'event', entityId: e.id, entityName: e.title, before: prev, after: e, published: e.published });
       }
     }
+
+    // Purge Next.js RSC cache so EventsCarousel and /events page reflect new data
+    // instantly. On force-dynamic routes this is a no-op; on ISR pages it matters.
+    revalidatePath('/');
+    revalidatePath('/events');
 
     return json({ ok: true });
   } catch (e: unknown) {

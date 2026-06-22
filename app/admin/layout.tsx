@@ -261,6 +261,10 @@ export function useToast() { return useContext(ToastContext); }
 
 // ── Root layout ───────────────────────────────────────────────────────────────
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  // /admin/login and /admin/login/reset render without the admin shell
+  if (pathname.startsWith('/admin/login')) return <>{children}</>;
+
   const [token,     setToken]     = useState('');
   const [mounted,   setMounted]   = useState(false);
   const [checking,  setChecking]  = useState(true);
