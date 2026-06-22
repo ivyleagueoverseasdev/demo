@@ -18,7 +18,7 @@ function getCFEnv(): CFEnv {
   return {
     kv:            env?.CONTENT_KV      as KVNamespace | undefined,
     adminPassword: (env?.ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD) as string | undefined,
-    gasUrl:        (env?.GAS_WEB_APP_URL ?? process.env.GAS_WEB_APP_URL) as string | undefined,
+    gasUrl:        (env?.GOOGLE_SCRIPT_URL ?? process.env.GOOGLE_SCRIPT_URL) as string | undefined,
   };
 }
 
@@ -82,7 +82,7 @@ export async function requestResetAction(
   const { kv, gasUrl } = getCFEnv();
 
   if (!kv)     return { error: 'Session store unavailable.' };
-  if (!gasUrl) return { error: 'Email not configured (add GAS_WEB_APP_URL to CF Pages env vars).' };
+  if (!gasUrl) return { error: 'Email not configured (add GOOGLE_SCRIPT_URL to CF Pages env vars).' };
 
   // 6-digit numeric OTP — stored in KV for 10 minutes, single-use
   const otp = Math.floor(100_000 + Math.random() * 900_000).toString();
