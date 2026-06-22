@@ -4,14 +4,10 @@
 // The sidebar is client-only (uses localStorage for auth check).
 // Individual tab pages are rendered as {children}.
 
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-// ── Auth context ──────────────────────────────────────────────────────────────
-interface AuthCtx { token: string; setToken: (t: string) => void }
-const AuthContext = createContext<AuthCtx>({ token: '', setToken: () => {} });
-export function useAuth() { return useContext(AuthContext); }
+import { AuthContext, ToastContext } from './_context';
 
 // ── Nav item definition ───────────────────────────────────────────────────────
 interface NavItem {
@@ -253,11 +249,6 @@ function LoginScreen({ onLogin }: { onLogin: (t: string) => void }) {
     </div>
   );
 }
-
-// ── Toast ─────────────────────────────────────────────────────────────────────
-interface ToastCtx { flash: (msg: string, type?: 'success' | 'error' | 'info') => void }
-const ToastContext = createContext<ToastCtx>({ flash: () => {} });
-export function useToast() { return useContext(ToastContext); }
 
 // ── Root layout ───────────────────────────────────────────────────────────────
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

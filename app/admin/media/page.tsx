@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface MediaItem {

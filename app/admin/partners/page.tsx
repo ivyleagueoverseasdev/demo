@@ -7,7 +7,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import type { PartnerPageSettings, PartnerStat } from '@/lib/kv';
 import { PARTNER_DEFAULTS, mergePartnerSettings, type PartnerPageKey } from '@/lib/partnerDefaults';

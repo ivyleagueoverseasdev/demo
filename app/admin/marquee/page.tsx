@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import ImagePicker from '@/components/admin/ImagePicker';
 import { apiCall } from '@/lib/edge-utils';
 import { UNIS_MARQUEE_DATA, type UniEntry } from '@/lib/data';

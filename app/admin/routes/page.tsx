@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import type { RedirectRule } from '@/lib/types';
 

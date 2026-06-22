@@ -6,7 +6,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import type { ServicesPageSettings, ServiceItem, InstituteServiceItem, StudentServiceCard } from '@/lib/types';
 import { SERVICES_DEFAULTS, mergeServicesSettings } from '@/lib/pageDefaults';

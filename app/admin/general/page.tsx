@@ -5,7 +5,7 @@
 // Persists to KV via PUT /api/content { companyDetails } — live immediately.
 
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import { COMPANY } from '@/lib/data';
 import type { CompanyDetails } from '@/lib/types';

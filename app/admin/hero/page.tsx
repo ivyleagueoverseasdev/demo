@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import ImagePicker from '@/components/admin/ImagePicker';
 import { apiCall } from '@/lib/edge-utils';
 import type { HeroSlide, HeroCta, HeroCtaStyle, HeroCtaAction, HeroStat } from '@/lib/types';

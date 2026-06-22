@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import ImagePicker from '@/components/admin/ImagePicker';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import { apiCall } from '@/lib/edge-utils';

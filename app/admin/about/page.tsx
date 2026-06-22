@@ -6,7 +6,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import type { AboutPageSettings } from '@/lib/types';
 import { ABOUT_DEFAULTS, mergeAboutSettings } from '@/lib/pageDefaults';

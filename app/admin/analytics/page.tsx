@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../layout';
+import { useAuth } from '../_context';
 import type { SiteEvent, Lead, NewsItem, DynamicPage } from '@/lib/types';
 import type { AuditEntry } from '@/lib/schemas';
 

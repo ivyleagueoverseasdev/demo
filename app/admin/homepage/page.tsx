@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth, useToast } from '../layout';
+import { useAuth, useToast } from '../_context';
 import type { Stat, ServiceItem, ProcessStepItem } from '@/lib/types';
 import { DEFAULT_SERVICES, DEFAULT_PROCESS_STEPS, STATS } from '@/lib/data';
 

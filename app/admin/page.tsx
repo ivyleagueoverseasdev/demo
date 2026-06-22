@@ -8,7 +8,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useAuth } from './layout';
+import { useAuth } from './_context';
 import type { SiteEvent, DynamicPage, Lead, RedirectRule } from '@/lib/types';
 
 // ── Stat card ──────────────────────────────────────────────────────────────────
