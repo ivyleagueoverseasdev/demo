@@ -10,15 +10,15 @@ export type ResetState = { error?: string; step?: 'sent' } | null;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-type CFEnv = { kv?: KVNamespace; adminPassword?: string; resendKey?: string };
+type CFEnv = { kv?: KVNamespace; adminPassword?: string; gasUrl?: string };
 
 function getCFEnv(): CFEnv {
   const ctx = getOptionalRequestContext();
   const env = ctx?.env as Record<string, unknown> | undefined;
   return {
-    kv:            env?.CONTENT_KV   as KVNamespace | undefined,
-    adminPassword: (env?.ADMIN_PASSWORD  ?? process.env.ADMIN_PASSWORD)  as string | undefined,
-    resendKey:     (env?.RESEND_API_KEY  ?? process.env.RESEND_API_KEY)  as string | undefined,
+    kv:            env?.CONTENT_KV      as KVNamespace | undefined,
+    adminPassword: (env?.ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD) as string | undefined,
+    gasUrl:        (env?.GAS_WEB_APP_URL ?? process.env.GAS_WEB_APP_URL) as string | undefined,
   };
 }
 
@@ -77,50 +77,45 @@ const ADMIN_RESET_RECIPIENT = 'ivyleagueoverseas@gmail.com';
 
 export async function requestResetAction(
   _prev: ResetState,
-  _formData: FormData,   // ← user-provided email intentionally ignored
+  _formData: FormData,   // ← user-provided email intentionally ignored for routing
 ): Promise<ResetState> {
-  const { kv, resendKey } = getCFEnv();
+  const { kv, gasUrl } = getCFEnv();
 
-  if (!kv) return { error: 'Session store unavailable.' };
-  if (!resendKey) return { error: 'Email not configured (add RESEND_API_KEY to CF Pages env vars).' };
+  if (!kv)     return { error: 'Session store unavailable.' };
+  if (!gasUrl) return { error: 'Email not configured (add GAS_WEB_APP_URL to CF Pages env vars).' };
 
   // 6-digit numeric OTP — stored in KV for 10 minutes, single-use
   const otp = Math.floor(100_000 + Math.random() * 900_000).toString();
   await kv.put('admin_reset_otp', otp, { expirationTtl: 600 });
 
-  const emailRes = await fetch('https://api.resend.com/emails', {
-    method:  'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization:  `Bearer ${resendKey}`,
-    },
-    body: JSON.stringify({
-      from:    'ILOC CMS <noreply@ivyleagueoverseas.com>',
-      to:      [ADMIN_RESET_RECIPIENT],   // ← ALWAYS hardcoded — never the form input
-      subject: '[ILOC Admin] Password Reset Code',
-      html: `
-        <div style="font-family:system-ui,sans-serif;max-width:440px;margin:0 auto;padding:24px">
-          <h2 style="margin:0 0 8px;font-size:20px;color:#111">ILOC Admin Reset</h2>
-          <p style="color:#555;font-size:14px;margin:0 0 24px">
-            Your one-time access code (valid 10 minutes):
-          </p>
-          <div style="background:#f4f4f5;border-radius:12px;padding:20px;text-align:center;
-                      font-size:36px;font-weight:900;letter-spacing:0.35em;color:#111">
-            ${otp}
-          </div>
-          <p style="color:#999;font-size:12px;margin:20px 0 0">
-            If you did not request this, ignore this email. Never share this code.
-          </p>
-        </div>
-      `,
-    }),
-  });
-
-  if (!emailRes.ok) {
-    const body = await emailRes.text().catch(() => '');
-    console.error('[requestReset] Resend error', emailRes.status, body);
-    return { error: 'Failed to send email. Verify RESEND_API_KEY and sender domain.' };
+  // Send via Google Apps Script webhook.
+  // STRICT RULE: `to` is always the hardcoded admin address — never the form input.
+  // The GAS doPost() handler reads e.postData.contents and routes the email.
+  let gasOk = false;
+  try {
+    const res = await Promise.race<Response>([
+      fetch(gasUrl, {
+        method:   'POST',
+        redirect: 'follow',                // GAS web-app URLs redirect once
+        headers:  { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'sendAdminOTP',
+          otp,
+          to: ADMIN_RESET_RECIPIENT,       // ← ALWAYS hardcoded — never the form input
+        }),
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('GAS timeout')), 8000),
+      ),
+    ]);
+    gasOk = res.ok;
+    if (!gasOk) console.error('[requestReset] GAS responded', res.status);
+  } catch (err) {
+    console.error('[requestReset] GAS fetch failed:', err);
+    return { error: 'Failed to send reset code. Check GAS_WEB_APP_URL.' };
   }
+
+  if (!gasOk) return { error: 'Email delivery failed. Check GAS_WEB_APP_URL.' };
 
   return { step: 'sent' };
 }

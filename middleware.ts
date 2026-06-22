@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 
-export const runtime = 'edge';
+// NOTE: middleware.ts runs on the edge runtime by default in Next.js App Router.
+// Declaring `export const runtime` here is not allowed and will crash the
+// Cloudflare Pages build — the runtime declaration must be absent entirely.
 
 // Paths under /admin that are always public (no cookie required)
 const OPEN_PREFIXES = ['/admin/login'];
