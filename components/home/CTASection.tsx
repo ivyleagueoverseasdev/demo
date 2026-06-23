@@ -6,7 +6,7 @@ import { COMPANY, STATS } from '@/lib/data';
 
 export default function CTASection() {
   return (
-    <section className="section bg-white">
+    <section className="w-full overflow-hidden section bg-white">
       <div className="container-xl">
         <motion.div
           initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}

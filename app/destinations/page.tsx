@@ -39,7 +39,7 @@ export default async function DestinationsPage() {
   return (
     <div className="bg-white">
       {/* ── Picture-based hero ── */}
-      <section className="relative overflow-hidden min-h-[380px] flex items-end">
+      <section className="w-full relative overflow-hidden min-h-[380px] flex items-end">
         {/* Background collage — top 4 country images */}
         <div className="absolute inset-0 grid grid-cols-4">
           {countries.slice(0, 4).map((c, i) => (
@@ -114,7 +114,7 @@ export default async function DestinationsPage() {
       </section>
 
       {/* ── Country cards grid ── */}
-      <section className="section bg-white">
+      <section className="w-full overflow-hidden section bg-white">
         <div className="container-xl">
           <div className="space-y-6">
             {countries.map((c) => (

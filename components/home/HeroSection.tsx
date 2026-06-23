@@ -343,7 +343,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
     <>
       <section
         ref={sectionRef}
-        className="relative overflow-hidden flex items-center"
+        className="w-full relative overflow-hidden flex items-center"
         style={{
           background: 'linear-gradient(160deg,#07257C 0%,#0C37A0 18%,#1249C4 55%,#1A5CE8 100%)',
           minHeight: '100vh',

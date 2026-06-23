@@ -43,7 +43,7 @@ export default function HowItWorks({ steps }: Props) {
 
   return (
     <section
-      className="section relative overflow-hidden"
+      className="w-full section relative overflow-hidden"
       style={{ background: 'linear-gradient(145deg,#1249C4 0%,#246DFF 50%,#246DFF 100%)' }}
     >
       {/* Dot pattern */}
@@ -100,7 +100,7 @@ export default function HowItWorks({ steps }: Props) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '0px 0px -80px 0px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
         >
           {data.map((step, i) => {
             const { Icon, color, glow } = getStepIcon(step.step);
@@ -168,7 +168,7 @@ export default function HowItWorks({ steps }: Props) {
                     <div className="font-jakarta text-[10px] font-bold text-amber-400 tracking-[0.2em] uppercase mb-2">
                       Step {String(step.step).padStart(2, '0')}
                     </div>
-                    <h3 className="font-jakarta font-bold text-white text-base md:text-xl mb-3 leading-snug">{step.title}</h3>
+                    <h3 className="font-jakarta font-semibold text-white text-xl md:text-2xl mb-3 leading-snug">{step.title}</h3>
                     <p className="font-jakarta text-sm md:text-base text-white/75 leading-relaxed">{step.desc}</p>
                   </div>
                 </motion.div>

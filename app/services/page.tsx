@@ -47,7 +47,7 @@ export default async function ServicesPage() {
       />
 
       {/* ── Student Services 4×3 Grid ── */}
-      <section className="section bg-white">
+      <section className="w-full overflow-hidden section bg-white">
         <div className="container-xl">
           <div className="divider-blue mb-4" />
           <h2
@@ -78,7 +78,7 @@ export default async function ServicesPage() {
 
                 {/* Content */}
                 <div className="p-5 flex flex-col flex-1">
-                  <h3 className="font-jakarta font-bold text-slate-800 text-base md:text-lg leading-snug mb-2 group-hover:text-primary-600 transition-colors">
+                  <h3 className="font-jakarta font-semibold text-slate-800 text-xl md:text-2xl leading-snug mb-2 group-hover:text-primary-600 transition-colors">
                     {svc.title}
                   </h3>
                   <p className="font-jakarta text-sm md:text-base text-slate-500 leading-relaxed flex-1">
@@ -95,7 +95,7 @@ export default async function ServicesPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="section text-white" style={{ background: 'linear-gradient(135deg,#0C37A0,#246DFF)' }}>
+      <section className="w-full overflow-hidden section text-white" style={{ background: 'linear-gradient(135deg,#0C37A0,#246DFF)' }}>
         <div className="container-xl text-center">
           <h2
             className="font-jakarta font-extrabold text-white mb-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight"
@@ -103,7 +103,7 @@ export default async function ServicesPage() {
             {s.ctaHeading}
           </h2>
           <p className="font-jakarta text-base md:text-lg text-white/70 mb-8 max-w-lg mx-auto leading-relaxed">{s.ctaParagraph}</p>
-          <Link href="/contact" className="btn-primary text-sm px-8 py-3.5 rounded-xl">
+          <Link href="/contact" className="btn-primary w-full md:w-auto text-base md:text-lg font-bold py-3 px-6 md:py-4 md:px-8 rounded-xl">
             Book Free Counselling →
           </Link>
         </div>

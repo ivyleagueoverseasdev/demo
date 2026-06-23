@@ -46,14 +46,14 @@ export default function StatsSection() {
     'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6';
 
   return (
-    <section className="bg-gradient-to-b from-white to-slate-50/60">
+    <section className="w-full overflow-hidden bg-gradient-to-b from-white to-slate-50/60">
       <div className="container-xl py-10">
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-          className={`grid ${cols} gap-4`}
+          className={`grid ${cols} gap-6`}
         >
           {stats.map((s, i) => {
             const cfg = ICON_POOL[i % ICON_POOL.length];

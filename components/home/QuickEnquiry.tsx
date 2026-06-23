@@ -49,7 +49,7 @@ export default function QuickEnquiry() {
   const inp = 'input text-sm';
 
   return (
-    <section id="enquiry" className="section bg-gradient-to-b from-white to-homeblue-50/60">
+    <section id="enquiry" className="w-full overflow-hidden section bg-gradient-to-b from-white to-homeblue-50/60">
       <div className="container-xl">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left */}
@@ -61,7 +61,7 @@ export default function QuickEnquiry() {
           >
             <div className="divider-amber" />
             <p className="label mb-3">Quick Enquiry</p>
-            <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4 text-3xl md:text-4xl leading-tight tracking-tight">
+            <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight">
               Start your journey<br />with one message.
             </h2>
             <p className="font-jakarta text-slate-500 text-base md:text-lg leading-relaxed mb-6">

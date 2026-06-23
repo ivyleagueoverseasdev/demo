@@ -132,7 +132,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
   return (
     <section
       id="testimonials"
-      className="section overflow-hidden"
+      className="w-full section overflow-hidden"
       style={{ background: 'linear-gradient(160deg,#F8FAFC 0%,#F7FFDB 60%,#FFFBEB 100%)' }}
     >
       {/* Header */}

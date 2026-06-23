@@ -49,7 +49,7 @@ export default async function NewsPage() {
       />
 
       {/* ── Articles grid ────────────────────────────────────────────────── */}
-      <section className="section bg-slate-50">
+      <section className="w-full overflow-hidden section bg-slate-50">
         <div className="container-xl">
           {news.length === 0 ? (
             <div className="text-center py-20">
@@ -58,7 +58,7 @@ export default async function NewsPage() {
               <p className="font-jakarta text-slate-400 text-sm">Check back soon — new updates are published weekly.</p>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {news.map((item, i) => (
                 <Link
                   key={item.id}
@@ -109,7 +109,7 @@ export default async function NewsPage() {
       </section>
 
       {/* ── CTA ─────────────────────────────────────────────────────────── */}
-      <section className="section bg-white border-t border-slate-100">
+      <section className="w-full overflow-hidden section bg-white border-t border-slate-100">
         <div className="container-xl text-center">
           <h2 className="font-jakarta font-extrabold text-slate-800 mb-3 text-2xl md:text-3xl lg:text-4xl leading-tight tracking-tight">
             Have a question about these updates?
@@ -119,7 +119,7 @@ export default async function NewsPage() {
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 font-jakarta font-bold text-sm px-8 py-3.5 rounded-xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+            className="inline-flex items-center gap-2 font-jakarta font-bold w-full md:w-auto text-base md:text-lg py-3 px-6 md:py-4 md:px-8 rounded-xl bg-primary-600 text-white hover:bg-primary-700 transition-colors justify-center"
           >
             Book Free Counselling →
           </Link>

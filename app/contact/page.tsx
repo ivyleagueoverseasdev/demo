@@ -104,7 +104,7 @@ export default function ContactPage() {
         blobColor="#CCFF00"
       />
 
-      <section className="section bg-white">
+      <section className="w-full overflow-hidden section bg-white">
         <div className="container-xl">
           <div className="grid lg:grid-cols-[1fr_1.3fr] gap-12 lg:gap-16 items-start">
             {/* Info */}

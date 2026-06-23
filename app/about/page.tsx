@@ -87,8 +87,8 @@ export default async function AboutPage() {
       />
 
       {/* ── Stats ── */}
-      <section className="bg-white border-b border-slate-100">
-        <div className="container-xl py-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      <section className="w-full overflow-hidden bg-white border-b border-slate-100">
+        <div className="container-xl py-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
           {stats.map((st, i) => {
             const Icon = STAT_ICONS[i % STAT_ICONS.length] ?? GraduationCap;
             return (
@@ -112,8 +112,8 @@ export default async function AboutPage() {
       </section>
 
       {/* ── Founder ── */}
-      <section className="section">
-        <div className="container-xl grid md:grid-cols-[280px_1fr] gap-12 items-start">
+      <section className="w-full overflow-hidden section">
+        <div className="container-xl grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           <div>
             <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary-600 to-primary-500 flex items-center justify-center font-jakarta font-black text-2xl text-white mb-5 shadow-blue">
               {s.founderInitials}
@@ -145,7 +145,7 @@ export default async function AboutPage() {
       </section>
 
       {/* ── Mission & Vision ── */}
-      <section className="section bg-slate-50">
+      <section className="w-full overflow-hidden section bg-slate-50">
         <div className="container-xl">
           <div className="text-center mb-12">
             <div className="divider-amber mx-auto" />
@@ -155,7 +155,7 @@ export default async function AboutPage() {
               Mission &amp; Vision
             </h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {missionVision.map(({ Icon, title, color, glow, desc }) => (
               <div key={title} className="card p-8">
                 {/* Premium glowing icon container */}
@@ -184,7 +184,7 @@ export default async function AboutPage() {
       </section>
 
       {/* ── Why ILOC ── */}
-      <section className="section bg-white">
+      <section className="w-full overflow-hidden section bg-white">
         <div className="container-xl">
           <div className="text-center mb-12">
             <div className="divider-blue mx-auto" />
@@ -194,7 +194,7 @@ export default async function AboutPage() {
               {s.whyHeading}
             </h2>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             {WHY_VISUALS.map(({ Icon, color, glow, bg, border }, i) => (
               <div
                 key={i}
@@ -227,7 +227,7 @@ export default async function AboutPage() {
       </section>
 
       {/* ── Contact info strip ── */}
-      <section className="bg-primary-50 border-y border-primary-100 py-6">
+      <section className="w-full overflow-hidden bg-primary-50 border-y border-primary-100 py-6">
         <div className="container-xl">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <a
@@ -254,7 +254,7 @@ export default async function AboutPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="section bg-white">
+      <section className="w-full overflow-hidden section bg-white">
         <div className="container-xl text-center">
           <h2
             className="font-jakarta font-extrabold text-primary-600 mb-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight"

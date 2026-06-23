@@ -578,7 +578,7 @@ export default function Navbar() {
               <nav className="flex flex-col px-4 pt-3 gap-0.5" aria-label="Mobile navigation">
                 {NAV.filter(n => n.href !== '/destinations' && n.href !== '/partners').map(({ label, href }) => (
                   <Link key={href} href={href}
-                    className={`font-jakarta font-semibold text-xl px-4 py-4 rounded-2xl transition-colors ${
+                    className={`font-jakarta font-bold text-2xl tracking-tight px-4 py-4 rounded-2xl transition-colors ${
                       isActive(href)
                         ? 'text-lime-900 bg-slate-900/10'
                         : 'text-slate-800 hover:bg-slate-900/5 active:bg-slate-900/10'
@@ -593,16 +593,16 @@ export default function Navbar() {
               <div className="px-4 mt-5">
                 <div className="border-t border-slate-900/10 pt-4">
                   <Link href="/destinations"
-                    className="flex items-center justify-between px-4 mb-3 font-jakarta font-bold text-[11px] text-slate-500 uppercase tracking-widest hover:text-slate-800 transition-colors"
+                    className="flex items-center justify-between px-4 mb-4 font-jakarta font-extrabold text-sm text-slate-800 uppercase tracking-widest opacity-60 hover:opacity-100 transition-all"
                   >
                     <span>Study Destinations</span>
                     <span className="text-slate-400 text-base">→</span>
                   </Link>
                   {/* 2-col grid with generous gap — readable and thumb-friendly */}
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-y-5 gap-x-4">
                     {DESTINATIONS.map(d => (
                       <Link key={d.href} href={d.href}
-                        className="font-jakarta font-medium text-base px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
+                        className="font-jakarta font-medium text-lg px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
                       >
                         {d.label}
                       </Link>
@@ -615,7 +615,7 @@ export default function Navbar() {
               <div className="px-4 mt-5">
                 <div className="border-t border-slate-900/10 pt-4">
                   <Link href="/partners"
-                    className="flex items-center justify-between px-4 mb-3 font-jakarta font-bold text-[11px] text-slate-500 uppercase tracking-widest hover:text-slate-800 transition-colors"
+                    className="flex items-center justify-between px-4 mb-4 font-jakarta font-extrabold text-sm text-slate-800 uppercase tracking-widest opacity-60 hover:opacity-100 transition-all"
                   >
                     <span>Partners</span>
                     <span className="text-slate-400 text-base">→</span>
@@ -624,7 +624,7 @@ export default function Navbar() {
                   <div className="flex flex-col gap-0.5">
                     {PARTNERS.map(d => (
                       <Link key={d.href} href={d.href}
-                        className="font-jakarta font-medium text-base px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
+                        className="font-jakarta font-medium text-lg px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
                       >
                         {d.label}
                       </Link>
@@ -636,7 +636,7 @@ export default function Navbar() {
               {/* ── CTA buttons ──────────────────────────────────────── */}
               <div className="px-4 mt-6 flex flex-col gap-3">
                 <Link href="/contact"
-                  className="font-jakarta font-bold text-base text-white py-4 rounded-2xl text-center hover:opacity-90 active:scale-[0.98] transition-all"
+                  className="font-jakarta font-bold text-lg text-white py-4 rounded-2xl text-center hover:opacity-90 active:scale-[0.98] transition-all"
                   style={{
                     background: 'linear-gradient(135deg,#F59E0B,#D97706)',
                     boxShadow: '0 4px 20px rgba(245,158,11,0.40)',
@@ -645,7 +645,7 @@ export default function Navbar() {
                   Book Free Session →
                 </Link>
                 <a href={contact.wa} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2.5 font-jakarta font-semibold text-base py-4 rounded-2xl text-white hover:opacity-90 active:scale-[0.98] transition-all"
+                  className="flex items-center justify-center gap-2.5 font-jakarta font-bold text-lg py-4 rounded-2xl text-white hover:opacity-90 active:scale-[0.98] transition-all"
                   style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -654,7 +654,7 @@ export default function Navbar() {
                   Chat on WhatsApp
                 </a>
                 <a href={`tel:${contact.phone}`}
-                  className="flex items-center justify-center gap-2 font-jakarta font-medium text-sm py-3.5 rounded-2xl text-slate-700 bg-slate-900/5 hover:bg-slate-900/8 active:bg-slate-900/12 transition-colors"
+                  className="flex items-center justify-center gap-2 font-jakarta font-bold text-lg py-4 rounded-2xl text-slate-700 bg-slate-900/5 hover:bg-slate-900/8 active:bg-slate-900/12 transition-colors"
                 >
                   <svg className="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>

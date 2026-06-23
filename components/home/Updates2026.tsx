@@ -10,7 +10,7 @@ export default function Updates2026() {
   );
 
   return (
-    <section className="section bg-white">
+    <section className="w-full overflow-hidden section bg-white">
       <div className="container-xl">
         <motion.div
           initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }}
@@ -21,7 +21,7 @@ export default function Updates2026() {
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse-dot" />
             2026 Immigration Policy Updates
           </div>
-          <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4 text-3xl md:text-4xl leading-tight tracking-tight">
+          <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight">
             What changed for 2026.
           </h2>
           <p className="font-jakarta text-slate-500 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
@@ -29,7 +29,7 @@ export default function Updates2026() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {highlights.map((h, i) => (
             <motion.div
               key={h.country}

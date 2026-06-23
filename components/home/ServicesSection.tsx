@@ -64,7 +64,7 @@ export default function ServicesSection({ services }: Props) {
   const data: ServiceItem[] = services && services.length > 0 ? services : DEFAULT_SERVICES;
 
   return (
-    <section className="section bg-white relative overflow-hidden">
+    <section className="w-full section bg-white relative overflow-hidden">
       {/* Subtle texture — decorative only, opacity so low a 404 is invisible */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.022]" aria-hidden>
         <Image
@@ -87,7 +87,7 @@ export default function ServicesSection({ services }: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '0px 0px -100px 0px' }}
           transition={{ duration: 0.5 }}
-          className="grid md:grid-cols-2 gap-8 items-end mb-12"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end mb-12"
         >
           <div>
             <div className="divider-blue" />
@@ -116,7 +116,7 @@ export default function ServicesSection({ services }: Props) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '0px 0px -80px 0px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
         >
           {data.map((s, i) => {
             const { Icon, color, glow, bg } = getIconCfg(s.id, i);
@@ -200,7 +200,7 @@ export default function ServicesSection({ services }: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '0px 0px -60px 0px' }}
           transition={{ duration: 0.45, delay: 0.12 }}
-          className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4"
+          className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6"
         >
           {[
             { Icon: GraduationCap, num: '10,000+', label: 'Students Placed',    color: '#65A30D' },

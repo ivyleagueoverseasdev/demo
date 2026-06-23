@@ -47,7 +47,7 @@ export default function PageHero({
   extra,
 }: PageHeroProps) {
   return (
-    <section className="relative overflow-hidden text-white" style={{ background: gradient }}>
+    <section className="w-full relative overflow-hidden text-white" style={{ background: gradient }}>
       {/* Decorative glows */}
       <div
         className="absolute top-0 right-0 w-[480px] h-[480px] rounded-full opacity-20 pointer-events-none blur-3xl"

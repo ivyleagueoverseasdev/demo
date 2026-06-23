@@ -182,7 +182,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
   const cols      = clampCols(gridCols, 3);
   const rowLimit  = Math.max(1, gridRows ?? 2);
   // md: intentionally absent — tablet stays 2-col until lg breakpoint.
-  const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${LG_COLS[cols] ?? 'lg:grid-cols-3'} gap-5`;
+  const gridClass = `grid grid-cols-1 sm:grid-cols-2 ${LG_COLS[cols] ?? 'lg:grid-cols-3'} gap-6 md:gap-8`;
 
   const [search,  setSearch]  = useState('');
   const [country, setCountry] = useState('');
@@ -291,7 +291,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
       </div>
 
       {/* ── Events grid ───────────────────────────────────────────────────── */}
-      <section className="section bg-slate-50">
+      <section className="w-full overflow-hidden section bg-slate-50">
         <div className="container-xl">
 
           {/* Upcoming */}
@@ -341,7 +341,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
       </section>
 
       {/* ── Bottom CTA ────────────────────────────────────────────────────── */}
-      <section className="section bg-white border-t border-slate-100">
+      <section className="w-full overflow-hidden section bg-white border-t border-slate-100">
         <div className="container-xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
             className="bg-gradient-to-br from-primary-900 to-primary-700 rounded-3xl px-8 sm:px-14 py-12 text-center overflow-hidden relative">
@@ -353,7 +353,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
               <p className="font-jakarta text-white/70 text-sm md:text-base max-w-lg mx-auto mb-7 leading-relaxed">
                 Book a one-on-one free counselling session — 30 minutes, zero pressure, fully personalised.
               </p>
-              <Link href="/contact" className="inline-flex items-center gap-2 font-jakarta font-bold text-sm px-9 py-4 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors" style={{ boxShadow: '0 8px 28px rgba(217,119,6,0.38)' }}>
+              <Link href="/contact" className="inline-flex items-center gap-2 font-jakarta font-bold w-full md:w-auto text-base md:text-lg py-3 px-6 md:py-4 md:px-8 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors justify-center" style={{ boxShadow: '0 8px 28px rgba(217,119,6,0.38)' }}>
                 Book Free 1-on-1 Session →
               </Link>
             </div>
