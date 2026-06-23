@@ -49,6 +49,11 @@ export const metadata: Metadata = {
   ],
   authors:  [{ name: COMPANY.founder }],
   creator:  COMPANY.name,
+  icons: {
+    icon:     [{ url: '/icon.png', type: 'image/png', sizes: '512x512' }],
+    shortcut: '/favicon.ico',
+    apple:    [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
   openGraph: {
     type:        'website',
     siteName:    COMPANY.name,
