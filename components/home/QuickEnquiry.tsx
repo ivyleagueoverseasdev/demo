@@ -152,7 +152,7 @@ export default function QuickEnquiry() {
                   <h3 className="font-jakarta font-bold text-homeblue-600 text-xl mb-2">Enquiry Received!</h3>
                   <p className="font-jakarta text-slate-500 text-sm leading-relaxed">
                     Our counsellor will contact you at <strong className="text-slate-700">{f.phone}</strong> within 24 hours.
-                    {f.country && <><br />We'll prepare a personalised plan for <strong className="text-amber-600">{f.country}</strong>.</>}
+                    {f.country && <><br />We&apos;ll prepare a personalised plan for <strong className="text-amber-600">{f.country}</strong>.</>}
                   </p>
                   <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 mt-5 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-white"

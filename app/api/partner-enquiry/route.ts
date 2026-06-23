@@ -100,8 +100,9 @@ async function sendToGAS(payload: string): Promise<void> {
       body:     new URLSearchParams({ data: payload }).toString(),
       redirect: 'follow',
     });
-    const text = await res.text().catch(() => '');
-    console.log('[partner-enquiry] GAS response:', res.status, text);
+    if (!res.ok) {
+      console.error('[partner-enquiry] GAS returned error:', res.status, res.statusText);
+    }
   } catch (e) {
     console.error('[partner-enquiry] fetch error:', (e as Error).message);
     throw e;

@@ -6,6 +6,7 @@ import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import ImagePicker from '@/components/admin/ImagePicker';
 import RichTextEditor from '@/components/admin/RichTextEditor';
+import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 import { useRouter } from 'next/navigation';
 import type { DynamicPage } from '@/lib/types';
 
@@ -445,7 +446,7 @@ export default function AdminPagesPage() {
 
       {loading ? (
         <div className="space-y-3">
-          {[1,2,3].map(i => <div key={i} className="bg-white rounded-2xl border border-slate-100 h-16 animate-pulse" />)}
+          {Array.from({ length: 4 }).map((_, i) => <SkeletonContentRow key={i} />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">

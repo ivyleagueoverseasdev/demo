@@ -588,12 +588,14 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                       key={i}
                       onClick={() => go(i, i > idx ? 1 : -1)}
                       aria-label={`Slide ${i + 1}`}
-                      className="h-2 rounded-full transition-all duration-300"
-                      style={{
-                        width:      i === idx ? 28 : 8,
-                        background: i === idx ? '#F59E0B' : 'rgba(255,255,255,0.28)',
-                      }}
-                    />
+                      className="flex items-center py-4 transition-all duration-300"
+                      style={{ width: i === idx ? 28 : 8 }}
+                    >
+                      <span
+                        className="h-2 rounded-full w-full block transition-all duration-300"
+                        style={{ background: i === idx ? '#F59E0B' : 'rgba(255,255,255,0.28)' }}
+                      />
+                    </button>
                   ))}
                 </div>
                 <div className="flex-1 hidden sm:block h-[3px] bg-white/10 rounded-full overflow-hidden ml-2">

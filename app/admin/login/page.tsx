@@ -3,6 +3,7 @@
 // any path that starts with /admin/login — see the 3-line patch there.
 
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import LoginForm from './_components/LoginForm';
 
 export const runtime  = 'edge';
@@ -67,18 +68,18 @@ export default function AdminLoginPage() {
 
           {/* ── Footer links ── */}
           <div className="mt-7 flex items-center justify-between text-[11px] font-jakarta">
-            <a
+            <Link
               href="/admin/login/reset"
               className="text-zinc-600 hover:text-zinc-300 transition-colors"
             >
               Forgot password?
-            </a>
-            <a
+            </Link>
+            <Link
               href="/"
               className="text-zinc-600 hover:text-zinc-300 transition-colors"
             >
               ← Public site
-            </a>
+            </Link>
           </div>
         </div>
 

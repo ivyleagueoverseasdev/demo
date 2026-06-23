@@ -225,7 +225,7 @@ function BookingModal({ cls, onClose }: { cls: LiveClass; onClose: () => void })
                 </motion.button>
 
                 <p className="font-jakarta text-[10px] text-slate-400 text-center">
-                  We'll send you the Zoom link &amp; joining instructions on WhatsApp.
+                  We&apos;ll send you the Zoom link &amp; joining instructions on WhatsApp.
                 </p>
               </form>
             </>
@@ -238,7 +238,7 @@ function BookingModal({ cls, onClose }: { cls: LiveClass; onClose: () => void })
               >
                 <CheckCircle2 className="w-16 h-16 mx-auto mb-4" style={{ color: cls.color }} />
               </motion.div>
-              <h3 className="font-jakarta font-extrabold text-slate-800 text-xl mb-2">You're In!</h3>
+              <h3 className="font-jakarta font-extrabold text-slate-800 text-xl mb-2">You&apos;re In!</h3>
               <p className="font-jakarta text-sm text-slate-500">
                 Your WhatsApp has opened. Send the message to confirm your FREE demo seat.
               </p>

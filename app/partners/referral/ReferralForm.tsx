@@ -84,13 +84,13 @@ export default function ReferralForm() {
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <label className="block font-jakarta text-sm font-semibold text-slate-700 mb-1.5">
-            Friend's Name <span className="text-red-400">*</span>
+            Friend&apos;s Name <span className="text-red-400">*</span>
           </label>
-          <input required value={f.friendName} onChange={chg('friendName')} type="text" className={fieldCls} placeholder="Friend's Full Name" />
+          <input required value={f.friendName} onChange={chg('friendName')} type="text" className={fieldCls} placeholder="Friend&apos;s Full Name" />
         </div>
         <div>
           <label className="block font-jakarta text-sm font-semibold text-slate-700 mb-1.5">
-            Friend's Phone <span className="text-red-400">*</span>
+            Friend&apos;s Phone <span className="text-red-400">*</span>
           </label>
           <input required value={f.friendPhone} onChange={chg('friendPhone')} type="tel" className={fieldCls} placeholder="+91 98765 43210" />
         </div>

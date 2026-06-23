@@ -186,13 +186,13 @@ export default function DemoModal({ open, onClose }: Props) {
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </motion.div>
-                    <h3 className="font-jakarta font-extrabold text-slate-800 text-xl mb-2">You're Registered! 🎉</h3>
+                    <h3 className="font-jakarta font-extrabold text-slate-800 text-xl mb-2">You&apos;re Registered! 🎉</h3>
                     <p className="font-jakarta text-slate-500 text-sm leading-relaxed max-w-xs mx-auto mb-6">
                       Our IELTS expert team will contact you within <strong>2 hours</strong> to confirm your demo class slot.
                     </p>
                     <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 text-left mb-5">
                       <p className="font-jakarta text-xs font-semibold text-emerald-700 mb-1">WhatsApp Opening…</p>
-                      <p className="font-jakarta text-xs text-slate-500 leading-relaxed">We're opening a WhatsApp message so our counsellor can confirm your batch preference instantly.</p>
+                      <p className="font-jakarta text-xs text-slate-500 leading-relaxed">We&apos;re opening a WhatsApp message so our counsellor can confirm your batch preference instantly.</p>
                     </div>
                     <button
                       onClick={onClose}

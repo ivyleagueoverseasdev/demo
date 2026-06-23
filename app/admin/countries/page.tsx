@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import ImagePicker from '@/components/admin/ImagePicker';
 import { COUNTRIES_MAP } from '@/lib/data';
 import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
+import { SkeletonFormBlock } from '@/components/admin/SkeletonCard';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
 
@@ -181,7 +182,7 @@ export default function AdminCountriesPage() {
         </div>
 
         {metaLoading ? (
-          <div className="p-6 space-y-3">{[1,2,3].map(i => <div key={i} className="h-10 bg-slate-100 rounded-xl animate-pulse" />)}</div>
+          <div className="p-6"><SkeletonFormBlock rows={3} /></div>
         ) : (
           <div className="p-6 space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
@@ -258,7 +259,7 @@ export default function AdminCountriesPage() {
             </div>
           )}
           {htmlLoading ? (
-            <div className="h-48 bg-slate-100 rounded-xl animate-pulse" />
+            <div className="bg-slate-100 rounded-xl animate-pulse h-48" />
           ) : (
             <RichTextEditor
               value={html}

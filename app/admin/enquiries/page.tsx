@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
+import { SkeletonLeadRow, SkeletonStatsBar } from '@/components/admin/SkeletonCard';
 import type { Lead } from '@/lib/types';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -53,11 +54,17 @@ function StatusBadge({ status }: { status: LeadStatus }) {
 
 // ── StatusDropdown ────────────────────────────────────────────────────────────
 function StatusDropdown({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, status: LeadStatus) => void }) {
+  const [pending, setPending] = useState(false);
   return (
     <select
       value={lead.status}
-      onChange={e => onUpdate(lead.id, e.target.value as LeadStatus)}
-      className="font-jakarta text-xs border border-slate-200 rounded-lg px-2 py-1.5 outline-none focus:border-amber-400 text-slate-700 bg-white cursor-pointer"
+      disabled={pending}
+      onChange={e => {
+        setPending(true);
+        Promise.resolve(onUpdate(lead.id, e.target.value as LeadStatus))
+          .finally(() => setPending(false));
+      }}
+      className={`font-jakarta text-xs border border-slate-200 rounded-lg px-2 py-1.5 outline-none focus:border-amber-400 text-slate-700 bg-white transition-opacity ${pending ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
       {(Object.keys(STATUS_CONFIG) as LeadStatus[]).map(s => (
         <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>
@@ -73,12 +80,22 @@ function LeadRow({ lead, onUpdate, onDelete }: {
   onDelete: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+
+  // "Hot" lead: status is still 'new' AND was submitted within the last 24 hours
+  const isHot = lead.status === 'new' &&
+    (Date.now() - new Date(lead.createdAt).getTime()) < 86_400_000;
+
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="flex items-start gap-3 p-4 sm:p-5">
-        {/* Avatar initials */}
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-lime-600 to-lime-500 flex items-center justify-center font-jakarta font-bold text-white text-xs flex-shrink-0">
-          {lead.name.split(' ').slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase()}
+        {/* Avatar initials — amber pulse ring when the lead is hot (new + <24 h) */}
+        <div className="relative flex-shrink-0">
+          {isHot && (
+            <span className="absolute -inset-1 rounded-xl animate-ping bg-amber-400 opacity-40 pointer-events-none" />
+          )}
+          <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-lime-600 to-lime-500 flex items-center justify-center font-jakarta font-bold text-white text-xs">
+            {lead.name.split(' ').slice(0, 2).map(w => w[0] ?? '').join('').toUpperCase()}
+          </div>
         </div>
 
         {/* Info */}
@@ -288,7 +305,10 @@ export default function AdminEnquiriesPage() {
       </div>
 
       {/* Stats */}
-      {!loading && leads.length > 0 && <StatsBar leads={leads} />}
+      {loading
+        ? <SkeletonStatsBar cols={5} />
+        : leads.length > 0 && <StatsBar leads={leads} />
+      }
 
       {/* Sort + Filter */}
       {!loading && leads.length > 0 && (
@@ -314,7 +334,7 @@ export default function AdminEnquiriesPage() {
       {/* List */}
       {loading ? (
         <div className="space-y-3">
-          {[1,2,3,4].map(i => <div key={i} className="bg-white rounded-2xl border border-slate-100 h-20 animate-pulse" />)}
+          {Array.from({ length: 4 }).map((_, i) => <SkeletonLeadRow key={i} />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">

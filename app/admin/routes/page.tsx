@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth, useToast } from '../_context';
+import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 import { apiCall } from '@/lib/edge-utils';
 import type { RedirectRule } from '@/lib/types';
 
@@ -338,7 +339,9 @@ export default function AdminRoutesPage() {
       )}
 
       {loading ? (
-        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="bg-white rounded-2xl h-16 animate-pulse border border-slate-100" />)}</div>
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => <SkeletonContentRow key={i} />)}
+        </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
           <div className="text-5xl mb-3">↗</div>

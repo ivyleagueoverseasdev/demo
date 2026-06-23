@@ -160,7 +160,6 @@ export async function createAdminSession(token: string): Promise<void> {
   const kv = getKVStrict(); // LOUD failure if binding not configured
   // Store raw "1" — presence check only, no JSON serialisation
   await kv.put(`session:${token}`, '1', { expirationTtl: SESSION_TTL });
-  console.log(`[kv] Session created: session:${token.slice(0, 8)}… (TTL ${SESSION_TTL}s)`);
 }
 
 /** Validate a session token. Local dev without CF context bypasses auth. */

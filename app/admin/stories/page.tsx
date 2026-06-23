@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../_context';
 import ImagePicker from '@/components/admin/ImagePicker';
+import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 import { apiCall } from '@/lib/edge-utils';
 import type { Testimonial } from '@/lib/types';
 
@@ -485,7 +486,7 @@ export default function AdminStoriesPage() {
       {/* List */}
       {loading ? (
         <div className="space-y-3">
-          {[1,2,3].map(i => <div key={i} className="bg-white rounded-2xl border border-slate-100 h-24 animate-pulse" />)}
+          {Array.from({ length: 4 }).map((_, i) => <SkeletonContentRow key={i} />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">

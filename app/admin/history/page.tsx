@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../_context';
 import type { AuditEntry } from '@/lib/schemas';
+import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Binding { ok: boolean; label: string }
@@ -170,7 +171,9 @@ export default function AdminHistoryPage() {
 
         <div className="p-6">
           {statLoading ? (
-            <div className="space-y-3">{[1,2,3,4,5].map(i => <div key={i} className="h-10 bg-slate-100 rounded-xl animate-pulse" />)}</div>
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => <SkeletonContentRow key={i} />)}
+            </div>
           ) : !status ? (
             <p className="font-jakarta text-sm text-red-500">Failed to load system status. Check Cloudflare logs.</p>
           ) : (
@@ -241,7 +244,9 @@ export default function AdminHistoryPage() {
 
         <div className="px-6 pb-6">
           {logLoading ? (
-            <div className="space-y-3 pt-4">{[1,2,3,4,5].map(i => <div key={i} className="h-12 bg-slate-100 rounded-xl animate-pulse" />)}</div>
+            <div className="space-y-3 pt-4">
+              {Array.from({ length: 5 }).map((_, i) => <SkeletonContentRow key={i} />)}
+            </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-4xl mb-3">🕒</div>

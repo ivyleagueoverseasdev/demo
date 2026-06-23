@@ -196,10 +196,10 @@ export default function ContactPage() {
               ) : (
                 <div className="py-10 text-center">
                   <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center text-4xl mx-auto mb-5">🎉</div>
-                  <h3 className="font-jakarta font-bold text-primary-600 text-xl mb-2">We've received your request!</h3>
+                  <h3 className="font-jakarta font-bold text-primary-600 text-xl mb-2">We&apos;ve received your request!</h3>
                   <p className="font-jakarta text-slate-500 text-sm mb-6 leading-relaxed">
                     Our counsellor will call you at <strong>{f.phone}</strong> within 24 hours.
-                    {f.country && <> We'll prepare a personalised plan for <strong className="text-amber-600">{f.country}</strong>.</>}
+                    {f.country && <> We&apos;ll prepare a personalised plan for <strong className="text-amber-600">{f.country}</strong>.</>}
                   </p>
                   <a href={wa} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-white"

@@ -83,7 +83,7 @@ function AdminSidebar({ onLogout }: { onLogout: () => void }) {
         )}
         <button
           onClick={() => setCollapsed(c => !c)}
-          className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800 flex-shrink-0 ml-1"
+          className="text-slate-400 hover:text-white transition-colors p-2.5 rounded-lg hover:bg-slate-800 flex-shrink-0 ml-1"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -252,10 +252,10 @@ function LoginScreen({ onLogin }: { onLogin: (t: string) => void }) {
 
 // ── Root layout ───────────────────────────────────────────────────────────────
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  // /admin/login and /admin/login/reset render without the admin shell
-  if (pathname.startsWith('/admin/login')) return <>{children}</>;
+  const pathname    = usePathname();
+  const isLoginPage = pathname.startsWith('/admin/login');
 
+  // All hooks must be declared unconditionally before any early returns.
   const [token,     setToken]     = useState('');
   const [mounted,   setMounted]   = useState(false);
   const [checking,  setChecking]  = useState(true);
@@ -263,6 +263,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [toastType, setToastType] = useState<'success' | 'error' | 'info'>('success');
 
   useEffect(() => {
+    // Skip auth bootstrap on the login / reset pages.
+    if (isLoginPage) return;
     setMounted(true);
     const stored = localStorage.getItem('iloc_admin_token');
     if (!stored) { setChecking(false); return; }
@@ -282,7 +284,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       })
       .catch(() => setToken(stored)) // network blip — keep the session
       .finally(() => setChecking(false));
-  }, []);
+  }, [isLoginPage]);
 
   function handleLogin(t: string) { setToken(t); }
 
@@ -296,6 +298,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setToast(msg);
     setTimeout(() => setToast(''), 3500);
   }
+
+  // Login / reset pages render without the admin shell.
+  if (isLoginPage) return <>{children}</>;
 
   if (!mounted) return null;
   if (checking) {

@@ -3,7 +3,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../_context';
+import { useSaveButton } from '../_hooks';
 import ImagePicker from '@/components/admin/ImagePicker';
+import SaveButton from '@/components/admin/SaveButton';
+import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 import { apiCall } from '@/lib/edge-utils';
 import type { HeroSlide, HeroCta, HeroCtaStyle, HeroCtaAction, HeroStat } from '@/lib/types';
 
@@ -123,7 +126,7 @@ function SlideForm({ slide, index, token, onChange, onRemove, total }: {
         </div>
         {previewImg && (
           <div className="relative w-14 h-10 rounded-lg overflow-hidden flex-shrink-0 hidden sm:block">
-            <Image src={previewImg} alt="" fill className="object-cover" sizes="56px" />
+            <Image src={previewImg} alt="Slide preview" fill className="object-cover" sizes="56px" />
           </div>
         )}
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -270,7 +273,8 @@ export default function AdminHeroPage() {
 
   const [slides,  setSlides]  = useState<HeroSlide[]>([]);
   const [loading, setLoading] = useState(true);
-  const [busy,    setBusy]    = useState(false);
+  const { state: saveState, run: runSave, isBusy } = useSaveButton();
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -282,13 +286,14 @@ export default function AdminHeroPage() {
   useEffect(() => { void load(); }, [load]);
 
   async function save() {
-    setBusy(true);
-    const { ok, error } = await apiCall({
-      method: 'PUT', url: '/api/hero-slides', token, body: { slides },
+    await runSave(async () => {
+      const { ok, error } = await apiCall({
+        method: 'PUT', url: '/api/hero-slides', token, body: { slides },
+      });
+      if (!ok) { flash(`Save failed: ${error}`, 'error'); return false; }
+      flash('✓ Hero slides saved — live immediately.', 'success');
+      return true;
     });
-    if (!ok) { flash(`Save failed: ${error}`, 'error'); setBusy(false); return; }
-    flash('✓ Hero slides saved — live immediately.', 'success');
-    setBusy(false);
   }
 
   return (
@@ -305,19 +310,20 @@ export default function AdminHeroPage() {
           >
             + Add Slide
           </button>
-          <button
+          <SaveButton
+            state={saveState}
             onClick={save}
-            disabled={busy || loading}
-            className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl disabled:opacity-50 hover:opacity-90 transition-opacity"
-            style={{ background: 'linear-gradient(135deg,#D97706,#F59E0B)' }}
-          >
-            {busy ? 'Saving…' : '💾 Save All Slides'}
-          </button>
+            disabled={loading}
+            idleLabel="💾 Save All Slides"
+            className="px-6 py-2.5"
+          />
         </div>
       </div>
 
       {loading ? (
-        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="bg-white rounded-2xl h-16 animate-pulse border border-slate-100" />)}</div>
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => <SkeletonContentRow key={i} />)}
+        </div>
       ) : slides.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center">
           <div className="text-5xl mb-3">🎠</div>
@@ -347,11 +353,12 @@ export default function AdminHeroPage() {
       {slides.length > 0 && (
         <div className="sticky bottom-0 bg-white/90 backdrop-blur-sm border-t border-slate-200 -mx-6 px-6 py-4 flex items-center justify-between">
           <p className="font-jakarta text-xs text-slate-400">{slides.length} slide{slides.length !== 1 ? 's' : ''} · {slides.filter(s => s.enabled).length} active</p>
-          <button onClick={save} disabled={busy}
-            className="font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl disabled:opacity-50 hover:opacity-90 transition-opacity"
-            style={{ background: 'linear-gradient(135deg,#D97706,#F59E0B)' }}>
-            {busy ? 'Saving…' : '💾 Save All Slides'}
-          </button>
+          <SaveButton
+            state={saveState}
+            onClick={save}
+            idleLabel="💾 Save All Slides"
+            className="px-6 py-2.5"
+          />
         </div>
       )}
     </div>

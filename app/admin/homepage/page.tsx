@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../_context';
 import type { Stat, ServiceItem, ProcessStepItem } from '@/lib/types';
 import { DEFAULT_SERVICES, DEFAULT_PROCESS_STEPS, STATS } from '@/lib/data';
+import { SkeletonFormBlock } from '@/components/admin/SkeletonCard';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
 
@@ -91,7 +92,7 @@ function ProcessEditor({ steps, setSteps }: { steps: ProcessStepItem[]; setSteps
   }
   return (
     <div className="space-y-3">
-      <p className="font-jakarta text-xs text-slate-400">Steps shown in the "How It Works" section.</p>
+      <p className="font-jakarta text-xs text-slate-400">Steps shown in the &quot;How It Works&quot; section.</p>
       {steps.map((step, i) => (
         <div key={i} className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-2">
           <div className="flex items-center justify-between mb-1">
@@ -178,9 +179,9 @@ export default function AdminHomepagePage() {
   }
 
   if (loading) return (
-    <div className="space-y-4">
-      <div className="h-8 w-48 bg-slate-100 rounded-xl animate-pulse" />
-      {[1,2,3].map(i => <div key={i} className="bg-white rounded-2xl h-32 animate-pulse border border-slate-100" />)}
+    <div className="space-y-6">
+      <div className="h-8 w-48 bg-slate-200 rounded-xl animate-pulse" />
+      <SkeletonFormBlock rows={3} />
     </div>
   );
 

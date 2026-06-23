@@ -10,6 +10,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from './_context';
 import type { SiteEvent, DynamicPage, Lead, RedirectRule } from '@/lib/types';
+import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 
 // ── Stat card ──────────────────────────────────────────────────────────────────
 function StatCard({ icon, label, value, color, href }: {
@@ -133,7 +134,7 @@ export default function AdminOverview() {
           </div>
           {loading ? (
             <div className="space-y-2">
-              {[1,2,3].map(i => <div key={i} className="h-10 bg-slate-100 rounded-xl animate-pulse" />)}
+              {Array.from({ length: 3 }).map((_, i) => <SkeletonContentRow key={i} />)}
             </div>
           ) : leads.length === 0 ? (
             <p className="font-jakarta text-sm text-slate-400 text-center py-6">No enquiries yet.</p>

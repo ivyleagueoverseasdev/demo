@@ -3,8 +3,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../_context';
+import { useSaveButton } from '../_hooks';
+import type { SaveState } from '../_hooks';
 import ImagePicker from '@/components/admin/ImagePicker';
 import RichTextEditor from '@/components/admin/RichTextEditor';
+import SaveButton from '@/components/admin/SaveButton';
+import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 import { apiCall } from '@/lib/edge-utils';
 import { useRouter } from 'next/navigation';
 import type { NewsItem } from '@/lib/types';
@@ -135,14 +139,14 @@ function NewsForm({
   token,
   onSave,
   onCancel,
-  busy,
+  saveState,
 }: {
-  initial:  Omit<NewsItem, 'id' | 'createdAt'>;
-  editId:   string | null;
-  token:    string;
-  onSave:   (data: Omit<NewsItem, 'id' | 'createdAt'>, published: boolean) => Promise<void>;
-  onCancel: () => void;
-  busy:     boolean;
+  initial:   Omit<NewsItem, 'id' | 'createdAt'>;
+  editId:    string | null;
+  token:     string;
+  onSave:    (data: Omit<NewsItem, 'id' | 'createdAt'>, published: boolean) => Promise<void>;
+  onCancel:  () => void;
+  saveState: SaveState;
 }) {
   const [form, setForm] = useState(initial);
   const [slugManual, setSlugManual] = useState(!!editId); // lock slug when editing
@@ -268,20 +272,19 @@ function NewsForm({
 
         {/* ── Save buttons ── */}
         <div className="flex gap-3 flex-wrap pt-1">
-          <button
+          <SaveButton
+            state={saveState}
             onClick={() => onSave(form, true)}
-            disabled={busy || !form.title || !form.slug}
-            className="font-jakarta font-bold text-sm text-white px-7 py-3 rounded-xl disabled:opacity-50 hover:opacity-90 transition-opacity"
-            style={{ background: 'linear-gradient(135deg,#D97706,#F59E0B)' }}
-          >
-            {busy ? 'Saving…' : isNew ? '🚀 Publish Article' : '🚀 Update & Publish'}
-          </button>
+            disabled={!form.title || !form.slug}
+            idleLabel={isNew ? '🚀 Publish Article' : '🚀 Update & Publish'}
+            className="px-7 py-3"
+          />
           <button
             onClick={() => onSave({ ...form, published: false }, false)}
-            disabled={busy || !form.title || !form.slug}
+            disabled={saveState !== 'idle' || !form.title || !form.slug}
             className="font-jakarta font-bold text-sm px-5 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50"
           >
-            {busy ? 'Saving…' : '💾 Save as Draft'}
+            {saveState === 'saving' ? 'Saving…' : '💾 Save as Draft'}
           </button>
           <button onClick={onCancel} className="font-jakarta text-sm px-4 py-3 rounded-xl text-slate-400 hover:text-slate-600 transition-colors">
             Cancel
@@ -343,7 +346,7 @@ export default function AdminNewsPage() {
 
   const [items,        setItems]        = useState<NewsItem[]>([]);
   const [loading,      setLoading]      = useState(true);
-  const [busy,         setBusy]         = useState(false);
+  const { state: saveState, run: runSave } = useSaveButton();
   const [showForm,     setShowForm]     = useState(false);
   const [editId,       setEditId]       = useState<string | null>(null);
   const [formInitial,  setFormInitial]  = useState(emptyNews());
@@ -365,18 +368,22 @@ export default function AdminNewsPage() {
   // ── Save (create or update) ───────────────────────────────────────────────
   async function handleSave(data: Omit<NewsItem, 'id' | 'createdAt'>, published: boolean) {
     if (!data.title || !data.slug) { flash('Title and slug are required.', 'error'); return; }
-    setBusy(true);
     const payload = { ...data, published };
-    const { ok, error } = editId
-      ? await apiCall({ method: 'PUT',  url: '/api/news', token, body: { ...payload, id: editId } })
-      : await apiCall({ method: 'POST', url: '/api/news', token, body: { ...payload, id: `news_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, createdAt: new Date().toISOString() } });
-
-    if (!ok) { flash(`Save failed: ${error}`, 'error'); setBusy(false); return; }
-    flash(editId ? '✓ Article updated — live immediately.' : '✓ Article published — live immediately.', 'success');
-    closeForm();
-    await load();
-    router.refresh(); // clear Next.js client cache so /news reflects new content
-    setBusy(false);
+    const succeeded = await runSave(async () => {
+      const { ok, error } = editId
+        ? await apiCall({ method: 'PUT',  url: '/api/news', token, body: { ...payload, id: editId } })
+        : await apiCall({ method: 'POST', url: '/api/news', token, body: { ...payload, id: `news_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, createdAt: new Date().toISOString() } });
+      if (!ok) { flash(`Save failed: ${error}`, 'error'); return false; }
+      flash(editId ? '✓ Article updated — live immediately.' : '✓ Article published — live immediately.', 'success');
+      return true;
+    });
+    if (succeeded) {
+      // Brief pause so the user sees the green "✓ Saved" morph before the form closes
+      await new Promise<void>(r => setTimeout(r, 600));
+      closeForm();
+      await load();
+      router.refresh();
+    }
   }
 
   // ── Toggle publish ────────────────────────────────────────────────────────
@@ -451,7 +458,7 @@ export default function AdminNewsPage() {
       {/* Form */}
       {showForm && (
         <div ref={formRef}>
-          <NewsForm initial={formInitial} editId={editId} token={token} onSave={handleSave} onCancel={closeForm} busy={busy} />
+          <NewsForm initial={formInitial} editId={editId} token={token} onSave={handleSave} onCancel={closeForm} saveState={saveState} />
         </div>
       )}
 
@@ -463,7 +470,7 @@ export default function AdminNewsPage() {
       {/* List */}
       {loading ? (
         <div className="space-y-3">
-          {[1,2,3].map(i => <div key={i} className="bg-white rounded-2xl border border-slate-100 h-20 animate-pulse" />)}
+          {Array.from({ length: 4 }).map((_, i) => <SkeletonContentRow key={i} />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">

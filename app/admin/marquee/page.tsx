@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../_context';
 import ImagePicker from '@/components/admin/ImagePicker';
+import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 import { apiCall } from '@/lib/edge-utils';
 import { UNIS_MARQUEE_DATA, type UniEntry } from '@/lib/data';
 
@@ -72,7 +73,7 @@ function UniRow({ uni, index, token, total, onChange, onRemove, onMove }: {
           style={{ background: uni.darkBg ? '#003B5C' : '#ffffff' }}
         >
           {uni.src ? (
-            <Image src={uni.src} alt="" fill className="object-contain p-1" sizes="56px" />
+            <Image src={uni.src} alt={uni.name || 'University logo'} fill className="object-contain p-1" sizes="56px" />
           ) : (
             <span className="text-slate-300 text-lg">🎓</span>
           )}
@@ -197,7 +198,9 @@ export default function AdminMarqueePage() {
       </div>
 
       {loading ? (
-        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="bg-white rounded-2xl h-16 animate-pulse border border-slate-100" />)}</div>
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => <SkeletonContentRow key={i} />)}
+        </div>
       ) : (
         <>
           {/* Heading / subheading / speeds */}

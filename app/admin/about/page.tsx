@@ -10,6 +10,7 @@ import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import type { AboutPageSettings } from '@/lib/types';
 import { ABOUT_DEFAULTS, mergeAboutSettings } from '@/lib/pageDefaults';
+import { SkeletonFormBlock } from '@/components/admin/SkeletonCard';
 import ImagePicker from '@/components/admin/ImagePicker';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
@@ -74,9 +75,9 @@ export default function AdminAboutPage() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         <h1 className="font-jakarta font-extrabold text-slate-800 text-2xl">ℹ️ About Page</h1>
-        <div className="space-y-3">{[1, 2, 3, 4].map(i => <div key={i} className="h-12 bg-slate-100 rounded-xl animate-pulse" />)}</div>
+        <SkeletonFormBlock rows={4} />
       </div>
     );
   }

@@ -39,7 +39,6 @@ export async function POST(req: NextRequest) {
     // Write session:<token> = "1" to KV with 24h TTL.
     // Each login creates its own KV key â€” multiple sessions are supported.
     await createAdminSession(token);
-    console.log('[POST /api/admin/login] Session created, token prefix:', token.slice(0, 8));
   } catch (e: unknown) {
     console.error('[POST /api/admin/login] KV session write failed:', (e as Error).stack ?? e);
     return NextResponse.json(

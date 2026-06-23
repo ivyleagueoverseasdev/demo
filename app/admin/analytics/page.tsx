@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../_context';
 import type { SiteEvent, Lead, NewsItem, DynamicPage } from '@/lib/types';
 import type { AuditEntry } from '@/lib/schemas';
+import Link from 'next/link';
+import { SkeletonAnalyticsGrid } from '@/components/admin/SkeletonCard';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatDate(iso: string) {
@@ -172,14 +174,7 @@ export default function AdminAnalyticsPage() {
   const recentLeads = [...leads].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
   const recentAudit = auditLog.slice(0, 8);
 
-  if (loading) return (
-    <div className="space-y-6">
-      <div className="h-8 w-48 bg-slate-100 rounded-xl animate-pulse" />
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[1,2,3,4].map(i => <div key={i} className="bg-white rounded-2xl h-28 animate-pulse border border-slate-100" />)}
-      </div>
-    </div>
-  );
+  if (loading) return <SkeletonAnalyticsGrid />;
 
   return (
     <div className="space-y-6">
@@ -235,7 +230,7 @@ export default function AdminAnalyticsPage() {
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-jakarta font-bold text-slate-800">📬 Recent Enquiries</h3>
-            <a href="/admin/enquiries" className="font-jakarta text-xs text-amber-600 hover:underline">View all →</a>
+            <Link href="/admin/enquiries" className="font-jakarta text-xs text-amber-600 hover:underline">View all →</Link>
           </div>
           {recentLeads.length === 0
             ? <p className="font-jakarta text-sm text-slate-400 text-center py-6">No leads yet.</p>
@@ -247,7 +242,7 @@ export default function AdminAnalyticsPage() {
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-jakarta font-bold text-slate-800">🕒 Recent Admin Activity</h3>
-            <a href="/admin/history" className="font-jakarta text-xs text-amber-600 hover:underline">Full log →</a>
+            <Link href="/admin/history" className="font-jakarta text-xs text-amber-600 hover:underline">Full log →</Link>
           </div>
           {recentAudit.length === 0
             ? <p className="font-jakarta text-sm text-slate-400 text-center py-6">No audit entries yet.</p>
@@ -288,7 +283,7 @@ export default function AdminAnalyticsPage() {
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-jakarta font-bold text-slate-800">📰 Latest Articles</h3>
-            <a href="/admin/news" className="font-jakarta text-xs text-amber-600 hover:underline">Manage →</a>
+            <Link href="/admin/news" className="font-jakarta text-xs text-amber-600 hover:underline">Manage →</Link>
           </div>
           <div className="space-y-2">
             {[...news].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5).map(item => (

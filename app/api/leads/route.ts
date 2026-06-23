@@ -69,11 +69,6 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
   const procUrl = process.env.GOOGLE_SCRIPT_URL ?? '';
   const scriptUrl = cfUrl || procUrl;
 
-  // Aggressive diagnostics — visible in Cloudflare Pages real-time logs
-  console.log('[leads/email] CF env URL exists:  ', !!cfUrl);
-  console.log('[leads/email] process.env URL exists:', !!procUrl);
-  console.log('[leads/email] scriptUrl resolved:  ', !!scriptUrl);
-
   if (!scriptUrl) {
     console.error('[leads/email] GOOGLE_SCRIPT_URL is empty in BOTH CF env and process.env — email skipped');
     return;
@@ -93,8 +88,6 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
     time:     new Date(lead.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST',
   });
 
-  console.log('[leads/email] Attempting fetch to GAS for lead:', lead.id);
-
   try {
     const res = await fetch(scriptUrl, {
       method:   'POST',
@@ -103,19 +96,12 @@ async function sendLeadEmail(lead: Lead, req: NextRequest): Promise<void> {
       redirect: 'follow',
     });
 
-    console.log('[leads/email] GAS response status:', res.status, res.statusText);
-
-    if (res.ok) {
-      const body = await res.text().catch(() => '');
-      console.log('[leads/email] GAS response body:', body);
-      console.log('[leads/email] Notification sent for lead:', lead.id);
-    } else {
+    if (!res.ok) {
       const err = await res.text().catch(() => 'unreadable');
       console.error('[leads/email] GAS returned error:', res.status, res.statusText, '|', err);
     }
   } catch (e) {
     console.error('[leads/email] fetch threw an exception:', (e as Error).message);
-    console.error('[leads/email] stack:', (e as Error).stack ?? 'no stack');
   }
 }
 

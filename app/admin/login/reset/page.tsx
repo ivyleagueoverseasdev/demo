@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
+import Link from 'next/link';
 import { requestResetAction, verifyOtpAction } from '../_actions';
 import type { ResetState } from '../_actions';
 
@@ -127,9 +128,9 @@ export default function ResetPage() {
           )}
 
           <div className="mt-7 text-center">
-            <a href="/admin/login" className="font-jakarta text-[11px] text-zinc-600 hover:text-zinc-300 transition-colors">
+            <Link href="/admin/login" className="font-jakarta text-[11px] text-zinc-600 hover:text-zinc-300 transition-colors">
               ← Back to Sign In
-            </a>
+            </Link>
           </div>
         </div>
       </div>

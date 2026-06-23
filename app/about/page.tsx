@@ -125,7 +125,7 @@ export default async function AboutPage() {
           <div>
             <div className="divider-amber mb-4" />
             <p className="font-jakarta text-xs font-semibold tracking-widest uppercase text-amber-500 mb-4">
-              Founder's Message
+              Founder&apos;s Message
             </p>
             <blockquote
               className="font-jakarta font-bold text-primary-600 text-xl sm:text-2xl leading-relaxed mb-6 italic"
