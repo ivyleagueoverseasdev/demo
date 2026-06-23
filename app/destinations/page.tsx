@@ -80,8 +80,7 @@ export default async function DestinationsPage() {
               </p>
             </div>
             <h1
-              className="font-jakarta font-extrabold text-white mb-4 leading-tight"
-              style={{ fontSize: 'clamp(2rem,5vw,3.8rem)' }}
+              className="font-jakarta font-extrabold text-white mb-4 text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight"
             >
               Where will you{' '}
               <span style={{
@@ -93,7 +92,7 @@ export default async function DestinationsPage() {
                 study?
               </span>
             </h1>
-            <p className="font-jakarta text-white/75 text-base leading-relaxed max-w-2xl">
+            <p className="font-jakarta text-white/75 text-base md:text-lg leading-relaxed max-w-2xl">
               Each guide includes 2026 visa updates, scholarship opportunities, career prospects, and a full admission process overview — personalised by our expert team.
             </p>
 
@@ -146,7 +145,7 @@ export default async function DestinationsPage() {
                 <div className="flex-1 p-6 sm:p-8">
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div>
-                      <h2 className="font-jakarta font-bold text-primary-600 text-xl mb-1 group-hover:text-amber-600 transition-colors">{c.name}</h2>
+                      <h2 className="font-jakarta font-bold text-primary-600 text-xl md:text-2xl mb-1 group-hover:text-amber-600 transition-colors">{c.name}</h2>
                       <span className="font-jakarta text-xs font-semibold px-2.5 py-1 rounded-full"
                         style={{ background: `${c.color}18`, color: c.color }}>
                         {c.unis} universities
@@ -161,7 +160,7 @@ export default async function DestinationsPage() {
                       ))}
                     </div>
                   </div>
-                  <p className="font-jakarta text-sm text-slate-500 leading-relaxed mb-4 line-clamp-2">{c.description}</p>
+                  <p className="font-jakarta text-sm md:text-base text-slate-500 leading-relaxed mb-4 line-clamp-2">{c.description}</p>
                   <div className="flex flex-wrap gap-2 mb-3">
                     {c.highlights.slice(0, 2).map((h, i) => (
                       <span key={i} className="flex items-center gap-1.5 font-jakarta text-xs text-slate-500">

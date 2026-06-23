@@ -25,13 +25,12 @@ export default function CTASection() {
               <span className="font-jakarta text-xs font-semibold text-white/90 tracking-wide">Free Counselling Available Now</span>
             </div>
 
-            <h2 className="font-jakarta font-extrabold text-white mb-5 max-w-2xl mx-auto"
-              style={{ fontSize: 'clamp(1.8rem,4vw,3.2rem)', lineHeight: 1.1 }}>
+            <h2 className="font-jakarta font-extrabold text-white mb-5 max-w-2xl mx-auto text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight">
               Your dream university is<br />
               <span className="text-amber-400">one call away.</span>
             </h2>
 
-            <p className="font-jakarta text-white/70 max-w-xl mx-auto mb-8 leading-relaxed">
+            <p className="font-jakarta text-white/70 text-base md:text-lg max-w-xl mx-auto mb-8 leading-relaxed">
               Book a free 30-minute session with {COMPANY.founder}. Zero pressure — just a personalised roadmap for your future.
             </p>
 

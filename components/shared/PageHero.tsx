@@ -87,10 +87,10 @@ export default function PageHero({
                 {eyebrow}
               </p>
             </div>
-            <h1 className="font-jakarta font-extrabold text-white mb-5 leading-tight" style={{ fontSize: 'clamp(2.2rem,5vw,3.8rem)' }}>
+            <h1 className="font-jakarta font-extrabold text-white mb-5 text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight">
               {heading}
             </h1>
-            <p className="font-jakarta text-white/75 text-base sm:text-lg leading-relaxed max-w-xl">
+            <p className="font-jakarta text-white/75 text-base md:text-lg leading-relaxed max-w-xl">
               {paragraph}
             </p>
             {extra}

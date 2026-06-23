@@ -61,11 +61,10 @@ export default function QuickEnquiry() {
           >
             <div className="divider-amber" />
             <p className="label mb-3">Quick Enquiry</p>
-            <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4"
-              style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
+            <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4 text-3xl md:text-4xl leading-tight tracking-tight">
               Start your journey<br />with one message.
             </h2>
-            <p className="font-jakarta text-slate-500 leading-relaxed mb-6">
+            <p className="font-jakarta text-slate-500 text-base md:text-lg leading-relaxed mb-6">
               Fill the form and our counsellor will reach out within 24 hours. Alternatively, book a session directly or chat on WhatsApp for instant answers.
             </p>
             <div className="space-y-3">

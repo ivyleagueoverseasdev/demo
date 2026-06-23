@@ -419,8 +419,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
 
                   {/* ── Cinematic heading — line-by-line word reveal ── */}
                   <h1
-                    className="font-jakarta font-extrabold text-white leading-[1.06] tracking-tight mb-6"
-                    style={{ fontSize: 'clamp(2.2rem,4.6vw,4rem)' }}
+                    className="font-jakarta font-extrabold text-white text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight mb-6"
                   >
                     {slide.headingLines.map((line, li) => {
                       const isHighlight = slide.headingHighlight[li];
@@ -451,8 +450,8 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                       delay: headingBaseDelay + slide.headingLines.length * 0.18 + 0.1,
                       ease: CINEMATIC,
                     }}
-                    className="font-jakarta text-white/72 leading-relaxed mb-8"
-                    style={{ fontSize: 'clamp(0.95rem,1.3vw,1.06rem)', maxWidth: '36rem' }}
+                    className="font-jakarta text-white/72 text-base md:text-lg leading-relaxed mb-8"
+                    style={{ maxWidth: '36rem' }}
                   >
                     {slide.subtext}
                   </motion.p>
@@ -531,8 +530,8 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                     ].map((stat, si) => (
                       <div key={stat.label} className="flex flex-col">
                         <span
-                          className="font-jakarta font-extrabold leading-none"
-                          style={{ fontSize: 'clamp(1.6rem,2.8vw,2.2rem)', color: stat.color }}
+                          className="font-jakarta font-extrabold text-2xl md:text-3xl leading-none"
+                          style={{ color: stat.color }}
                         >
                           <AnimatedCounter
                             target={stat.target}

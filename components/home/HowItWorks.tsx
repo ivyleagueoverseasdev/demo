@@ -74,13 +74,13 @@ export default function HowItWorks({ steps }: Props) {
         >
           <div className="inline-block h-1 w-12 rounded-full bg-gradient-to-r from-amber-400 to-amber-300 mb-4" />
           <p className="font-jakarta text-xs font-semibold tracking-widest uppercase text-amber-400 mb-3">The ILOC Roadmap</p>
-          <h2 className="font-jakarta font-extrabold text-white mb-5" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
+          <h2 className="font-jakarta font-extrabold text-white mb-5 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight">
             Your Roadmap to{' '}
             <span style={{ background: 'linear-gradient(135deg,#FBBF24,#F59E0B)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               Your Dream University.
             </span>
           </h2>
-          <p className="font-jakarta text-white/75 max-w-xl mx-auto leading-relaxed text-base">
+          <p className="font-jakarta text-white/75 max-w-xl mx-auto leading-relaxed text-base md:text-lg">
             Our proven 4-step process is trusted by 10,000+ families. Every action is pre-planned,
             every deadline tracked — parents stay informed, students stay focused.
           </p>
@@ -168,8 +168,8 @@ export default function HowItWorks({ steps }: Props) {
                     <div className="font-jakarta text-[10px] font-bold text-amber-400 tracking-[0.2em] uppercase mb-2">
                       Step {String(step.step).padStart(2, '0')}
                     </div>
-                    <h3 className="font-jakarta font-bold text-white text-base mb-3 leading-snug">{step.title}</h3>
-                    <p className="font-jakarta text-sm text-white/75 leading-relaxed">{step.desc}</p>
+                    <h3 className="font-jakarta font-bold text-white text-base md:text-xl mb-3 leading-snug">{step.title}</h3>
+                    <p className="font-jakarta text-sm md:text-base text-white/75 leading-relaxed">{step.desc}</p>
                   </div>
                 </motion.div>
               </motion.div>

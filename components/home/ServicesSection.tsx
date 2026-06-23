@@ -92,7 +92,7 @@ export default function ServicesSection({ services }: Props) {
           <div>
             <div className="divider-blue" />
             <p className="label mb-3">End-to-End Premium Support</p>
-            <h2 className="font-jakarta font-extrabold text-primary-600" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
+            <h2 className="font-jakarta font-extrabold text-primary-600 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight">
               Six ways we take you<br />
               <span style={{ background: 'linear-gradient(135deg,#65A30D,#65A30D)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                 from Pune to the world.
@@ -100,7 +100,7 @@ export default function ServicesSection({ services }: Props) {
             </h2>
           </div>
           <div className="flex flex-col items-start gap-5">
-            <p className="font-jakarta text-slate-500 leading-relaxed text-[15px]">
+            <p className="font-jakarta text-slate-500 leading-relaxed text-base md:text-lg">
               From university shortlisting and SOP writing to scholarship negotiation and visa preparation — our end-to-end premium process leaves absolutely nothing to chance.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -175,10 +175,10 @@ export default function ServicesSection({ services }: Props) {
                       />
                     </motion.div>
 
-                    <h3 className="font-jakarta font-bold text-slate-800 text-[15px] mb-2.5 leading-snug group-hover:text-primary-600 transition-colors duration-200 relative">
+                    <h3 className="font-jakarta font-bold text-slate-800 text-xl md:text-2xl mb-2.5 leading-snug group-hover:text-primary-600 transition-colors duration-200 relative">
                       {s.title}
                     </h3>
-                    <p className="font-jakarta text-sm text-slate-500 leading-relaxed flex-1 relative">{s.desc}</p>
+                    <p className="font-jakarta text-sm md:text-base text-slate-500 leading-relaxed flex-1 relative">{s.desc}</p>
 
                     {/* Micro-CTA */}
                     <div className="mt-5 pt-4 border-t border-slate-100 font-jakarta text-xs font-bold text-amber-600 flex items-center gap-1.5 relative opacity-0 group-hover:opacity-100 translate-x-[-4px] group-hover:translate-x-0 transition-all duration-200">

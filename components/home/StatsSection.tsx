@@ -74,8 +74,7 @@ export default function StatsSection() {
                   />
                 </div>
                 <div
-                  className="font-jakarta font-extrabold leading-none mb-1.5 text-gradient-homeblue group-hover:text-gradient-amber transition-all"
-                  style={{ fontSize: 'clamp(1.5rem,3vw,2rem)' }}
+                  className="font-jakarta font-extrabold text-2xl md:text-3xl leading-none mb-1.5 text-gradient-homeblue group-hover:text-gradient-amber transition-all"
                 >
                   {s.num}
                 </div>

@@ -21,11 +21,10 @@ export default function Updates2026() {
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse-dot" />
             2026 Immigration Policy Updates
           </div>
-          <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4"
-            style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
+          <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4 text-3xl md:text-4xl leading-tight tracking-tight">
             What changed for 2026.
           </h2>
-          <p className="font-jakarta text-slate-500 max-w-xl mx-auto">
+          <p className="font-jakarta text-slate-500 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
             Stay ahead with the latest visa policies, intake rules and scholarship deadlines for your target country.
           </p>
         </motion.div>

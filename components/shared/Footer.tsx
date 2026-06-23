@@ -72,10 +72,10 @@ export default function Footer() {
       <div className="border-b border-slate-900/10">
         <div className="container-xl py-8 flex flex-col md:flex-row items-center justify-between gap-5">
           <div>
-            <p className="font-jakarta font-bold text-xl text-slate-900 leading-tight">
+            <p className="font-jakarta font-bold text-xl md:text-2xl text-slate-900 leading-tight">
               Ready to study abroad?
             </p>
-            <p className="text-slate-700 text-sm mt-1">
+            <p className="text-slate-700 text-sm md:text-base mt-1">
               Book a free 30-minute counselling session — zero pressure, zero fees.
             </p>
           </div>

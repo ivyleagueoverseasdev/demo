@@ -97,7 +97,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
         <Stars count={t.stars} />
 
         {/* Quote */}
-        <p className="font-jakarta text-sm text-slate-600 leading-relaxed italic flex-1">
+        <p className="font-jakarta text-sm md:text-base text-slate-600 leading-relaxed italic flex-1">
           &ldquo;{t.quote}&rdquo;
         </p>
 
@@ -147,12 +147,11 @@ export default function TestimonialsSection({ testimonials }: Props) {
           <div className="divider-amber mx-auto" />
           <p className="label mb-3">Global Admits. Realized Ambitions.</p>
           <h2
-            className="font-jakarta font-extrabold text-homeblue-600 mb-4"
-            style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}
+            className="font-jakarta font-extrabold text-homeblue-600 mb-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight"
           >
             From Ambition&nbsp;<span className="text-gradient-amber">to Acceptance.</span>
           </h2>
-          <p className="font-jakarta text-slate-500 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">
+          <p className="font-jakarta text-slate-500 max-w-xl mx-auto leading-relaxed text-sm md:text-base">
             Join over 10,000 students who have secured admits to the world&apos;s top universities with maximum scholarships. Here is what they have to say about the ILOC roadmap.
           </p>
 

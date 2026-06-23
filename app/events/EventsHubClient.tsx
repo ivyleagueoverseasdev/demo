@@ -119,10 +119,10 @@ function EventCard({ event, index }: { event: SiteEvent; index: number }) {
             })()}
           </div>
 
-          <h3 className="font-jakarta font-bold text-slate-800 text-[15px] leading-snug mb-2 group-hover:text-primary-600 transition-colors">
+          <h3 className="font-jakarta font-bold text-slate-800 text-base md:text-lg leading-snug mb-2 group-hover:text-primary-600 transition-colors">
             {event.title}
           </h3>
-          <p className="font-jakarta text-xs text-slate-500 leading-relaxed flex-1 line-clamp-2 mb-4">
+          <p className="font-jakarta text-sm md:text-base text-slate-500 leading-relaxed flex-1 line-clamp-2 mb-4">
             {event.description}
           </p>
 
@@ -299,7 +299,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
             <div className="mb-14">
               <div className="flex items-center gap-3 mb-7">
                 <div className="h-1 w-8 rounded-full bg-amber-400" />
-                <h2 className="font-jakarta font-extrabold text-primary-600 text-xl">Upcoming ({upcoming.length})</h2>
+                <h2 className="font-jakarta font-extrabold text-primary-600 text-xl md:text-2xl">Upcoming ({upcoming.length})</h2>
               </div>
               <AnimatePresence mode="popLayout">
                 <div className={gridClass}>
@@ -314,7 +314,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
             <div>
               <div className="flex items-center gap-3 mb-7">
                 <div className="h-1 w-8 rounded-full bg-slate-300" />
-                <h2 className="font-jakarta font-extrabold text-slate-500 text-xl">Past Events ({past.length})</h2>
+                <h2 className="font-jakarta font-extrabold text-slate-500 text-xl md:text-2xl">Past Events ({past.length})</h2>
               </div>
               <AnimatePresence mode="popLayout">
                 <div className={`${gridClass} opacity-70`}>
@@ -347,10 +347,10 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
             className="bg-gradient-to-br from-primary-900 to-primary-700 rounded-3xl px-8 sm:px-14 py-12 text-center overflow-hidden relative">
             <div className="absolute top-0 right-0 w-56 h-56 rounded-full -translate-y-1/2 translate-x-1/2 opacity-10" style={{ background: 'radial-gradient(circle,#D97706,transparent 70%)' }} />
             <div className="relative z-10">
-              <h2 className="font-jakarta font-extrabold text-white mb-3" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)' }}>
+              <h2 className="font-jakarta font-extrabold text-white mb-3 text-2xl md:text-3xl leading-tight tracking-tight">
                 Can&apos;t find an event that works?
               </h2>
-              <p className="font-jakarta text-white/70 max-w-lg mx-auto mb-7 leading-relaxed text-sm">
+              <p className="font-jakarta text-white/70 text-sm md:text-base max-w-lg mx-auto mb-7 leading-relaxed">
                 Book a one-on-one free counselling session — 30 minutes, zero pressure, fully personalised.
               </p>
               <Link href="/contact" className="inline-flex items-center gap-2 font-jakarta font-bold text-sm px-9 py-4 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors" style={{ boxShadow: '0 8px 28px rgba(217,119,6,0.38)' }}>

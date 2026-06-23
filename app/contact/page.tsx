@@ -110,7 +110,7 @@ export default function ContactPage() {
             {/* Info */}
             <div>
               <div className="divider-amber mb-4" />
-              <h2 className="font-jakarta font-extrabold text-primary-600 mb-6" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)' }}>
+              <h2 className="font-jakarta font-extrabold text-primary-600 mb-6 text-2xl md:text-3xl lg:text-4xl leading-tight tracking-tight">
                 Talk to our counsellor directly.
               </h2>
               <div className="space-y-4 mb-8">

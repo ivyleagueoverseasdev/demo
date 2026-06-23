@@ -93,10 +93,10 @@ export default async function PartnersIndexPage() {
         <div className="container-xl">
           <div className="text-center mb-12">
             <div className="divider-blue mx-auto" />
-            <h2 className="font-jakarta font-extrabold text-primary-600 mt-4" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
+            <h2 className="font-jakarta font-extrabold text-primary-600 mt-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight">
               Choose Your Partnership Track
             </h2>
-            <p className="font-jakarta text-slate-500 mt-3 max-w-xl mx-auto">
+            <p className="font-jakarta text-base md:text-lg text-slate-500 mt-3 max-w-xl mx-auto leading-relaxed">
               Whatever role you play in a student&apos;s journey, ILOC has a program designed for you.
             </p>
           </div>
@@ -137,8 +137,8 @@ export default async function PartnersIndexPage() {
                       {t.s.badge}
                     </span>
                   </div>
-                  <h3 className="font-jakarta font-extrabold text-2xl mb-3 leading-snug">{t.title}</h3>
-                  <p className="font-jakarta text-sm text-white/75 leading-relaxed flex-1 mb-6">
+                  <h3 className="font-jakarta font-extrabold text-xl md:text-2xl mb-3 leading-snug">{t.title}</h3>
+                  <p className="font-jakarta text-sm md:text-base text-white/75 leading-relaxed flex-1 mb-6">
                     {t.s.subheading}
                   </p>
                   <div className="flex items-center justify-between pt-4 border-t border-white/15">
@@ -159,10 +159,10 @@ export default async function PartnersIndexPage() {
       {/* ── CTA ── */}
       <section className="section text-white" style={{ background: 'linear-gradient(135deg,#0C37A0,#246DFF)' }}>
         <div className="container-xl text-center">
-          <h2 className="font-jakarta font-extrabold text-white mb-4" style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}>
+          <h2 className="font-jakarta font-extrabold text-white mb-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight">
             Not sure which track fits you?
           </h2>
-          <p className="font-jakarta text-white/70 mb-8 max-w-lg mx-auto">
+          <p className="font-jakarta text-base md:text-lg text-white/70 mb-8 max-w-lg mx-auto leading-relaxed">
             Tell us a little about yourself and our partnerships team will point you in the right direction — no pressure, no obligation.
           </p>
           <Link href="/contact" className="btn-primary text-sm px-8 py-3.5 rounded-xl">

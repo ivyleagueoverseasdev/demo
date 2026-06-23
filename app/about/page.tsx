@@ -100,8 +100,7 @@ export default async function AboutPage() {
                   <Icon className="w-4.5 h-4.5 text-primary-500 group-hover:text-amber-500 transition-colors" style={{ width: 18, height: 18 }} strokeWidth={2} />
                 </div>
                 <div
-                  className="font-jakarta font-extrabold text-gradient-blue leading-none mb-1.5"
-                  style={{ fontSize: 'clamp(1.4rem,3vw,1.8rem)' }}
+                  className="font-jakarta font-extrabold text-xl md:text-2xl text-gradient-blue leading-none mb-1.5"
                 >
                   {st.num}
                 </div>
@@ -119,7 +118,7 @@ export default async function AboutPage() {
             <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary-600 to-primary-500 flex items-center justify-center font-jakarta font-black text-2xl text-white mb-5 shadow-blue">
               {s.founderInitials}
             </div>
-            <h3 className="font-jakarta font-bold text-primary-600 text-lg">{s.founderName}</h3>
+            <h3 className="font-jakarta font-bold text-primary-600 text-xl md:text-2xl">{s.founderName}</h3>
             <p className="font-jakarta text-sm text-amber-600 mt-0.5">{s.founderRole}</p>
             <p className="font-jakarta text-xs text-slate-400 mt-0.5">{s.founderMeta}</p>
           </div>
@@ -134,10 +133,10 @@ export default async function AboutPage() {
             >
               {s.founderQuote}
             </blockquote>
-            <p className="font-jakarta text-slate-600 leading-relaxed mb-4">
+            <p className="font-jakarta text-base md:text-lg text-slate-600 leading-relaxed mb-4">
               {s.founderParagraph1}
             </p>
-            <p className="font-jakarta text-slate-600 leading-relaxed">
+            <p className="font-jakarta text-base md:text-lg text-slate-600 leading-relaxed">
               {s.founderParagraph2}
             </p>
             <p className="font-jakarta font-bold text-slate-400 italic mt-6">— {s.founderName}</p>
@@ -151,8 +150,7 @@ export default async function AboutPage() {
           <div className="text-center mb-12">
             <div className="divider-amber mx-auto" />
             <h2
-              className="font-jakarta font-extrabold text-primary-600 mt-4"
-              style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}
+              className="font-jakarta font-extrabold text-primary-600 mt-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight"
             >
               Mission &amp; Vision
             </h2>
@@ -177,8 +175,8 @@ export default async function AboutPage() {
                     strokeWidth={1.75}
                   />
                 </div>
-                <h3 className="font-jakarta font-bold text-primary-600 text-lg mb-3">{title}</h3>
-                <p className="font-jakarta text-slate-500 leading-relaxed">{desc}</p>
+                <h3 className="font-jakarta font-bold text-primary-600 text-xl md:text-2xl mb-3">{title}</h3>
+                <p className="font-jakarta text-base text-slate-500 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -191,8 +189,7 @@ export default async function AboutPage() {
           <div className="text-center mb-12">
             <div className="divider-blue mx-auto" />
             <h2
-              className="font-jakarta font-extrabold text-primary-600 mt-4"
-              style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}
+              className="font-jakarta font-extrabold text-primary-600 mt-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight"
             >
               {s.whyHeading}
             </h2>
@@ -260,12 +257,11 @@ export default async function AboutPage() {
       <section className="section bg-white">
         <div className="container-xl text-center">
           <h2
-            className="font-jakarta font-extrabold text-primary-600 mb-4"
-            style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}
+            className="font-jakarta font-extrabold text-primary-600 mb-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight"
           >
             {s.ctaHeading}
           </h2>
-          <p className="font-jakarta text-slate-500 mb-8 max-w-lg mx-auto">
+          <p className="font-jakarta text-base md:text-lg text-slate-500 mb-8 max-w-lg mx-auto leading-relaxed">
             {s.ctaParagraph}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">

@@ -88,11 +88,11 @@ export default async function NewsPage() {
                     <time className="font-jakarta text-[10px] text-amber-600 font-bold uppercase tracking-wide mb-2">
                       {formatDate(item.date)}
                     </time>
-                    <h2 className="font-jakarta font-bold text-slate-800 text-[15px] leading-snug mb-2 group-hover:text-primary-600 transition-colors flex-1">
+                    <h2 className="font-jakarta font-bold text-slate-800 text-base md:text-lg leading-snug mb-2 group-hover:text-primary-600 transition-colors flex-1">
                       {item.title}
                     </h2>
                     {item.excerpt && (
-                      <p className="font-jakarta text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">
+                      <p className="font-jakarta text-sm md:text-base text-slate-500 leading-relaxed line-clamp-2 mb-4">
                         {item.excerpt}
                       </p>
                     )}
@@ -111,10 +111,10 @@ export default async function NewsPage() {
       {/* ── CTA ─────────────────────────────────────────────────────────── */}
       <section className="section bg-white border-t border-slate-100">
         <div className="container-xl text-center">
-          <h2 className="font-jakarta font-extrabold text-slate-800 mb-3" style={{ fontSize: 'clamp(1.5rem,3vw,2rem)' }}>
+          <h2 className="font-jakarta font-extrabold text-slate-800 mb-3 text-2xl md:text-3xl lg:text-4xl leading-tight tracking-tight">
             Have a question about these updates?
           </h2>
-          <p className="font-jakarta text-slate-500 text-sm max-w-md mx-auto mb-6">
+          <p className="font-jakarta text-slate-500 text-sm md:text-base max-w-md mx-auto mb-6 leading-relaxed">
             Our counsellors explain what each policy change means for your specific application — free, personalised, no pressure.
           </p>
           <Link
