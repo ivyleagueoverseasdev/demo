@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
   const { getOptionalRequestContext } = await import('@cloudflare/next-on-pages');
   const ctx      = getOptionalRequestContext();
   const cfPass   = (ctx?.env as Record<string, string> | undefined)?.ADMIN_PASSWORD;
-  const expected = cfPass ?? process.env.ADMIN_PASSWORD ?? 'iloc-admin';
+  const expected = cfPass ?? process.env.ADMIN_PASSWORD;
+  if (!expected) return NextResponse.json({ error: 'Server misconfiguration — ADMIN_PASSWORD not set' }, { status: 503, headers: CORS });
 
   if (!body.password || body.password !== expected) {
     console.warn('[POST /api/admin/login] Bad password attempt');

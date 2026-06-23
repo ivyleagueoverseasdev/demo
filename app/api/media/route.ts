@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getSiteMedia, setSiteMedia, validateAdminToken } from '@/lib/kv';
 import { DEFAULT_MEDIA } from '@/lib/data';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
@@ -47,6 +48,7 @@ export async function PUT(req: NextRequest) {
       ...(body.countryImages !== undefined && { countryImages: body.countryImages }),
     };
     await setSiteMedia(updated);
+    revalidatePath('/');
     return json({ ok: true, media: updated });
   } catch (e: unknown) {
     console.error('[PUT /api/media] KV write failed:', (e as Error).stack ?? e);

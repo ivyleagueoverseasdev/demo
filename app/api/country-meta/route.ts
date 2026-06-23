@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getCountryMeta, setCountryMeta, validateAdminToken } from '@/lib/kv';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
 import type { CountryMeta } from '@/lib/kv';
@@ -41,6 +42,8 @@ export async function PUT(req: NextRequest) {
 
   try {
     await setCountryMeta(body.country, body.meta);
+    revalidatePath('/destinations');
+    revalidatePath('/destinations/' + body.country);
     return json({ ok: true });
   } catch (e: unknown) {
     console.error('[PUT /api/country-meta] KV write failed:', (e as Error).stack ?? e);
