@@ -1,12 +1,11 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-export type LoginState = { error?: string } | null;
-export type ResetState = { error?: string; step?: 'sent' } | null;
+export type LoginState = { error?: string; success?: boolean } | null;
+export type ResetState = { error?: string; step?: 'sent'; success?: boolean } | null;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -64,7 +63,10 @@ export async function loginAction(
     path:     '/admin',
   });
 
-  redirect('/admin');
+  // Return success flag — client component handles navigation.
+  // redirect() from next/navigation throws NEXT_REDIRECT which
+  // @cloudflare/next-on-pages v1.13.16 does not handle in Edge Server Actions.
+  return { success: true };
 }
 
 // ─── Password Reset — Step 1: Request OTP ─────────────────────────────────────
@@ -155,5 +157,5 @@ export async function verifyOtpAction(
     path:     '/admin',
   });
 
-  redirect('/admin');
+  return { success: true };
 }

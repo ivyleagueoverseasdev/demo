@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { loginAction } from '../_actions';
 import type { LoginState } from '../_actions';
 
@@ -9,6 +9,12 @@ export default function LoginForm() {
     loginAction,
     null,
   );
+
+  useEffect(() => {
+    if (state?.success) {
+      window.location.href = '/admin';
+    }
+  }, [state]);
 
   return (
     <form action={formAction} className="space-y-5">

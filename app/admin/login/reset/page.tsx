@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import Link from 'next/link';
 import { requestResetAction, verifyOtpAction } from '../_actions';
 import type { ResetState } from '../_actions';
@@ -22,6 +22,12 @@ export default function ResetPage() {
 
   const [verState, verAction, verPending] =
     useActionState<ResetState, FormData>(verifyOtpAction, null);
+
+  useEffect(() => {
+    if (verState?.success) {
+      window.location.href = '/admin';
+    }
+  }, [verState]);
 
   const codeSent = reqState?.step === 'sent';
 
