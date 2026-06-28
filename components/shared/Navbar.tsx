@@ -9,14 +9,14 @@ import { COMPANY, buildWhatsAppLink } from '@/lib/data';
 
 // ── Nav data ──────────────────────────────────────────────────────────────
 const NAV = [
-  { label: 'Home',         href: '/'            },
-  { label: 'About',        href: '/about'        },
-  { label: 'Services',     href: '/services'     },
-  { label: 'Destinations', href: '/destinations' },
-  { label: 'Partners',     href: '/partners'     },
-  { label: 'Events & Classes', href: '/events'   },
-  { label: 'News',         href: '/news'         },
-  { label: 'Contact',      href: '/contact'      },
+  { label: 'Home',               href: '/'            },
+  { label: 'About Us',           href: '/about'        },
+  { label: 'Services',           href: '/services'     },
+  { label: 'Destinations',       href: '/destinations' },
+  { label: 'Test Prep & Events', href: '/events'       },
+  { label: 'News',               href: '/news'         },
+  { label: 'Partner With Us',    href: '/partners'     },
+  { label: 'Contact',            href: '/contact'      },
 ];
 
 const DESTINATIONS = [
@@ -617,7 +617,7 @@ export default function Navbar() {
                   <Link href="/partners"
                     className="flex items-center justify-between px-4 mb-4 font-jakarta font-extrabold text-sm text-slate-800 uppercase tracking-widest opacity-60 hover:opacity-100 transition-all"
                   >
-                    <span>Partners</span>
+                    <span>Partner With Us</span>
                     <span className="text-slate-400 text-base">→</span>
                   </Link>
                   {/* Single column — only 3 items, no need for a grid */}

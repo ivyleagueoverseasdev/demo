@@ -124,6 +124,14 @@
   .uni-marquee-track-reverse {
     animation: marqueeReverse var(--uni-marquee-speed, 44s) linear infinite;
   }
+  /* On mobile far fewer logos are visible, so the same duration looks like a
+     crawl — run the loop ~2.2× faster below the sm breakpoint. */
+  @media (max-width: 640px) {
+    .uni-marquee-track,
+    .uni-marquee-track-reverse {
+      animation-duration: calc(var(--uni-marquee-speed, 40s) / 2.2);
+    }
+  }
 
   /* Gradient text */
   .text-gradient-blue {

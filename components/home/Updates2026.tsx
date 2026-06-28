@@ -48,9 +48,6 @@ export default function Updates2026() {
                   </div>
                 </div>
                 <p className="font-jakarta text-sm text-slate-600 leading-relaxed line-clamp-2">{h.update}</p>
-                <div className="mt-3 font-jakarta text-xs font-semibold text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Read 2026 guide →
-                </div>
               </Link>
             </motion.div>
           ))}

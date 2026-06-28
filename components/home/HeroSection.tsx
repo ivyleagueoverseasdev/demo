@@ -21,7 +21,9 @@ import { HEADER_HEIGHT } from '@/components/shared/Navbar';
 // ─────────────────────────────────────────────────────────────────────────────
 const CINEMATIC: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const EASE:      [number, number, number, number] = [0.22, 1, 0.36, 1];
-const AUTOPLAY_MS = 6500;
+// Slides advance every 4s and keep advancing regardless of cursor position
+// (no pause-on-hover) — only a blocking modal pauses them.
+const AUTOPLAY_MS = 4000;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animated counter — counts from 0 to target, fires when in viewport
@@ -303,7 +305,6 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
 
   const [idx,      setIdx]      = useState(0);
   const [dir,      setDir]      = useState(1);
-  const [paused,   setPaused]   = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -319,10 +320,10 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
   const next = useCallback(() => go(idx + 1,  1), [idx, go]);
 
   useEffect(() => {
-    if (paused || demoOpen) return;
+    if (demoOpen) return;
     const t = setInterval(() => { setDir(1); setIdx(i => (i + 1) % total); }, AUTOPLAY_MS);
     return () => clearInterval(t);
-  }, [paused, demoOpen, total]);
+  }, [demoOpen, total]);
 
   // Parallax
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
@@ -350,8 +351,6 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
           marginTop: `-${HEADER_HEIGHT}px`,
           paddingTop: `${HEADER_HEIGHT}px`,
         }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
       >
         {/* ── Decorative background layer ──────────────────────────────── */}
         <motion.div style={{ y: bgY }} className="absolute inset-0 z-0 pointer-events-none" aria-hidden>
@@ -603,7 +602,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                     key={`prog-${idx}`}
                     className="h-full bg-amber-400/70 rounded-full"
                     initial={{ scaleX: 0 }}
-                    animate={{ scaleX: paused ? undefined : 1 }}
+                    animate={{ scaleX: 1 }}
                     transition={{ duration: AUTOPLAY_MS / 1000, ease: 'linear' }}
                     style={{ transformOrigin: 'left' }}
                   />
