@@ -28,7 +28,7 @@ interface TrafficStats {
   weekTrend:   number;
   monthTrend:  number;
   chart:       ChartPoint[];
-  countries:   { code: string; name: string; count: number; pct: number }[];
+  countries:   { locationKey: string; code: string; city: string | null; name: string; count: number; pct: number }[];
   sources:     { key: string; name: string; count: number; pct: number }[];
 }
 
@@ -348,15 +348,15 @@ export default function AdminAnalyticsPage() {
 
             {/* Geo + Sources */}
             <div className="grid lg:grid-cols-2 gap-4">
-              {/* Top Countries */}
+              {/* Top Locations */}
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-                <h3 className="font-jakarta font-bold text-slate-800 mb-4">🌍 Top Countries</h3>
+                <h3 className="font-jakarta font-bold text-slate-800 mb-4">📍 Top Locations</h3>
                 {(!traffic?.countries.length) ? (
                   <p className="font-jakarta text-sm text-slate-400 text-center py-6">No data yet.</p>
                 ) : (
                   <div className="space-y-3">
                     {traffic.countries.slice(0, 7).map(c => (
-                      <div key={c.code} className="flex items-center gap-3">
+                      <div key={c.locationKey} className="flex items-center gap-3">
                         <span className="text-lg w-7 text-center flex-shrink-0">{flagEmoji(c.code)}</span>
                         <span className="font-jakarta text-sm text-slate-700 flex-1 truncate">{c.name}</span>
                         <div className="flex items-center gap-2 flex-shrink-0">
@@ -380,7 +380,8 @@ export default function AdminAnalyticsPage() {
                   <div className="space-y-3">
                     {traffic.sources.slice(0, 7).map(s => (
                       <div key={s.key} className="flex items-center gap-3">
-                        <span className="text-base w-6 text-center flex-shrink-0">{SOURCE_ICONS[s.key] ?? '🔗'}</span>
+                        {/* Known platforms get a specific icon; dynamic domains get a globe */}
+                        <span className="text-base w-6 text-center flex-shrink-0">{SOURCE_ICONS[s.key] ?? '🌐'}</span>
                         <span className="font-jakarta text-sm text-slate-700 flex-1 truncate">{s.name}</span>
                         <div className="flex items-center gap-2 flex-shrink-0">
                           <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">

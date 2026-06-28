@@ -157,18 +157,27 @@ export async function GET(req: NextRequest) {
   const countries = Object.entries(countryTotals)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
-    .map(([code, count]) => ({
-      code, count,
-      name: COUNTRY_NAMES[code] ?? code,
-      pct:  totalViews30 > 0 ? Math.round((count / totalViews30) * 100) : 0,
-    }));
+    .map(([locationKey, count]) => {
+      // Backwards-compatible: old entries are bare "IN"; new entries are "IN|Pune"
+      const sep  = locationKey.indexOf('|');
+      const code = sep >= 0 ? locationKey.slice(0, sep) : locationKey;
+      const city = sep >= 0 ? locationKey.slice(sep + 1) : null;
+      return {
+        locationKey, code, city, count,
+        name: city && city !== 'Unknown'
+          ? `${city}, ${code}`
+          : (COUNTRY_NAMES[code] ?? code),
+        pct: totalViews30 > 0 ? Math.round((count / totalViews30) * 100) : 0,
+      };
+    });
 
   const sources = Object.entries(sourceTotals)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 8)
     .map(([key, count]) => ({
       key, count,
-      name: SOURCE_LABELS[key] ?? (key.charAt(0).toUpperCase() + key.slice(1)),
+      // For known platforms use the display label; for dynamic domains the key IS the display name
+      name: SOURCE_LABELS[key] ?? key,
       pct:  totalViews30 > 0 ? Math.round((count / totalViews30) * 100) : 0,
     }));
 

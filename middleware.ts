@@ -26,7 +26,9 @@ function classifySource(referer: string | null): string {
     if (host.includes('twitter.') || host.includes('x.com'))   return 'twitter';
     if (host.includes('youtube.'))              return 'youtube';
     if (host.includes('whatsapp.'))             return 'whatsapp';
-    return 'referral';
+    // Return the exact root domain instead of a generic bucket — strip www.
+    // and cap at 40 chars so KV keys stay compact.
+    return host.replace(/^www\./, '').slice(0, 40);
   } catch {
     return 'direct';
   }
@@ -42,8 +44,8 @@ interface TrafficDay {
 // ── Async page-view recorder — called via waitUntil, never awaited inline ─────
 async function recordPageView(
   kv: KVNamespace,
-  country: string,
-  source:  string,
+  location: string,  // "{country}|{city}", e.g. "IN|Pune"
+  source:   string,
 ): Promise<void> {
   const now    = new Date();
   const date   = now.toISOString().slice(0, 10);  // "2026-06-28"
@@ -59,8 +61,8 @@ async function recordPageView(
       ? (JSON.parse(raw) as TrafficDay)
       : { v: 0, c: {}, s: {} };
     day.v += 1;
-    day.c[country] = (day.c[country] ?? 0) + 1;
-    day.s[source]  = (day.s[source]  ?? 0) + 1;
+    day.c[location] = (day.c[location] ?? 0) + 1;
+    day.s[source]   = (day.s[source]   ?? 0) + 1;
     // Retain 95 days so the dashboard can display a full month of history
     await kv.put(dayKey, JSON.stringify(day), { expirationTtl: 95 * 86_400 });
   } catch {
@@ -134,11 +136,13 @@ export async function middleware(req: NextRequest) {
       const cfCtx = getOptionalRequestContext();
       const kv    = cfCtx?.env?.CONTENT_KV;
       if (kv && cfCtx?.ctx) {
-        const country = req.headers.get('cf-ipcountry') ?? 'XX';
-        const source  = classifySource(req.headers.get('referer'));
+        const country  = req.headers.get('cf-ipcountry') ?? 'XX';
+        const city     = req.headers.get('cf-ipcity')    ?? 'Unknown';
+        const location = `${country}|${city}`;
+        const source   = classifySource(req.headers.get('referer'));
         // waitUntil keeps the Worker alive for the KV writes without adding
         // latency to the actual page response.
-        cfCtx.ctx.waitUntil(recordPageView(kv, country, source));
+        cfCtx.ctx.waitUntil(recordPageView(kv, location, source));
       }
     } catch {
       // Never propagate analytics errors to visitors
