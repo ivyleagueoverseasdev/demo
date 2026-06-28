@@ -1,19 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import dynamic from 'next/dynamic';
 import { useAuth } from '../_context';
 import type { SiteEvent, Lead, NewsItem, DynamicPage } from '@/lib/types';
 import type { AuditEntry } from '@/lib/schemas';
+import { TrafficChart } from '@/components/admin/TrafficChart';
 import type { ChartPoint } from '@/components/admin/TrafficChart';
 import Link from 'next/link';
 import { SkeletonAnalyticsGrid } from '@/components/admin/SkeletonCard';
-
-// Recharts uses DOM APIs — must be client-only
-const TrafficChart = dynamic(
-  () => import('@/components/admin/TrafficChart').then(m => ({ default: m.TrafficChart })),
-  { ssr: false, loading: () => <div className="h-56 bg-slate-50 animate-pulse rounded-xl" /> },
-);
 
 // ── Traffic data shape ────────────────────────────────────────────────────────
 interface TrafficStats {
