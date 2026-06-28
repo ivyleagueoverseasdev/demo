@@ -5,6 +5,7 @@ import { COUNTRIES_MAP, COMPANY } from '@/lib/data';
 import { getCountryPageData } from '@/lib/public-data';
 import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
 import SubNav from './SubNav';
+import ScrollToTop from './ScrollToTop';
 
 interface Props {
   children: React.ReactNode;
@@ -30,6 +31,9 @@ export default async function CountryLayout({ children, params }: Props) {
 
   return (
     <div className="bg-white">
+
+      {/* Land on the hero (top) every time a new country is opened */}
+      <ScrollToTop />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section
