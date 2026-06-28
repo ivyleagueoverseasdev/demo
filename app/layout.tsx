@@ -1,37 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans, DM_Sans, Bruno_Ace_SC } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import FloatingActions from '@/components/shared/FloatingActions';
 import { PageTracker } from '@/components/shared/PageTracker';
 import { COMPANY } from '@/lib/data';
-
-const jakartaFont = Plus_Jakarta_Sans({
-  subsets:  ['latin'],
-  weight:   ['300', '400', '500', '600', '700', '800'],
-  style:    ['normal', 'italic'],
-  variable: '--font-jakarta',
-  display:  'swap',
-  preload:  true,
-});
-
-const dmFont = DM_Sans({
-  subsets:  ['latin'],
-  weight:   ['300', '400', '500'],
-  style:    ['normal', 'italic'],
-  variable: '--font-dm',
-  display:  'swap',
-  preload:  false,
-});
-
-const brunoFont = Bruno_Ace_SC({
-  subsets:  ['latin'],
-  weight:   ['400'],
-  variable: '--font-bruno',
-  display:  'swap',
-  preload:  false,
-});
 
 export const metadata: Metadata = {
   title: {
@@ -72,8 +45,17 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`scroll-smooth ${jakartaFont.variable} ${dmFont.variable} ${brunoFont.variable}`}>
+    <html lang="en" className="scroll-smooth">
       <head>
+        {/* Google Fonts — loaded via <link> so next/font/google is not needed.
+            next/font/google initialises at module load time and is incompatible
+            with @cloudflare/next-on-pages v1.13.16 + Next.js 15 Edge Runtime. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Bruno+Ace+SC:wght@400&display=swap"
+        />
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
       </head>

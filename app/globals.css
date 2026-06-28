@@ -2,7 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Fonts injected via next/font in app/layout.tsx — no @import needed */
+/* Font CSS variables — set here so Tailwind's font-jakarta / font-dm / font-bruno
+   utility classes resolve correctly. Actual font files are loaded via <link> tags
+   in app/layout.tsx (Google Fonts CDN). next/font/google is NOT used because it
+   throws at module-init time in @cloudflare/next-on-pages v1.13.16 Edge Runtime. */
+:root {
+  --font-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-dm:      'DM Sans',           system-ui, sans-serif;
+  --font-bruno:   'Bruno Ace SC',      Georgia,   serif;
+}
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 @layer base {
