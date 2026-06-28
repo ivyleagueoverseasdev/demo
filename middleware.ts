@@ -17,6 +17,8 @@ function classifySource(referer: string | null): string {
   if (!referer) return 'direct';
   try {
     const host = new URL(referer).hostname.toLowerCase();
+    // Own domain and localhost are never external referrers
+    if (host.includes('ivyleagueoverseas.com') || host.includes('localhost')) return 'direct';
     if (host.includes('google.'))               return 'google';
     if (host.includes('bing.'))                 return 'bing';
     if (host.includes('yahoo.'))                return 'yahoo';
@@ -137,8 +139,13 @@ export async function middleware(req: NextRequest) {
       const kv    = cfCtx?.env?.CONTENT_KV;
       if (kv && cfCtx?.ctx) {
         const country  = req.headers.get('cf-ipcountry') ?? 'XX';
-        const city     = req.headers.get('cf-ipcity')    ?? 'Unknown';
-        const location = `${country}|${city}`;
+        const cityRaw  = req.headers.get('cf-ipcity');
+        // Use Country|City only when CF provides a real city name.
+        // Bare country code merges cleanly with pre-city KV data and avoids
+        // creating duplicate location keys for "Unknown" cities.
+        const location = cityRaw && cityRaw !== 'Unknown'
+          ? `${country}|${cityRaw}`
+          : country;
         const source   = classifySource(req.headers.get('referer'));
         // waitUntil keeps the Worker alive for the KV writes without adding
         // latency to the actual page response.

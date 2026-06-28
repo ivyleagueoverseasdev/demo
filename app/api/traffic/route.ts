@@ -149,7 +149,17 @@ export async function GET(req: NextRequest) {
   for (const [d, day] of dayData) {
     if (d >= monthStart && d <= today) {
       totalViews30 += day.v;
-      for (const [code, n] of Object.entries(day.c)) countryTotals[code] = (countryTotals[code] ?? 0) + n;
+      for (const [loc, n] of Object.entries(day.c)) {
+        // Heal fragmented keys written by the previous middleware version:
+        // "IN|Unknown" / "IN|null" / "IN|" all collapse to bare "IN" so they
+        // merge with old-format entries and don't appear as duplicate rows.
+        const sepIdx   = loc.indexOf('|');
+        const city     = sepIdx >= 0 ? loc.slice(sepIdx + 1) : '';
+        const cleanLoc = (city && city !== 'Unknown' && city !== 'null')
+          ? loc                                              // valid "IN|Pune"
+          : (sepIdx >= 0 ? loc.slice(0, sepIdx) : loc);    // collapse to "IN"
+        countryTotals[cleanLoc] = (countryTotals[cleanLoc] ?? 0) + n;
+      }
       for (const [src,  n] of Object.entries(day.s)) sourceTotals[src]   = (sourceTotals[src]   ?? 0) + n;
     }
   }
