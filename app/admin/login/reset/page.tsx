@@ -25,6 +25,10 @@ export default function ResetPage() {
 
   useEffect(() => {
     if (verState?.success) {
+      // Seed the API Bearer token so the dashboard does NOT prompt again.
+      if (verState.token) {
+        try { localStorage.setItem('iloc_admin_token', verState.token); } catch { /* private mode */ }
+      }
       window.location.href = '/admin';
     }
   }, [verState]);

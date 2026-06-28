@@ -2,10 +2,14 @@
 
 import { cookies } from 'next/headers';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
+import { signToken } from '@/lib/session';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-export type LoginState = { error?: string; success?: boolean } | null;
-export type ResetState = { error?: string; step?: 'sent'; success?: boolean } | null;
+// `token` is returned to the client so it can be stored in localStorage as the
+// API Bearer token — the same signed token is also set as the HttpOnly cookie
+// that gates /admin pages. One login seeds both → no second password prompt.
+export type LoginState = { error?: string; success?: boolean; token?: string } | null;
+export type ResetState = { error?: string; step?: 'sent'; success?: boolean; token?: string } | null;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -21,12 +25,6 @@ function getCFEnv(): CFEnv {
   };
 }
 
-function genToken(bytes = 24): string {
-  const arr = new Uint8Array(bytes);
-  crypto.getRandomValues(arr);
-  return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 // ─── Login ────────────────────────────────────────────────────────────────────
 
 export async function loginAction(
@@ -36,7 +34,7 @@ export async function loginAction(
   const password = (formData.get('password') as string | null)?.trim();
   if (!password) return { error: 'Password is required.' };
 
-  const { kv, adminPassword } = getCFEnv();
+  const { adminPassword } = getCFEnv();
 
   // Constant-time delay prevents password timing-analysis
   await new Promise<void>(r => setTimeout(r, 280));
@@ -45,23 +43,12 @@ export async function loginAction(
     return { error: 'Invalid credentials. Please try again.' };
   }
 
-  const token = genToken(24);
+  // Stateless signed session — NO KV write, so login can never be blocked by the
+  // Cloudflare KV daily write limit. The same token is set as the page cookie
+  // and returned for the client to store as the API Bearer token.
+  const token = await signToken(adminPassword, 86_400);
 
-  if (kv) {
-    // Persist the session token. If this throws (e.g. Cloudflare KV's free-plan
-    // "KV put() limit exceeded for the day"), surface a clear, non-fatal error
-    // instead of letting the Server Action 500 with an opaque digest.
-    try {
-      await kv.put(`session:${token}`, '1', { expirationTtl: 86400 });
-    } catch (e) {
-      console.error('[login] session put failed:', e);
-      return { error: 'Session store is temporarily unavailable (daily write limit reached). Please try again in a few minutes.' };
-    }
-  } else if (process.env.NODE_ENV === 'production') {
-    return { error: 'Session store unavailable — check CONTENT_KV binding.' };
-  }
-
-  // HTTP-only secure cookie — immune to XSS, readable only by middleware/server actions
+  // HTTP-only secure cookie — gates /admin pages via middleware.
   const jar = await cookies();
   jar.set('iloc_admin', token, {
     httpOnly: true,
@@ -71,10 +58,10 @@ export async function loginAction(
     path:     '/admin',
   });
 
-  // Return success flag — client component handles navigation.
+  // Return success + token — client stores the token and navigates.
   // redirect() from next/navigation throws NEXT_REDIRECT which
   // @cloudflare/next-on-pages v1.13.16 does not handle in Edge Server Actions.
-  return { success: true };
+  return { success: true, token };
 }
 
 // ─── Password Reset — Step 1: Request OTP ─────────────────────────────────────
@@ -139,7 +126,7 @@ export async function verifyOtpAction(
   const otp = (formData.get('otp') as string | null)?.trim();
   if (!otp || !/^\d{6}$/.test(otp)) return { error: 'Enter the 6-digit code.' };
 
-  const { kv } = getCFEnv();
+  const { kv, adminPassword } = getCFEnv();
   if (!kv) return { error: 'Session store unavailable.' };
 
   const stored = await kv.get('admin_reset_otp');
@@ -150,11 +137,12 @@ export async function verifyOtpAction(
   // Consume OTP — one-time use
   await kv.delete('admin_reset_otp');
 
-  // Grant a short-lived bypass session (15 min).
+  if (!adminPassword) return { error: 'Server misconfiguration — ADMIN_PASSWORD not set.' };
+
+  // Grant a short-lived signed bypass session (15 min) — NO KV write.
   // IMPORTANT: immediately update ADMIN_PASSWORD in Cloudflare Pages
   // → Settings → Environment Variables and re-deploy to rotate credentials.
-  const token = genToken(24);
-  await kv.put(`session:${token}`, '1', { expirationTtl: 900 });
+  const token = await signToken(adminPassword, 900);
 
   const jar = await cookies();
   jar.set('iloc_admin', token, {
@@ -165,5 +153,5 @@ export async function verifyOtpAction(
     path:     '/admin',
   });
 
-  return { success: true };
+  return { success: true, token };
 }

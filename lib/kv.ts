@@ -10,10 +10,22 @@
  */
 
 import { getRequestContext, getOptionalRequestContext } from '@cloudflare/next-on-pages';
+import { verifyToken } from './session';
 import type {
   AboutPageSettings, CompanyDetails, DynamicPage, GlobalSettings, HeroSlide,
   Lead, NewsItem, RedirectRule, ServicesPageSettings, SiteEvent, SiteMedia, Stat,
 } from './types';
+
+/** Resolve the admin secret (ADMIN_PASSWORD) used to sign/verify session tokens. */
+function getAdminSecret(): string | undefined {
+  try {
+    const ctx = getOptionalRequestContext();
+    const fromCf = (ctx?.env as Record<string, string | undefined> | undefined)?.ADMIN_PASSWORD;
+    return fromCf ?? process.env.ADMIN_PASSWORD;
+  } catch {
+    return process.env.ADMIN_PASSWORD;
+  }
+}
 
 // ── KV shape ──────────────────────────────────────────────────────────────────
 interface CfKVNamespace {
@@ -162,50 +174,33 @@ export async function createAdminSession(token: string): Promise<void> {
   await kv.put(`session:${token}`, '1', { expirationTtl: SESSION_TTL });
 }
 
-/** Validate a session token. Local dev without CF context bypasses auth. */
+/**
+ * Validate a session token by verifying its HMAC signature (see lib/session.ts).
+ *
+ * This performs ZERO KV operations — admin auth is completely independent of the
+ * Cloudflare KV daily write/read quota, so it can never be taken down by the
+ * analytics tracking exhausting the budget. Login signs a token; every protected
+ * route verifies it here.
+ */
 export async function validateAdminToken(token: string): Promise<boolean> {
   if (!token) return false;
 
-  const kv = getKVOptional();
+  const secret = getAdminSecret();
 
-  if (!kv) {
-    // No CF context → local next dev (not wrangler dev).
-    // Bypass auth so developers can work without the full CF setup.
-    // On production CF_PAGES env is always set; if kv is null there, the
-    // getKVStrict() call in createAdminSession would have thrown at login time
-    // — meaning no valid token could exist anyway.
+  if (!secret) {
+    // No ADMIN_PASSWORD available → local `next dev` without env configured.
+    // Bypass so developers can work without the full CF setup. In production
+    // CF_PAGES is always set, so a missing secret there correctly denies.
     const isLocalDev = typeof process !== 'undefined' && !process.env.CF_PAGES;
     if (isLocalDev) {
-      console.warn('[kv] No CONTENT_KV — bypassing auth (local next dev)');
+      console.warn('[auth] No ADMIN_PASSWORD — bypassing auth (local next dev)');
       return true;
     }
-    console.error('[kv] validateAdminToken: CONTENT_KV missing in CF context — denying');
+    console.error('[auth] validateAdminToken: ADMIN_PASSWORD missing in CF context — denying');
     return false;
   }
 
-  try {
-    const val = await kv.get(`session:${token}`);
-    if (val === null) {
-      console.warn(`[kv] Token not found in KV: session:${token.slice(0, 8)}…`);
-      return false;
-    }
-    // Sliding expiry: renew the 24h window so an actively-used admin session
-    // never dies mid-edit. This is best-effort and rate-limited — the admin
-    // dashboard makes many API calls per minute, and Cloudflare KV's FREE plan
-    // only allows 1,000 writes/day total. Renewing on EVERY call would burn the
-    // budget that login + content-saves need (causing "KV put() limit exceeded
-    // for the day"). Renew ~10% of the time: frequent enough to keep an active
-    // session alive, cheap enough to never starve admin writes.
-    if (Math.random() < 0.1) {
-      try {
-        await kv.put(`session:${token}`, '1', { expirationTtl: SESSION_TTL });
-      } catch { /* renewal is best-effort — validation already succeeded */ }
-    }
-    return true;
-  } catch (e) {
-    console.error('[kv] validateAdminToken KV.get failed:', e);
-    return false;
-  }
+  return verifyToken(secret, token);
 }
 
 /** Invalidate a session (logout). */

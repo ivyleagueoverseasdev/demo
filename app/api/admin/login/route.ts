@@ -2,7 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSession } from '@/lib/kv';
+import { signToken } from '@/lib/session';
 import { parseBody, CORS } from '@/lib/edge-utils';
 
 export async function OPTIONS() {
@@ -30,22 +30,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401, headers: CORS });
   }
 
-  // Generate a 48-character cryptographically random hex token
-  const arr   = new Uint8Array(24);
-  crypto.getRandomValues(arr);
-  const token = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
-
-  try {
-    // Write session:<token> = "1" to KV with 24h TTL.
-    // Each login creates its own KV key â€” multiple sessions are supported.
-    await createAdminSession(token);
-  } catch (e: unknown) {
-    console.error('[POST /api/admin/login] KV session write failed:', (e as Error).stack ?? e);
-    return NextResponse.json(
-      { error: 'Failed to create session â€” check CONTENT_KV binding in Cloudflare Pages settings', details: (e as Error).message },
-      { status: 500, headers: CORS }
-    );
-  }
+  // Stateless signed session token — HMAC-signed with ADMIN_PASSWORD, valid 24h.
+  // No KV write, so login is immune to the KV daily write limit.
+  const token = await signToken(expected, 86_400);
 
   return NextResponse.json({ token }, { status: 200, headers: CORS });
 }

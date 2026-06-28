@@ -12,6 +12,11 @@ export default function LoginForm() {
 
   useEffect(() => {
     if (state?.success) {
+      // Seed the API Bearer token so the dashboard does NOT prompt for the
+      // password a second time. The same token is already set as the cookie.
+      if (state.token) {
+        try { localStorage.setItem('iloc_admin_token', state.token); } catch { /* private mode */ }
+      }
       window.location.href = '/admin';
     }
   }, [state]);
