@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import FloatingActions from '@/components/shared/FloatingActions';
+import { PageTracker } from '@/components/shared/PageTracker';
 import { COMPANY } from '@/lib/data';
 
 const jakartaFont = Plus_Jakarta_Sans({
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
       </head>
       <body className="font-jakarta antialiased bg-white text-slate-800" style={{ overflowX: 'hidden' }}>
+        <PageTracker />
         <Navbar />
         {/*
           pt-[130px]: clears info-bar + brand row on mobile (no nav strip below lg)
