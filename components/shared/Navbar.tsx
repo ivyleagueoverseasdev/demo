@@ -403,14 +403,14 @@ export default function Navbar() {
                       className="absolute inset-x-[-10px] inset-y-[-6px] pointer-events-none rounded-xl"
                       style={{ background: 'rgba(255,255,255,0.96)' }}
                     />
-                    {/* Text — stark black; white halo behind it creates maximum contrast on green */}
+                    {/* Embossed Oswald wordmark — white halo behind boosts the raised look */}
                     <motion.span
                       variants={{
                         rest: { scale: 1 },
                         glow: { scale: 1.04 },
                       }}
                       transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-                      className="relative z-10 font-bruno text-black leading-tight tracking-wide block"
+                      className="brand-emboss relative z-10 leading-tight block"
                     >
                       {brandText}
                     </motion.span>
