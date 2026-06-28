@@ -32,6 +32,19 @@ interface TrafficDay {
   s: Record<string, number>;
 }
 
+// ── Daily write budget guard ───────────────────────────────────────────────────
+// Cloudflare KV FREE plan allows only 1,000 writes PER DAY across the whole
+// namespace. Page-view tracking must never consume that entire budget, or
+// admin login / session / content-save writes start failing with
+// "KV put() limit exceeded for the day" (HTTP 500 on /admin/login).
+//
+// We cap the number of tracked views per day using the day counter we already
+// store (no extra key needed). Each tracked view costs at most 2 writes
+// (day + live), so ANALYTICS writes are bounded to ≈ 2 × DAILY_TRACK_CAP,
+// leaving the rest of the 1,000/day budget reserved for admin operations.
+// Raise this only after upgrading to the paid KV plan (1,000 → 1M+ writes/day).
+const DAILY_TRACK_CAP = 350;
+
 // ── Write page view to KV ─────────────────────────────────────────────────────
 async function recordPageView(
   kv: KVNamespace,
@@ -46,16 +59,22 @@ async function recordPageView(
     const dayKey = `traffic:day:${date}`;
     const raw    = await kv.get(dayKey);
     const day: TrafficDay = raw ? JSON.parse(raw) as TrafficDay : { v: 0, c: {}, s: {} };
+
+    // Budget guard: once today's cap is hit, stop ALL analytics writes so the
+    // remaining KV write quota stays available for admin auth + content saves.
+    if (day.v >= DAILY_TRACK_CAP) return;
+
     day.v += 1;
     day.c[location] = (day.c[location] ?? 0) + 1;
     day.s[source]   = (day.s[source]   ?? 0) + 1;
     await kv.put(dayKey, JSON.stringify(day), { expirationTtl: 95 * 86_400 });
-  } catch { }
 
-  try {
-    const liveKey = `traffic:live:${minute}`;
-    const cur     = await kv.get(liveKey);
-    await kv.put(liveKey, String((cur ? parseInt(cur, 10) : 0) + 1), { expirationTtl: 600 });
+    // Live bucket — best-effort; only reached while under the daily cap.
+    try {
+      const liveKey = `traffic:live:${minute}`;
+      const cur     = await kv.get(liveKey);
+      await kv.put(liveKey, String((cur ? parseInt(cur, 10) : 0) + 1), { expirationTtl: 600 });
+    } catch { }
   } catch { }
 }
 

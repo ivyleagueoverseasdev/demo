@@ -33,7 +33,16 @@ export async function middleware(req: NextRequest) {
       return res;
     }
 
-    await kv.put(`session:${token}`, '1', { expirationTtl: 86_400 });
+    // Sliding-expiry renewal is BEST-EFFORT and must never log the admin out.
+    // The session is already proven valid by the get() above, so a failed put()
+    // (e.g. "KV put() limit exceeded for the day") must be swallowed — not
+    // bubble to the catch below, which would wrongly redirect to /login.
+    // Renew only occasionally to conserve the limited KV daily write budget.
+    if (Math.random() < 0.1) {
+      try {
+        await kv.put(`session:${token}`, '1', { expirationTtl: 86_400 });
+      } catch { /* renewal is optional — validation already succeeded */ }
+    }
   } catch {
     if (process.env.NODE_ENV !== 'production') return NextResponse.next();
     return NextResponse.redirect(new URL('/admin/login', req.url));

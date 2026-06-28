@@ -189,11 +189,18 @@ export async function validateAdminToken(token: string): Promise<boolean> {
       console.warn(`[kv] Token not found in KV: session:${token.slice(0, 8)}…`);
       return false;
     }
-    // Sliding expiry: each authenticated request renews the 24h window,
-    // so an actively-used admin session never dies mid-edit.
-    try {
-      await kv.put(`session:${token}`, '1', { expirationTtl: SESSION_TTL });
-    } catch { /* renewal is best-effort — validation already succeeded */ }
+    // Sliding expiry: renew the 24h window so an actively-used admin session
+    // never dies mid-edit. This is best-effort and rate-limited — the admin
+    // dashboard makes many API calls per minute, and Cloudflare KV's FREE plan
+    // only allows 1,000 writes/day total. Renewing on EVERY call would burn the
+    // budget that login + content-saves need (causing "KV put() limit exceeded
+    // for the day"). Renew ~10% of the time: frequent enough to keep an active
+    // session alive, cheap enough to never starve admin writes.
+    if (Math.random() < 0.1) {
+      try {
+        await kv.put(`session:${token}`, '1', { expirationTtl: SESSION_TTL });
+      } catch { /* renewal is best-effort — validation already succeeded */ }
+    }
     return true;
   } catch (e) {
     console.error('[kv] validateAdminToken KV.get failed:', e);

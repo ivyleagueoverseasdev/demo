@@ -48,7 +48,15 @@ export async function loginAction(
   const token = genToken(24);
 
   if (kv) {
-    await kv.put(`session:${token}`, '1', { expirationTtl: 86400 });
+    // Persist the session token. If this throws (e.g. Cloudflare KV's free-plan
+    // "KV put() limit exceeded for the day"), surface a clear, non-fatal error
+    // instead of letting the Server Action 500 with an opaque digest.
+    try {
+      await kv.put(`session:${token}`, '1', { expirationTtl: 86400 });
+    } catch (e) {
+      console.error('[login] session put failed:', e);
+      return { error: 'Session store is temporarily unavailable (daily write limit reached). Please try again in a few minutes.' };
+    }
   } else if (process.env.NODE_ENV === 'production') {
     return { error: 'Session store unavailable — check CONTENT_KV binding.' };
   }
