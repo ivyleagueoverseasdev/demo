@@ -108,6 +108,10 @@ function PartDropdown({
   );
 }
 
+// Distinct subtle background tint per public nav tab so each is differentiated
+// on the green header. Indexed by tab position; cycles if tabs are added.
+const PUB_TAB_COLORS = ['#1D4ED8', '#7C3AED', '#0D9488', '#D97706', '#DB2777', '#0891B2', '#15803D', '#B91C1C'];
+
 // ── Nav links — label routes, chevron toggles dropdown ───────────────────
 function NavLinks({
   isActive, destOpen, partOpen, openDest, closeDest, openPart, closePart, compact,
@@ -120,19 +124,22 @@ function NavLinks({
 }) {
   const px = compact ? 'px-2.5 py-1.5' : 'px-3 py-2';
   const fs = compact ? 'text-[12.5px]' : 'text-[13.5px]';
-  const active = 'text-lime-900 bg-slate-900/10';
-  const idle   = 'text-slate-800 hover:text-slate-900 hover:bg-slate-900/5';
+  const active = 'text-slate-900 font-bold';
+  const idle   = 'text-slate-800 hover:text-slate-900';
 
   return (
-    <nav className="hidden lg:flex items-center gap-0">
-      {NAV.map(({ label, href }) => {
+    <nav className="hidden lg:flex items-center gap-1">
+      {NAV.map(({ label, href }, ti) => {
         const isDestinations = href === '/destinations';
         const isPartners     = href === '/partners';
+        const color = PUB_TAB_COLORS[ti % PUB_TAB_COLORS.length];
+        const tint  = isActive(href) ? `${color}38` : `${color}14`;
 
         if (isDestinations) {
           return (
             // Wrapper: relative so dropdown positions correctly; NO overflow-hidden here
-            <div key={href} className="relative flex items-center" onMouseEnter={openDest} onMouseLeave={closeDest}>
+            <div key={href} className="relative flex items-center rounded-lg" style={{ background: tint }}
+              onMouseEnter={openDest} onMouseLeave={closeDest}>
               {/* Clickable label → navigates */}
               <Link href={href}
                 className={`font-jakarta font-semibold ${fs} pl-3 pr-1 py-2 rounded-l-lg transition-all ${
@@ -158,7 +165,8 @@ function NavLinks({
 
         if (isPartners) {
           return (
-            <div key={href} className="relative flex items-center" onMouseEnter={openPart} onMouseLeave={closePart}>
+            <div key={href} className="relative flex items-center rounded-lg" style={{ background: tint }}
+              onMouseEnter={openPart} onMouseLeave={closePart}>
               <Link href={href}
                 className={`font-jakarta font-semibold ${fs} pl-3 pr-1 py-2 rounded-l-lg transition-all ${
                   isActive(href) ? active : idle
@@ -184,7 +192,8 @@ function NavLinks({
           <Link key={href} href={href}
             className={`font-jakarta font-semibold ${fs} ${px} rounded-lg transition-all ${
               isActive(href) ? active : idle
-            }`}>
+            }`}
+            style={{ background: tint }}>
             {label}
           </Link>
         );

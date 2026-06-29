@@ -49,6 +49,16 @@ const GROUP_LABELS: Record<NavItem['group'], string> = {
   system:  'System',
 };
 
+// Distinct colour per sidebar tab so each is easy to tell apart at a glance.
+// Indexed by the item's position in NAV; cycles if more items are added.
+const NAV_TAB_COLORS = [
+  '#60A5FA', '#A78BFA', '#F472B6', '#FBBF24', '#34D399', '#22D3EE',
+  '#FB923C', '#A3E635', '#F87171', '#818CF8', '#2DD4BF', '#E879F9',
+  '#FACC15', '#4ADE80', '#38BDF8', '#FB7185', '#C084FC', '#5EEAD4',
+];
+const colorForNav = (id: string) =>
+  NAV_TAB_COLORS[Math.max(0, NAV.findIndex(n => n.id === id)) % NAV_TAB_COLORS.length];
+
 // ── Sidebar ───────────────────────────────────────────────────────────────────
 function AdminSidebar({ onLogout }: { onLogout: () => void }) {
   const pathname = usePathname();
@@ -109,6 +119,7 @@ function AdminSidebar({ onLogout }: { onLogout: () => void }) {
               <ul className="space-y-0.5 px-2">
                 {items.map(item => {
                   const active = isActive(item.href);
+                  const color  = colorForNav(item.id);
                   return (
                     <li key={item.id}>
                       <Link
@@ -117,17 +128,22 @@ function AdminSidebar({ onLogout }: { onLogout: () => void }) {
                         className={`
                           flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-sm transition-all duration-150
                           ${active
-                            ? 'bg-amber-500/20 text-amber-400 font-semibold'
-                            : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                            ? 'text-white font-semibold'
+                            : 'text-slate-300 hover:text-white'
                           }
                         `}
+                        style={
+                          active
+                            ? { background: `${color}33`, boxShadow: `inset 3px 0 0 ${color}` }
+                            : { background: `${color}14` }
+                        }
                       >
-                        <span className="text-base flex-shrink-0 w-5 text-center leading-none">{item.icon}</span>
+                        <span className="text-base flex-shrink-0 w-5 text-center leading-none" style={{ color }}>{item.icon}</span>
                         {!collapsed && (
                           <span className="font-jakarta truncate text-[13px]">{item.label}</span>
                         )}
                         {active && !collapsed && (
-                          <span className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                          <span className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: color }} />
                         )}
                       </Link>
                     </li>
