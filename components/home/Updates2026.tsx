@@ -66,8 +66,9 @@ export default function Updates2026() {
                     src={card.imageUrl}
                     alt={card.country}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     sizes="(max-width:640px) 100vw,(max-width:1024px) 50vw,33vw"
+                    onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
                   {/* Flag overlay on image */}
