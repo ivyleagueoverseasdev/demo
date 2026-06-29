@@ -172,11 +172,13 @@ export async function GET(req: NextRequest) {
       const sep  = locationKey.indexOf('|');
       const code = sep >= 0 ? locationKey.slice(0, sep) : locationKey;
       const city = sep >= 0 ? locationKey.slice(sep + 1) : null;
+      // Always show the FULL country name — never the 2-letter ISO code.
+      const countryName = COUNTRY_NAMES[code] ?? code;
       return {
         locationKey, code, city, count,
         name: city && city !== 'Unknown'
-          ? `${city}, ${code}`
-          : (COUNTRY_NAMES[code] ?? code),
+          ? `${city}, ${countryName}`
+          : countryName,
         pct: totalViews30 > 0 ? Math.round((count / totalViews30) * 100) : 0,
       };
     });
