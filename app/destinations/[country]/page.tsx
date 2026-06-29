@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { COUNTRIES_MAP } from '@/lib/data';
@@ -21,8 +20,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// No redirect — the layout already renders the hero and tab bar.
+// Landing here shows the hero image first so users see all tabs before scrolling.
 export default async function CountryPage({ params }: Props) {
   const { country } = await params;
   if (!COUNTRIES_MAP[country]) notFound();
-  redirect(`/destinations/${country}/why-study`);
+  return null;
 }
