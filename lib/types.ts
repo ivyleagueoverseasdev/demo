@@ -122,17 +122,31 @@ export interface KVStore {
 
 // ── Site content override ─────────────────────────────────────────────────
 export interface SiteContent {
-  companyName:   string;
-  phone:         string;
-  email:         string;
-  founder:       string;
-  tagline:       string;
-  heroHeadline:  string;
-  heroSubtext:   string;
-  stats:         Stat[];
-  services:      ServiceItem[];
-  processSteps:  ProcessStepItem[];
-  testimonials:  Testimonial[];
+  companyName:      string;
+  phone:            string;
+  email:            string;
+  founder:          string;
+  tagline:          string;
+  heroHeadline:     string;
+  heroSubtext:      string;
+  stats:            Stat[];
+  services:         ServiceItem[];
+  processSteps:     ProcessStepItem[];
+  testimonials:     Testimonial[];
+  updates2026:      Update2026Card[];
+  updates2026Cols:  number;   // grid columns 1-4
+}
+
+// ── 2026 update card ──────────────────────────────────────────────────────
+export interface Update2026Card {
+  id:       string;
+  country:  string;   // display name
+  year:     string;   // e.g. "2026"
+  imageUrl: string;   // small country image
+  flag:     string;   // emoji fallback
+  badge:    string;   // e.g. "Policy Update"
+  update:   string;   // the text
+  href:     string;   // destination link
 }
 
 export interface Stat {

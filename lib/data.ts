@@ -1,4 +1,4 @@
-import type { Country2026, HeroSlide, Testimonial, Stat, SiteEvent, SiteMedia, ServiceItem, ProcessStepItem } from './types';
+import type { Country2026, HeroSlide, Testimonial, Stat, SiteEvent, SiteMedia, ServiceItem, ProcessStepItem, Update2026Card } from './types';
 
 // ── Company constants ─────────────────────────────────────────────────────
 export const COMPANY = {
@@ -1042,6 +1042,23 @@ export const DEFAULT_MEDIA: SiteMedia = {
   officeImage:  'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80&auto=format&fit=crop',
   customImages: [],
 };
+
+// ── Default 2026 update cards (admin-editable via KV) ─────────────────────
+export const DEFAULT_UPDATES_2026: Update2026Card[] = [
+  { id:'usa',         country:'United States',       year:'2026', flag:'🇺🇸', imageUrl:'https://images.unsplash.com/photo-1562774053-701939374585?w=400&q=80', badge:'Policy Update', update:'F-1 Student Visa processing time: 4–8 weeks (2026 average)', href:'/destinations/usa' },
+  { id:'uk',          country:'United Kingdom',       year:'2026', flag:'🇬🇧', imageUrl:'https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?w=400&q=80', badge:'Policy Update', update:'Student Visa (Tier 4) replaced by Student Route Visa in 2021 — still applicable', href:'/destinations/uk' },
+  { id:'canada',      country:'Canada',               year:'2026', flag:'🇨🇦', imageUrl:'https://images.unsplash.com/photo-1517935706615-2717063c2225?w=400&q=80', badge:'Policy Update', update:'2025–2026: Canada has capped international student permits — apply early', href:'/destinations/canada' },
+  { id:'australia',   country:'Australia',            year:'2026', flag:'🇦🇺', imageUrl:'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=400&q=80', badge:'Policy Update', update:'Student Visa (Subclass 500) — standard processing: 1–4 months', href:'/destinations/australia' },
+  { id:'ireland',     country:'Ireland',              year:'2026', flag:'🇮🇪', imageUrl:'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?w=400&q=80', badge:'Policy Update', update:'Irish Study Visa — online application through INIS', href:'/destinations/ireland' },
+  { id:'new-zealand', country:'New Zealand',          year:'2026', flag:'🇳🇿', imageUrl:'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=400&q=80', badge:'Policy Update', update:'Student Visa (INZ) — standard processing: 4–8 weeks', href:'/destinations/new-zealand' },
+  { id:'singapore',   country:'Singapore',            year:'2026', flag:'🇸🇬', imageUrl:'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=80', badge:'Policy Update', update:"Student's Pass (STP) issued via SOLAR+ system by ICA Singapore", href:'/destinations/singapore' },
+  { id:'europe',      country:'Europe',               year:'2026', flag:'🇪🇺', imageUrl:'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&q=80', badge:'Policy Update', update:'Schengen Student Visa — apply at respective country embassy in India', href:'/destinations/europe' },
+  { id:'uae',         country:'United Arab Emirates', year:'2026', flag:'🇦🇪', imageUrl:'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&q=80', badge:'Policy Update', update:'UAE Student Entry Permit — sponsored and processed by your university', href:'/destinations/uae' },
+  { id:'japan',       country:'Japan',                year:'2026', flag:'🇯🇵', imageUrl:'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&q=80', badge:'Policy Update', update:'Student Visa (留学) — Certificate of Eligibility (CoE) required first', href:'/destinations/japan' },
+  { id:'south-korea', country:'South Korea',          year:'2026', flag:'🇰🇷', imageUrl:'https://images.unsplash.com/photo-1546412414-e1885e51cfa5?w=400&q=80', badge:'Policy Update', update:'D-2 Student Visa — issued by Korean Consulate in Delhi, Mumbai or Chennai', href:'/destinations/south-korea' },
+  { id:'russia',      country:'Russia',               year:'2026', flag:'🇷🇺', imageUrl:'https://images.unsplash.com/photo-1513326738677-b964603b136d?w=400&q=80', badge:'Policy Update', update:'Russian Student Visa — requires official Invitation Letter (Vyzov) from university', href:'/destinations/russia' },
+];
+export const DEFAULT_UPDATES_2026_COLS = 3;
 
 // ── Default hero carousel slides (admin-editable via KV) ──────────────────
 export const DEFAULT_HERO_SLIDES: HeroSlide[] = [

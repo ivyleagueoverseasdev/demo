@@ -10,7 +10,7 @@ import {
 import { appendAuditLog } from '@/lib/audit';
 import { parseBody, getBearerToken } from '@/lib/edge-utils';
 import { revalidatePath } from 'next/cache';
-import type { CompanyDetails, GlobalSettings, ServiceItem, ProcessStepItem, Testimonial } from '@/lib/types';
+import type { CompanyDetails, GlobalSettings, ServiceItem, ProcessStepItem, Testimonial, Update2026Card } from '@/lib/types';
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -53,12 +53,14 @@ export async function PUT(req: NextRequest) {
 
   // â”€â”€ Parse body once via edge-safe helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   type ContentBody = {
-    redirects?:      unknown[];
-    services?:       ServiceItem[];
-    processSteps?:   ProcessStepItem[];
-    testimonials?:   Testimonial[];
-    companyDetails?: CompanyDetails;
-    globalSettings?: GlobalSettings;
+    redirects?:        unknown[];
+    services?:         ServiceItem[];
+    processSteps?:     ProcessStepItem[];
+    testimonials?:     Testimonial[];
+    updates2026?:      Update2026Card[];
+    updates2026Cols?:  number;
+    companyDetails?:   CompanyDetails;
+    globalSettings?:   GlobalSettings;
   };
   let body: ContentBody;
   try {
@@ -73,8 +75,9 @@ export async function PUT(req: NextRequest) {
     if (body.companyDetails !== undefined) await setCompanyDetails(body.companyDetails);
     if (body.globalSettings !== undefined) await setGlobalSettings(body.globalSettings);
 
-    // Merge services / processSteps / testimonials into the site content KV key
-    if (body.services !== undefined || body.processSteps !== undefined || body.testimonials !== undefined) {
+    // Merge site-content fields into the shared KV key
+    if (body.services !== undefined || body.processSteps !== undefined || body.testimonials !== undefined ||
+        body.updates2026 !== undefined || body.updates2026Cols !== undefined) {
       const existing = (await getSiteContent<Record<string, unknown>>()) ?? {};
       const updated: Record<string, unknown> = { ...existing };
 
@@ -89,6 +92,13 @@ export async function PUT(req: NextRequest) {
       if (body.testimonials !== undefined) {
         await appendAuditLog({ action: 'Updated Testimonials', entity: 'testimonials', entityId: 'testimonials', entityName: 'Testimonials List', before: existing.testimonials ?? null, after: body.testimonials, published: true });
         updated.testimonials = body.testimonials;
+      }
+      if (body.updates2026 !== undefined) {
+        await appendAuditLog({ action: 'Updated 2026 Cards', entity: 'updates2026', entityId: 'updates2026', entityName: '2026 Update Cards', before: existing.updates2026 ?? null, after: body.updates2026, published: true });
+        updated.updates2026 = body.updates2026;
+      }
+      if (body.updates2026Cols !== undefined) {
+        updated.updates2026Cols = body.updates2026Cols;
       }
 
       await setSiteContent(updated);

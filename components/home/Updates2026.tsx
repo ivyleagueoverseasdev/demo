@@ -1,13 +1,31 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { COUNTRIES } from '@/lib/data';
+import Image from 'next/image';
+import { DEFAULT_UPDATES_2026, DEFAULT_UPDATES_2026_COLS } from '@/lib/data';
+import type { Update2026Card } from '@/lib/types';
 
 export default function Updates2026() {
-  const highlights = COUNTRIES.flatMap(c =>
-    c.visa2026.slice(0, 1).map(v => ({ country: c.name, flag: c.flag, code: c.code, update: v }))
-  );
+  const [cards, setCards] = useState<Update2026Card[]>(DEFAULT_UPDATES_2026);
+  const [cols,  setCols]  = useState<number>(DEFAULT_UPDATES_2026_COLS);
+
+  useEffect(() => {
+    fetch('/api/content', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: any) => {
+        if (d?.siteContent?.updates2026?.length) setCards(d.siteContent.updates2026);
+        if (typeof d?.siteContent?.updates2026Cols === 'number') setCols(d.siteContent.updates2026Cols);
+      })
+      .catch(() => {});
+  }, []);
+
+  const gridClass =
+    cols === 1 ? 'grid-cols-1' :
+    cols === 2 ? 'grid-cols-1 sm:grid-cols-2' :
+    cols === 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+                 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
 
   return (
     <section className="w-full overflow-hidden section bg-white">
@@ -29,25 +47,41 @@ export default function Updates2026() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {highlights.map((h, i) => (
+        <div className={`grid ${gridClass} gap-6 md:gap-8`}>
+          {cards.map((card, i) => (
             <motion.div
-              key={h.country}
+              key={card.id}
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
+              transition={{ duration: 0.4, delay: i * 0.04 }}
             >
-              <Link href={`/destinations/${h.code}`}
-                className="group card p-5 hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(36,109,255,0.14),0_8px_32px_rgba(0,0,0,0.08)] block transition-all duration-300">
-                <div className="flex items-start gap-3 mb-3">
-                  <span className="text-3xl group-hover:scale-110 transition-transform">{h.flag}</span>
-                  <div>
-                    <div className="font-jakarta font-bold text-homeblue-600 text-sm">{h.country} 2026</div>
-                    <div className="badge-amber text-[10px] mt-0.5">Policy Update</div>
-                  </div>
+              <Link
+                href={card.href}
+                className="group card hover:-translate-y-1 hover:shadow-[0_0_24px_rgba(36,109,255,0.14),0_8px_32px_rgba(0,0,0,0.08)] block transition-all duration-300 overflow-hidden"
+              >
+                {/* Country image strip */}
+                <div className="relative h-28 w-full overflow-hidden">
+                  <Image
+                    src={card.imageUrl}
+                    alt={card.country}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width:640px) 100vw,(max-width:1024px) 50vw,33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
+                  {/* Flag overlay on image */}
+                  <span className="absolute bottom-2 left-3 text-2xl drop-shadow-lg">{card.flag}</span>
+                  <span className="absolute top-2 right-2 badge-amber text-[9px] px-2 py-0.5">{card.badge}</span>
                 </div>
-                <p className="font-jakarta text-sm text-slate-600 leading-relaxed line-clamp-2">{h.update}</p>
+
+                {/* Text content */}
+                <div className="p-4">
+                  <div className="font-jakarta font-bold text-homeblue-600 text-sm mb-2">
+                    {card.country} {card.year}
+                  </div>
+                  <p className="font-jakarta text-sm text-slate-600 leading-relaxed line-clamp-3">{card.update}</p>
+                </div>
               </Link>
             </motion.div>
           ))}
