@@ -419,12 +419,13 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                   {/* ── Cinematic heading — line-by-line word reveal ── */}
                   <h1
                     className="font-jakarta font-extrabold text-white text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight mb-6"
+                    style={{ color: '#ffffff' }}
                   >
                     {slide.headingLines.map((line, li) => {
                       const isHighlight = slide.headingHighlight[li];
                       const lineDelay   = headingBaseDelay + li * 0.18;
                       return (
-                        <span key={li} className="block">
+                        <span key={li} className="block" style={{ color: '#ffffff' }}>
                           {isHighlight ? (
                             <WordReveal
                               text={line}
@@ -433,7 +434,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                               className={slide.highlightColor}
                             />
                           ) : (
-                            <WordReveal text={line} baseDelay={lineDelay} />
+                            <WordReveal text={line} baseDelay={lineDelay} className="text-white" />
                           )}
                         </span>
                       );
@@ -449,7 +450,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                       delay: headingBaseDelay + slide.headingLines.length * 0.18 + 0.1,
                       ease: CINEMATIC,
                     }}
-                    className="font-jakarta text-white/72 text-base md:text-lg leading-relaxed mb-8"
+                    className="font-jakarta text-white/90 text-base md:text-lg leading-relaxed mb-8"
                     style={{ maxWidth: '36rem' }}
                   >
                     {slide.subtext}
@@ -477,7 +478,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                           ease: CINEMATIC,
                         }}
                         className="
-                          flex items-center gap-1.5 bg-white/10 text-white/82 text-xs
+                          flex items-center gap-1.5 bg-white/10 text-white text-xs
                           font-jakarta font-medium px-3 py-1.5 rounded-full
                           border border-white/18 backdrop-blur-sm
                         "
@@ -540,7 +541,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                             delay={0.3 + si * 0.15}
                           />
                         </span>
-                        <span className="font-jakarta text-[11px] text-white/52 mt-1 font-medium leading-tight">
+                        <span className="font-jakarta text-[11px] text-white/80 mt-1 font-medium leading-tight">
                           {stat.label}
                         </span>
                       </div>
@@ -567,7 +568,7 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                     </div>
                     <div>
                       <div className="font-jakarta font-semibold text-white text-sm">{COMPANY.short} Expert Team</div>
-                      <div className="font-jakarta text-xs text-white/50">Founder & Head Counsellor · 25+ yrs</div>
+                      <div className="font-jakarta text-xs text-white/75">Founder & Head Counsellor · 25+ yrs</div>
                     </div>
                     <div className="ml-auto hidden sm:flex items-center gap-2 bg-white/10 rounded-xl px-3 py-1.5 border border-white/15">
                       <span className="font-jakarta text-[11px] text-amber-300 font-bold">⭐ 5.0</span>
