@@ -62,66 +62,32 @@ export default function Footer() {
   return (
     <footer className="text-slate-700" style={{ backgroundColor: '#C7FBA0' }}>
 
-      {/* ── CTA Strip ── */}
-      <div className="border-b border-slate-900/10">
-        <div className="container-xl py-6 flex flex-col md:flex-row items-center justify-between gap-5">
-          <div>
-            <p className="font-jakarta font-bold text-xl md:text-2xl text-slate-900 leading-tight">
-              Ready to study abroad?
-            </p>
-            <p className="text-slate-700 text-sm md:text-base mt-1">
-              Book a free 30-minute counselling session — zero pressure, zero fees.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center gap-2 font-jakarta font-bold text-sm px-6 py-3 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors shadow-lg"
-            >
-              Book Free Session →
-            </Link>
-            <a
-              href={contact.wa}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-slate-900 border border-slate-900/20 hover:bg-slate-900/5 transition-colors"
-            >
-              💬 WhatsApp Us
-            </a>
-          </div>
-        </div>
-      </div>
-
       {/* ── Main grid ── */}
-      <div className="container-xl pt-10 pb-7 grid grid-cols-2 md:grid-cols-12 gap-8 lg:gap-12">
+      <div className="container-xl pt-8 pb-6 grid grid-cols-2 md:grid-cols-12 gap-6 lg:gap-10">
 
         {/* Brand column */}
         <div className="col-span-2 md:col-span-4">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-slate-900/15">
-              <Image src="/logo3.png" alt="ILOC" width={40} height={40} className="object-cover w-full h-full" />
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border border-slate-900/15">
+              <Image src="/logo3.png" alt="ILOC" width={36} height={36} className="object-cover w-full h-full" />
             </div>
             <div>
-              <p className="font-jakarta font-extrabold text-slate-900 text-sm leading-tight">IVY LEAGUE</p>
-              <p className="font-jakarta font-extrabold text-slate-900 text-sm leading-tight">OVERSEAS CONSULTING</p>
+              <p className="font-jakarta font-extrabold text-slate-900 text-xs leading-tight">IVY LEAGUE</p>
+              <p className="font-jakarta font-extrabold text-slate-900 text-xs leading-tight">OVERSEAS CONSULTING</p>
             </div>
           </div>
-          <p className="font-jakarta text-sm leading-7 text-slate-700 mb-6 max-w-xs">
-            {COMPANY.tagline} Trusted by 10,000+ students across 12 countries for 25+ years of excellence.
+          <p className="font-jakarta text-xs leading-6 text-slate-700 mb-4 max-w-xs">
+            Trusted by 10,000+ students across 12 countries for 25+ years of excellence.
           </p>
-
-          {/* Contact */}
-          <div className="space-y-2.5 text-sm">
-            <a href={`tel:${contact.phone}`} className="flex items-center gap-2.5 text-slate-700 hover:text-slate-900 transition-colors">
-              <span className="text-base">📞</span>
-              <span>{contact.phone}</span>
+          <div className="space-y-2 text-xs">
+            <a href={`tel:${contact.phone}`} className="flex items-center gap-2 text-slate-700 hover:text-slate-900 transition-colors">
+              <span>📞</span><span>{contact.phone}</span>
             </a>
-            <a href={`mailto:${contact.email}`} className="flex items-center gap-2.5 text-slate-700 hover:text-slate-900 transition-colors">
-              <span className="text-base">✉️</span>
-              <span>{contact.email}</span>
+            <a href={`mailto:${contact.email}`} className="flex items-center gap-2 text-slate-700 hover:text-slate-900 transition-colors">
+              <span>✉️</span><span>{contact.email}</span>
             </a>
-            <a href={contact.mapsLink} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2.5 text-slate-700 hover:text-amber-700 transition-colors">
-              <span className="text-base flex-shrink-0 mt-0.5">📍</span>
+            <a href={contact.mapsLink} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-slate-700 hover:text-amber-700 transition-colors">
+              <span className="flex-shrink-0 mt-0.5">📍</span>
               <span className="leading-relaxed">{contact.address}</span>
             </a>
           </div>
@@ -129,11 +95,11 @@ export default function Footer() {
 
         {/* Quick links */}
         <div className="col-span-1 md:col-span-2">
-          <h4 className="font-jakarta font-bold text-slate-900 text-sm mb-5 tracking-wide">Company</h4>
-          <ul className="space-y-3">
+          <h4 className="font-jakarta font-bold text-slate-900 text-xs mb-3 tracking-wide uppercase">Company</h4>
+          <ul className="space-y-2">
             {QUICK_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <Link href={href} className="font-jakarta text-sm text-slate-700 hover:text-slate-900 transition-colors">
+                <Link href={href} className="font-jakarta text-xs text-slate-700 hover:text-slate-900 transition-colors">
                   {label}
                 </Link>
               </li>
@@ -143,11 +109,11 @@ export default function Footer() {
 
         {/* Services */}
         <div className="col-span-1 md:col-span-2">
-          <h4 className="font-jakarta font-bold text-slate-900 text-sm mb-5 tracking-wide">Services</h4>
-          <ul className="space-y-3">
+          <h4 className="font-jakarta font-bold text-slate-900 text-xs mb-3 tracking-wide uppercase">Services</h4>
+          <ul className="space-y-2">
             {SERVICE_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <Link href={href} className="font-jakarta text-sm text-slate-700 hover:text-slate-900 transition-colors">
+                <Link href={href} className="font-jakarta text-xs text-slate-700 hover:text-slate-900 transition-colors">
                   {label}
                 </Link>
               </li>
@@ -157,17 +123,17 @@ export default function Footer() {
 
         {/* Destinations */}
         <div className="col-span-2 md:col-span-4">
-          <h4 className="font-jakarta font-bold text-slate-900 text-sm mb-5 tracking-wide">Study Destinations</h4>
-          <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
+          <h4 className="font-jakarta font-bold text-slate-900 text-xs mb-3 tracking-wide uppercase">Destinations</h4>
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
             {DEST_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <Link href={href} className="font-jakarta text-sm text-slate-700 hover:text-slate-900 transition-colors">
+                <Link href={href} className="font-jakarta text-xs text-slate-700 hover:text-slate-900 transition-colors">
                   {label}
                 </Link>
               </li>
             ))}
           </ul>
-          <div className="mt-5 pt-5 border-t border-slate-900/10">
+          <div className="mt-3 pt-3 border-t border-slate-900/10">
             <Link href="/destinations" className="font-jakarta text-xs font-semibold text-amber-700 hover:text-amber-800 transition-colors">
               View all destinations →
             </Link>
@@ -177,12 +143,12 @@ export default function Footer() {
 
       {/* ── Bottom bar ── */}
       <div className="border-t border-slate-900/10">
-        <div className="container-xl py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600">
+        <div className="container-xl py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-600">
           <p>© {COMPANY.since}–{new Date().getFullYear()} {COMPANY.name}. All rights reserved.</p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap justify-center">
             <Link href="/contact" className="hover:text-slate-900 transition-colors">Privacy Policy</Link>
             <Link href="/contact" className="hover:text-slate-900 transition-colors">Terms of Service</Link>
-            <p>Founded by <span className="text-slate-700">{COMPANY.founder}</span> · Pune, India</p>
+            <span>Founded by <span className="text-slate-700">{COMPANY.founder}</span> · Pune, India</span>
           </div>
         </div>
       </div>
