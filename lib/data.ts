@@ -29,6 +29,15 @@ export function buildWhatsAppLink(base: string, message?: string): string {
   return msg ? `${url}?text=${encodeURIComponent(msg)}` : url;
 }
 
+/**
+ * Remove flag emoji (regional-indicator pairs) from a display string.
+ * On Windows, flag emoji render as bare letter pairs ("US", "GB") which read
+ * as unwanted country short-forms — so flags are stripped from all public UI.
+ */
+export function stripFlagEmoji(text: string): string {
+  return text.replace(/[\u{1F1E6}-\u{1F1FF}]/gu, '').replace(/\s{2,}/g, ' ').trim();
+}
+
 export const STATS: Stat[] = [
   { num: '10,000+', label: 'Students Placed'               },
   { num: '97%',    label: 'Visa Approval Rate'             },
@@ -1060,6 +1069,13 @@ export const DEFAULT_UPDATES_2026: Update2026Card[] = [
 ];
 export const DEFAULT_UPDATES_2026_COLS = 3;
 
+// Section heading texts above the 2026 cards — admin-editable via /admin/homepage.
+export const DEFAULT_UPDATES_2026_HEADINGS = {
+  badge:   '2026 Immigration Policy Updates',
+  heading: 'What changed for 2026.',
+  sub:     'Stay ahead with the latest visa policies, intake rules and scholarship deadlines for your target country.',
+} as const;
+
 // ── Default hero carousel slides (admin-editable via KV) ──────────────────
 export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
   {
@@ -1110,7 +1126,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     highlightColor:   'text-emerald-400',
     subtext:          'Our counsellors identify, shortlist and help you apply for merit & need-based scholarships across 400+ universities — maximising funding so finances never stand between you and your dream university.',
     trustBadges:      ['Merit & Need-Based', '400+ Universities', 'Application Support', 'Free Eligibility Check'],
-    ctaPrimary:       { label: 'Check Scholarship Eligibility →', style: 'green', action: 'demo-modal' },
+    ctaPrimary:       { label: 'Check Scholarship Eligibility →', style: 'green', action: 'link', href: '/contact' },
     ctaSecondary:     { label: '📞 Call Us Now', style: 'ghost', action: 'phone', href: 'tel:+919158577707' },
     imageUrl:         'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop',
     imageAlt:         'Happy student celebrating a scholarship offer for overseas studies',

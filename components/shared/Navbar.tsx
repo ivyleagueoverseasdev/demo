@@ -48,8 +48,8 @@ export const HEADER_HEIGHT = 242;
 // ── Dropdown menu — rendered outside any overflow-hidden ancestor ─────────
 // By placing it as `fixed` we escape any clipping context entirely.
 function DestDropdown({
-  open, onEnter, onLeave,
-}: { open: boolean; onEnter: () => void; onLeave: () => void }) {
+  open, onEnter, onLeave, items,
+}: { open: boolean; onEnter: () => void; onLeave: () => void; items: { label: string; href: string }[] }) {
   return (
     <AnimatePresence>
       {open && (
@@ -68,7 +68,7 @@ function DestDropdown({
             </span>
           </div>
           <div className="grid grid-cols-2 gap-0.5 px-2 pb-2">
-            {DESTINATIONS.map(d => (
+            {items.map(d => (
               <Link key={d.href} href={d.href}
                 className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-lime-50 hover:text-lime-700 transition-colors font-jakarta font-medium rounded-xl">
                 {d.label}
@@ -108,49 +108,57 @@ function PartDropdown({
   );
 }
 
-// Distinct subtle background tint per public nav tab so each is differentiated
-// on the green header. Indexed by tab position; cycles if tabs are added.
+// Distinct colour per public nav tab so each stands out clearly on the header.
+// Indexed by tab position; cycles if tabs are added.
 const PUB_TAB_COLORS = ['#1D4ED8', '#7C3AED', '#0D9488', '#D97706', '#DB2777', '#0891B2', '#15803D', '#B91C1C'];
 
 // ── Nav links — label routes, chevron toggles dropdown ───────────────────
 function NavLinks({
-  isActive, destOpen, partOpen, openDest, closeDest, openPart, closePart, compact,
+  isActive, destOpen, partOpen, openDest, closeDest, openPart, closePart, compact, destinations,
 }: {
   isActive: (h: string) => boolean;
   destOpen: boolean; partOpen: boolean;
   openDest: () => void; closeDest: () => void;
   openPart: () => void; closePart: () => void;
   compact?: boolean;
+  destinations: { label: string; href: string }[];
 }) {
   const px = compact ? 'px-2.5 py-1.5' : 'px-3 py-2';
   const fs = compact ? 'text-[12.5px]' : 'text-[13.5px]';
-  const active = 'text-slate-900 font-bold';
-  const idle   = 'text-slate-800 hover:text-slate-900';
+
+  // Active tab: solid colour pill with white text.
+  // Idle tab: strong tint + the tab's own colour for the label so every
+  // button reads as a distinct, catchy chip on the header.
+  const tabStyle = (color: string, active: boolean): React.CSSProperties =>
+    active
+      ? { background: color, color: '#ffffff', boxShadow: `0 4px 14px ${color}66` }
+      : { background: `${color}1F`, color, border: `1px solid ${color}40` };
 
   return (
-    <nav className="hidden lg:flex items-center gap-1">
+    <nav className="hidden lg:flex items-center gap-1.5">
       {NAV.map(({ label, href }, ti) => {
         const isDestinations = href === '/destinations';
         const isPartners     = href === '/partners';
-        const color = PUB_TAB_COLORS[ti % PUB_TAB_COLORS.length];
-        const tint  = isActive(href) ? `${color}38` : `${color}14`;
+        const color  = PUB_TAB_COLORS[ti % PUB_TAB_COLORS.length];
+        const style  = tabStyle(color, isActive(href));
+        const txtCls = isActive(href) ? 'font-bold' : 'font-semibold hover:opacity-80';
 
         if (isDestinations) {
           return (
             // Wrapper: relative so dropdown positions correctly; NO overflow-hidden here
-            <div key={href} className="relative flex items-center rounded-lg" style={{ background: tint }}
+            <div key={href} className="relative flex items-center rounded-full" style={style}
               onMouseEnter={openDest} onMouseLeave={closeDest}>
               {/* Clickable label → navigates */}
               <Link href={href}
-                className={`font-jakarta font-semibold ${fs} pl-3 pr-1 py-2 rounded-l-lg transition-all ${
-                  isActive(href) ? active : idle
-                }`}>
+                className={`font-jakarta ${txtCls} ${fs} pl-3.5 pr-1 py-2 rounded-l-full transition-all`}
+                style={{ color: 'inherit' }}>
                 {label}
               </Link>
               {/* Separate chevron → toggles dropdown only */}
               <button
                 onClick={e => { e.preventDefault(); destOpen ? closeDest() : openDest(); }}
-                className={`font-jakarta ${px} rounded-r-lg transition-all ${isActive(href) ? active : idle} pl-0`}
+                className={`font-jakarta ${px} rounded-r-full transition-all pl-0`}
+                style={{ color: 'inherit' }}
                 aria-label="Toggle destinations menu"
               >
                 <svg className={`w-3 h-3 transition-transform duration-200 ${destOpen ? 'rotate-180' : ''}`}
@@ -158,24 +166,24 @@ function NavLinks({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              <DestDropdown open={destOpen} onEnter={openDest} onLeave={closeDest} />
+              <DestDropdown open={destOpen} onEnter={openDest} onLeave={closeDest} items={destinations} />
             </div>
           );
         }
 
         if (isPartners) {
           return (
-            <div key={href} className="relative flex items-center rounded-lg" style={{ background: tint }}
+            <div key={href} className="relative flex items-center rounded-full" style={style}
               onMouseEnter={openPart} onMouseLeave={closePart}>
               <Link href={href}
-                className={`font-jakarta font-semibold ${fs} pl-3 pr-1 py-2 rounded-l-lg transition-all ${
-                  isActive(href) ? active : idle
-                }`}>
+                className={`font-jakarta ${txtCls} ${fs} pl-3.5 pr-1 py-2 rounded-l-full transition-all`}
+                style={{ color: 'inherit' }}>
                 {label}
               </Link>
               <button
                 onClick={e => { e.preventDefault(); partOpen ? closePart() : openPart(); }}
-                className={`font-jakarta ${px} rounded-r-lg transition-all ${isActive(href) ? active : idle} pl-0`}
+                className={`font-jakarta ${px} rounded-r-full transition-all pl-0`}
+                style={{ color: 'inherit' }}
                 aria-label="Toggle partners menu"
               >
                 <svg className={`w-3 h-3 transition-transform duration-200 ${partOpen ? 'rotate-180' : ''}`}
@@ -190,10 +198,8 @@ function NavLinks({
 
         return (
           <Link key={href} href={href}
-            className={`font-jakarta font-semibold ${fs} ${px} rounded-lg transition-all ${
-              isActive(href) ? active : idle
-            }`}
-            style={{ background: tint }}>
+            className={`font-jakarta ${txtCls} ${fs} ${px} rounded-full transition-all`}
+            style={style}>
             {label}
           </Link>
         );
@@ -213,6 +219,7 @@ export default function Navbar() {
   const [logoUrl,   setLogoUrl]   = useState('/logo3.png');
   const [brandText, setBrandText] = useState('IVY LEAGUE OVERSEAS CONSULTING');
   const [contact,   setContact]   = useState<{ phone: string; email: string; wa: string }>({ phone: COMPANY.phone, email: COMPANY.email, wa: COMPANY.wa });
+  const [destinations, setDestinations] = useState<{ label: string; href: string }[]>(DESTINATIONS);
 
   const pathname  = usePathname();
   const destTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -226,6 +233,13 @@ export default function Navbar() {
         const gs = d?.globalSettings;
         if (gs?.headerBackgroundColor) setHeaderBg(gs.headerBackgroundColor);
         if (gs?.mainLogoUrl)           setLogoUrl(gs.mainLogoUrl);
+        // Effective destination list (admin add/hide aware)
+        if (Array.isArray(d?.countries) && d.countries.length) {
+          setDestinations(d.countries.map((c: { code: string; name: string }) => ({
+            label: c.name,
+            href:  `/destinations/${c.code}`,
+          })));
+        }
         const name = gs?.businessNameText || gs?.businessNameDisplayName || gs?.brandName;
         if (name) setBrandText(name);
         const cd = d?.companyDetails;
@@ -443,6 +457,7 @@ export default function Navbar() {
                     destOpen={destOpen} partOpen={partOpen}
                     openDest={openDest} closeDest={closeDest}
                     openPart={openPart} closePart={closePart}
+                    destinations={destinations}
                     compact
                   />
                 </motion.div>
@@ -517,6 +532,7 @@ export default function Navbar() {
               destOpen={destOpen} partOpen={partOpen}
               openDest={openDest} closeDest={closeDest}
               openPart={openPart} closePart={closePart}
+              destinations={destinations}
             />
             <div className="hidden lg:flex items-center gap-2 ml-auto">
               <a href={contact.wa} target="_blank" rel="noopener noreferrer"
@@ -609,7 +625,7 @@ export default function Navbar() {
                   </Link>
                   {/* 2-col grid with generous gap — readable and thumb-friendly */}
                   <div className="grid grid-cols-2 gap-y-5 gap-x-4">
-                    {DESTINATIONS.map(d => (
+                    {destinations.map(d => (
                       <Link key={d.href} href={d.href}
                         className="font-jakarta font-medium text-lg px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
                       >

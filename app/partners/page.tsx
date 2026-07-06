@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { COMPANY } from '@/lib/data';
-import { getPartnerSettings } from '@/lib/kv';
+import { getPartnerSettings, getGlobalSettings } from '@/lib/kv';
 import { PARTNER_DEFAULTS, mergePartnerSettings, type PartnerPageKey } from '@/lib/partnerDefaults';
 import PageHero from '@/components/shared/PageHero';
 
@@ -55,9 +55,11 @@ const TRACKS: {
 ];
 
 export default async function PartnersIndexPage() {
-  const kvResults = await Promise.all(
-    TRACKS.map(t => getPartnerSettings(t.key).catch(() => null))
-  );
+  const [kvResults, gs] = await Promise.all([
+    Promise.all(TRACKS.map(t => getPartnerSettings(t.key).catch(() => null))),
+    getGlobalSettings().catch(() => null),
+  ]);
+  const pb = gs?.pageHeroBadges?.partners;
   const tracks = TRACKS.map((t, i) => ({
     ...t,
     s: mergePartnerSettings(t.key, kvResults[i]) ?? PARTNER_DEFAULTS[t.key],
@@ -84,7 +86,7 @@ export default async function PartnersIndexPage() {
           src: 'https://images.unsplash.com/photo-1529390079861-591de354faf5?w=1200&q=80&auto=format&fit=crop',
           alt: 'Business partners shaking hands over an agreement',
         }}
-        badge={{ value: '3', label: 'Partnership tracks to choose from' }}
+        badge={{ value: pb?.value || '3', label: pb?.label || 'Partnership tracks to choose from' }}
         blobColor="#B5FF00"
       />
 

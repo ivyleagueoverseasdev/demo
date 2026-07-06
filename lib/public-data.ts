@@ -21,6 +21,8 @@ import {
   getMarqueeSettings,
   getCountryMeta,
   getCountryContent,
+  getCustomCountries,
+  getHiddenCountries,
 } from '@/lib/kv';
 import {
   DEFAULT_HERO_SLIDES,
@@ -138,6 +140,68 @@ export async function getPublicNews(opts?: {
 export async function getPublicNewsItem(slug: string): Promise<NewsItem | null> {
   const news = await getNews().catch(() => [] as NewsItem[]);
   return news.find(n => n.slug === slug && n.published) ?? null;
+}
+
+// ── Countries (built-in + admin-added − admin-hidden) ────────────────────────
+
+/**
+ * The public destination country shape. Built-in countries and admin-added
+ * custom countries are normalised to this one shape so every consumer
+ * (destinations hub, country layout, homepage strip, navbar, footer) renders
+ * from a single list.
+ */
+export interface PublicCountry {
+  code:        string;
+  name:        string;
+  tagline:     string;
+  intake:      string;
+  avgCost:     string;
+  visaRate:    string;
+  unis:        string;
+  description: string;
+  highlights:  string[];
+  heroImage:   string;
+  campusImage: string;
+  color:       string;
+  isCustom:    boolean;
+}
+
+function toPublicCountry(c: (typeof COUNTRIES)[number]): PublicCountry {
+  return {
+    code: c.code, name: c.name, tagline: c.tagline, intake: c.intake,
+    avgCost: c.avgCost, visaRate: c.visaRate, unis: c.unis,
+    description: c.description, highlights: c.highlights,
+    heroImage: c.heroImage, campusImage: c.campusImage, color: c.color,
+    isCustom: false,
+  };
+}
+
+/** Effective public country list: static defaults minus hidden, plus custom. */
+export async function getPublicCountries(): Promise<PublicCountry[]> {
+  const [custom, hidden] = await Promise.all([
+    getCustomCountries().catch(() => []),
+    getHiddenCountries().catch(() => []),
+  ]);
+  const hiddenSet = new Set(hidden);
+  const base = COUNTRIES.filter(c => !hiddenSet.has(c.code)).map(toPublicCountry);
+  const extra = custom
+    .filter(c => c.code && !hiddenSet.has(c.code) && !base.some(b => b.code === c.code))
+    .map(c => ({
+      code: c.code, name: c.name || c.code,
+      tagline: c.tagline || '', intake: c.intake || '—',
+      avgCost: c.avgCost || '—', visaRate: c.visaRate || '—', unis: c.unis || '—',
+      description: c.description || '', highlights: c.highlights ?? [],
+      heroImage: c.heroImage || '', campusImage: c.campusImage || c.heroImage || '',
+      color: c.color || '#1249C4',
+      isCustom: true,
+    }));
+  return [...base, ...extra];
+}
+
+/** Resolve one effective country (built-in or custom); null if hidden/unknown. */
+export async function getPublicCountry(code: string): Promise<PublicCountry | null> {
+  const list = await getPublicCountries();
+  return list.find(c => c.code === code) ?? null;
 }
 
 // ── Country pages ─────────────────────────────────────────────────────────────

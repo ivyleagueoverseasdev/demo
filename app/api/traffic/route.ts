@@ -11,6 +11,9 @@ interface TrafficDay {
   v: number;
   c: Record<string, number>;
   s: Record<string, number>;
+  r?: Record<string, number>;   // Indian state buckets "MH|Pune" / "MH"
+  n?: number;                   // brand-new visitors (first ever visit)
+  u?: number;                   // unique visitors that day
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -39,6 +42,24 @@ const COUNTRY_NAMES: Record<string, string> = {
   XX: 'Unknown',
 };
 
+// ISO 3166-2:IN state/UT codes → display names (for the admin India map)
+const INDIA_STATES: Record<string, string> = {
+  AN: 'Andaman & Nicobar', AP: 'Andhra Pradesh',  AR: 'Arunachal Pradesh',
+  AS: 'Assam',             BR: 'Bihar',           CH: 'Chandigarh',
+  CT: 'Chhattisgarh',      CG: 'Chhattisgarh',    DN: 'Dadra & Nagar Haveli',
+  DD: 'Daman & Diu',       DL: 'Delhi',           GA: 'Goa',
+  GJ: 'Gujarat',           HR: 'Haryana',         HP: 'Himachal Pradesh',
+  JK: 'Jammu & Kashmir',   JH: 'Jharkhand',       KA: 'Karnataka',
+  KL: 'Kerala',            LA: 'Ladakh',          LD: 'Lakshadweep',
+  MP: 'Madhya Pradesh',    MH: 'Maharashtra',     MN: 'Manipur',
+  ML: 'Meghalaya',         MZ: 'Mizoram',         NL: 'Nagaland',
+  OR: 'Odisha',            OD: 'Odisha',          PY: 'Puducherry',
+  PB: 'Punjab',            RJ: 'Rajasthan',       SK: 'Sikkim',
+  TN: 'Tamil Nadu',        TG: 'Telangana',       TS: 'Telangana',
+  TR: 'Tripura',           UP: 'Uttar Pradesh',   UT: 'Uttarakhand',
+  UK: 'Uttarakhand',       WB: 'West Bengal',
+};
+
 const SOURCE_LABELS: Record<string, string> = {
   direct:    'Direct',        google:    'Google',
   bing:      'Bing',          yahoo:     'Yahoo',
@@ -62,14 +83,18 @@ function emptyPayload(days: string[]) {
     live: 0, today: 0, yesterday: 0,
     week: 0, lastWeek: 0, month: 0, lastMonth: 0,
     todayTrend: 0, weekTrend: 0, monthTrend: 0,
+    newToday: 0, newWeek: 0, newMonth: 0,
+    uniqueToday: 0,
     chart: days.slice(-30).map(date => ({
-      date, views: 0,
+      date, views: 0, newVisitors: 0,
       label: new Date(date + 'T00:00:00Z').toLocaleDateString('en-GB', {
         day: 'numeric', month: 'short',
       }),
     })),
     countries: [],
     sources: [],
+    indiaStates: [],
+    indiaCities: [],
   };
 }
 
@@ -135,20 +160,46 @@ export async function GET(req: NextRequest) {
   // ── Chart: last 30 days ascending ───────────────────────────────────────────
   const chart = days.slice(-30).map(date => ({
     date,
-    views: dayData.get(date)?.v ?? 0,
+    views:       dayData.get(date)?.v ?? 0,
+    newVisitors: dayData.get(date)?.n ?? 0,
     label: new Date(date + 'T00:00:00Z').toLocaleDateString('en-GB', {
       day: 'numeric', month: 'short',
     }),
   }));
 
-  // ── Aggregate countries + sources over the last 30 days ─────────────────────
+  // ── New / unique visitor totals ──────────────────────────────────────────────
+  const newFor = (d: string) => dayData.get(d)?.n ?? 0;
+  function rangeNew(from: string, to: string): number {
+    let total = 0;
+    for (const [d, day] of dayData) {
+      if (d >= from && d <= to) total += day.n ?? 0;
+    }
+    return total;
+  }
+  const newToday    = newFor(today);
+  const newWeek     = rangeNew(weekStart,  today);
+  const newMonth    = rangeNew(monthStart, today);
+  const uniqueToday = dayData.get(today)?.u ?? 0;
+
+  // ── Aggregate countries + sources + Indian states over the last 30 days ─────
   const countryTotals: Record<string, number> = {};
   const sourceTotals:  Record<string, number> = {};
+  const stateTotals:   Record<string, number> = {};
+  const cityTotals:    Record<string, number> = {};
   let totalViews30 = 0;
+  let totalIndia30 = 0;
 
   for (const [d, day] of dayData) {
     if (d >= monthStart && d <= today) {
       totalViews30 += day.v;
+      for (const [reg, n] of Object.entries(day.r ?? {})) {
+        const sep   = reg.indexOf('|');
+        const state = sep >= 0 ? reg.slice(0, sep) : reg;
+        const city  = sep >= 0 ? reg.slice(sep + 1) : '';
+        stateTotals[state] = (stateTotals[state] ?? 0) + n;
+        if (city && city !== 'Unknown') cityTotals[city] = (cityTotals[city] ?? 0) + n;
+        totalIndia30 += n;
+      }
       for (const [loc, n] of Object.entries(day.c)) {
         // Heal fragmented keys written by the previous middleware version:
         // "IN|Unknown" / "IN|null" / "IN|" all collapse to bare "IN" so they
@@ -193,6 +244,23 @@ export async function GET(req: NextRequest) {
       pct:  totalViews30 > 0 ? Math.round((count / totalViews30) * 100) : 0,
     }));
 
+  // ── India state-wise + city-wise traffic (last 30 days) ─────────────────────
+  const indiaStates = Object.entries(stateTotals)
+    .sort((a, b) => b[1] - a[1])
+    .map(([code, count]) => ({
+      code, count,
+      name: INDIA_STATES[code.toUpperCase()] ?? code,
+      pct:  totalIndia30 > 0 ? Math.round((count / totalIndia30) * 100) : 0,
+    }));
+
+  const indiaCities = Object.entries(cityTotals)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([name, count]) => ({
+      name, count,
+      pct: totalIndia30 > 0 ? Math.round((count / totalIndia30) * 100) : 0,
+    }));
+
   return json({
     live,
     today:       todayViews,
@@ -204,8 +272,14 @@ export async function GET(req: NextRequest) {
     todayTrend:  pctChange(todayViews,    yesterdayViews),
     weekTrend:   pctChange(weekViews,     lastWeekViews),
     monthTrend:  pctChange(monthViews,    lastMonthViews),
+    newToday,
+    newWeek,
+    newMonth,
+    uniqueToday,
     chart,
     countries,
     sources,
+    indiaStates,
+    indiaCities,
   });
 }

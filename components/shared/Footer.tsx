@@ -35,6 +35,14 @@ export default function Footer() {
     mapsLink: COMPANY.mapsLink,
     wa:       buildWhatsAppLink(COMPANY.wa, COMPANY.whatsappMessage),
   });
+  const [destLinks, setDestLinks] = useState(DEST_LINKS);
+  // Bottom bar — admin-editable via /admin/global (Footer section)
+  const [bottomBar, setBottomBar] = useState({
+    copyright:  `© ${COMPANY.since}–${new Date().getFullYear()} ${COMPANY.name}. All rights reserved.`,
+    privacyUrl: '/contact',
+    termsUrl:   '/contact',
+    foundedBy:  `Founded by ${COMPANY.founder} · Pune, India`,
+  });
 
   useEffect(() => {
     fetch('/api/content', { cache: 'no-store' })
@@ -50,6 +58,22 @@ export default function Footer() {
           address:  cd?.address  || c.address,
           mapsLink: cd?.mapsLink || c.mapsLink,
           wa:       buildWhatsAppLink(waBase, waMsg),
+        }));
+        // Effective destination list (admin add/hide aware)
+        if (Array.isArray(d?.countries) && d.countries.length) {
+          setDestLinks(d.countries.slice(0, 8).map((c: { code: string; name: string }) => ({
+            label: c.name,
+            href:  `/destinations/${c.code}`,
+          })));
+        }
+        setBottomBar(b => ({
+          copyright:  gs?.footerCopyright?.trim()  || b.copyright,
+          privacyUrl: gs?.footerPrivacyUrl?.trim() || b.privacyUrl,
+          termsUrl:   gs?.footerTermsUrl?.trim()   || b.termsUrl,
+          // Explicit empty string hides the "Founded by" line entirely
+          foundedBy:  gs?.footerFoundedBy !== undefined && gs?.footerFoundedBy !== null
+            ? gs.footerFoundedBy.trim()
+            : b.foundedBy,
         }));
       })
       .catch(() => {});
@@ -111,7 +135,7 @@ export default function Footer() {
         <div className="col-span-2 md:col-span-3">
           <h4 className="font-jakarta font-bold text-slate-900 text-sm mb-4 tracking-wide uppercase">Destinations</h4>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5">
-            {DEST_LINKS.map(({ label, href }) => (
+            {destLinks.map(({ label, href }) => (
               <li key={label}>
                 <Link href={href} className="font-jakarta text-sm text-slate-700 hover:text-slate-900 transition-colors">
                   {label}
@@ -127,14 +151,14 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* ── Bottom bar ── */}
+      {/* ── Bottom bar — admin-editable via /admin/global → Footer section ── */}
       <div className="border-t border-slate-900/10">
         <div className="container-xl py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-slate-600">
-          <p>© {COMPANY.since}–{new Date().getFullYear()} {COMPANY.name}. All rights reserved.</p>
+          <p>{bottomBar.copyright}</p>
           <div className="flex items-center gap-4 flex-wrap justify-center">
-            <Link href="/contact" className="hover:text-slate-900 transition-colors">Privacy Policy</Link>
-            <Link href="/contact" className="hover:text-slate-900 transition-colors">Terms of Service</Link>
-            <span>Founded by <span className="text-slate-700">{COMPANY.founder}</span> · Pune, India</span>
+            <Link href={bottomBar.privacyUrl} className="hover:text-slate-900 transition-colors">Privacy Policy</Link>
+            <Link href={bottomBar.termsUrl} className="hover:text-slate-900 transition-colors">Terms of Service</Link>
+            {bottomBar.foundedBy && <span>{bottomBar.foundedBy}</span>}
           </div>
         </div>
       </div>

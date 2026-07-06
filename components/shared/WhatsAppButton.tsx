@@ -379,7 +379,6 @@ export default function WhatsAppButton() {
                               onClick={() => openCountry(c)}
                               className="flex items-center gap-2.5 px-3 py-3 rounded-xl border border-slate-100 bg-slate-50 hover:border-primary-200 hover:bg-primary-50 transition-all text-left group"
                             >
-                              <span className="text-xl leading-none flex-shrink-0">{c.flag}</span>
                               <div className="min-w-0">
                                 <div className="font-jakarta text-xs font-bold text-slate-800 group-hover:text-primary-700 transition-colors truncate">{c.name}</div>
                                 <div className="font-jakarta text-[10px] text-slate-400 group-hover:text-primary-500 transition-colors">2026 Guide</div>
@@ -403,7 +402,6 @@ export default function WhatsAppButton() {
                       >
                         {/* Country badge */}
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-4xl leading-none">{activeCountry.flag}</span>
                           <div>
                             <div className="font-jakarta font-extrabold text-slate-800 text-base leading-tight">Study in {activeCountry.name}</div>
                             <div className="font-jakarta text-[11px] text-amber-600 font-semibold mt-0.5">2026 ILOC Guide</div>

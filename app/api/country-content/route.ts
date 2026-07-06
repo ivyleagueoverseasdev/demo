@@ -3,9 +3,13 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { getCountryContent, setCountryContent, validateAdminToken } from '@/lib/kv';
+import {
+  getCountryContent, setCountryContent,
+  getCountrySections, setCountrySections, validateAdminToken,
+} from '@/lib/kv';
 import { isValidSection, getSubpageContent } from '@/lib/countrySubpages';
 import { parseBody, getBearerToken, CORS } from '@/lib/edge-utils';
+import type { CountrySection } from '@/lib/types';
 
 function json(data: unknown, status = 200) {
   return NextResponse.json(data, { status, headers: CORS });
@@ -20,6 +24,13 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const country = searchParams.get('country');
     const section = searchParams.get('section');
+
+    // ?country=X&list=1 → the admin-added extra section buttons for a country
+    if (country && searchParams.get('list')) {
+      const sections = await getCountrySections(country);
+      return json({ sections });
+    }
+
     if (!country || !section) return json({ error: 'country and section params required' }, 400);
     const kvHtml = await getCountryContent(country, section);
     // No KV override yet → return the built-in default that is actually live
@@ -35,12 +46,27 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   if (!(await validateAdminToken(getBearerToken(req)))) return json({ error: 'Unauthorized' }, 401);
 
-  let body: { country?: string; section?: string; html?: string };
+  let body: { country?: string; section?: string; html?: string; sections?: CountrySection[] };
   try {
     body = await parseBody(req);
   } catch (e) {
     console.error('[PUT /api/country-content] parse error:', e);
     return json({ error: 'Invalid request body' }, 400);
+  }
+
+  // { country, sections } → replace the admin-added extra section buttons
+  if (body.country && body.sections !== undefined) {
+    try {
+      const cleaned = body.sections
+        .filter(s => s && typeof s.slug === 'string' && s.slug.trim() && typeof s.label === 'string' && s.label.trim())
+        .map(s => ({ slug: s.slug.trim().toLowerCase(), label: s.label.trim() }));
+      await setCountrySections(body.country, cleaned);
+      revalidatePath('/destinations/' + body.country);
+      return json({ ok: true });
+    } catch (e: unknown) {
+      console.error('[PUT /api/country-content] sections KV write failed:', (e as Error).stack ?? e);
+      return json({ error: 'Failed to save sections', details: (e as Error).message }, 500);
+    }
   }
 
   if (!body.country || !body.section || body.html === undefined) {

@@ -135,6 +135,10 @@ export interface SiteContent {
   testimonials:     Testimonial[];
   updates2026:      Update2026Card[];
   updates2026Cols:  number;   // grid columns 1-4
+  // Admin-editable section headings above the 2026 update cards
+  updates2026Badge?:   string; // pill text e.g. "2026 Immigration Policy Updates"
+  updates2026Heading?: string; // e.g. "What changed for 2026."
+  updates2026Sub?:     string; // paragraph under the heading
 }
 
 // ── 2026 update card ──────────────────────────────────────────────────────
@@ -259,11 +263,47 @@ export interface GlobalSettings {
   eventsRows?:       number;  // max rows per section — default 2
   classesCols?:      number;  // homepage Live Classes board desktop grid — default 3
   classesRows?:      number;  // max rows to show on desktop grid — default 2
+
+  // ── Footer bottom bar (admin-editable) ─────────────────────────────────
+  footerCopyright?:  string;  // e.g. "© 2000–2026 Ivy League Overseas Consulting. All rights reserved."
+  footerPrivacyUrl?: string;  // link target of "Privacy Policy"
+  footerTermsUrl?:   string;  // link target of "Terms of Service"
+  footerFoundedBy?:  string;  // e.g. "Founded by Our Founder · Pune, India" — empty hides it
+
+  // ── Hero-image caption badges on subpages (admin-editable) ─────────────
+  // Keyed by page: contact | news | partners. About & Services own their
+  // badge fields inside their page settings.
+  pageHeroBadges?: Record<string, { value?: string; label?: string }>;
+}
+
+// ── Admin-added custom destination country (stored in KV) ─────────────────
+export interface CustomCountry {
+  code:        string;   // URL slug e.g. "germany"
+  name:        string;   // display name e.g. "Germany"
+  tagline:     string;
+  intake:      string;
+  avgCost:     string;
+  visaRate:    string;
+  unis:        string;
+  description: string;
+  highlights:  string[];
+  heroImage:   string;
+  campusImage: string;
+  color:       string;   // hex accent
+}
+
+// ── Extra admin-added section button on a country page ────────────────────
+export interface CountrySection {
+  slug:  string;   // e.g. "cost-of-living"
+  label: string;   // e.g. "Cost of Living"
 }
 
 // ── About page settings (admin-editable via /admin/about) ─────────────────────
 export interface AboutPageSettings {
   heroImageUrl?:     string;   // hero banner image — falls back to built-in Unsplash photo
+  heroImageAlt?:     string;   // caption/alt text describing the hero image
+  heroBadgeValue?:   string;   // stat card overlapping the hero image, e.g. "10,000+"
+  heroBadgeLabel?:   string;   // stat card label, e.g. "Students placed worldwide"
   heroEyebrow:       string;   // e.g. "Est. 2000"
   heroHeadingLine1:  string;   // "Honest guidance."
   heroHeadingLine2:  string;   // "Proven results." (amber line)
@@ -303,6 +343,9 @@ export interface InstituteServiceItem {
 
 export interface ServicesPageSettings {
   heroImageUrl?:     string;   // hero banner image — falls back to built-in Unsplash photo
+  heroImageAlt?:     string;   // caption/alt text describing the hero image
+  heroBadgeValue?:   string;   // stat card overlapping the hero image, e.g. "97%"
+  heroBadgeLabel?:   string;   // stat card label, e.g. "Visa approval rate"
   heroEyebrow:       string;
   heroHeadingLine1:  string;
   heroHeadingLine2:  string;   // amber line

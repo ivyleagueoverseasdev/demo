@@ -12,8 +12,9 @@
 import { getRequestContext, getOptionalRequestContext } from '@cloudflare/next-on-pages';
 import { verifyToken } from './session';
 import type {
-  AboutPageSettings, CompanyDetails, DynamicPage, GlobalSettings, HeroSlide,
-  Lead, NewsItem, RedirectRule, ServicesPageSettings, SiteEvent, SiteMedia, Stat,
+  AboutPageSettings, CompanyDetails, CountrySection, CustomCountry, DynamicPage,
+  GlobalSettings, HeroSlide, Lead, NewsItem, RedirectRule, ServicesPageSettings,
+  SiteEvent, SiteMedia, Stat,
 } from './types';
 
 /** Resolve the admin secret (ADMIN_PASSWORD) used to sign/verify session tokens. */
@@ -347,6 +348,36 @@ export async function getCountryContent(country: string, section: string): Promi
 
 export async function setCountryContent(country: string, section: string, html: string): Promise<void> {
   await kvPut(`countryContent:${country}:${section}`, html);
+}
+
+// ── Admin-added custom country sections (extra sub-page buttons) ──────────────
+
+export async function getCountrySections(country: string): Promise<CountrySection[]> {
+  return (await kvGet<CountrySection[]>(`countrySections:${country}`)) ?? [];
+}
+
+export async function setCountrySections(country: string, sections: CountrySection[]): Promise<void> {
+  await kvPut(`countrySections:${country}`, sections);
+}
+
+// ── Admin add/hide countries in Destinations ──────────────────────────────────
+
+/** Countries added by the admin on top of the built-in list. */
+export async function getCustomCountries(): Promise<CustomCountry[]> {
+  return (await kvGet<CustomCountry[]>('customCountries')) ?? [];
+}
+
+export async function setCustomCountries(countries: CustomCountry[]): Promise<void> {
+  await kvPut('customCountries', countries);
+}
+
+/** Built-in country codes the admin has removed from the public site. */
+export async function getHiddenCountries(): Promise<string[]> {
+  return (await kvGet<string[]>('hiddenCountries')) ?? [];
+}
+
+export async function setHiddenCountries(codes: string[]): Promise<void> {
+  await kvPut('hiddenCountries', codes);
 }
 
 // ── Country meta overrides ────────────────────────────────────────────────────

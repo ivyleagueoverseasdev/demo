@@ -127,11 +127,25 @@ export default function AdminAboutPage() {
             token={token}
           />
         </Field>
+        <div className="grid sm:grid-cols-3 gap-4">
+          <Field label="Image Caption — Value" hint="Big number on the card overlapping the photo, e.g. 10,000+">
+            <input value={s.heroBadgeValue ?? ''} onChange={e => set({ heroBadgeValue: e.target.value })} className={inp} placeholder="10,000+" />
+          </Field>
+          <Field label="Image Caption — Text" hint="Small line under the value.">
+            <input value={s.heroBadgeLabel ?? ''} onChange={e => set({ heroBadgeLabel: e.target.value })} className={inp} placeholder="Students placed worldwide" />
+          </Field>
+          <Field label="Image Description (alt)" hint="Describes the photo for search engines & screen readers.">
+            <input value={s.heroImageAlt ?? ''} onChange={e => set({ heroImageAlt: e.target.value })} className={inp} placeholder="Students collaborating in a modern library" />
+          </Field>
+        </div>
       </Section>
 
-      <Section title="👤 Founder Section">
+      <Section title="👤 Founder's Message" >
+        <p className="font-jakarta text-xs text-slate-400 -mt-1 mb-2">
+          The left side of this section now shows the ILOC logo (set under Global Settings → Main Logo). The fields below control the message text.
+        </p>
         <div className="grid sm:grid-cols-4 gap-4">
-          <Field label="Initials" hint="Avatar block, e.g. ILOC">
+          <Field label="Initials" hint="Legacy avatar text (no longer shown).">
             <input value={s.founderInitials} onChange={e => set({ founderInitials: e.target.value })} className={inp} maxLength={6} />
           </Field>
           <Field label="Name">

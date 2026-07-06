@@ -6,6 +6,7 @@ export interface ChartPoint {
   date:  string;
   label: string;
   views: number;
+  newVisitors?: number;
 }
 
 // ── SVG coordinate constants ──────────────────────────────────────────────────

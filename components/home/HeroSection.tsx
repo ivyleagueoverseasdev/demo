@@ -228,18 +228,21 @@ function ZoomRevealImage({
 // ─────────────────────────────────────────────────────────────────────────────
 // Nav arrow
 // ─────────────────────────────────────────────────────────────────────────────
-function NavArrow({ direction, onClick }: { direction: 'prev' | 'next'; onClick: () => void }) {
+function NavArrow({ direction, onClick, className = '' }: {
+  direction: 'prev' | 'next'; onClick: () => void; className?: string;
+}) {
   return (
     <motion.button
       onClick={onClick}
       whileHover={{ scale: 1.12 }}
       whileTap={{ scale: 0.90 }}
-      className="
+      className={`
         w-11 h-11 rounded-full flex items-center justify-center
         bg-white/10 hover:bg-white/22 border border-white/20 hover:border-white/45
         backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.22)]
         transition-colors duration-200
-      "
+        ${className}
+      `}
       aria-label={direction === 'prev' ? 'Previous slide' : 'Next slide'}
     >
       <svg viewBox="0 0 20 20" className="w-4 h-4 text-white" fill="none"
@@ -291,8 +294,6 @@ function Stars() {
     </div>
   );
 }
-
-const DEST_FLAGS = ['🇺🇸', '🇬🇧', '🇨🇦', '🇦🇺', '🇮🇪', '🇳🇿', '🇦🇪', '🇸🇬'];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main HeroSection
@@ -390,6 +391,18 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 LEFT COLUMN — animated copy
             ════════════════════════════════════════════════════════════ */}
             <div className="relative">
+              {/* Prev / Next arrows — flank the slide text on either side so
+                  visitors can flip slides without hunting below the copy. */}
+              <NavArrow
+                direction="prev"
+                onClick={prev}
+                className="absolute -left-2 sm:-left-4 lg:-left-6 top-1/2 -translate-y-1/2 z-30"
+              />
+              <NavArrow
+                direction="next"
+                onClick={next}
+                className="absolute -right-2 sm:-right-4 lg:-right-6 top-1/2 -translate-y-1/2 z-30"
+              />
               <AnimatePresence mode="wait" custom={dir}>
                 <motion.div
                   key={slide.id}
@@ -578,10 +591,8 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 </motion.div>
               </AnimatePresence>
 
-              {/* ── Slide navigation ── */}
+              {/* ── Slide navigation — dots + progress (arrows flank the text above) ── */}
               <div className="flex items-center gap-3 mt-10">
-                <NavArrow direction="prev" onClick={prev} />
-                <NavArrow direction="next" onClick={next} />
                 <div className="flex items-center gap-2 ml-1">
                   {slides.map((_, i) => (
                     <button
@@ -727,35 +738,22 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 </motion.div>
               </AnimatePresence>
 
-              {/* ── Destination flags strip ─────────────────────────────── */}
+              {/* ── Destinations strip ──────────────────────────────────── */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.80, delay: 1.0, ease: CINEMATIC }}
                 className="
                   absolute -bottom-12 left-1/2 -translate-x-1/2 z-30
-                  bg-white rounded-2xl px-4 py-2.5 whitespace-nowrap
+                  bg-white rounded-2xl px-5 py-2.5 whitespace-nowrap
                   shadow-[0_8px_32px_rgba(0,0,0,0.18)]
-                  flex items-center gap-2.5
+                  flex items-center gap-2
                 "
               >
                 <span className="font-jakarta text-[10px] text-slate-400 font-semibold">Destinations:</span>
-                {DEST_FLAGS.map((flag, fi) => (
-                  <motion.span
-                    key={flag}
-                    className="text-[1.1rem] leading-none"
-                    animate={{ y: [0, -5, 0] }}
-                    transition={{
-                      duration: 2.6,
-                      delay: fi * 0.18,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                      repeatType: 'mirror',
-                    }}
-                  >
-                    {flag}
-                  </motion.span>
-                ))}
+                <span className="font-jakarta text-[11px] font-bold text-slate-700">
+                  12 Countries · 400+ Universities
+                </span>
               </motion.div>
             </div>
           </div>

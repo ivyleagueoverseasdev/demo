@@ -2,31 +2,36 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { SectionSlug } from '@/lib/countrySubpages';
 
 interface Props {
   country:     string;
-  sections:    readonly SectionSlug[];
-  labels:      Record<SectionSlug, string>;
+  sections:    readonly string[];
+  labels:      Record<string, string>;
   accentColor: string;
 }
 
 // Distinct colour per tab so the sections are clearly separable at a glance.
-// The palette cycles, so adding more entries to SECTION_SLUGS automatically
-// gets its own colour with no further changes here.
+// The palette cycles, so admin-added extra sections automatically get their
+// own colour with no further changes here.
 const TAB_COLORS = ['#2563EB', '#7C3AED', '#0D9488', '#D97706', '#DB2777', '#0891B2', '#16A34A', '#DC2626'];
 
 export default function SubNav({ country, sections, labels }: Props) {
   const pathname = usePathname();
+  const countryRoot = `/destinations/${country}`;
 
   return (
     <div className="bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-16 z-40 shadow-sm">
       <div className="container-xl">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-3">
           {sections.map((slug, i) => {
-            const href   = `/destinations/${country}/${slug}`;
-            const active = pathname === href || pathname.startsWith(href);
-            const color  = TAB_COLORS[i % TAB_COLORS.length];
+            const href = `${countryRoot}/${slug}`;
+            // "Why Study Here" is shown by default on the country landing
+            // page, so it also lights up when the visitor is on the root URL.
+            const active =
+              pathname === href ||
+              pathname.startsWith(href) ||
+              (slug === 'why-study' && pathname === countryRoot);
+            const color = TAB_COLORS[i % TAB_COLORS.length];
 
             return (
               <Link
@@ -44,7 +49,7 @@ export default function SubNav({ country, sections, labels }: Props) {
                     : { background: `${color}14`, color, borderColor: `${color}33` }
                 }
               >
-                {labels[slug]}
+                {labels[slug] ?? slug}
               </Link>
             );
           })}

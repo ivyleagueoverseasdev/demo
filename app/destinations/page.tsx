@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { COUNTRIES } from '@/lib/data';
+import { getPublicCountries } from '@/lib/public-data';
 import { getCountryMeta } from '@/lib/kv';
 
 // Edge + dynamic so admin edits to country stats/images (KV) go live immediately.
@@ -15,11 +15,13 @@ export const metadata: Metadata = {
 };
 
 export default async function DestinationsPage() {
-  // Merge admin-edited KV overrides onto the static country defaults.
+  // Effective list: built-in countries (minus admin-hidden) + admin-added.
+  const baseCountries = await getPublicCountries();
+  // Merge admin-edited KV overrides onto the base country records.
   const metas = await Promise.all(
-    COUNTRIES.map(c => getCountryMeta(c.code).catch(() => null)),
+    baseCountries.map(c => getCountryMeta(c.code).catch(() => null)),
   );
-  const countries = COUNTRIES.map((c, i) => {
+  const countries = baseCountries.map((c, i) => {
     const m = metas[i];
     return {
       ...c,
@@ -76,7 +78,7 @@ export default async function DestinationsPage() {
             <div className="flex items-center gap-3 mb-4">
               <div className="h-1 w-8 rounded-full bg-amber-400" />
               <p className="font-jakarta text-xs font-semibold tracking-widest uppercase text-amber-400">
-                12 Countries · 400+ Partner Universities
+                {countries.length} Countries · 400+ Partner Universities
               </p>
             </div>
             <h1
@@ -104,7 +106,6 @@ export default async function DestinationsPage() {
                   href={`/destinations/${c.code}`}
                   className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 border border-white/15 hover:border-white/35 backdrop-blur-sm rounded-full px-3 py-1.5 font-jakarta text-xs font-medium text-white/85 hover:text-white transition-all"
                 >
-                  <span>{c.flag}</span>
                   <span>{c.name}</span>
                 </Link>
               ))}
@@ -134,9 +135,8 @@ export default async function DestinationsPage() {
                     className="absolute inset-0 opacity-30 group-hover:opacity-20 transition-opacity"
                     style={{ background: c.color }}
                   />
-                  {/* Flag badge */}
+                  {/* Country name badge */}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 shadow-sm">
-                    <span className="text-lg leading-none">{c.flag}</span>
                     <span className="font-jakarta font-bold text-xs text-slate-800">{c.name}</span>
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export default async function DestinationsPage() {
                     ))}
                   </div>
                   <div className="font-jakarta text-xs font-semibold text-amber-500 group-hover:translate-x-1 transition-transform inline-block">
-                    View 2026 Guide →
+                    View Guide →
                   </div>
                 </div>
               </Link>

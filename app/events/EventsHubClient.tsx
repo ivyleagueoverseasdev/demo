@@ -32,18 +32,18 @@ const TYPE_CONFIG: Record<EventType, { label: string; color: string; bg: string;
 
 const COUNTRY_OPTIONS = [
   { value: '',             label: 'All Countries' },
-  { value: 'usa',         label: '🇺🇸 United States' },
-  { value: 'uk',          label: '🇬🇧 United Kingdom' },
-  { value: 'australia',   label: '🇦🇺 Australia' },
-  { value: 'canada',      label: '🇨🇦 Canada' },
-  { value: 'new-zealand', label: '🇳🇿 New Zealand' },
-  { value: 'ireland',     label: '🇮🇪 Ireland' },
-  { value: 'europe',      label: '🇪🇺 Europe' },
-  { value: 'uae',         label: '🇦🇪 United Arab Emirates' },
-  { value: 'japan',       label: '🇯🇵 Japan' },
-  { value: 'south-korea', label: '🇰🇷 South Korea' },
-  { value: 'singapore',   label: '🇸🇬 Singapore' },
-  { value: 'russia',      label: '🇷🇺 Russia' },
+  { value: 'usa',         label: 'United States' },
+  { value: 'uk',          label: 'United Kingdom' },
+  { value: 'australia',   label: 'Australia' },
+  { value: 'canada',      label: 'Canada' },
+  { value: 'new-zealand', label: 'New Zealand' },
+  { value: 'ireland',     label: 'Ireland' },
+  { value: 'europe',      label: 'Europe' },
+  { value: 'uae',         label: 'United Arab Emirates' },
+  { value: 'japan',       label: 'Japan' },
+  { value: 'south-korea', label: 'South Korea' },
+  { value: 'singapore',   label: 'Singapore' },
+  { value: 'russia',      label: 'Russia' },
 ];
 
 const TYPE_OPTIONS = [

@@ -16,6 +16,7 @@ export default function ContactPage() {
   const [address,    setAddress]    = useState(COMPANY.address);
   const [mapsLink,   setMapsLink]   = useState(COMPANY.mapsLink);
   const [heroImage,  setHeroImage]  = useState('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop');
+  const [heroBadge,  setHeroBadge]  = useState({ value: '24h', label: 'Average response time' });
 
   useEffect(() => {
     fetch('/api/content', { cache: 'no-store' })
@@ -31,6 +32,11 @@ export default function ContactPage() {
         if (cd?.address)             setAddress(cd.address);
         if (cd?.mapsLink)            setMapsLink(cd.mapsLink);
         if (cd?.contactHeroImageUrl) setHeroImage(cd.contactHeroImageUrl);
+        // Admin-editable image caption badge (/admin/global → Page Image Captions)
+        const pb = gs?.pageHeroBadges?.contact;
+        if (pb?.value || pb?.label) {
+          setHeroBadge(b => ({ value: pb.value || b.value, label: pb.label || b.label }));
+        }
       })
       .catch(() => {});
   }, []);
@@ -100,7 +106,7 @@ export default function ContactPage() {
           alt: 'ILOC counselling office desk'
         }}
         imagePosition="left"
-        badge={{ value: '24h', label: 'Average response time' }}
+        badge={heroBadge}
         blobColor="#CCFF00"
       />
 
@@ -167,7 +173,7 @@ export default function ContactPage() {
                       <label className="block font-jakarta text-xs font-semibold text-slate-600 mb-1.5">Target Country *</label>
                       <select value={f.country} onChange={e=>chg('country',e.target.value)} className={`${inp} cursor-pointer`}>
                         <option value="">Select country</option>
-                        {COUNTRIES.map(c=><option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
+                        {COUNTRIES.map(c=><option key={c.code} value={c.name}>{c.name}</option>)}
                         {['Other'].map(c=><option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>

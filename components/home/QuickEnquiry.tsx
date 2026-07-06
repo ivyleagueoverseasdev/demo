@@ -111,7 +111,7 @@ export default function QuickEnquiry() {
                       <select value={f.country} onChange={e => setF(p => ({ ...p, country: e.target.value }))}
                         className={`${inp} cursor-pointer`}>
                         <option value="">Select country</option>
-                        {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
+                        {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
                         {['Other'].map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>

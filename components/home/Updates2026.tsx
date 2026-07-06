@@ -4,19 +4,26 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { DEFAULT_UPDATES_2026, DEFAULT_UPDATES_2026_COLS } from '@/lib/data';
+import { DEFAULT_UPDATES_2026, DEFAULT_UPDATES_2026_COLS, DEFAULT_UPDATES_2026_HEADINGS } from '@/lib/data';
 import type { Update2026Card } from '@/lib/types';
 
 export default function Updates2026() {
   const [cards, setCards] = useState<Update2026Card[]>(DEFAULT_UPDATES_2026);
   const [cols,  setCols]  = useState<number>(DEFAULT_UPDATES_2026_COLS);
+  const [texts, setTexts] = useState<{ badge: string; heading: string; sub: string }>({ ...DEFAULT_UPDATES_2026_HEADINGS });
 
   useEffect(() => {
     fetch('/api/content', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then((d: any) => {
-        if (d?.siteContent?.updates2026?.length) setCards(d.siteContent.updates2026);
-        if (typeof d?.siteContent?.updates2026Cols === 'number') setCols(d.siteContent.updates2026Cols);
+        const sc = d?.siteContent;
+        if (sc?.updates2026?.length) setCards(sc.updates2026);
+        if (typeof sc?.updates2026Cols === 'number') setCols(sc.updates2026Cols);
+        setTexts(t => ({
+          badge:   sc?.updates2026Badge?.trim()   || t.badge,
+          heading: sc?.updates2026Heading?.trim() || t.heading,
+          sub:     sc?.updates2026Sub?.trim()     || t.sub,
+        }));
       })
       .catch(() => {});
   }, []);
@@ -37,13 +44,13 @@ export default function Updates2026() {
         >
           <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 rounded-full px-4 py-2 text-xs font-jakarta font-bold uppercase tracking-wide mb-4">
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse-dot" />
-            2026 Immigration Policy Updates
+            {texts.badge}
           </div>
           <h2 className="font-jakarta font-extrabold text-homeblue-600 mb-4 text-3xl md:text-4xl lg:text-5xl leading-tight tracking-tight">
-            What changed for 2026.
+            {texts.heading}
           </h2>
           <p className="font-jakarta text-slate-500 text-base md:text-lg leading-relaxed max-w-xl mx-auto">
-            Stay ahead with the latest visa policies, intake rules and scholarship deadlines for your target country.
+            {texts.sub}
           </p>
         </motion.div>
 
@@ -71,8 +78,6 @@ export default function Updates2026() {
                     onError={(e: React.SyntheticEvent<HTMLImageElement>) => { e.currentTarget.style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                  {/* Flag overlay on image */}
-                  <span className="absolute bottom-2 left-3 text-2xl drop-shadow-lg">{card.flag}</span>
                   <span className="absolute top-2 right-2 badge-amber text-[9px] px-2 py-0.5">{card.badge}</span>
                 </div>
 

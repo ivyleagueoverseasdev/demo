@@ -26,10 +26,16 @@ function classifySource(ref: string | null): string {
 }
 
 // ── KV shape ──────────────────────────────────────────────────────────────────
+// v  = total views     c = views by "COUNTRY|City"    s = views by source
+// r  = views by Indian state "MH|Pune" (regionCode|city, city optional)
+// n  = brand-new visitors (first visit ever)          u = unique visitors today
 interface TrafficDay {
   v: number;
   c: Record<string, number>;
   s: Record<string, number>;
+  r?: Record<string, number>;
+  n?: number;
+  u?: number;
 }
 
 // ── Daily write budget guard ───────────────────────────────────────────────────
@@ -50,6 +56,9 @@ async function recordPageView(
   kv: KVNamespace,
   location: string,
   source: string,
+  region: string | null,
+  newVisitor: boolean,
+  firstToday: boolean,
 ): Promise<void> {
   const now    = new Date();
   const date   = now.toISOString().slice(0, 10);
@@ -67,6 +76,12 @@ async function recordPageView(
     day.v += 1;
     day.c[location] = (day.c[location] ?? 0) + 1;
     day.s[source]   = (day.s[source]   ?? 0) + 1;
+    if (region) {
+      day.r = day.r ?? {};
+      day.r[region] = (day.r[region] ?? 0) + 1;
+    }
+    if (newVisitor) day.n = (day.n ?? 0) + 1;
+    if (firstToday) day.u = (day.u ?? 0) + 1;
     await kv.put(dayKey, JSON.stringify(day), { expirationTtl: 95 * 86_400 });
 
     // Live bucket — best-effort; only reached while under the daily cap.
@@ -83,11 +98,15 @@ export async function POST(req: NextRequest) {
   try {
     let page   = '/';
     let refStr = '';
+    let nv     = false;   // brand-new visitor (first ever visit)
+    let ft     = false;   // first page view of the calendar day
 
     try {
-      const body = await req.json() as { page?: string; ref?: string };
-      if (typeof body.page === 'string') page   = body.page;
-      if (typeof body.ref  === 'string') refStr = body.ref;
+      const body = await req.json() as { page?: string; ref?: string; nv?: boolean; ft?: boolean };
+      if (typeof body.page === 'string')  page   = body.page;
+      if (typeof body.ref  === 'string')  refStr = body.ref;
+      if (body.nv === true) nv = true;
+      if (body.ft === true) ft = true;
     } catch { }
 
     // Never track admin or api paths
@@ -99,14 +118,31 @@ export async function POST(req: NextRequest) {
     const kv    = cfCtx?.env?.CONTENT_KV;
 
     if (kv && cfCtx?.ctx) {
-      const country  = req.headers.get('cf-ipcountry') ?? 'XX';
-      const cityRaw  = req.headers.get('cf-ipcity');
-      const location = cityRaw && cityRaw !== 'Unknown'
-        ? `${country}|${cityRaw}`
+      // Prefer the request's cf geolocation object (available on all CF plans);
+      // fall back to headers for older/proxied setups.
+      const cf = cfCtx.cf as {
+        country?: string; city?: string; region?: string; regionCode?: string;
+      } | undefined;
+
+      const country = cf?.country || req.headers.get('cf-ipcountry') || 'XX';
+      const city    = cf?.city || req.headers.get('cf-ipcity') || '';
+      const location = city && city !== 'Unknown'
+        ? `${country}|${city}`
         : country;
       const source   = classifySource(refStr);
 
-      cfCtx.ctx.waitUntil(recordPageView(kv, location, source));
+      // Indian state bucket — "MH|Pune", "KA", … (state-wise map in admin)
+      let region: string | null = null;
+      if (country === 'IN') {
+        const stateCode = cf?.regionCode || '';
+        const stateName = cf?.region || '';
+        const state     = stateCode || stateName;
+        if (state) {
+          region = city && city !== 'Unknown' ? `${state}|${city}` : state;
+        }
+      }
+
+      cfCtx.ctx.waitUntil(recordPageView(kv, location, source, region, nv, ft));
     }
   } catch { }
 

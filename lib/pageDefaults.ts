@@ -9,6 +9,9 @@ import { COMPANY } from '@/lib/data';
 
 export const ABOUT_DEFAULTS: AboutPageSettings = {
   heroImageUrl:      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80&auto=format&fit=crop',
+  heroImageAlt:      'Students collaborating in a modern library',
+  heroBadgeValue:    '10,000+',
+  heroBadgeLabel:    'Students placed worldwide',
   heroEyebrow:       `Est. ${COMPANY.since}`,
   heroHeadingLine1:  'Honest guidance.',
   heroHeadingLine2:  'Proven results.',
@@ -127,6 +130,9 @@ export const DEFAULT_STUDENT_SERVICES: StudentServiceCard[] = [
 
 export const SERVICES_DEFAULTS: ServicesPageSettings = {
   heroImageUrl:    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80&auto=format&fit=crop',
+  heroImageAlt:    'Counsellor guiding a student through university options',
+  heroBadgeValue:  '97%',
+  heroBadgeLabel:  'Visa approval rate',
   heroEyebrow:     'What We Offer',
   heroHeadingLine1: 'Complete services for',
   heroHeadingLine2: 'every step of your journey.',

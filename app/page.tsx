@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import type { Metadata } from 'next';
 import lazyLoad from 'next/dynamic';
-import { getHomepageData } from '@/lib/public-data';
+import { getHomepageData, getPublicCountries } from '@/lib/public-data';
 import { buildPageMeta } from '@/lib/public-data';
 
 // ── Above-fold: eager imports ─────────────────────────────────────────────
@@ -29,8 +29,8 @@ export const metadata: Metadata = buildPageMeta({
 
 export default async function HomePage() {
   // Single call via public-data — all error handling + defaults are centralised there.
-  const { heroSlides, processSteps, testimonials, noticeBanner, globalSettings } =
-    await getHomepageData();
+  const [{ heroSlides, processSteps, testimonials, noticeBanner, globalSettings }, countries] =
+    await Promise.all([getHomepageData(), getPublicCountries().catch(() => [])]);
 
   return (
     <>
@@ -41,7 +41,11 @@ export default async function HomePage() {
       )}
       <HeroSection slides={heroSlides} />
       <StatsSection />
-      <DestinationsStrip gridCols={globalSettings?.destinationsCols} gridRows={globalSettings?.destinationsRows} />
+      <DestinationsStrip
+        gridCols={globalSettings?.destinationsCols}
+        gridRows={globalSettings?.destinationsRows}
+        countries={countries}
+      />
       <HowItWorks    steps={processSteps} />
       <UniversityMarquee />
       <TestimonialsSection testimonials={testimonials} />

@@ -8,6 +8,7 @@ import {
   setSiteContent, validateAdminToken,
 } from '@/lib/kv';
 import { appendAuditLog } from '@/lib/audit';
+import { getPublicCountries } from '@/lib/public-data';
 import { parseBody, getBearerToken } from '@/lib/edge-utils';
 import { revalidatePath } from 'next/cache';
 import type { CompanyDetails, GlobalSettings, ServiceItem, ProcessStepItem, Testimonial, Update2026Card } from '@/lib/types';
@@ -24,15 +25,22 @@ export async function OPTIONS() {
 
 export async function GET() {
   try {
-    const [pages, redirects, siteContent, companyDetails, globalSettings] = await Promise.all([
+    const [pages, redirects, siteContent, companyDetails, globalSettings, countries] = await Promise.all([
       getAllPages(),
       getRedirects(),
       getSiteContent(),
       getCompanyDetails(),
       getGlobalSettings(),
+      getPublicCountries().catch(() => []),
     ]);
     return NextResponse.json(
-      { pages, redirects, siteContent: siteContent || {}, companyDetails: companyDetails || null, globalSettings: globalSettings || null },
+      {
+        pages, redirects, siteContent: siteContent || {},
+        companyDetails: companyDetails || null, globalSettings: globalSettings || null,
+        // Effective destination list (built-in − hidden + custom) so client
+        // components (navbar dropdown, footer links) stay in sync with admin edits.
+        countries: countries.map(c => ({ code: c.code, name: c.name })),
+      },
       { headers: { ...CORS, 'Cache-Control': 'no-store' } },
     );
   } catch (e: unknown) {
@@ -53,14 +61,17 @@ export async function PUT(req: NextRequest) {
 
   // â”€â”€ Parse body once via edge-safe helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   type ContentBody = {
-    redirects?:        unknown[];
-    services?:         ServiceItem[];
-    processSteps?:     ProcessStepItem[];
-    testimonials?:     Testimonial[];
-    updates2026?:      Update2026Card[];
-    updates2026Cols?:  number;
-    companyDetails?:   CompanyDetails;
-    globalSettings?:   GlobalSettings;
+    redirects?:           unknown[];
+    services?:            ServiceItem[];
+    processSteps?:        ProcessStepItem[];
+    testimonials?:        Testimonial[];
+    updates2026?:         Update2026Card[];
+    updates2026Cols?:     number;
+    updates2026Badge?:    string;
+    updates2026Heading?:  string;
+    updates2026Sub?:      string;
+    companyDetails?:      CompanyDetails;
+    globalSettings?:      GlobalSettings;
   };
   let body: ContentBody;
   try {
@@ -77,7 +88,9 @@ export async function PUT(req: NextRequest) {
 
     // Merge site-content fields into the shared KV key
     if (body.services !== undefined || body.processSteps !== undefined || body.testimonials !== undefined ||
-        body.updates2026 !== undefined || body.updates2026Cols !== undefined) {
+        body.updates2026 !== undefined || body.updates2026Cols !== undefined ||
+        body.updates2026Badge !== undefined || body.updates2026Heading !== undefined ||
+        body.updates2026Sub !== undefined) {
       const existing = (await getSiteContent<Record<string, unknown>>()) ?? {};
       const updated: Record<string, unknown> = { ...existing };
 
@@ -100,6 +113,9 @@ export async function PUT(req: NextRequest) {
       if (body.updates2026Cols !== undefined) {
         updated.updates2026Cols = body.updates2026Cols;
       }
+      if (body.updates2026Badge !== undefined)   updated.updates2026Badge   = body.updates2026Badge;
+      if (body.updates2026Heading !== undefined) updated.updates2026Heading = body.updates2026Heading;
+      if (body.updates2026Sub !== undefined)     updated.updates2026Sub     = body.updates2026Sub;
 
       await setSiteContent(updated);
     }

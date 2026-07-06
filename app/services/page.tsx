@@ -40,9 +40,9 @@ export default async function ServicesPage() {
         paragraph={s.heroParagraph}
         image={{
           src: s.heroImageUrl || 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80&auto=format&fit=crop',
-          alt: 'Counsellor guiding a student through university options',
+          alt: s.heroImageAlt || 'Counsellor guiding a student through university options',
         }}
-        badge={{ value: '97%', label: 'Visa approval rate' }}
+        badge={{ value: s.heroBadgeValue || '97%', label: s.heroBadgeLabel || 'Visa approval rate' }}
         blobColor="#B5FF00"
       />
 

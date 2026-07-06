@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Award, Globe, ShieldCheck, UserCheck,
   Target, GraduationCap, TrendingUp,
@@ -80,9 +81,9 @@ export default async function AboutPage() {
         paragraph={s.heroParagraph}
         image={{
           src: s.heroImageUrl || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80&auto=format&fit=crop',
-          alt: 'Students collaborating in a modern library',
+          alt: s.heroImageAlt || 'Students collaborating in a modern library',
         }}
-        badge={{ value: '10,000+', label: 'Students placed worldwide' }}
+        badge={{ value: s.heroBadgeValue || '10,000+', label: s.heroBadgeLabel || 'Students placed worldwide' }}
         blobColor="#CCFF00"
       />
 
@@ -111,16 +112,20 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* ── Founder ── */}
+      {/* ── Founder's Message — ILOC logo on the left ── */}
       <section className="w-full overflow-hidden section">
         <div className="container-xl grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
-          <div>
-            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary-600 to-primary-500 flex items-center justify-center font-jakarta font-black text-2xl text-white mb-5 shadow-blue">
-              {s.founderInitials}
+          <div className="flex justify-center md:justify-start">
+            <div className="relative w-52 h-52 rounded-full overflow-hidden shadow-blue border border-slate-100">
+              <Image
+                src={kvGlobal?.mainLogoUrl || '/logo3.png'}
+                alt={COMPANY.name}
+                fill
+                className="object-cover"
+                sizes="208px"
+                unoptimized
+              />
             </div>
-            <h3 className="font-jakarta font-bold text-primary-600 text-xl md:text-2xl">{s.founderName}</h3>
-            <p className="font-jakarta text-sm text-amber-600 mt-0.5">{s.founderRole}</p>
-            <p className="font-jakarta text-xs text-slate-400 mt-0.5">{s.founderMeta}</p>
           </div>
           <div>
             <div className="divider-amber mb-4" />

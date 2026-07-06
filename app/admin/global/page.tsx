@@ -31,7 +31,20 @@ const EMPTY: GlobalSettings = {
   eventsRows:              2,
   classesCols:             3,
   classesRows:             2,
+  footerCopyright:         '',
+  footerPrivacyUrl:        '',
+  footerTermsUrl:          '',
+  footerFoundedBy:         '',
+  pageHeroBadges:          {},
 };
+
+// Pages whose hero-image caption badge is editable here (About & Services
+// have their own editors under /admin/about and /admin/services).
+const CAPTION_PAGES: { key: string; title: string; hint: string }[] = [
+  { key: 'contact',  title: 'Contact page',  hint: 'Default: "24h — Average response time"' },
+  { key: 'news',     title: 'News page',     hint: 'Default: "Weekly — Fresh visa & scholarship updates"' },
+  { key: 'partners', title: 'Partners page', hint: 'Default: "3 — Partnership tracks to choose from"' },
+];
 
 const COL_OPTIONS = [1, 2, 3, 4, 5, 6];
 const ROW_OPTIONS = [1, 2, 3, 4];
@@ -157,6 +170,63 @@ export default function AdminGlobalPage() {
           <Field label="Notice Banner" hint="Optional announcement text. Leave empty to hide.">
             <input value={gs.noticeBanner ?? ''} onChange={e => set({ noticeBanner: e.target.value })} className={inp} placeholder="🎉 Fall 2026 intake applications now open!" />
           </Field>
+        </div>
+      </div>
+
+      {/* Footer bottom bar */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60">
+          <h3 className="font-jakarta font-bold text-slate-700">🦶 Footer Bottom Bar</h3>
+          <p className="font-jakarta text-xs text-slate-400 mt-0.5">Copyright line, Privacy/Terms links and the &quot;Founded by&quot; text shown at the very bottom of every page.</p>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Copyright Text" hint="Shown on the left. Leave empty for the automatic © year line.">
+              <input value={gs.footerCopyright ?? ''} onChange={e => set({ footerCopyright: e.target.value })} className={inp}
+                placeholder="© 2000–2026 Ivy League Overseas Consulting. All rights reserved." />
+            </Field>
+            <Field label="Founded By Text" hint="e.g. Founded by Mr X · Pune, India. Leave empty to keep default.">
+              <input value={gs.footerFoundedBy ?? ''} onChange={e => set({ footerFoundedBy: e.target.value })} className={inp}
+                placeholder="Founded by Our Founder · Pune, India" />
+            </Field>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Privacy Policy Link" hint="Where the Privacy Policy link goes (e.g. /privacy-policy or a page you created).">
+              <input value={gs.footerPrivacyUrl ?? ''} onChange={e => set({ footerPrivacyUrl: e.target.value })} className={inp} placeholder="/contact" />
+            </Field>
+            <Field label="Terms of Service Link" hint="Where the Terms of Service link goes.">
+              <input value={gs.footerTermsUrl ?? ''} onChange={e => set({ footerTermsUrl: e.target.value })} className={inp} placeholder="/contact" />
+            </Field>
+          </div>
+        </div>
+      </div>
+
+      {/* Page hero-image captions */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60">
+          <h3 className="font-jakarta font-bold text-slate-700">🖼 Page Image Captions</h3>
+          <p className="font-jakarta text-xs text-slate-400 mt-0.5">
+            The small white stat card that overlaps the hero picture on each page. About &amp; Services captions are edited in their own pages.
+          </p>
+        </div>
+        <div className="p-6 space-y-4">
+          {CAPTION_PAGES.map(({ key, title, hint }) => {
+            const badge = gs.pageHeroBadges?.[key] ?? {};
+            const setBadge = (patch: { value?: string; label?: string }) =>
+              set({ pageHeroBadges: { ...(gs.pageHeroBadges ?? {}), [key]: { ...badge, ...patch } } });
+            return (
+              <div key={key} className="grid sm:grid-cols-[140px_1fr_2fr] gap-3 items-center">
+                <div>
+                  <span className="font-jakarta text-xs font-bold text-slate-600">{title}</span>
+                  <p className="font-jakarta text-[10px] text-slate-400 mt-0.5">{hint}</p>
+                </div>
+                <input value={badge.value ?? ''} onChange={e => setBadge({ value: e.target.value })}
+                  className={`${inp} text-xs py-2`} placeholder="Big value e.g. 24h" />
+                <input value={badge.label ?? ''} onChange={e => setBadge({ label: e.target.value })}
+                  className={`${inp} text-xs py-2`} placeholder="Caption e.g. Average response time" />
+              </div>
+            );
+          })}
         </div>
       </div>
 

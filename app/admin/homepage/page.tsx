@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { useAuth, useToast } from '../_context';
 import type { Stat, ServiceItem, ProcessStepItem, Update2026Card } from '@/lib/types';
-import { DEFAULT_SERVICES, DEFAULT_PROCESS_STEPS, STATS, DEFAULT_UPDATES_2026, DEFAULT_UPDATES_2026_COLS } from '@/lib/data';
+import { DEFAULT_SERVICES, DEFAULT_PROCESS_STEPS, STATS, DEFAULT_UPDATES_2026, DEFAULT_UPDATES_2026_COLS, DEFAULT_UPDATES_2026_HEADINGS } from '@/lib/data';
 import { SkeletonFormBlock } from '@/components/admin/SkeletonCard';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
@@ -219,6 +219,7 @@ export default function AdminHomepagePage() {
   const [steps,          setSteps]          = useState<ProcessStepItem[]>(DEFAULT_PROCESS_STEPS);
   const [updates2026,    setUpdates2026]    = useState<Update2026Card[]>(DEFAULT_UPDATES_2026);
   const [updates2026Cols,setUpdates2026Cols]= useState<number>(DEFAULT_UPDATES_2026_COLS);
+  const [updTexts,       setUpdTexts]       = useState<{ badge: string; heading: string; sub: string }>({ ...DEFAULT_UPDATES_2026_HEADINGS });
   const [loading,  setLoading]  = useState(true);
   const [busySt,   setBusySt]   = useState(false);
   const [busySvc,  setBusySvc]  = useState(false);
@@ -241,6 +242,11 @@ export default function AdminHomepagePage() {
         if (d.siteContent?.processSteps?.length)      setSteps(d.siteContent.processSteps);
         if (d.siteContent?.updates2026?.length)       setUpdates2026(d.siteContent.updates2026);
         if (typeof d.siteContent?.updates2026Cols === 'number') setUpdates2026Cols(d.siteContent.updates2026Cols);
+        setUpdTexts(t => ({
+          badge:   d.siteContent?.updates2026Badge   || t.badge,
+          heading: d.siteContent?.updates2026Heading || t.heading,
+          sub:     d.siteContent?.updates2026Sub     || t.sub,
+        }));
       }
     } finally { setLoading(false); }
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -280,7 +286,15 @@ export default function AdminHomepagePage() {
   async function saveUpdates2026() {
     setBusyUpd(true);
     try {
-      const res = await fetch('/api/content', { method: 'PUT', headers: hdrs, body: JSON.stringify({ updates2026, updates2026Cols }) });
+      const res = await fetch('/api/content', {
+        method: 'PUT', headers: hdrs,
+        body: JSON.stringify({
+          updates2026, updates2026Cols,
+          updates2026Badge:   updTexts.badge,
+          updates2026Heading: updTexts.heading,
+          updates2026Sub:     updTexts.sub,
+        }),
+      });
       if (!res.ok) { const e = await res.json().catch(() => ({})) as { error?: string; details?: string }; throw new Error(e.error ?? `HTTP ${res.status}`); }
       flash('✓ 2026 cards saved — live immediately.', 'success');
     } catch (e) { flash(`Save failed: ${(e as Error).message}`, 'error'); }
@@ -318,6 +332,28 @@ export default function AdminHomepagePage() {
           Add, remove or edit the 2026 policy update cards. Each card shows a country image, title, badge and update text on the homepage.
           Use the grid button to control how many columns they display in.
         </p>
+
+        {/* Section heading texts shown above the cards on the homepage */}
+        <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/50 space-y-3 mb-5">
+          <span className="font-jakarta text-xs font-bold text-slate-500 uppercase tracking-wide">Section Heading Texts</span>
+          <div>
+            <label className="block font-jakarta text-[11px] font-semibold text-slate-500 mb-1">Badge (small pill)</label>
+            <input value={updTexts.badge} onChange={e => setUpdTexts(t => ({ ...t, badge: e.target.value }))}
+              className={inp} placeholder="2026 Immigration Policy Updates" />
+          </div>
+          <div>
+            <label className="block font-jakarta text-[11px] font-semibold text-slate-500 mb-1">Main Heading</label>
+            <input value={updTexts.heading} onChange={e => setUpdTexts(t => ({ ...t, heading: e.target.value }))}
+              className={inp} placeholder="What changed for 2026." />
+          </div>
+          <div>
+            <label className="block font-jakarta text-[11px] font-semibold text-slate-500 mb-1">Sub-text (paragraph)</label>
+            <textarea value={updTexts.sub} onChange={e => setUpdTexts(t => ({ ...t, sub: e.target.value }))}
+              rows={2} className={`${inp} resize-none`}
+              placeholder="Stay ahead with the latest visa policies, intake rules and scholarship deadlines for your target country." />
+          </div>
+        </div>
+
         <Updates2026Editor
           cards={updates2026} setCards={setUpdates2026}
           cols={updates2026Cols} setCols={setUpdates2026Cols}

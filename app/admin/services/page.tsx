@@ -165,6 +165,17 @@ export default function AdminServicesPage() {
             token={token}
           />
         </Field>
+        <div className="grid sm:grid-cols-3 gap-4">
+          <Field label="Image Caption — Value" hint="Big number on the card overlapping the photo, e.g. 97%">
+            <input value={s.heroBadgeValue ?? ''} onChange={e => set({ heroBadgeValue: e.target.value })} className={inp} placeholder="97%" />
+          </Field>
+          <Field label="Image Caption — Text" hint="Small line under the value.">
+            <input value={s.heroBadgeLabel ?? ''} onChange={e => set({ heroBadgeLabel: e.target.value })} className={inp} placeholder="Visa approval rate" />
+          </Field>
+          <Field label="Image Description (alt)" hint="Describes the photo for search engines & screen readers.">
+            <input value={s.heroImageAlt ?? ''} onChange={e => set({ heroImageAlt: e.target.value })} className={inp} placeholder="Counsellor guiding a student" />
+          </Field>
+        </div>
       </Section>
 
       {/* ── Student Services Grid (4×3) ── */}

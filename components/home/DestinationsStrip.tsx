@@ -18,7 +18,19 @@ const LG_COLS: Record<number, string> = {
   6: 'lg:grid-cols-6',
 };
 
-type Country = (typeof COUNTRIES)[number];
+// Minimal card shape — satisfied by both the static COUNTRIES entries and
+// the effective (admin-editable) list passed down from the homepage server
+// component.
+interface Country {
+  code:        string;
+  name:        string;
+  tagline:     string;
+  intake:      string;
+  unis:        string;
+  heroImage:   string;
+  campusImage: string;
+  color:       string;
+}
 
 function DestinationCard({ c, i }: { c: Country; i: number }) {
   const [imgError, setImgError] = useState(false);
@@ -65,16 +77,8 @@ function DestinationCard({ c, i }: { c: Country; i: number }) {
           style={{ background: 'linear-gradient(to bottom,rgba(0,0,0,0.25),transparent)' }}
         />
 
-        {/* 2026 badge — top right */}
-        <div className="absolute top-3 right-3 z-10">
-          <span className="badge-amber text-[10px] shadow-sm">2026 ✓</span>
-        </div>
-
-        {/* Flag + uni count — top left */}
+        {/* Uni count — top left */}
         <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5">
-          <span className="text-2xl" style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.5))' }}>
-            {c.flag}
-          </span>
           <span className="font-jakarta text-[10px] font-bold text-white/90 bg-black/25 backdrop-blur-sm rounded-full px-2 py-0.5">
             {c.unis} unis
           </span>
@@ -107,11 +111,17 @@ function DestinationCard({ c, i }: { c: Country; i: number }) {
   );
 }
 
-export default function DestinationsStrip({ gridCols, gridRows }: { gridCols?: number; gridRows?: number }) {
+export default function DestinationsStrip({ gridCols, gridRows, countries }: {
+  gridCols?:  number;
+  gridRows?:  number;
+  /** Effective country list from the server (admin add/hide aware). Falls back to the static list. */
+  countries?: Country[];
+}) {
   // cols is always 1–6 after clamp; limit = cols × rows drives the slice.
   const cols  = clampCols(gridCols, 4);
   const rows  = Math.max(1, gridRows ?? 3);
   const limit = cols * rows;
+  const list: Country[] = countries?.length ? countries : COUNTRIES;
 
   return (
     <section className="section bg-slate-50">
@@ -131,7 +141,7 @@ export default function DestinationsStrip({ gridCols, gridRows }: { gridCols?: n
             Where will you go?
           </h2>
           <p className="font-jakarta text-slate-500 max-w-xl mx-auto leading-relaxed text-sm sm:text-base">
-            We assist with admissions across 12 countries and 400+ partner universities.
+            We assist with admissions across {list.length} countries and 400+ partner universities.
             Click any destination for 2026 visa updates, scholarships and career opportunities.
           </p>
         </motion.div>
@@ -145,7 +155,7 @@ export default function DestinationsStrip({ gridCols, gridRows }: { gridCols?: n
             Limit = cols × rows; orphaned last-row cards left-align naturally
             via standard grid auto-flow (no justify-content override needed). */}
         <div className={`grid grid-cols-1 sm:grid-cols-2 ${LG_COLS[cols] ?? 'lg:grid-cols-4'} gap-5`}>
-          {COUNTRIES.slice(0, limit).map((c, i) => (
+          {list.slice(0, limit).map((c, i) => (
             <DestinationCard key={c.code} c={c} i={i} />
           ))}
         </div>

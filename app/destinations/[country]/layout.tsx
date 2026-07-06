@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { COUNTRIES_MAP, COMPANY } from '@/lib/data';
-import { getCountryPageData } from '@/lib/public-data';
+import { COMPANY } from '@/lib/data';
+import { getCountryMeta, getCountrySections } from '@/lib/kv';
+import { getPublicCountry } from '@/lib/public-data';
 import { SECTION_SLUGS, SECTION_LABELS } from '@/lib/countrySubpages';
 import SubNav from './SubNav';
 import ScrollToTop from './ScrollToTop';
@@ -14,11 +15,16 @@ interface Props {
 
 export default async function CountryLayout({ children, params }: Props) {
   const { country } = await params;
-  const c = COUNTRIES_MAP[country];
+
+  // Effective country — built-in (unless admin-hidden) or admin-added custom.
+  const c = await getPublicCountry(country).catch(() => null);
   if (!c) notFound();
 
-  // public-data merges KV overrides onto static defaults cleanly
-  const { meta: kvMeta } = await getCountryPageData(country).catch(() => ({ meta: null, country: c, sections: {} }));
+  // Admin KV meta overrides win over the base country record.
+  const [kvMeta, customSections] = await Promise.all([
+    getCountryMeta(country).catch(() => null),
+    getCountrySections(country).catch(() => []),
+  ]);
 
   const intake      = kvMeta?.intake      || c.intake;
   const avgCost     = kvMeta?.avgCost     || c.avgCost;
@@ -28,6 +34,13 @@ export default async function CountryLayout({ children, params }: Props) {
   const campusImage = kvMeta?.campusImage || c.campusImage;
   const heroImage   = kvMeta?.heroImage   || c.heroImage;
   const color       = kvMeta?.color       || c.color;
+
+  // Built-in sections + admin-added extra buttons (item is skipped if it
+  // shadows a built-in slug).
+  const extraSections = customSections.filter(s => !(SECTION_SLUGS as readonly string[]).includes(s.slug));
+  const sections = [...SECTION_SLUGS, ...extraSections.map(s => s.slug)];
+  const labels: Record<string, string> = { ...SECTION_LABELS };
+  for (const s of extraSections) labels[s.slug] = s.label;
 
   return (
     <div className="bg-white">
@@ -41,23 +54,27 @@ export default async function CountryLayout({ children, params }: Props) {
         style={{ backgroundColor: color }}
       >
         {/* Campus photo as base layer */}
-        <Image
-          src={campusImage}
-          alt={`${c.name} campus`}
-          fill
-          className="object-cover"
-          sizes="100vw"
-          priority
-        />
+        {campusImage && (
+          <Image
+            src={campusImage}
+            alt={`${c.name} campus`}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
+        )}
         {/* Hero portrait overlaid */}
-        <Image
-          src={heroImage}
-          alt={c.name}
-          fill
-          className="object-cover opacity-60"
-          sizes="100vw"
-          priority
-        />
+        {heroImage && (
+          <Image
+            src={heroImage}
+            alt={c.name}
+            fill
+            className="object-cover opacity-60"
+            sizes="100vw"
+            priority
+          />
+        )}
 
         {/* Bottom-heavy gradient */}
         <div
@@ -91,18 +108,8 @@ export default async function CountryLayout({ children, params }: Props) {
           </nav>
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-            {/* Flag + title */}
+            {/* Title */}
             <div>
-              <div
-                className="text-8xl mb-5 leading-none"
-                style={{ filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.5))' }}
-              >
-                {c.flag}
-              </div>
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-4 py-1.5 mb-4">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse-dot" />
-                <span className="font-jakarta text-xs font-semibold text-white tracking-wide">2026 Updated Guide</span>
-              </div>
               <h1
                 className="font-jakarta font-extrabold text-white leading-tight"
                 style={{ fontSize: 'clamp(2.6rem,6vw,4.5rem)' }}
@@ -142,8 +149,8 @@ export default async function CountryLayout({ children, params }: Props) {
       {/* ── Sticky Sub-Navigation ────────────────────────────────────────── */}
       <SubNav
         country={country}
-        sections={SECTION_SLUGS}
-        labels={SECTION_LABELS}
+        sections={sections}
+        labels={labels}
         accentColor={color}
       />
 
@@ -155,21 +162,17 @@ export default async function CountryLayout({ children, params }: Props) {
         className="section relative overflow-hidden"
         style={{ background: `linear-gradient(135deg,${color} 0%,${color}CC 100%)` }}
       >
-        <Image
-          src={campusImage}
-          alt=""
-          fill
-          aria-hidden
-          className="object-cover opacity-10"
-          sizes="100vw"
-        />
+        {campusImage && (
+          <Image
+            src={campusImage}
+            alt=""
+            fill
+            aria-hidden
+            className="object-cover opacity-10"
+            sizes="100vw"
+          />
+        )}
         <div className="relative z-10 container-xl text-center">
-          <div
-            className="text-6xl mb-5"
-            style={{ filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.4))' }}
-          >
-            {c.flag}
-          </div>
           <h2
             className="font-jakarta font-extrabold text-white mb-4"
             style={{ fontSize: 'clamp(1.8rem,4vw,3rem)' }}

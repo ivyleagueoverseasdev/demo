@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import type { Testimonial } from '@/lib/types';
-import { DEFAULT_TESTIMONIALS } from '@/lib/data';
+import { DEFAULT_TESTIMONIALS, stripFlagEmoji } from '@/lib/data';
 
 // ── Star row ──────────────────────────────────────────────────────────────
 function Stars({ count = 5 }: { count?: number }) {
@@ -89,7 +89,7 @@ function TestimonialCard({ t }: { t: Testimonial }) {
           <div className="flex-1 min-w-0">
             <div className="font-jakarta font-bold text-slate-800 text-sm leading-tight truncate">{t.name}</div>
             <div className="font-jakarta text-xs text-amber-600 font-semibold mt-0.5 truncate">{t.role}</div>
-            <div className="font-jakarta text-xs text-slate-400 mt-0.5 truncate">{t.country}</div>
+            <div className="font-jakarta text-xs text-slate-400 mt-0.5 truncate">{stripFlagEmoji(t.country)}</div>
           </div>
         </div>
 

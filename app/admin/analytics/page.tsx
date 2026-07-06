@@ -6,6 +6,8 @@ import type { SiteEvent, Lead, NewsItem, DynamicPage } from '@/lib/types';
 import type { AuditEntry } from '@/lib/schemas';
 import { TrafficChart } from '@/components/admin/TrafficChart';
 import type { ChartPoint } from '@/components/admin/TrafficChart';
+import IndiaMap from '@/components/admin/IndiaMap';
+import type { IndiaStateStat } from '@/components/admin/IndiaMap';
 import Link from 'next/link';
 import { SkeletonAnalyticsGrid } from '@/components/admin/SkeletonCard';
 
@@ -21,9 +23,15 @@ interface TrafficStats {
   todayTrend:  number;
   weekTrend:   number;
   monthTrend:  number;
+  newToday?:    number;
+  newWeek?:     number;
+  newMonth?:    number;
+  uniqueToday?: number;
   chart:       ChartPoint[];
   countries:   { locationKey: string; code: string; city: string | null; name: string; count: number; pct: number }[];
   sources:     { key: string; name: string; count: number; pct: number }[];
+  indiaStates?: IndiaStateStat[];
+  indiaCities?: { name: string; count: number; pct: number }[];
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -331,6 +339,26 @@ export default function AdminAnalyticsPage() {
               />
             </div>
 
+            {/* New visitors row */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
+                <div className="font-jakarta font-extrabold text-2xl text-emerald-600">{(traffic?.newToday ?? 0).toLocaleString()}</div>
+                <div className="font-jakarta text-xs text-slate-500 mt-1">🆕 New Visitors Today</div>
+              </div>
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
+                <div className="font-jakarta font-extrabold text-2xl text-emerald-700">{(traffic?.newWeek ?? 0).toLocaleString()}</div>
+                <div className="font-jakarta text-xs text-slate-500 mt-1">New This Week</div>
+              </div>
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
+                <div className="font-jakarta font-extrabold text-2xl text-emerald-800">{(traffic?.newMonth ?? 0).toLocaleString()}</div>
+                <div className="font-jakarta text-xs text-slate-500 mt-1">New This Month</div>
+              </div>
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
+                <div className="font-jakarta font-extrabold text-2xl text-homeblue">{(traffic?.uniqueToday ?? 0).toLocaleString()}</div>
+                <div className="font-jakarta text-xs text-slate-500 mt-1">Unique Visitors Today</div>
+              </div>
+            </div>
+
             {/* Area chart */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
               <div className="flex items-center justify-between mb-4">
@@ -338,6 +366,45 @@ export default function AdminAnalyticsPage() {
                 <span className="font-jakarta text-xs text-slate-400">{traffic?.month.toLocaleString() ?? 0} total</span>
               </div>
               <TrafficChart data={traffic?.chart ?? []} />
+            </div>
+
+            {/* India state-wise traffic */}
+            <div className="grid lg:grid-cols-2 gap-4">
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+                <h3 className="font-jakarta font-bold text-slate-800 mb-1">🗺 India — State-wise Traffic</h3>
+                <p className="font-jakarta text-xs text-slate-400 mb-4">Visits from India over the last 30 days, by state.</p>
+                {(!traffic?.indiaStates?.length) ? (
+                  <p className="font-jakarta text-sm text-slate-400 text-center py-10">
+                    No India state data yet — it starts collecting from new visits after this update goes live.
+                  </p>
+                ) : (
+                  <IndiaMap states={traffic.indiaStates} />
+                )}
+              </div>
+
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+                <h3 className="font-jakarta font-bold text-slate-800 mb-1">🏙 Top Indian States & Cities</h3>
+                <p className="font-jakarta text-xs text-slate-400 mb-4">Last 30 days.</p>
+                {(!traffic?.indiaStates?.length && !traffic?.indiaCities?.length) ? (
+                  <p className="font-jakarta text-sm text-slate-400 text-center py-10">No data yet.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {(traffic.indiaStates ?? []).slice(0, 5).map(s => (
+                      <MiniBar key={`st-${s.code}`} label={s.name} value={s.count}
+                        max={traffic.indiaStates?.[0]?.count ?? 1} color="#1D4ED8" />
+                    ))}
+                    {(traffic.indiaCities ?? []).length > 0 && (
+                      <>
+                        <div className="border-t border-slate-100 pt-3 font-jakarta text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cities</div>
+                        {(traffic.indiaCities ?? []).slice(0, 5).map(c => (
+                          <MiniBar key={`ct-${c.name}`} label={c.name} value={c.count}
+                            max={traffic.indiaCities?.[0]?.count ?? 1} color="#0D9488" />
+                        ))}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Geo + Sources */}

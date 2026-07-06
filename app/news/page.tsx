@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getPublicNews, buildPageMeta } from '@/lib/public-data';
+import { getPublicNews, getPublicGlobalSettings, buildPageMeta } from '@/lib/public-data';
 import PageHero from '@/components/shared/PageHero';
 
 export const metadata: Metadata = buildPageMeta({
@@ -20,7 +20,11 @@ function formatDate(iso: string) {
 }
 
 export default async function NewsPage() {
-  const news = await getPublicNews({ publishedOnly: true });
+  const [news, gs] = await Promise.all([
+    getPublicNews({ publishedOnly: true }),
+    getPublicGlobalSettings(),
+  ]);
+  const pb = gs?.pageHeroBadges?.news;
 
   return (
     <main className="bg-white min-h-screen">
@@ -44,7 +48,7 @@ export default async function NewsPage() {
           src: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1200&q=80&auto=format&fit=crop',
           alt: 'Student reading the latest study-abroad news',
         }}
-        badge={{ value: 'Weekly', label: 'Fresh visa & scholarship updates' }}
+        badge={{ value: pb?.value || 'Weekly', label: pb?.label || 'Fresh visa & scholarship updates' }}
         blobColor="#A3E635"
       />
 
