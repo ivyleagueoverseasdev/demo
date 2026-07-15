@@ -34,10 +34,15 @@ function UniLogoCard({ uni }: { uni: UniEntry }) {
   }, []);
 
   return (
+    // Responsive card: compact on phones so 3–4 logos are visible per row,
+    // full size from the sm breakpoint up.
     <div
-      className="flex-shrink-0 flex items-center justify-center mx-2.5 px-7 rounded-2xl border shadow-sm"
+      className="
+        flex-shrink-0 flex items-center justify-center rounded-2xl border shadow-sm
+        mx-1.5 px-3 h-[60px] min-w-[104px] max-w-[150px]
+        sm:mx-2.5 sm:px-7 sm:h-[92px] sm:min-w-[180px] sm:max-w-[240px]
+      "
       style={{
-        height: '92px', minWidth: '180px', maxWidth: '240px',
         background: uni.darkBg ? '#003B5C' : '#ffffff',
         borderColor: uni.darkBg ? '#003B5C' : '#f1f5f9',
       }}
@@ -56,14 +61,7 @@ function UniLogoCard({ uni }: { uni: UniEntry }) {
           alt={uni.name}
           loading="lazy"
           onError={() => setFailed(true)}
-          style={{
-            maxHeight: '56px',
-            maxWidth:  '160px',
-            width:     'auto',
-            height:    'auto',
-            objectFit: 'contain',
-            display:   'block',
-          }}
+          className="block w-auto h-auto object-contain max-h-[36px] max-w-[92px] sm:max-h-[56px] sm:max-w-[160px]"
         />
       )}
     </div>

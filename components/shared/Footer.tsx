@@ -66,14 +66,15 @@ export default function Footer() {
             href:  `/destinations/${c.code}`,
           })));
         }
+        // Empty fields fall back to the defaults (matches the admin hints);
+        // a "-" in Founded By hides that line entirely.
         setBottomBar(b => ({
           copyright:  gs?.footerCopyright?.trim()  || b.copyright,
           privacyUrl: gs?.footerPrivacyUrl?.trim() || b.privacyUrl,
           termsUrl:   gs?.footerTermsUrl?.trim()   || b.termsUrl,
-          // Explicit empty string hides the "Founded by" line entirely
-          foundedBy:  gs?.footerFoundedBy !== undefined && gs?.footerFoundedBy !== null
-            ? gs.footerFoundedBy.trim()
-            : b.foundedBy,
+          foundedBy:  gs?.footerFoundedBy?.trim() === '-'
+            ? ''
+            : (gs?.footerFoundedBy?.trim() || b.foundedBy),
         }));
       })
       .catch(() => {});

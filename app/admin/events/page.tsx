@@ -211,9 +211,25 @@ function EventForm({
   busy:     boolean;
 }) {
   const [form, setForm] = useState(initial);
+  const [countryOpts, setCountryOpts] = useState(COUNTRIES);
 
   // Sync when editing different event
   useEffect(() => { setForm(initial); }, [initial]);
+
+  // Effective destination list (admin add/hide aware) — includes admin-added countries
+  useEffect(() => {
+    fetch('/api/countries', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: any) => {
+        if (Array.isArray(d?.countries) && d.countries.length) {
+          setCountryOpts([
+            { value: '', label: 'All Countries' },
+            ...d.countries.map((c: { code: string; name: string }) => ({ value: c.code, label: c.name })),
+          ]);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   function patch<K extends keyof typeof form>(key: K, val: (typeof form)[K]) {
     setForm(prev => ({ ...prev, [key]: val }));
@@ -266,7 +282,7 @@ function EventForm({
             <div>
               <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Target Country</label>
               <select value={form.country ?? ''} onChange={e => patch('country', e.target.value)} className={`${inp} cursor-pointer`}>
-                {COUNTRIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                {countryOpts.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
             </div>
           </div>

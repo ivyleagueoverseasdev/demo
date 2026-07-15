@@ -596,70 +596,76 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* ── Scrollable content ───────────────────────────────────── */}
-            <div className="flex-1 overflow-y-auto pb-24">
+            {/* ── Scrollable content ─────────────────────────────────────
+                Each area sits in its own white card on the tinted backdrop
+                so the panels are clearly distinguishable (not one flat
+                colour). Primary links reuse the same per-tab colours as
+                the desktop nav. */}
+            <div className="flex-1 overflow-y-auto pb-24 px-4 pt-4 space-y-4">
 
-              {/* Primary nav links */}
-              <nav className="flex flex-col px-4 pt-3 gap-0.5" aria-label="Mobile navigation">
-                {NAV.filter(n => n.href !== '/destinations' && n.href !== '/partners').map(({ label, href }) => (
-                  <Link key={href} href={href}
-                    className={`font-jakarta font-bold text-2xl tracking-tight px-4 py-4 rounded-2xl transition-colors ${
-                      isActive(href)
-                        ? 'text-lime-900 bg-slate-900/10'
-                        : 'text-slate-800 hover:bg-slate-900/5 active:bg-slate-900/10'
-                    }`}
-                  >
-                    {label}
-                  </Link>
-                ))}
+              {/* Primary nav links — white card, colour-coded pills */}
+              <nav className="bg-white/95 rounded-3xl shadow-[0_10px_36px_rgba(0,0,0,0.14)] p-3 flex flex-col gap-2" aria-label="Mobile navigation">
+                {NAV.map(({ label, href }, ti) => {
+                  if (href === '/destinations' || href === '/partners') return null;
+                  const color  = PUB_TAB_COLORS[ti % PUB_TAB_COLORS.length];
+                  const active = isActive(href);
+                  return (
+                    <Link key={href} href={href}
+                      className="font-jakarta font-bold text-xl tracking-tight px-5 py-3.5 rounded-2xl transition-transform active:scale-[0.98] flex items-center justify-between"
+                      style={active
+                        ? { background: color, color: '#ffffff', boxShadow: `0 6px 18px ${color}55` }
+                        : { background: `${color}14`, color, border: `1px solid ${color}30` }}
+                    >
+                      {label}
+                      <span className="text-base opacity-60">→</span>
+                    </Link>
+                  );
+                })}
               </nav>
 
-              {/* ── Destinations sub-section ─────────────────────────── */}
-              <div className="px-4 mt-5">
-                <div className="border-t border-slate-900/10 pt-4">
-                  <Link href="/destinations"
-                    className="flex items-center justify-between px-4 mb-4 font-jakarta font-extrabold text-sm text-slate-800 uppercase tracking-widest opacity-60 hover:opacity-100 transition-all"
-                  >
-                    <span>Study Destinations</span>
-                    <span className="text-slate-400 text-base">→</span>
-                  </Link>
-                  {/* 2-col grid with generous gap — readable and thumb-friendly */}
-                  <div className="grid grid-cols-2 gap-y-5 gap-x-4">
-                    {destinations.map(d => (
-                      <Link key={d.href} href={d.href}
-                        className="font-jakarta font-medium text-lg px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
-                      >
-                        {d.label}
-                      </Link>
-                    ))}
-                  </div>
+              {/* ── Destinations panel — its own white card ──────────── */}
+              <div className="bg-white/95 rounded-3xl shadow-[0_10px_36px_rgba(0,0,0,0.14)] p-5">
+                <Link href="/destinations"
+                  className="flex items-center justify-between mb-4 font-jakarta font-extrabold text-xs uppercase tracking-widest transition-opacity hover:opacity-80"
+                  style={{ color: PUB_TAB_COLORS[3 % PUB_TAB_COLORS.length] }}
+                >
+                  <span>🌍 Study Destinations</span>
+                  <span className="text-base">→</span>
+                </Link>
+                {/* 2-col grid — readable and thumb-friendly */}
+                <div className="grid grid-cols-2 gap-y-2 gap-x-3">
+                  {destinations.map(d => (
+                    <Link key={d.href} href={d.href}
+                      className="font-jakarta font-semibold text-[15px] px-3.5 py-2.5 rounded-xl text-slate-700 bg-slate-50 border border-slate-100 hover:bg-slate-100 active:bg-slate-200 transition-colors"
+                    >
+                      {d.label}
+                    </Link>
+                  ))}
                 </div>
               </div>
 
-              {/* ── Partners sub-section ─────────────────────────────── */}
-              <div className="px-4 mt-5">
-                <div className="border-t border-slate-900/10 pt-4">
-                  <Link href="/partners"
-                    className="flex items-center justify-between px-4 mb-4 font-jakarta font-extrabold text-sm text-slate-800 uppercase tracking-widest opacity-60 hover:opacity-100 transition-all"
-                  >
-                    <span>Partner With Us</span>
-                    <span className="text-slate-400 text-base">→</span>
-                  </Link>
-                  {/* Single column — only 3 items, no need for a grid */}
-                  <div className="flex flex-col gap-0.5">
-                    {PARTNERS.map(d => (
-                      <Link key={d.href} href={d.href}
-                        className="font-jakarta font-medium text-lg px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-900/5 active:bg-slate-900/10 transition-colors"
-                      >
-                        {d.label}
-                      </Link>
-                    ))}
-                  </div>
+              {/* ── Partners panel — its own white card ──────────────── */}
+              <div className="bg-white/95 rounded-3xl shadow-[0_10px_36px_rgba(0,0,0,0.14)] p-5">
+                <Link href="/partners"
+                  className="flex items-center justify-between mb-4 font-jakarta font-extrabold text-xs uppercase tracking-widest transition-opacity hover:opacity-80"
+                  style={{ color: PUB_TAB_COLORS[6 % PUB_TAB_COLORS.length] }}
+                >
+                  <span>🤝 Partner With Us</span>
+                  <span className="text-base">→</span>
+                </Link>
+                <div className="flex flex-col gap-2">
+                  {PARTNERS.map(d => (
+                    <Link key={d.href} href={d.href}
+                      className="font-jakarta font-semibold text-[15px] px-3.5 py-2.5 rounded-xl text-slate-700 bg-slate-50 border border-slate-100 hover:bg-slate-100 active:bg-slate-200 transition-colors"
+                    >
+                      {d.label}
+                    </Link>
+                  ))}
                 </div>
               </div>
 
               {/* ── CTA buttons ──────────────────────────────────────── */}
-              <div className="px-4 mt-6 flex flex-col gap-3">
+              <div className="flex flex-col gap-3">
                 <Link href="/contact"
                   className="font-jakarta font-bold text-lg text-white py-4 rounded-2xl text-center hover:opacity-90 active:scale-[0.98] transition-all"
                   style={{

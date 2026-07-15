@@ -17,6 +17,7 @@ export default function ContactPage() {
   const [mapsLink,   setMapsLink]   = useState(COMPANY.mapsLink);
   const [heroImage,  setHeroImage]  = useState('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80&auto=format&fit=crop');
   const [heroBadge,  setHeroBadge]  = useState({ value: '24h', label: 'Average response time' });
+  const [countryOpts, setCountryOpts] = useState<string[]>(COUNTRIES.map(c => c.name));
 
   useEffect(() => {
     fetch('/api/content', { cache: 'no-store' })
@@ -36,6 +37,10 @@ export default function ContactPage() {
         const pb = gs?.pageHeroBadges?.contact;
         if (pb?.value || pb?.label) {
           setHeroBadge(b => ({ value: pb.value || b.value, label: pb.label || b.label }));
+        }
+        // Effective destination list (admin add/hide aware)
+        if (Array.isArray(d?.countries) && d.countries.length) {
+          setCountryOpts(d.countries.map((c: { name: string }) => c.name));
         }
       })
       .catch(() => {});
@@ -173,7 +178,7 @@ export default function ContactPage() {
                       <label className="block font-jakarta text-xs font-semibold text-slate-600 mb-1.5">Target Country *</label>
                       <select value={f.country} onChange={e=>chg('country',e.target.value)} className={`${inp} cursor-pointer`}>
                         <option value="">Select country</option>
-                        {COUNTRIES.map(c=><option key={c.code} value={c.name}>{c.name}</option>)}
+                        {countryOpts.map(n=><option key={n} value={n}>{n}</option>)}
                         {['Other'].map(c=><option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>

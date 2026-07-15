@@ -185,7 +185,7 @@ export default function AdminGlobalPage() {
               <input value={gs.footerCopyright ?? ''} onChange={e => set({ footerCopyright: e.target.value })} className={inp}
                 placeholder="© 2000–2026 Ivy League Overseas Consulting. All rights reserved." />
             </Field>
-            <Field label="Founded By Text" hint="e.g. Founded by Mr X · Pune, India. Leave empty to keep default.">
+            <Field label="Founded By Text" hint='e.g. Founded by Mr X · Pune, India. Leave empty to keep default; type "-" to hide the line.'>
               <input value={gs.footerFoundedBy ?? ''} onChange={e => set({ footerFoundedBy: e.target.value })} className={inp}
                 placeholder="Founded by Our Founder · Pune, India" />
             </Field>

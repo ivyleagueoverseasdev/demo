@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { COMPANY, COUNTRIES } from '@/lib/data';
 
@@ -9,6 +9,19 @@ export default function QuickEnquiry() {
   const [ok,   setOk]   = useState(false);
   const [busy, setBusy] = useState(false);
   const [err,  setErr]  = useState('');
+  const [countryOpts, setCountryOpts] = useState<string[]>(COUNTRIES.map(c => c.name));
+
+  // Effective destination list (admin add/hide aware) — falls back to static
+  useEffect(() => {
+    fetch('/api/countries', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then((d: any) => {
+        if (Array.isArray(d?.countries) && d.countries.length) {
+          setCountryOpts(d.countries.map((c: { name: string }) => c.name));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +124,7 @@ export default function QuickEnquiry() {
                       <select value={f.country} onChange={e => setF(p => ({ ...p, country: e.target.value }))}
                         className={`${inp} cursor-pointer`}>
                         <option value="">Select country</option>
-                        {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.name}</option>)}
+                        {countryOpts.map(n => <option key={n} value={n}>{n}</option>)}
                         {['Other'].map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>

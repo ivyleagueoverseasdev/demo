@@ -298,11 +298,22 @@ function Stars() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Main HeroSection
 // ─────────────────────────────────────────────────────────────────────────────
+// Older hero slides saved in KV may still point the scholarship CTA at the
+// demo popup; the client wants it landing on /contact. Normalise here so the
+// fix holds even for admin-saved slide data.
+function normalizeSlide(s: HeroSlide): HeroSlide {
+  if (s.ctaPrimary.action === 'demo-modal' && /scholarship/i.test(s.ctaPrimary.label)) {
+    return { ...s, ctaPrimary: { ...s.ctaPrimary, action: 'link', href: '/contact' } };
+  }
+  return s;
+}
+
 export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide[] }) {
-  const slides =
+  const slides = (
     (slidesProp?.filter(s => s.enabled) ?? []).length > 0
       ? slidesProp!.filter(s => s.enabled)
-      : DEFAULT_HERO_SLIDES.filter(s => s.enabled);
+      : DEFAULT_HERO_SLIDES.filter(s => s.enabled)
+  ).map(normalizeSlide);
 
   const [idx,      setIdx]      = useState(0);
   const [dir,      setDir]      = useState(1);
@@ -345,10 +356,9 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
     <>
       <section
         ref={sectionRef}
-        className="w-full relative overflow-hidden flex items-center"
+        className="w-full relative overflow-hidden flex items-center lg:min-h-screen"
         style={{
           background: 'linear-gradient(160deg,#07257C 0%,#0C37A0 18%,#1249C4 55%,#1A5CE8 100%)',
-          minHeight: '100vh',
           marginTop: `-${HEADER_HEIGHT}px`,
           paddingTop: `${HEADER_HEIGHT}px`,
         }}
@@ -623,6 +633,40 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                   {idx + 1} / {total}
                 </span>
               </div>
+
+              {/* ── Mobile slide image — in flow, immediately after the text ── */}
+              <div
+                className="lg:hidden mt-8 relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
+                style={{ aspectRatio: '16/10' }}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`mob-${idx}`}
+                    initial={{ opacity: 0, scale: 1.06 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={slide.imageUrl}
+                      alt={slide.imageAlt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width:1024px) 100vw, 0px"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${slide.accentGradient} to-transparent opacity-60`} />
+                    {/* Caption strip */}
+                    <div className="absolute bottom-0 inset-x-0 p-3">
+                      <div className="bg-black/35 backdrop-blur-md rounded-xl px-3 py-2 border border-white/10">
+                        <p className="font-jakarta text-[11px] text-white/90 font-medium leading-snug line-clamp-2">
+                          {slide.imageAlt}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* ════════════════════════════════════════════════════════════
@@ -759,33 +803,10 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
           </div>
         </motion.div>
 
-        {/* ── Mobile image strip ───────────────────────────────────────── */}
-        <div className="lg:hidden absolute bottom-0 inset-x-0 h-[200px] overflow-hidden z-0">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`mob-${idx}`}
-              initial={{ opacity: 0, scale: 1.06 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.60 }}
-              className="absolute inset-0"
-            >
-              <Image
-                src={slide.imageUrl}
-                alt={slide.imageAlt}
-                fill
-                className="object-cover object-top"
-                sizes="100vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-homeblue-900/96 via-homeblue-900/55 to-transparent" />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* ── Scroll hint ──────────────────────────────────────────────── */}
+        {/* ── Scroll hint — desktop only (mobile height is now content-driven) ── */}
         <motion.div
           style={{ opacity: scrollHintOp }}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 pointer-events-none"
+          className="hidden lg:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-1.5 pointer-events-none"
         >
           <span className="font-jakarta text-[9px] text-white/35 tracking-widest uppercase">Scroll</span>
           <motion.div

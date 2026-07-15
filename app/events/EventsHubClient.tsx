@@ -68,7 +68,10 @@ function daysUntil(iso: string) {
 }
 
 // ── EventCard ─────────────────────────────────────────────────────────────────
-function EventCard({ event, index }: { event: SiteEvent; index: number }) {
+function EventCard({ event, index, countryOptions = COUNTRY_OPTIONS }: {
+  event: SiteEvent; index: number;
+  countryOptions?: { value: string; label: string }[];
+}) {
   const cfg  = TYPE_CONFIG[event.type] ?? TYPE_CONFIG.seminar;
   const days = daysUntil(event.date);
   const past = days < 0;
@@ -114,7 +117,8 @@ function EventCard({ event, index }: { event: SiteEvent; index: number }) {
             )}
             {past && <span className="font-jakarta text-[10px] text-slate-400 italic">Completed</span>}
             {event.country && (() => {
-              const c = COUNTRY_OPTIONS.find(o => o.value === event.country);
+              const c = countryOptions.find(o => o.value === event.country)
+                ?? COUNTRY_OPTIONS.find(o => o.value === event.country);
               return c ? <span className="font-jakarta text-[10px] font-medium text-slate-500">{c.label}</span> : null;
             })()}
           </div>
@@ -176,7 +180,17 @@ function SkeletonCard() {
 }
 
 // ── Main client component ─────────────────────────────────────────────────────
-export default function EventsHubClient({ initialEvents, gridCols, gridRows }: { initialEvents: SiteEvent[]; gridCols?: number; gridRows?: number }) {
+export default function EventsHubClient({ initialEvents, gridCols, gridRows, countries }: {
+  initialEvents: SiteEvent[];
+  gridCols?: number;
+  gridRows?: number;
+  /** Effective destination list (admin add/hide aware); falls back to the static options. */
+  countries?: { value: string; label: string }[];
+}) {
+  // "All Countries" + the effective list from the server
+  const countryOptions = countries?.length
+    ? [{ value: '', label: 'All Countries' }, ...countries]
+    : COUNTRY_OPTIONS;
   const searchParams = useSearchParams();
   // cols × rowLimit drives slice(0, n) — NO CSS row properties are set.
   const cols      = clampCols(gridCols, 3);
@@ -271,7 +285,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
             {/* Country filter */}
             <select value={country} onChange={e => setCountry(e.target.value)}
               className="font-jakarta text-sm border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-primary-400 text-slate-700 bg-white cursor-pointer flex-shrink-0">
-              {COUNTRY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              {countryOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
             {/* Type filter */}
             <select value={type} onChange={e => setType(e.target.value)}
@@ -303,7 +317,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
               </div>
               <AnimatePresence mode="popLayout">
                 <div className={gridClass}>
-                  {upcoming.slice(0, cols * rowLimit).map((ev, i) => <EventCard key={ev.id} event={ev} index={i} />)}
+                  {upcoming.slice(0, cols * rowLimit).map((ev, i) => <EventCard key={ev.id} event={ev} index={i} countryOptions={countryOptions} />)}
                 </div>
               </AnimatePresence>
             </div>
@@ -318,7 +332,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows }: {
               </div>
               <AnimatePresence mode="popLayout">
                 <div className={`${gridClass} opacity-70`}>
-                  {past.slice(0, cols * rowLimit).map((ev, i) => <EventCard key={ev.id} event={ev} index={i} />)}
+                  {past.slice(0, cols * rowLimit).map((ev, i) => <EventCard key={ev.id} event={ev} index={i} countryOptions={countryOptions} />)}
                 </div>
               </AnimatePresence>
             </div>
