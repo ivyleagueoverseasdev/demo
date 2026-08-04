@@ -16,17 +16,25 @@
      --header-h  = height of the fixed Navbar's own content (info bar + brand
                    row on mobile; + nav row from the lg breakpoint up).
      --ticker-h  = height currently occupied by the admin-enabled scrolling
-                   announcement ticker (Navbar.tsx sets this via JS to 34px
-                   or 0px). Kept as CSS variables — rather than a hardcoded
-                   number baked into layout.tsx / HeroSection — so the page's
-                   top padding and the hero's negative-margin trick both grow
-                   or shrink automatically the instant the ticker toggles,
-                   with no prop drilling and no permanent gap when it's off. */
+                   announcement ticker. Both are CSS variables — rather than
+                   hardcoded numbers baked into layout.tsx / HeroSection —
+                   so the page's top padding and the hero's negative-margin
+                   trick both grow or shrink automatically as either changes,
+                   with no prop drilling and no permanent gap when off.
+     --ticker-h is driven by the [data-ticker] attribute Navbar.tsx sets on
+     <html> (not an inline pixel value) specifically so it can resolve to a
+     different height per breakpoint — 32px mobile / 34px tablet / 38px
+     desktop, per spec — the same way --header-h already does. */
   --header-h: 130px;
   --ticker-h: 0px;
 }
+:root[data-ticker="on"] { --ticker-h: 32px; }
+@media (min-width: 640px) {
+  :root[data-ticker="on"] { --ticker-h: 34px; }
+}
 @media (min-width: 1024px) {
   :root { --header-h: 242px; }
+  :root[data-ticker="on"] { --ticker-h: 38px; }
 }
 .site-main {
   padding-top: calc(var(--header-h) + var(--ticker-h));
@@ -166,9 +174,25 @@
     }
   }
 
-  /* Scrolling announcement ticker — speed driven by CSS custom property */
+  /* Scrolling announcement ticker — speed driven by CSS custom property.
+     transform-only keyframes (see @keyframes marquee below) run on the
+     compositor thread, so this is GPU-accelerated with no JS/rAF involved. */
   .ticker-track {
     animation: marquee var(--ticker-speed, 30s) linear infinite;
+    will-change: transform;
+  }
+  /* Pause on hover AND on keyboard focus of any announcement link inside —
+     :focus-within covers Tab navigation, not just mouse hover. Resumes
+     automatically the moment focus/hover leaves (no JS state needed). */
+  .ticker-row:hover .ticker-track,
+  .ticker-row:focus-within .ticker-track {
+    animation-play-state: paused;
+  }
+  /* Respect prefers-reduced-motion at the CSS layer too, as a defense-in-depth
+     fallback alongside the JS-level check in AnnouncementTicker.tsx (which
+     also switches to a single, non-duplicated, natively-scrollable list). */
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; }
   }
 
   /* Gradient text */

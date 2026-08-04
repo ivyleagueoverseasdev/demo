@@ -48,10 +48,11 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const TICKER_DEFAULT_BG   = '#D97706';
 const TICKER_DEFAULT_TEXT = '#ffffff';
 const TICKER_DEFAULT_SPEED = 30;
-// Reserved height of the ticker row when visible — kept in sync with the
-// --ticker-h CSS var consumed by app/globals.css (.site-main) and
-// HeroSection.tsx's negative-margin trick.
-const TICKER_HEIGHT = 34;
+// localStorage key for the dismiss (×) button. The VALUE stored is a
+// signature of the currently-active item ids, not just "true" — so if the
+// admin changes the announcements after a visitor dismissed the old ones,
+// the bar reappears automatically instead of staying hidden forever.
+const TICKER_DISMISS_KEY = 'iloc_ticker_dismissed_sig';
 
 // ── Dropdown menu — rendered outside any overflow-hidden ancestor ─────────
 // By placing it as `fixed` we escape any clipping context entirely.
@@ -230,11 +231,12 @@ export default function Navbar() {
   const [destinations, setDestinations] = useState<{ label: string; href: string }[]>(DESTINATIONS);
 
   // Scrolling announcement ticker — admin-editable via /admin/global
-  const [tickerItems,  setTickerItems]  = useState<TickerItem[]>([]);
-  const [tickerSpeed,  setTickerSpeed]  = useState(TICKER_DEFAULT_SPEED);
-  const [tickerBg,     setTickerBg]     = useState(TICKER_DEFAULT_BG);
-  const [tickerText,   setTickerText]   = useState(TICKER_DEFAULT_TEXT);
-  const tickerShow = tickerItems.length > 0;
+  const [tickerItems,     setTickerItems]     = useState<TickerItem[]>([]);
+  const [tickerSpeed,     setTickerSpeed]     = useState(TICKER_DEFAULT_SPEED);
+  const [tickerBg,        setTickerBg]        = useState(TICKER_DEFAULT_BG);
+  const [tickerText,      setTickerText]      = useState(TICKER_DEFAULT_TEXT);
+  const [tickerDismissed, setTickerDismissed] = useState(false);
+  const tickerShow = tickerItems.length > 0 && !tickerDismissed;
 
   const pathname  = usePathname();
   const destTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -255,11 +257,20 @@ export default function Navbar() {
             href:  `/destinations/${c.code}`,
           })));
         }
-        // Scrolling announcement ticker — skip blank-text items an admin left behind
+        // Scrolling announcement ticker — active items with real text only,
+        // in their configured display order (array order = priority).
         const validTicker: TickerItem[] = Array.isArray(gs?.tickerItems)
-          ? gs.tickerItems.filter((it: TickerItem) => it?.text?.trim())
+          ? gs.tickerItems.filter((it: TickerItem) => it?.text?.trim() && it.active !== false)
           : [];
-        setTickerItems(gs?.tickerEnabled ? validTicker : []);
+        const nextItems = gs?.tickerEnabled ? validTicker : [];
+        setTickerItems(nextItems);
+        // A visitor who dismissed a PREVIOUS set of announcements should see
+        // NEW ones again — the stored value is a signature of item ids, not
+        // just "true", so changing the content un-dismisses it automatically.
+        try {
+          const sig = nextItems.map(it => it.id).join(',');
+          setTickerDismissed(!!sig && localStorage.getItem(TICKER_DISMISS_KEY) === sig);
+        } catch { /* private mode / storage unavailable — never treat as dismissed */ }
         if (typeof gs?.tickerSpeedSec === 'number' && gs.tickerSpeedSec > 0) setTickerSpeed(gs.tickerSpeedSec);
         if (gs?.tickerBg)        setTickerBg(gs.tickerBg);
         if (gs?.tickerTextColor) setTickerText(gs.tickerTextColor);
@@ -288,11 +299,21 @@ export default function Navbar() {
   // Keep the page's top padding (--ticker-h in globals.css / .site-main) and
   // HeroSection's negative-margin trick in sync with whether the ticker is
   // actually occupying space right now — so content never sits behind the
-  // header, and there's no leftover gap once the ticker is off/scrolled away.
+  // header, and there's no leftover gap once the ticker is off/scrolled/
+  // dismissed away. A data-attribute (not an inline px value) so CSS can
+  // resolve --ticker-h to a DIFFERENT height per breakpoint — 32/34/38px —
+  // the same way --header-h already varies by breakpoint.
   useEffect(() => {
-    const h = (tickerShow && !scrolled) ? `${TICKER_HEIGHT}px` : '0px';
-    document.documentElement.style.setProperty('--ticker-h', h);
+    document.documentElement.dataset.ticker = (tickerShow && !scrolled) ? 'on' : 'off';
   }, [tickerShow, scrolled]);
+
+  function dismissTicker() {
+    try {
+      const sig = tickerItems.map(it => it.id).join(',');
+      localStorage.setItem(TICKER_DISMISS_KEY, sig);
+    } catch { /* private mode / storage unavailable — dismissal just won't persist */ }
+    setTickerDismissed(true);
+  }
 
   useEffect(() => { setMOpen(false); setDestOpen(false); setPartOpen(false); }, [pathname]);
 
@@ -338,6 +359,7 @@ export default function Navbar() {
           textColor={tickerText}
           show={tickerShow}
           collapsed={scrolled}
+          onDismiss={dismissTicker}
         />
 
         {/* Blur + shadow layer on scroll */}

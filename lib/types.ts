@@ -245,9 +245,14 @@ export interface CompanyDetails {
 
 // ── Scrolling announcement ticker (admin-editable, site-wide) ─────────────
 export interface TickerItem {
-  id:    string;
-  text:  string;
-  href?: string;  // optional link — item becomes clickable when set
+  id:      string;
+  text:    string;
+  href?:   string;   // optional link — item becomes clickable when set
+  icon?:   string;   // optional leading emoji/icon, separate from the text
+  active?: boolean;  // per-item on/off — defaults to true when unset
+  urgent?: boolean;  // accent treatment (pulsing dot) for time-sensitive items
+  // Display order is the array position — the admin editor exposes
+  // move-up/move-down controls rather than a separate numeric field.
 }
 
 export interface GlobalSettings {

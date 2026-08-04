@@ -65,29 +65,87 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 }
 
 // ── TickerEditor — list of scrolling announcement items ───────────────────
+// Display order = array order, controlled by the ↑/↓ buttons rather than a
+// separate numeric priority field — one less thing to keep in sync.
 function TickerEditor({ items, setItems }: { items: TickerItem[]; setItems: (i: TickerItem[]) => void }) {
   function update(i: number, patch: Partial<TickerItem>) {
     setItems(items.map((it, j) => j === i ? { ...it, ...patch } : it));
   }
+  function move(i: number, dir: -1 | 1) {
+    const j = i + dir;
+    if (j < 0 || j >= items.length) return;
+    const next = [...items];
+    [next[i], next[j]] = [next[j], next[i]];
+    setItems(next);
+  }
   return (
     <div className="space-y-2">
       {items.map((item, i) => (
-        <div key={item.id} className="flex gap-2 items-center">
-          <input value={item.text} onChange={e => update(i, { text: e.target.value })}
-            className={`${inp} flex-1 text-xs py-2`} placeholder="e.g. 🎉 Fall 2026 applications now open!" />
-          <input value={item.href ?? ''} onChange={e => update(i, { href: e.target.value })}
-            className={`${inp} w-40 text-xs py-2`} placeholder="Link (optional)" />
-          <button onClick={() => setItems(items.filter((_, j) => j !== i))}
-            className="px-2.5 py-2 rounded-xl border border-red-200 text-red-400 hover:bg-red-50 transition-colors flex-shrink-0">✕</button>
+        <div key={item.id} className="border border-slate-200 rounded-xl p-3 bg-slate-50/50 space-y-2">
+          <div className="flex gap-2 items-center">
+            <input value={item.icon ?? ''} onChange={e => update(i, { icon: e.target.value })}
+              className={`${inp} w-14 text-center text-sm py-2`} placeholder="🎓" title="Icon (optional)" />
+            <input value={item.text} onChange={e => update(i, { text: e.target.value })}
+              className={`${inp} flex-1 text-xs py-2`} placeholder="e.g. Applications Open for January 2027" />
+            <input value={item.href ?? ''} onChange={e => update(i, { href: e.target.value })}
+              className={`${inp} w-40 text-xs py-2`} placeholder="Link (optional)" />
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" checked={item.active !== false} onChange={e => update(i, { active: e.target.checked })}
+                  className="accent-amber-500 cursor-pointer" />
+                <span className="font-jakarta text-[11px] font-semibold text-slate-500">Active</span>
+              </label>
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" checked={item.urgent ?? false} onChange={e => update(i, { urgent: e.target.checked })}
+                  className="accent-red-500 cursor-pointer" />
+                <span className="font-jakarta text-[11px] font-semibold text-slate-500">Urgent (pulsing dot)</span>
+              </label>
+            </div>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <button onClick={() => move(i, -1)} disabled={i === 0} title="Move up"
+                className="w-7 h-7 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">↑</button>
+              <button onClick={() => move(i, 1)} disabled={i === items.length - 1} title="Move down"
+                className="w-7 h-7 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">↓</button>
+              <button onClick={() => setItems(items.filter((_, j) => j !== i))} title="Remove"
+                className="w-7 h-7 rounded-lg border border-red-200 text-red-400 hover:bg-red-50 transition-colors">✕</button>
+            </div>
+          </div>
         </div>
       ))}
       <button
-        onClick={() => setItems([...items, { id: crypto.randomUUID(), text: '', href: '' }])}
+        onClick={() => setItems([...items, { id: crypto.randomUUID(), text: '', href: '', active: true }])}
         className="font-jakarta text-xs font-semibold px-4 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
         + Add Announcement
       </button>
     </div>
   );
+}
+
+// ── Contrast checker — WCAG 2.1 relative-luminance contrast ratio ─────────
+// The ticker's colours are entirely admin-chosen, so this is the only way
+// to catch an accidentally unreadable combination (e.g. light-on-light)
+// before it ships to visitors.
+function hexToRgb(hex: string): [number, number, number] | null {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+  return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : null;
+}
+function relLuminance([r, g, b]: [number, number, number]): number {
+  const [rs, gs, bs] = [r, g, b].map(c => {
+    const cs = c / 255;
+    return cs <= 0.03928 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+function contrastRatio(hex1: string, hex2: string): number | null {
+  const rgb1 = hexToRgb(hex1);
+  const rgb2 = hexToRgb(hex2);
+  if (!rgb1 || !rgb2) return null;
+  const l1 = relLuminance(rgb1);
+  const l2 = relLuminance(rgb2);
+  const [lighter, darker] = l1 > l2 ? [l1, l2] : [l2, l1];
+  return (lighter + 0.05) / (darker + 0.05);
 }
 
 export default function AdminGlobalPage() {
@@ -246,6 +304,18 @@ export default function AdminGlobalPage() {
               ⚠ Ticker is on but has no announcement text yet — it won&apos;t show on the site until you add at least one item.
             </p>
           )}
+          {(() => {
+            const ratio = contrastRatio(gs.tickerBg || '#D97706', gs.tickerTextColor || '#ffffff');
+            // WCAG AA for normal-size text (the ticker's 13–14px copy) requires 4.5:1.
+            if (ratio !== null && ratio < 4.5) {
+              return (
+                <p className="font-jakarta text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
+                  ⚠ Low contrast: background/text colours are only {ratio.toFixed(1)}:1 — WCAG AA needs at least 4.5:1 for this text size. Pick a darker background or lighter text (or vice versa).
+                </p>
+              );
+            }
+            return null;
+          })()}
         </div>
       </div>
 
