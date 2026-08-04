@@ -11,6 +11,25 @@
   --font-dm:      'DM Sans',           system-ui, sans-serif;
   --font-bruno:   'Bruno Ace SC',      Georgia,   serif;
   --font-oswald:  'Oswald',            'Plus Jakarta Sans', sans-serif;
+
+  /* ── Fixed-header offset ──────────────────────────────────────────────────
+     --header-h  = height of the fixed Navbar's own content (info bar + brand
+                   row on mobile; + nav row from the lg breakpoint up).
+     --ticker-h  = height currently occupied by the admin-enabled scrolling
+                   announcement ticker (Navbar.tsx sets this via JS to 34px
+                   or 0px). Kept as CSS variables — rather than a hardcoded
+                   number baked into layout.tsx / HeroSection — so the page's
+                   top padding and the hero's negative-margin trick both grow
+                   or shrink automatically the instant the ticker toggles,
+                   with no prop drilling and no permanent gap when it's off. */
+  --header-h: 130px;
+  --ticker-h: 0px;
+}
+@media (min-width: 1024px) {
+  :root { --header-h: 242px; }
+}
+.site-main {
+  padding-top: calc(var(--header-h) + var(--ticker-h));
 }
 
 /* Embossed brand wordmark — raised/3D look using layered light+dark shadows.
@@ -145,6 +164,11 @@
     .uni-marquee-track-reverse {
       animation-duration: calc(var(--uni-marquee-speed, 40s) / 2.2);
     }
+  }
+
+  /* Scrolling announcement ticker — speed driven by CSS custom property */
+  .ticker-track {
+    animation: marquee var(--ticker-speed, 30s) linear infinite;
   }
 
   /* Gradient text */

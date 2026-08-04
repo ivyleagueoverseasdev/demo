@@ -8,7 +8,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import ImagePicker from '@/components/admin/ImagePicker';
-import type { GlobalSettings } from '@/lib/types';
+import type { GlobalSettings, TickerItem } from '@/lib/types';
 import { SkeletonFormBlock } from '@/components/admin/SkeletonCard';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
@@ -36,6 +36,11 @@ const EMPTY: GlobalSettings = {
   footerTermsUrl:          '',
   footerFoundedBy:         '',
   pageHeroBadges:          {},
+  tickerEnabled:           false,
+  tickerItems:             [],
+  tickerSpeedSec:          30,
+  tickerBg:                '#D97706',
+  tickerTextColor:         '#ffffff',
 };
 
 // Pages whose hero-image caption badge is editable here (About & Services
@@ -55,6 +60,32 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
       <label className="block font-jakarta text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">{label}</label>
       {children}
       {hint && <p className="font-jakarta text-[11px] text-slate-400 mt-1">{hint}</p>}
+    </div>
+  );
+}
+
+// ── TickerEditor — list of scrolling announcement items ───────────────────
+function TickerEditor({ items, setItems }: { items: TickerItem[]; setItems: (i: TickerItem[]) => void }) {
+  function update(i: number, patch: Partial<TickerItem>) {
+    setItems(items.map((it, j) => j === i ? { ...it, ...patch } : it));
+  }
+  return (
+    <div className="space-y-2">
+      {items.map((item, i) => (
+        <div key={item.id} className="flex gap-2 items-center">
+          <input value={item.text} onChange={e => update(i, { text: e.target.value })}
+            className={`${inp} flex-1 text-xs py-2`} placeholder="e.g. 🎉 Fall 2026 applications now open!" />
+          <input value={item.href ?? ''} onChange={e => update(i, { href: e.target.value })}
+            className={`${inp} w-40 text-xs py-2`} placeholder="Link (optional)" />
+          <button onClick={() => setItems(items.filter((_, j) => j !== i))}
+            className="px-2.5 py-2 rounded-xl border border-red-200 text-red-400 hover:bg-red-50 transition-colors flex-shrink-0">✕</button>
+        </div>
+      ))}
+      <button
+        onClick={() => setItems([...items, { id: crypto.randomUUID(), text: '', href: '' }])}
+        className="font-jakarta text-xs font-semibold px-4 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
+        + Add Announcement
+      </button>
     </div>
   );
 }
@@ -170,6 +201,51 @@ export default function AdminGlobalPage() {
           <Field label="Notice Banner" hint="Optional announcement text. Leave empty to hide.">
             <input value={gs.noticeBanner ?? ''} onChange={e => set({ noticeBanner: e.target.value })} className={inp} placeholder="🎉 Fall 2026 intake applications now open!" />
           </Field>
+        </div>
+      </div>
+
+      {/* Scrolling announcement ticker */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60 flex items-center justify-between">
+          <div>
+            <h3 className="font-jakarta font-bold text-slate-700">📢 Scrolling Ticker</h3>
+            <p className="font-jakarta text-xs text-slate-400 mt-0.5">
+              Continuously-scrolling strip at the very top of every page, above the header.
+            </p>
+          </div>
+          <label className="flex items-center gap-2 cursor-pointer flex-shrink-0">
+            <span className="font-jakarta text-xs font-semibold text-slate-500">{gs.tickerEnabled ? 'On' : 'Off'}</span>
+            <input type="checkbox" checked={gs.tickerEnabled ?? false} onChange={e => set({ tickerEnabled: e.target.checked })}
+              className="w-9 h-5 accent-amber-500 cursor-pointer" />
+          </label>
+        </div>
+        <div className="p-6 space-y-4">
+          <TickerEditor items={gs.tickerItems ?? []} setItems={items => set({ tickerItems: items })} />
+          <div className="grid sm:grid-cols-3 gap-4 pt-2">
+            <Field label="Scroll Speed" hint="Seconds for one full loop — lower = faster.">
+              <input type="number" min={5} max={120} value={gs.tickerSpeedSec ?? 30}
+                onChange={e => set({ tickerSpeedSec: Number(e.target.value) })} className={inp} />
+            </Field>
+            <Field label="Background Colour">
+              <div className="flex items-center gap-2">
+                <input type="color" value={gs.tickerBg || '#D97706'} onChange={e => set({ tickerBg: e.target.value })}
+                  className="w-10 h-10 rounded-lg border border-slate-200 cursor-pointer" />
+                <input value={gs.tickerBg ?? ''} onChange={e => set({ tickerBg: e.target.value })} className={`${inp} flex-1`} placeholder="#D97706" />
+              </div>
+            </Field>
+            <Field label="Text Colour">
+              <div className="flex items-center gap-2">
+                <input type="color" value={gs.tickerTextColor || '#ffffff'} onChange={e => set({ tickerTextColor: e.target.value })}
+                  className="w-10 h-10 rounded-lg border border-slate-200 cursor-pointer" />
+                <input value={gs.tickerTextColor ?? ''} onChange={e => set({ tickerTextColor: e.target.value })} className={`${inp} flex-1`} placeholder="#ffffff" />
+              </div>
+            </Field>
+          </div>
+          {gs.tickerEnabled && !(gs.tickerItems ?? []).some(i => i.text.trim()) && (
+            <p className="font-jakarta text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+              ⚠ Ticker is on but has no announcement text yet — it won&apos;t show on the site until you add at least one item.
+            </p>
+          )}
         </div>
       </div>
 

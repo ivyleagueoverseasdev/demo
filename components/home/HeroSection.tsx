@@ -14,7 +14,6 @@ import { GraduationCap } from 'lucide-react';
 import { COMPANY, DEFAULT_HERO_SLIDES } from '@/lib/data';
 import type { HeroSlide } from '@/lib/types';
 import DemoModal from './DemoModal';
-import { HEADER_HEIGHT } from '@/components/shared/Navbar';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animation constants
@@ -359,8 +358,14 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
         className="w-full relative overflow-hidden flex items-center lg:min-h-screen"
         style={{
           background: 'linear-gradient(160deg,#07257C 0%,#0C37A0 18%,#1249C4 55%,#1A5CE8 100%)',
-          marginTop: `-${HEADER_HEIGHT}px`,
-          paddingTop: `${HEADER_HEIGHT}px`,
+          // Pulls the hero up under the fixed header, then pads it back down
+          // by exactly the header's current height — including the
+          // scrolling ticker when it's showing. Both --header-h and
+          // --ticker-h are CSS custom properties (see globals.css /
+          // Navbar.tsx) so this stays correct automatically as either one
+          // changes, with no prop drilling.
+          marginTop: 'calc(-1 * (var(--header-h) + var(--ticker-h)))',
+          paddingTop: 'calc(var(--header-h) + var(--ticker-h))',
         }}
       >
         {/* ── Decorative background layer ──────────────────────────────── */}

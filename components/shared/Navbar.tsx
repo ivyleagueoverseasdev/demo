@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { COMPANY, buildWhatsAppLink } from '@/lib/data';
+import AnnouncementTicker from './AnnouncementTicker';
+import type { TickerItem } from '@/lib/types';
 
 // ── Nav data ──────────────────────────────────────────────────────────────
 const NAV = [
@@ -42,8 +44,14 @@ const PARTNERS = [
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// Full expanded header height: infobar(36) + brand(148) + nav(58) = 242px
-export const HEADER_HEIGHT = 242;
+// Default ticker look while settings are loading / if the admin leaves colours blank.
+const TICKER_DEFAULT_BG   = '#D97706';
+const TICKER_DEFAULT_TEXT = '#ffffff';
+const TICKER_DEFAULT_SPEED = 30;
+// Reserved height of the ticker row when visible — kept in sync with the
+// --ticker-h CSS var consumed by app/globals.css (.site-main) and
+// HeroSection.tsx's negative-margin trick.
+const TICKER_HEIGHT = 34;
 
 // ── Dropdown menu — rendered outside any overflow-hidden ancestor ─────────
 // By placing it as `fixed` we escape any clipping context entirely.
@@ -221,6 +229,13 @@ export default function Navbar() {
   const [contact,   setContact]   = useState<{ phone: string; email: string; wa: string }>({ phone: COMPANY.phone, email: COMPANY.email, wa: COMPANY.wa });
   const [destinations, setDestinations] = useState<{ label: string; href: string }[]>(DESTINATIONS);
 
+  // Scrolling announcement ticker — admin-editable via /admin/global
+  const [tickerItems,  setTickerItems]  = useState<TickerItem[]>([]);
+  const [tickerSpeed,  setTickerSpeed]  = useState(TICKER_DEFAULT_SPEED);
+  const [tickerBg,     setTickerBg]     = useState(TICKER_DEFAULT_BG);
+  const [tickerText,   setTickerText]   = useState(TICKER_DEFAULT_TEXT);
+  const tickerShow = tickerItems.length > 0;
+
   const pathname  = usePathname();
   const destTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const partTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -240,6 +255,14 @@ export default function Navbar() {
             href:  `/destinations/${c.code}`,
           })));
         }
+        // Scrolling announcement ticker — skip blank-text items an admin left behind
+        const validTicker: TickerItem[] = Array.isArray(gs?.tickerItems)
+          ? gs.tickerItems.filter((it: TickerItem) => it?.text?.trim())
+          : [];
+        setTickerItems(gs?.tickerEnabled ? validTicker : []);
+        if (typeof gs?.tickerSpeedSec === 'number' && gs.tickerSpeedSec > 0) setTickerSpeed(gs.tickerSpeedSec);
+        if (gs?.tickerBg)        setTickerBg(gs.tickerBg);
+        if (gs?.tickerTextColor) setTickerText(gs.tickerTextColor);
         const name = gs?.businessNameText || gs?.businessNameDisplayName || gs?.brandName;
         if (name) setBrandText(name);
         const cd = d?.companyDetails;
@@ -261,6 +284,15 @@ export default function Navbar() {
 
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, 'change', v => setScrolled(v > 60));
+
+  // Keep the page's top padding (--ticker-h in globals.css / .site-main) and
+  // HeroSection's negative-margin trick in sync with whether the ticker is
+  // actually occupying space right now — so content never sits behind the
+  // header, and there's no leftover gap once the ticker is off/scrolled away.
+  useEffect(() => {
+    const h = (tickerShow && !scrolled) ? `${TICKER_HEIGHT}px` : '0px';
+    document.documentElement.style.setProperty('--ticker-h', h);
+  }, [tickerShow, scrolled]);
 
   useEffect(() => { setMOpen(false); setDestOpen(false); setPartOpen(false); }, [pathname]);
 
@@ -296,6 +328,18 @@ export default function Navbar() {
         className="fixed inset-x-0 top-0 z-[100]"
         style={{ backgroundColor: bg, overflow: 'visible' }}
       >
+        {/* ── LAYER 0: SCROLLING ANNOUNCEMENT TICKER (admin-editable) ──
+            Rendered first so it sits above the info bar; collapses with the
+            rest of the header on scroll via the same `scrolled` state. */}
+        <AnnouncementTicker
+          items={tickerItems}
+          speedSec={tickerSpeed}
+          bg={tickerBg}
+          textColor={tickerText}
+          show={tickerShow}
+          collapsed={scrolled}
+        />
+
         {/* Blur + shadow layer on scroll */}
         <motion.div
           className="absolute inset-0 pointer-events-none"

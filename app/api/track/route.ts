@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
+import { istDateStr, istDaysAgo, hashVisitor, clientIp } from '@/lib/analytics';
 
 // ── Source classifier ─────────────────────────────────────────────────────────
 function classifySource(ref: string | null): string {
@@ -26,14 +27,17 @@ function classifySource(ref: string | null): string {
 }
 
 // ── KV shape ──────────────────────────────────────────────────────────────────
-// v  = total views     c = views by "COUNTRY|City"    s = views by source
-// r  = views by Indian state "MH|Pune" (regionCode|city, city optional)
-// n  = brand-new visitors (first visit ever)          u = unique visitors today
+// v = total page views      c = views by "COUNTRY|City"    s = views by source
+// r = views by Indian state "MH|Pune" (regionCode|city, city optional)
+// h = visitor-hash set seen THIS DAY (dedup key for "u")
+// u = distinct visitors this day (unique visitors)
+// n = distinct visitors this day who were NOT seen in the trailing 30 days (new visitors)
 interface TrafficDay {
   v: number;
   c: Record<string, number>;
   s: Record<string, number>;
   r?: Record<string, number>;
+  h?: Record<string, 1>;
   n?: number;
   u?: number;
 }
@@ -44,12 +48,34 @@ interface TrafficDay {
 // admin login / session / content-save writes start failing with
 // "KV put() limit exceeded for the day" (HTTP 500 on /admin/login).
 //
-// We cap the number of tracked views per day using the day counter we already
-// store (no extra key needed). Each tracked view costs at most 2 writes
-// (day + live), so ANALYTICS writes are bounded to ≈ 2 × DAILY_TRACK_CAP,
-// leaving the rest of the 1,000/day budget reserved for admin operations.
-// Raise this only after upgrading to the paid KV plan (1,000 → 1M+ writes/day).
+// Each tracked view costs at most 2 writes (day + live). The visitor-hash
+// dedup below adds NO extra writes — the hash set lives inside the same day
+// object we already read and write — and NO extra reads on repeat views
+// (the 30-day "new visitor" lookback only runs once, the first time a given
+// hash is seen that day). Raise this only after upgrading the KV plan.
 const DAILY_TRACK_CAP = 350;
+
+// Rolling window used to decide "new" vs "returning" visitor. A visitor
+// hash not seen in any of the preceding N days counts as new today.
+const NEW_VISITOR_WINDOW_DAYS = 29;
+
+/**
+ * Was this visitor hash seen on any of the preceding N IST days? Only
+ * called once per hash per day (guarded by the `!seenToday` check below),
+ * so worst case this adds N reads per UNIQUE visitor — never per view.
+ */
+async function wasSeenInLast29Days(kv: KVNamespace, hash: string): Promise<boolean> {
+  const dates = Array.from({ length: NEW_VISITOR_WINDOW_DAYS }, (_, i) => istDaysAgo(i + 1));
+  const raws  = await Promise.all(dates.map(d => kv.get(`traffic:day:${d}`)));
+  for (const raw of raws) {
+    if (!raw) continue;
+    try {
+      const day = JSON.parse(raw) as TrafficDay;
+      if (day.h?.[hash]) return true;
+    } catch { /* skip malformed */ }
+  }
+  return false;
+}
 
 // ── Write page view to KV ─────────────────────────────────────────────────────
 async function recordPageView(
@@ -57,12 +83,10 @@ async function recordPageView(
   location: string,
   source: string,
   region: string | null,
-  newVisitor: boolean,
-  firstToday: boolean,
+  visitorHash: string,
 ): Promise<void> {
-  const now    = new Date();
-  const date   = now.toISOString().slice(0, 10);
-  const minute = now.toISOString().slice(0, 16);
+  const date   = istDateStr();
+  const minute = new Date().toISOString().slice(0, 16);
 
   try {
     const dayKey = `traffic:day:${date}`;
@@ -80,8 +104,20 @@ async function recordPageView(
       day.r = day.r ?? {};
       day.r[region] = (day.r[region] ?? 0) + 1;
     }
-    if (newVisitor) day.n = (day.n ?? 0) + 1;
-    if (firstToday) day.u = (day.u ?? 0) + 1;
+
+    // Server-side dedup — immune to cleared localStorage / incognito /
+    // repeat testing, since it's keyed off IP+UA rather than anything the
+    // client can wipe. Same visitor hitting refresh 50 times today still
+    // only counts once here.
+    day.h = day.h ?? {};
+    if (!day.h[visitorHash]) {
+      day.h[visitorHash] = 1;
+      day.u = (day.u ?? 0) + 1;
+      if (!(await wasSeenInLast29Days(kv, visitorHash))) {
+        day.n = (day.n ?? 0) + 1;
+      }
+    }
+
     await kv.put(dayKey, JSON.stringify(day), { expirationTtl: 95 * 86_400 });
 
     // Live bucket — best-effort; only reached while under the daily cap.
@@ -98,15 +134,11 @@ export async function POST(req: NextRequest) {
   try {
     let page   = '/';
     let refStr = '';
-    let nv     = false;   // brand-new visitor (first ever visit)
-    let ft     = false;   // first page view of the calendar day
 
     try {
-      const body = await req.json() as { page?: string; ref?: string; nv?: boolean; ft?: boolean };
-      if (typeof body.page === 'string')  page   = body.page;
-      if (typeof body.ref  === 'string')  refStr = body.ref;
-      if (body.nv === true) nv = true;
-      if (body.ft === true) ft = true;
+      const body = await req.json() as { page?: string; ref?: string };
+      if (typeof body.page === 'string') page   = body.page;
+      if (typeof body.ref  === 'string') refStr = body.ref;
     } catch { }
 
     // Never track admin or api paths
@@ -142,7 +174,9 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      cfCtx.ctx.waitUntil(recordPageView(kv, location, source, region, nv, ft));
+      const visitorHash = await hashVisitor(clientIp(req.headers), req.headers.get('user-agent') ?? '');
+
+      cfCtx.ctx.waitUntil(recordPageView(kv, location, source, region, visitorHash));
     }
   } catch { }
 

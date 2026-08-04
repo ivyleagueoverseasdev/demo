@@ -35,15 +35,18 @@ interface TrafficStats {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+// Explicit Asia/Kolkata timezone — without it, these render in whatever
+// timezone the admin's own device/browser happens to be set to, which can
+// silently disagree with the IST-bucketed data from /api/traffic.
 function formatDate(iso: string) {
   try {
-    return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
   } catch { return iso; }
 }
 
 function formatTime(iso: string) {
   try {
-    return new Date(iso).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    return new Date(iso).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) + ' IST';
   } catch { return ''; }
 }
 
@@ -294,9 +297,10 @@ export default function AdminAnalyticsPage() {
 
       {/* ══ WEB TRAFFIC SECTION ══════════════════════════════════════════════ */}
       <section className="space-y-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <h2 className="font-jakarta font-bold text-slate-800 text-lg">🌐 Web Traffic</h2>
           <span className="font-jakarta text-xs text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Last 30 days</span>
+          <span className="font-jakarta text-xs text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">🕐 Dates shown in IST</span>
         </div>
 
         {trafficLoading ? <SkeletonTrafficSection /> : (
@@ -317,30 +321,40 @@ export default function AdminAnalyticsPage() {
               </div>
 
               <TrafficMetricCard
-                label="Today"
+                label="Today — Page Views"
                 value={traffic?.today ?? 0}
                 trend={traffic?.todayTrend ?? 0}
                 sub="vs yesterday"
                 accent="#1249C4"
               />
               <TrafficMetricCard
-                label="This Week"
+                label="This Week — Page Views"
                 value={traffic?.week ?? 0}
                 trend={traffic?.weekTrend ?? 0}
                 sub="vs last 7 days"
                 accent="#7C3AED"
               />
               <TrafficMetricCard
-                label="This Month"
+                label="This Month — Page Views"
                 value={traffic?.month ?? 0}
                 trend={traffic?.monthTrend ?? 0}
                 sub="vs prior month"
                 accent="#D97706"
               />
             </div>
+            <p className="font-jakarta text-[11px] text-slate-400 -mt-2">
+              A page view counts every page load — one visitor browsing 5 pages counts as 5 views. See below for actual visitor counts.
+            </p>
 
-            {/* New visitors row */}
+            {/* Unique / new visitors row — real people, not page loads. The
+                same person reloading or revisiting today does NOT add to
+                these counts (dedup is by device+network, done server-side —
+                see lib/analytics.ts — so it survives cleared cache/incognito). */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
+                <div className="font-jakarta font-extrabold text-2xl text-homeblue">{(traffic?.uniqueToday ?? 0).toLocaleString()}</div>
+                <div className="font-jakarta text-xs text-slate-500 mt-1">👤 Unique Visitors Today</div>
+              </div>
               <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
                 <div className="font-jakarta font-extrabold text-2xl text-emerald-600">{(traffic?.newToday ?? 0).toLocaleString()}</div>
                 <div className="font-jakarta text-xs text-slate-500 mt-1">🆕 New Visitors Today</div>
@@ -353,17 +367,16 @@ export default function AdminAnalyticsPage() {
                 <div className="font-jakarta font-extrabold text-2xl text-emerald-800">{(traffic?.newMonth ?? 0).toLocaleString()}</div>
                 <div className="font-jakarta text-xs text-slate-500 mt-1">New This Month</div>
               </div>
-              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 text-center">
-                <div className="font-jakarta font-extrabold text-2xl text-homeblue">{(traffic?.uniqueToday ?? 0).toLocaleString()}</div>
-                <div className="font-jakarta text-xs text-slate-500 mt-1">Unique Visitors Today</div>
-              </div>
             </div>
+            <p className="font-jakarta text-[11px] text-slate-400 -mt-2">
+              &quot;New&quot; = not seen on this site in the last 30 days. &quot;Unique&quot; = distinct visitors today, however many times each one visited.
+            </p>
 
             {/* Area chart */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-jakarta font-bold text-slate-800">Page Views — 30 Day Trend</h3>
-                <span className="font-jakarta text-xs text-slate-400">{traffic?.month.toLocaleString() ?? 0} total</span>
+                <h3 className="font-jakarta font-bold text-slate-800">Page Views vs Unique Visitors — 30 Day Trend</h3>
+                <span className="font-jakarta text-xs text-slate-400">{traffic?.month.toLocaleString() ?? 0} views total</span>
               </div>
               <TrafficChart data={traffic?.chart ?? []} />
             </div>

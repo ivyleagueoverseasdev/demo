@@ -34,13 +34,13 @@ function UniLogoCard({ uni }: { uni: UniEntry }) {
   }, []);
 
   return (
-    // Responsive card: compact on phones so 3–4 logos are visible per row,
-    // full size from the sm breakpoint up.
+    // Responsive card: tight on phones so 4+ logos are visible per row at
+    // once, full size from the sm breakpoint up.
     <div
       className="
-        flex-shrink-0 flex items-center justify-center rounded-2xl border shadow-sm
-        mx-1.5 px-3 h-[60px] min-w-[104px] max-w-[150px]
-        sm:mx-2.5 sm:px-7 sm:h-[92px] sm:min-w-[180px] sm:max-w-[240px]
+        flex-shrink-0 flex items-center justify-center rounded-xl border shadow-sm
+        mx-1 px-2 h-[48px] min-w-[76px] max-w-[104px]
+        sm:mx-2.5 sm:px-7 sm:h-[92px] sm:min-w-[180px] sm:max-w-[240px] sm:rounded-2xl
       "
       style={{
         background: uni.darkBg ? '#003B5C' : '#ffffff',
@@ -50,7 +50,7 @@ function UniLogoCard({ uni }: { uni: UniEntry }) {
     >
       {failed ? (
         /* Slim text fallback — only fires if file is genuinely missing */
-        <span className="font-jakarta text-[11px] font-semibold text-slate-400 text-center leading-tight px-1">
+        <span className="font-jakarta text-[9px] sm:text-[11px] font-semibold text-slate-400 text-center leading-tight px-1">
           {uni.name}
         </span>
       ) : (
@@ -61,7 +61,7 @@ function UniLogoCard({ uni }: { uni: UniEntry }) {
           alt={uni.name}
           loading="lazy"
           onError={() => setFailed(true)}
-          className="block w-auto h-auto object-contain max-h-[36px] max-w-[92px] sm:max-h-[56px] sm:max-w-[160px]"
+          className="block w-auto h-auto object-contain max-h-[28px] max-w-[64px] sm:max-h-[56px] sm:max-w-[160px]"
         />
       )}
     </div>
@@ -89,8 +89,16 @@ function MarqueeRow({
         maskImage:       'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
       }}
     >
+      {/* w-max is load-bearing: translateX(-50%) in the marquee keyframes is a
+          percentage of THIS element's own box. Without an explicit
+          width:max-content, a flex row in normal document flow stretches to
+          its parent's width instead of its (much wider) doubled content, so
+          -50% only slides roughly half the visible strip before snapping
+          back — logos jump/skip instead of scrolling all the way through.
+          w-max makes the track's box exactly as wide as its content, so
+          -50% always lands on precisely one full (undoubled) copy. */}
       <div
-        className={`flex items-center ${reverse ? 'uni-marquee-track-reverse' : 'uni-marquee-track'}`}
+        className={`flex items-center w-max ${reverse ? 'uni-marquee-track-reverse' : 'uni-marquee-track'}`}
         style={cssVar}
         aria-hidden="true"
       >

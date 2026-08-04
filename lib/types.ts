@@ -243,10 +243,24 @@ export interface CompanyDetails {
   contactHeroImageUrl?: string; // hero banner on the /contact page
 }
 
+// ── Scrolling announcement ticker (admin-editable, site-wide) ─────────────
+export interface TickerItem {
+  id:    string;
+  text:  string;
+  href?: string;  // optional link — item becomes clickable when set
+}
+
 export interface GlobalSettings {
   brandName:               string;   // override display name (e.g. "ILOC" → custom)
   heroImages:              string[]; // up to 3 carousel URLs
   noticeBanner:            string;   // optional top-bar text; empty = hidden
+
+  // ── Scrolling ticker — continuous marquee strip at the very top of every page ──
+  tickerEnabled?:   boolean;
+  tickerItems?:     TickerItem[];
+  tickerSpeedSec?:  number;   // seconds for one full loop — lower = faster
+  tickerBg?:        string;   // hex background colour
+  tickerTextColor?: string;   // hex text colour
   whatsappUrl:             string;   // full wa.me URL
   whatsappMessage?:        string;   // pre-filled greeting text appended to every WhatsApp link as ?text=
   mainLogoUrl?:            string;   // custom logo image URL (optional — falls back to SVG)

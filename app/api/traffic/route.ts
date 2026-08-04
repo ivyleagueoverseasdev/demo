@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getOptionalRequestContext } from '@cloudflare/next-on-pages';
 import { validateAdminToken } from '@/lib/kv';
 import { getBearerToken, CORS } from '@/lib/edge-utils';
+import { istDateStr, istDaysAgo } from '@/lib/analytics';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 interface TrafficDay {
@@ -12,8 +13,9 @@ interface TrafficDay {
   c: Record<string, number>;
   s: Record<string, number>;
   r?: Record<string, number>;   // Indian state buckets "MH|Pune" / "MH"
-  n?: number;                   // brand-new visitors (first ever visit)
-  u?: number;                   // unique visitors that day
+  h?: Record<string, 1>;        // visitor-hash set seen this day (dedup key)
+  n?: number;                   // new visitors (not seen in the trailing 30 days)
+  u?: number;                   // unique visitors this day
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -69,8 +71,16 @@ const SOURCE_LABELS: Record<string, string> = {
   referral:  'Other Referral',
 };
 
-function utcDate(daysBack: number): string {
-  return new Date(Date.now() - daysBack * 86_400_000).toISOString().slice(0, 10);
+// All "today" / date-range boundaries use IST (UTC+5:30) calendar days —
+// the business operates out of Pune, so a visit at, say, 1am IST must land
+// in "today's" bucket, not get pushed into UTC's previous day.
+function dayLabel(date: string): string {
+  // date is an IST calendar date string (YYYY-MM-DD); format with an
+  // explicit UTC anchor + UTC output timezone so day/month never shift
+  // regardless of the runtime's own default timezone.
+  return new Date(date + 'T00:00:00Z').toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'short', timeZone: 'UTC',
+  });
 }
 
 function pctChange(curr: number, prev: number): number {
@@ -86,15 +96,14 @@ function emptyPayload(days: string[]) {
     newToday: 0, newWeek: 0, newMonth: 0,
     uniqueToday: 0,
     chart: days.slice(-30).map(date => ({
-      date, views: 0, newVisitors: 0,
-      label: new Date(date + 'T00:00:00Z').toLocaleDateString('en-GB', {
-        day: 'numeric', month: 'short',
-      }),
+      date, views: 0, uniqueVisitors: 0, newVisitors: 0,
+      label: dayLabel(date),
     })),
     countries: [],
     sources: [],
     indiaStates: [],
     indiaCities: [],
+    timezone: 'IST (UTC+5:30)',
   };
 }
 
@@ -107,12 +116,12 @@ export async function GET(req: NextRequest) {
   const kv = getOptionalRequestContext()?.env?.CONTENT_KV;
   if (!kv) {
     // Local dev without Wrangler — return an empty scaffold
-    const days = Array.from({ length: 62 }, (_, i) => utcDate(61 - i));
+    const days = Array.from({ length: 62 }, (_, i) => istDaysAgo(61 - i));
     return json(emptyPayload(days));
   }
 
-  // ── Build the 62-day date list (oldest → newest) ────────────────────────────
-  const days = Array.from({ length: 62 }, (_, i) => utcDate(61 - i));
+  // ── Build the 62-day date list (oldest → newest), IST calendar days ────────
+  const days = Array.from({ length: 62 }, (_, i) => istDaysAgo(61 - i));
 
   // Fetch all daily keys in parallel
   const rawValues = await Promise.all(days.map(d => kv.get(`traffic:day:${d}`)));
@@ -121,15 +130,15 @@ export async function GET(req: NextRequest) {
     if (raw) dayData.set(days[i], JSON.parse(raw) as TrafficDay);
   });
 
-  // ── Reference dates ─────────────────────────────────────────────────────────
-  const today       = utcDate(0);
-  const yesterday   = utcDate(1);
-  const weekStart   = utcDate(6);   // 7-day window: today back 6 days
-  const prevWkStart = utcDate(13);  // prior 7 days
-  const prevWkEnd   = utcDate(7);
-  const monthStart  = utcDate(29);  // 30-day window: today back 29 days
-  const prevMoStart = utcDate(59);  // prior 30 days
-  const prevMoEnd   = utcDate(30);
+  // ── Reference dates (IST) ────────────────────────────────────────────────────
+  const today       = istDateStr();
+  const yesterday   = istDaysAgo(1);
+  const weekStart   = istDaysAgo(6);   // 7-day window: today back 6 days
+  const prevWkStart = istDaysAgo(13);  // prior 7 days
+  const prevWkEnd   = istDaysAgo(7);
+  const monthStart  = istDaysAgo(29);  // 30-day window: today back 29 days
+  const prevMoStart = istDaysAgo(59);  // prior 30 days
+  const prevMoEnd   = istDaysAgo(30);
 
   const viewsFor = (d: string) => dayData.get(d)?.v ?? 0;
 
@@ -157,14 +166,15 @@ export async function GET(req: NextRequest) {
   const liveVals = await Promise.all(liveKeys.map(k => kv.get(k)));
   const live     = liveVals.reduce((sum, v) => sum + (v ? parseInt(v, 10) : 0), 0);
 
-  // ── Chart: last 30 days ascending ───────────────────────────────────────────
+  // ── Chart: last 30 days ascending — Page Views vs Unique Visitors ──────────
+  // Two distinct series so the graph can't be read as "visitor count" when
+  // it's really page views (a single visitor loading 5 pages = 5 views).
   const chart = days.slice(-30).map(date => ({
     date,
-    views:       dayData.get(date)?.v ?? 0,
-    newVisitors: dayData.get(date)?.n ?? 0,
-    label: new Date(date + 'T00:00:00Z').toLocaleDateString('en-GB', {
-      day: 'numeric', month: 'short',
-    }),
+    views:          dayData.get(date)?.v ?? 0,
+    uniqueVisitors: dayData.get(date)?.u ?? 0,
+    newVisitors:    dayData.get(date)?.n ?? 0,
+    label: dayLabel(date),
   }));
 
   // ── New / unique visitor totals ──────────────────────────────────────────────
@@ -281,5 +291,6 @@ export async function GET(req: NextRequest) {
     sources,
     indiaStates,
     indiaCities,
+    timezone: 'IST (UTC+5:30)',
   });
 }

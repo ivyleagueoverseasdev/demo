@@ -63,11 +63,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PageTracker />
         <Navbar />
         {/*
-          pt-[130px]: clears info-bar + brand row on mobile (no nav strip below lg)
-          lg:pt-[242px]: matches HEADER_HEIGHT on desktop (info 36 + brand 148 + nav 58)
-          overflow-x-hidden guards every page against accidental horizontal bleed
+          .site-main (globals.css): padding-top = var(--header-h) + var(--ticker-h).
+          --header-h is 130px on mobile / 242px from lg up (info bar + brand
+          row, + nav row at lg). --ticker-h is 0 unless the admin-enabled
+          scrolling announcement ticker is currently showing (Navbar.tsx sets
+          it live), so the page never sits behind the fixed header in either
+          state and there's no permanent gap when the ticker is off.
+          overflow-x-hidden guards every page against accidental horizontal bleed.
         */}
-        <main className="pt-[130px] lg:pt-[242px] overflow-x-hidden">{children}</main>
+        <main className="site-main overflow-x-hidden">{children}</main>
         <Footer />
         <FloatingActions />
       </body>
