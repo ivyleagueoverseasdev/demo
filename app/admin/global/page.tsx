@@ -9,6 +9,7 @@ import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import ImagePicker from '@/components/admin/ImagePicker';
 import type { GlobalSettings, TickerItem } from '@/lib/types';
+import { DEFAULT_TICKER_ITEMS } from '@/lib/data';
 import { SkeletonFormBlock } from '@/components/admin/SkeletonCard';
 
 const inp = 'w-full font-jakarta text-sm border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-50 text-slate-800 placeholder-slate-300 bg-white';
@@ -36,8 +37,11 @@ const EMPTY: GlobalSettings = {
   footerTermsUrl:          '',
   footerFoundedBy:         '',
   pageHeroBadges:          {},
-  tickerEnabled:           false,
-  tickerItems:             [],
+  // Matches Navbar.tsx's fallback exactly: until this form is saved once,
+  // the live site shows these same defaults (see lib/data.ts), so the
+  // editor should show them too rather than a misleading "off" state.
+  tickerEnabled:           true,
+  tickerItems:             DEFAULT_TICKER_ITEMS,
   tickerSpeedSec:          30,
   tickerBg:                '#D97706',
   tickerTextColor:         '#ffffff',

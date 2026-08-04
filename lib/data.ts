@@ -1,4 +1,4 @@
-import type { Country2026, HeroSlide, Testimonial, Stat, SiteEvent, SiteMedia, ServiceItem, ProcessStepItem, Update2026Card } from './types';
+import type { Country2026, HeroSlide, Testimonial, Stat, SiteEvent, SiteMedia, ServiceItem, ProcessStepItem, Update2026Card, TickerItem } from './types';
 
 // ── Company constants ─────────────────────────────────────────────────────
 export const COMPANY = {
@@ -1198,4 +1198,22 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     accentGradient:   'from-homeblue-900/60 via-homeblue-800/30',
     enabled:          true,
   },
+];
+
+// ── Default scrolling ticker announcements (admin-editable via KV) ────────
+// Shown out-of-the-box until an admin explicitly configures /admin/global →
+// Scrolling Ticker (see Navbar.tsx / app/admin/global/page.tsx — the
+// fallback only applies when the KV blob has never set `tickerEnabled` at
+// all, so an admin who deliberately turns it off stays turned off).
+// IDs are fixed strings (not crypto.randomUUID()) so the dismiss-button
+// signature in Navbar.tsx stays stable across page loads and deploys.
+// No flag emoji — on Windows these render as bare two-letter codes ("CA",
+// "GB") instead of a flag, which is exactly the "short forms" issue that
+// was removed site-wide elsewhere; themed emoji are used instead.
+export const DEFAULT_TICKER_ITEMS: TickerItem[] = [
+  { id: 'ticker-default-1', icon: '🎓', text: 'Applications Open for January 2027', href: '/contact',              active: true },
+  { id: 'ticker-default-2', icon: '🍁', text: 'Canada Admissions Open',             href: '/destinations/canada',  active: true },
+  { id: 'ticker-default-3', icon: '📘', text: 'UK Scholarships Available',          href: '/destinations/uk',      active: true },
+  { id: 'ticker-default-4', icon: '💰', text: 'Up to 50% Scholarship',              href: '/services',             active: true, urgent: true },
+  { id: 'ticker-default-5', icon: '📞', text: 'Book Free Counselling',              href: '/contact',              active: true },
 ];

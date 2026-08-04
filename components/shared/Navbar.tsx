@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { COMPANY, buildWhatsAppLink } from '@/lib/data';
+import { COMPANY, buildWhatsAppLink, DEFAULT_TICKER_ITEMS } from '@/lib/data';
 import AnnouncementTicker from './AnnouncementTicker';
 import type { TickerItem } from '@/lib/types';
 
@@ -230,8 +230,11 @@ export default function Navbar() {
   const [contact,   setContact]   = useState<{ phone: string; email: string; wa: string }>({ phone: COMPANY.phone, email: COMPANY.email, wa: COMPANY.wa });
   const [destinations, setDestinations] = useState<{ label: string; href: string }[]>(DESTINATIONS);
 
-  // Scrolling announcement ticker — admin-editable via /admin/global
-  const [tickerItems,     setTickerItems]     = useState<TickerItem[]>([]);
+  // Scrolling announcement ticker — admin-editable via /admin/global.
+  // Starts with the default announcements (not []) so there's no flash of
+  // "no ticker" on first paint — the /api/content fetch below immediately
+  // overrides this the moment an admin has actually configured anything.
+  const [tickerItems,     setTickerItems]     = useState<TickerItem[]>(DEFAULT_TICKER_ITEMS);
   const [tickerSpeed,     setTickerSpeed]     = useState(TICKER_DEFAULT_SPEED);
   const [tickerBg,        setTickerBg]        = useState(TICKER_DEFAULT_BG);
   const [tickerText,      setTickerText]      = useState(TICKER_DEFAULT_TEXT);
@@ -259,10 +262,17 @@ export default function Navbar() {
         }
         // Scrolling announcement ticker — active items with real text only,
         // in their configured display order (array order = priority).
+        // `tickerEnabled` being literally absent (not just falsy) means no
+        // admin has ever touched /admin/global → Scrolling Ticker, so the
+        // site shows sensible defaults out of the box; the moment they save
+        // ANY choice there (even turning it off), that explicit choice wins.
+        const hasExplicitTickerConfig = typeof gs?.tickerEnabled === 'boolean';
         const validTicker: TickerItem[] = Array.isArray(gs?.tickerItems)
           ? gs.tickerItems.filter((it: TickerItem) => it?.text?.trim() && it.active !== false)
           : [];
-        const nextItems = gs?.tickerEnabled ? validTicker : [];
+        const nextItems = hasExplicitTickerConfig
+          ? (gs.tickerEnabled ? validTicker : [])
+          : DEFAULT_TICKER_ITEMS;
         setTickerItems(nextItems);
         // A visitor who dismissed a PREVIOUS set of announcements should see
         // NEW ones again — the stored value is a signature of item ids, not
