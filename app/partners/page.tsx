@@ -81,10 +81,10 @@ export default async function PartnersIndexPage() {
             </span>
           </>
         }
-        paragraph="Whether you run a consultancy, represent a university, or simply want to help a friend study abroad — there's a partnership track built for you. Join 400+ institutions and a growing network of agents already partnering with ILOC."
+        paragraph={pb?.paragraph || "Whether you run a consultancy, represent a university, or simply want to help a friend study abroad — there's a partnership track built for you. Join 400+ institutions and a growing network of agents already partnering with ILOC."}
         image={{
-          src: 'https://images.unsplash.com/photo-1529390079861-591de354faf5?w=1200&q=80&auto=format&fit=crop',
-          alt: 'Business partners shaking hands over an agreement',
+          src: pb?.imageUrl || 'https://images.unsplash.com/photo-1529390079861-591de354faf5?w=1200&q=80&auto=format&fit=crop',
+          alt: pb?.imageAlt || 'Business partners shaking hands over an agreement',
         }}
         badge={{ value: pb?.value || '3', label: pb?.label || 'Partnership tracks to choose from' }}
         blobColor="#B5FF00"

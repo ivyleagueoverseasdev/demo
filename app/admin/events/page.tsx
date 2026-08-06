@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth, useToast } from '../_context';
 import ImagePicker from '@/components/admin/ImagePicker';
-import RichTextEditor from '@/components/admin/RichTextEditor';
 import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 import { apiCall } from '@/lib/edge-utils';
 import { useRouter } from 'next/navigation';
@@ -153,7 +152,7 @@ function EventRow({
                 {COUNTRIES.find(c => c.value === ev.country)?.label ?? ev.country}
               </span>
             )}
-            {ev.body && <span className="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-0.5 rounded-full">📝 Rich body</span>}
+            {ev.body && <span className="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-0.5 rounded-full">📝 Has details</span>}
             {(ev.actionLinks?.length ?? 0) > 0 && (
               <span className="text-[10px] bg-violet-50 text-violet-600 border border-violet-100 px-2 py-0.5 rounded-full">
                 🔗 {ev.actionLinks!.length} link{ev.actionLinks!.length !== 1 ? 's' : ''}
@@ -325,18 +324,28 @@ function EventForm({
           />
         </section>
 
-        {/* ── Rich body ── */}
+        {/* ── Body content — plain text, same simplicity as the News editor.
+             A few optional shortcuts get formatted automatically: start a
+             line with "## " for a heading, "- " for a bullet, "> " for a
+             highlighted quote, or wrap **words** in double-asterisks for
+             bold. Just typing plain paragraphs works perfectly too. ── */}
         <section className="space-y-2">
           <div className="flex items-center justify-between">
-            <h4 className="font-jakarta font-semibold text-slate-600 text-xs uppercase tracking-wide">Rich Body Content</h4>
+            <h4 className="font-jakarta font-semibold text-slate-600 text-xs uppercase tracking-wide">Body Content</h4>
             <span className="font-jakarta text-[10px] text-slate-400">Shown on /events/[id] detail page</span>
           </div>
-          <RichTextEditor
+          <textarea
             value={form.body ?? ''}
-            onChange={html => patch('body', html)}
-            placeholder="Describe the event in detail — what attendees will learn, who should attend, speakers, format…"
-            minHeight={260}
+            onChange={e => patch('body', e.target.value)}
+            rows={12}
+            className={`${inp} resize-y leading-relaxed`}
+            placeholder={'Describe the event in detail — what attendees will learn, who should attend, speakers, format…\n\nOptional formatting:\n## Section Heading\n- Bullet point\n**bold text**\n> Highlighted note'}
           />
+          <p className="font-jakarta text-[11px] text-slate-400">
+            Plain text works fine as-is. Optional: <code className="bg-slate-100 px-1 rounded">## </code> for a heading,{' '}
+            <code className="bg-slate-100 px-1 rounded">- </code> for a bullet, <code className="bg-slate-100 px-1 rounded">**bold**</code>,{' '}
+            <code className="bg-slate-100 px-1 rounded">&gt; </code> for a highlighted note.
+          </p>
         </section>
 
         {/* ── CTA + Seats ── */}

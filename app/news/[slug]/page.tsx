@@ -124,6 +124,14 @@ export default async function NewsArticlePage({ params }: Props) {
               dangerouslySetInnerHTML={{ __html: item.content }}
             />
 
+            {/* Immediately after the article text — not pushed below the CTA card */}
+            <Link
+              href="/news"
+              className="inline-flex items-center gap-1.5 font-jakarta text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors mt-8"
+            >
+              ← Back to all news
+            </Link>
+
             {/* CTA card */}
             <aside className="mt-12 rounded-2xl p-6 sm:p-8 border border-primary-100 bg-gradient-to-br from-primary-50 to-white">
               <div className="flex items-start gap-4">
@@ -155,13 +163,6 @@ export default async function NewsArticlePage({ params }: Props) {
                 </div>
               </div>
             </aside>
-
-            {/* Back link */}
-            <div className="mt-8 text-center">
-              <Link href="/news" className="font-jakarta text-sm text-slate-400 hover:text-primary-600 transition-colors">
-                ← Back to all news
-              </Link>
-            </div>
           </div>
         </div>
       </section>

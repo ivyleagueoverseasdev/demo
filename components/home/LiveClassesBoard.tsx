@@ -526,7 +526,12 @@ export default function LiveClassesBoard({ gridCols, gridRows }: { gridCols?: nu
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              onClick={() => classes[0] && setActiveModal(classes[0])}
+              // Generic entry point (opens the WhatsApp chat widget) rather
+              // than always opening classes[0]'s booking modal — previously
+              // this silently pre-filled whichever class happened to be
+              // first (TOEFL) no matter which class card the visitor was
+              // actually looking at.
+              onClick={() => window.dispatchEvent(new Event('open-iloc-chat'))}
               className="flex-shrink-0 font-jakarta font-bold text-sm text-white px-6 py-2.5 rounded-xl"
               style={{ background: 'linear-gradient(135deg,#65A30D,#3F6212)', boxShadow: '0 4px 14px rgba(101,163,13,0.35)' }}
             >

@@ -58,7 +58,13 @@ export default function ContactPage() {
     setBusy(true);
 
     try {
-      await fetch('/api/leads', {
+      // fetch() only rejects on a network-level failure — a 500 from a KV
+      // write failure resolves as an "ok" promise with res.ok === false, so
+      // res.ok MUST be checked explicitly or a genuinely failed submission
+      // silently shows the visitor a false "success" screen while nothing
+      // was ever saved (this was happening — enquiries were vanishing
+      // without a trace whenever the save failed).
+      const res = await fetch('/api/leads', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -71,8 +77,15 @@ export default function ContactPage() {
           source:  'contact-page',
         }),
       });
+      if (!res.ok) {
+        setBusy(false);
+        setErr('Something went wrong saving your request — please try again, or reach us directly on WhatsApp/phone below.');
+        return;
+      }
     } catch {
-      // Silent — don't block the user experience if KV is unavailable
+      setBusy(false);
+      setErr('Network error — please check your connection and try again, or reach us directly on WhatsApp/phone below.');
+      return;
     }
 
     setBusy(false);
@@ -146,7 +159,7 @@ export default function ContactPage() {
                 ))}
               </div>
               <a href={wa} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 font-jakarta font-bold text-sm py-3.5 rounded-xl text-white"
+                className="w-fit mx-auto flex items-center gap-2 font-jakarta font-bold text-sm py-3.5 px-8 rounded-xl text-white"
                 style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
                 💬 Instant Response on WhatsApp
               </a>
@@ -197,7 +210,7 @@ export default function ContactPage() {
                   </div>
                   {err && <p className="font-jakarta text-xs text-red-500">{err}</p>}
                   <button type="submit" disabled={busy}
-                    className="w-full btn-primary text-sm py-3.5 rounded-xl justify-center disabled:opacity-60 disabled:cursor-not-allowed">
+                    className="block w-fit mx-auto btn-primary text-sm py-3.5 px-10 rounded-xl disabled:opacity-60 disabled:cursor-not-allowed">
                     {busy ? 'Syncing to CRM…' : 'Submit Request →'}
                   </button>
                   <p className="font-jakarta text-center text-xs text-slate-400">

@@ -132,19 +132,21 @@ function NavLinks({
   compact?: boolean;
   destinations: { label: string; href: string }[];
 }) {
-  const px = compact ? 'px-2.5 py-1.5' : 'px-3 py-2';
+  const px = compact ? 'px-2 py-1.5' : 'px-2.5 py-2';
   const fs = compact ? 'text-[12.5px]' : 'text-[13.5px]';
 
-  // Active tab: solid colour pill with white text.
-  // Idle tab: strong tint + the tab's own colour for the label so every
-  // button reads as a distinct, catchy chip on the header.
-  const tabStyle = (color: string, active: boolean): React.CSSProperties =>
-    active
-      ? { background: color, color: '#ffffff', boxShadow: `0 4px 14px ${color}66` }
-      : { background: `${color}1F`, color, border: `1px solid ${color}40` };
+  // Flat text, no pill/oval background — white by default; switches to the
+  // tab's own accent colour only once it's the active route (i.e. once
+  // clicked). A soft dark text-shadow keeps the white state legible
+  // regardless of how light the admin-configurable header colour is,
+  // without adding any background shape.
+  const tabStyle = (color: string, active: boolean): React.CSSProperties => ({
+    color: active ? color : '#ffffff',
+    textShadow: active ? 'none' : '0 1px 3px rgba(0,0,0,0.32)',
+  });
 
   return (
-    <nav className="hidden lg:flex items-center gap-1.5">
+    <nav className="hidden lg:flex items-center gap-1">
       {NAV.map(({ label, href }, ti) => {
         const isDestinations = href === '/destinations';
         const isPartners     = href === '/partners';
@@ -155,18 +157,18 @@ function NavLinks({
         if (isDestinations) {
           return (
             // Wrapper: relative so dropdown positions correctly; NO overflow-hidden here
-            <div key={href} className="relative flex items-center rounded-full" style={style}
+            <div key={href} className="relative flex items-center" style={style}
               onMouseEnter={openDest} onMouseLeave={closeDest}>
               {/* Clickable label → navigates */}
               <Link href={href}
-                className={`font-jakarta ${txtCls} ${fs} pl-3.5 pr-1 py-2 rounded-l-full transition-all`}
-                style={{ color: 'inherit' }}>
+                className={`font-jakarta ${txtCls} ${fs} pl-2.5 pr-1 py-2 transition-all`}
+                style={{ color: 'inherit', textShadow: 'inherit' }}>
                 {label}
               </Link>
               {/* Separate chevron → toggles dropdown only */}
               <button
                 onClick={e => { e.preventDefault(); destOpen ? closeDest() : openDest(); }}
-                className={`font-jakarta ${px} rounded-r-full transition-all pl-0`}
+                className={`font-jakarta ${px} transition-all pl-0`}
                 style={{ color: 'inherit' }}
                 aria-label="Toggle destinations menu"
               >
@@ -182,16 +184,16 @@ function NavLinks({
 
         if (isPartners) {
           return (
-            <div key={href} className="relative flex items-center rounded-full" style={style}
+            <div key={href} className="relative flex items-center" style={style}
               onMouseEnter={openPart} onMouseLeave={closePart}>
               <Link href={href}
-                className={`font-jakarta ${txtCls} ${fs} pl-3.5 pr-1 py-2 rounded-l-full transition-all`}
-                style={{ color: 'inherit' }}>
+                className={`font-jakarta ${txtCls} ${fs} pl-2.5 pr-1 py-2 transition-all`}
+                style={{ color: 'inherit', textShadow: 'inherit' }}>
                 {label}
               </Link>
               <button
                 onClick={e => { e.preventDefault(); partOpen ? closePart() : openPart(); }}
-                className={`font-jakarta ${px} rounded-r-full transition-all pl-0`}
+                className={`font-jakarta ${px} transition-all pl-0`}
                 style={{ color: 'inherit' }}
                 aria-label="Toggle partners menu"
               >
@@ -207,7 +209,7 @@ function NavLinks({
 
         return (
           <Link key={href} href={href}
-            className={`font-jakarta ${txtCls} ${fs} ${px} rounded-full transition-all`}
+            className={`font-jakarta ${txtCls} ${fs} ${px} transition-all`}
             style={style}>
             {label}
           </Link>

@@ -180,12 +180,14 @@ function SkeletonCard() {
 }
 
 // ── Main client component ─────────────────────────────────────────────────────
-export default function EventsHubClient({ initialEvents, gridCols, gridRows, countries }: {
+export default function EventsHubClient({ initialEvents, gridCols, gridRows, countries, heroContent }: {
   initialEvents: SiteEvent[];
   gridCols?: number;
   gridRows?: number;
   /** Effective destination list (admin add/hide aware); falls back to the static options. */
   countries?: { value: string; label: string }[];
+  /** Admin-editable hero paragraph/image — /admin/global → Page Hero Content. */
+  heroContent?: { paragraph?: string; imageUrl?: string; imageAlt?: string };
 }) {
   // "All Countries" + the effective list from the server
   const countryOptions = countries?.length
@@ -241,10 +243,10 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows, cou
             </span>
           </>
         }
-        paragraph="Free webinars, live coaching classes, and university fairs — all designed to give Indian students a clear roadmap to global opportunities."
+        paragraph={heroContent?.paragraph || 'Free webinars, live coaching classes, and university fairs — all designed to give Indian students a clear roadmap to global opportunities.'}
         image={{
-          src: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80&auto=format&fit=crop',
-          alt: 'Students attending a live masterclass',
+          src: heroContent?.imageUrl || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80&auto=format&fit=crop',
+          alt: heroContent?.imageAlt || 'Students attending a live masterclass',
         }}
         badge={{ value: `${upcoming.length}`, label: 'Live events this month' }}
         blobColor="#A3E635"

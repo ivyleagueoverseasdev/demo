@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getPublicCountries } from '@/lib/public-data';
-import { getCountryMeta } from '@/lib/kv';
+import { getCountryMeta, getGlobalSettings } from '@/lib/kv';
 
 // Edge + dynamic so admin edits to country stats/images (KV) go live immediately.
 export const runtime = 'edge';
@@ -16,7 +16,11 @@ export const metadata: Metadata = {
 
 export default async function DestinationsPage() {
   // Effective list: built-in countries (minus admin-hidden) + admin-added.
-  const baseCountries = await getPublicCountries();
+  const [baseCountries, gs] = await Promise.all([
+    getPublicCountries(),
+    getGlobalSettings().catch(() => null),
+  ]);
+  const heroContent = gs?.pageHeroBadges?.destinations;
   // Merge admin-edited KV overrides onto the base country records.
   const metas = await Promise.all(
     baseCountries.map(c => getCountryMeta(c.code).catch(() => null)),
@@ -42,26 +46,40 @@ export default async function DestinationsPage() {
     <div className="bg-white">
       {/* ── Picture-based hero ── */}
       <section className="w-full relative overflow-hidden min-h-[380px] flex items-end">
-        {/* Background collage — top 4 country images */}
-        <div className="absolute inset-0 grid grid-cols-4">
-          {countries.slice(0, 4).map((c, i) => (
-            <div key={c.code} className="relative overflow-hidden">
-              <Image
-                src={c.heroImage}
-                alt={c.name}
-                fill
-                className="object-cover"
-                sizes="25vw"
-                priority={i === 0}
-              />
-              {/* Per-column color tint */}
-              <div
-                className="absolute inset-0"
-                style={{ background: `${c.color}55` }}
-              />
-            </div>
-          ))}
-        </div>
+        {/* Admin can override the auto-generated 4-country collage with a
+            single banner image via /admin/global → Page Hero Content. */}
+        {heroContent?.imageUrl ? (
+          <div className="absolute inset-0">
+            <Image
+              src={heroContent.imageUrl}
+              alt={heroContent.imageAlt || 'Study destinations'}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+            />
+          </div>
+        ) : (
+          <div className="absolute inset-0 grid grid-cols-4">
+            {countries.slice(0, 4).map((c, i) => (
+              <div key={c.code} className="relative overflow-hidden">
+                <Image
+                  src={c.heroImage}
+                  alt={c.name}
+                  fill
+                  className="object-cover"
+                  sizes="25vw"
+                  priority={i === 0}
+                />
+                {/* Per-column color tint */}
+                <div
+                  className="absolute inset-0"
+                  style={{ background: `${c.color}55` }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Dark overlay for readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/60 to-slate-900/30" />
@@ -95,7 +113,7 @@ export default async function DestinationsPage() {
               </span>
             </h1>
             <p className="font-jakarta text-white/75 text-base md:text-lg leading-relaxed max-w-2xl">
-              Each guide includes 2026 visa updates, scholarship opportunities, career prospects, and a full admission process overview — personalised by our expert team.
+              {heroContent?.paragraph || 'Each guide includes 2026 visa updates, scholarship opportunities, career prospects, and a full admission process overview — personalised by our expert team.'}
             </p>
 
             {/* Quick country flag strip */}

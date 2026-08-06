@@ -20,9 +20,11 @@ import DemoModal from './DemoModal';
 // ─────────────────────────────────────────────────────────────────────────────
 const CINEMATIC: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const EASE:      [number, number, number, number] = [0.22, 1, 0.36, 1];
-// Slides advance every 4s and keep advancing regardless of cursor position
-// (no pause-on-hover) — only a blocking modal pauses them.
-const AUTOPLAY_MS = 4000;
+// Slides advance every 7s (slowed from 4s per client feedback — visitors
+// need more time to actually read the heading/subtext) and keep advancing
+// regardless of cursor position (no pause-on-hover) — only a blocking modal
+// pauses them.
+const AUTOPLAY_MS = 7000;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Animated counter — counts from 0 to target, fires when in viewport
@@ -84,10 +86,13 @@ function ShimmerBtn({
       ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-white shadow-[0_8px_28px_rgba(245,158,11,0.42)]'
       : 'border border-white/30 text-white/90 hover:text-white hover:border-white/60 hover:bg-white/[0.08]';
 
+  // Narrower than before per client feedback — px-6 (was px-8) tightens the
+  // "Request Free Consultation" / "Chat on WhatsApp" width without
+  // shrinking the tap target height.
   const inner = (
     <span className={`
-      relative inline-flex items-center justify-center gap-2.5 overflow-hidden
-      font-jakarta font-bold text-[15px] px-8 py-4 rounded-xl
+      relative inline-flex items-center justify-center gap-2 overflow-hidden
+      font-jakarta font-bold text-[15px] px-6 py-4 rounded-xl
       transition-all duration-300 group-hover:-translate-y-0.5
       group-hover:shadow-[0_14px_40px_rgba(245,158,11,0.58)]
       ${cls}
@@ -406,18 +411,6 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 LEFT COLUMN — animated copy
             ════════════════════════════════════════════════════════════ */}
             <div className="relative">
-              {/* Prev / Next arrows — flank the slide text on either side so
-                  visitors can flip slides without hunting below the copy. */}
-              <NavArrow
-                direction="prev"
-                onClick={prev}
-                className="absolute -left-2 sm:-left-4 lg:-left-6 top-1/2 -translate-y-1/2 z-30"
-              />
-              <NavArrow
-                direction="next"
-                onClick={next}
-                className="absolute -right-2 sm:-right-4 lg:-right-6 top-1/2 -translate-y-1/2 z-30"
-              />
               <AnimatePresence mode="wait" custom={dir}>
                 <motion.div
                   key={slide.id}
@@ -428,46 +421,65 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                   transition={{ duration: 0.52, ease: EASE }}
                   className="max-w-2xl"
                 >
-                  {/* Live badge — fade up */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.15, ease: CINEMATIC }}
-                    className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8"
-                  >
-                    <span className="relative flex h-2 w-2 flex-shrink-0">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-60" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
-                    </span>
-                    <span className="font-jakarta text-xs font-semibold text-white/90 tracking-wide">
-                      {slide.badge}
-                    </span>
-                  </motion.div>
+                  {/* Badge + heading only — arrows anchor to THIS wrapper
+                      (not the full slide block below) so their vertical
+                      position stays level across every slide, regardless of
+                      how many lines the subtext/trust-badges wrap to. */}
+                  <div className="relative">
+                    {/* Prev / Next arrows — flank the heading so visitors can
+                        flip slides without hunting below the copy. */}
+                    <NavArrow
+                      direction="prev"
+                      onClick={prev}
+                      className="absolute -left-2 sm:-left-4 lg:-left-6 top-1/2 -translate-y-1/2 z-30"
+                    />
+                    <NavArrow
+                      direction="next"
+                      onClick={next}
+                      className="absolute -right-2 sm:-right-4 lg:-right-6 top-1/2 -translate-y-1/2 z-30"
+                    />
 
-                  {/* ── Cinematic heading — line-by-line word reveal ── */}
-                  <h1
-                    className="font-jakarta font-extrabold text-white text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight mb-6"
-                    style={{ color: '#ffffff' }}
-                  >
-                    {slide.headingLines.map((line, li) => {
-                      const isHighlight = slide.headingHighlight[li];
-                      const lineDelay   = headingBaseDelay + li * 0.18;
-                      return (
-                        <span key={li} className="block" style={{ color: '#ffffff' }}>
-                          {isHighlight ? (
-                            <WordReveal
-                              text={line}
-                              baseDelay={lineDelay}
-                              highlight
-                              className={slide.highlightColor}
-                            />
-                          ) : (
-                            <WordReveal text={line} baseDelay={lineDelay} className="text-white" />
-                          )}
-                        </span>
-                      );
-                    })}
-                  </h1>
+                    {/* Live badge — fade up */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.15, ease: CINEMATIC }}
+                      className="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8"
+                    >
+                      <span className="relative flex h-2 w-2 flex-shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-60" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+                      </span>
+                      <span className="font-jakarta text-xs font-semibold text-white/90 tracking-wide">
+                        {slide.badge}
+                      </span>
+                    </motion.div>
+
+                    {/* ── Cinematic heading — line-by-line word reveal ── */}
+                    <h1
+                      className="font-jakarta font-extrabold text-white text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight mb-6"
+                      style={{ color: '#ffffff' }}
+                    >
+                      {slide.headingLines.map((line, li) => {
+                        const isHighlight = slide.headingHighlight[li];
+                        const lineDelay   = headingBaseDelay + li * 0.18;
+                        return (
+                          <span key={li} className="block" style={{ color: '#ffffff' }}>
+                            {isHighlight ? (
+                              <WordReveal
+                                text={line}
+                                baseDelay={lineDelay}
+                                highlight
+                                className={slide.highlightColor}
+                              />
+                            ) : (
+                              <WordReveal text={line} baseDelay={lineDelay} className="text-white" />
+                            )}
+                          </span>
+                        );
+                      })}
+                    </h1>
+                  </div>
 
                   {/* Subtext — fade up after heading */}
                   <motion.p
@@ -483,6 +495,43 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                   >
                     {slide.subtext}
                   </motion.p>
+
+                  {/* ── Mobile slide image — immediately after the text (heading
+                      + subtext), BEFORE trust badges/CTAs/stats/founder strip,
+                      so each slide's photo is visually connected to its copy
+                      instead of buried after several more sections. ── */}
+                  <div
+                    className="lg:hidden mb-8 relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
+                    style={{ aspectRatio: '16/10' }}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`mob-${idx}`}
+                        initial={{ opacity: 0, scale: 1.06 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="absolute inset-0"
+                      >
+                        <Image
+                          src={slide.imageUrl}
+                          alt={slide.imageAlt}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width:1024px) 100vw, 0px"
+                        />
+                        <div className={`absolute inset-0 bg-gradient-to-t ${slide.accentGradient} to-transparent opacity-60`} />
+                        {/* Caption strip */}
+                        <div className="absolute bottom-0 inset-x-0 p-3">
+                          <div className="bg-black/35 backdrop-blur-md rounded-xl px-3 py-2 border border-white/10">
+                            <p className="font-jakarta text-[11px] text-white/90 font-medium leading-snug line-clamp-2">
+                              {slide.imageAlt}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
 
                   {/* Trust micro-badges */}
                   <motion.div
@@ -637,40 +686,6 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                 <span className="font-jakarta text-[11px] text-white/35 font-medium hidden sm:block">
                   {idx + 1} / {total}
                 </span>
-              </div>
-
-              {/* ── Mobile slide image — in flow, immediately after the text ── */}
-              <div
-                className="lg:hidden mt-8 relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
-                style={{ aspectRatio: '16/10' }}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`mob-${idx}`}
-                    initial={{ opacity: 0, scale: 1.06 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute inset-0"
-                  >
-                    <Image
-                      src={slide.imageUrl}
-                      alt={slide.imageAlt}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width:1024px) 100vw, 0px"
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-t ${slide.accentGradient} to-transparent opacity-60`} />
-                    {/* Caption strip */}
-                    <div className="absolute bottom-0 inset-x-0 p-3">
-                      <div className="bg-black/35 backdrop-blur-md rounded-xl px-3 py-2 border border-white/10">
-                        <p className="font-jakarta text-[11px] text-white/90 font-medium leading-snug line-clamp-2">
-                          {slide.imageAlt}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
               </div>
             </div>
 

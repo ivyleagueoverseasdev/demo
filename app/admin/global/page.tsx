@@ -47,12 +47,17 @@ const EMPTY: GlobalSettings = {
   tickerTextColor:         '#ffffff',
 };
 
-// Pages whose hero-image caption badge is editable here (About & Services
-// have their own editors under /admin/about and /admin/services).
-const CAPTION_PAGES: { key: string; title: string; hint: string }[] = [
-  { key: 'contact',  title: 'Contact page',  hint: 'Default: "24h — Average response time"' },
-  { key: 'news',     title: 'News page',     hint: 'Default: "Weekly — Fresh visa & scholarship updates"' },
-  { key: 'partners', title: 'Partners page', hint: 'Default: "3 — Partnership tracks to choose from"' },
+// Pages whose hero paragraph / banner image / stat-card badge are editable
+// here (About & Services have their own dedicated editors under
+// /admin/about and /admin/services since they predate this section).
+// Destinations has no stat-card badge (its hero shows a live country count
+// instead), so hasBadge=false skips those two fields for it.
+const HERO_PAGES: { key: string; title: string; hasBadge: boolean; badgeHint?: string }[] = [
+  { key: 'contact',      title: 'Contact page',            hasBadge: true, badgeHint: 'Default: "24h — Average response time"' },
+  { key: 'news',         title: 'News page',                hasBadge: true, badgeHint: 'Default: "Weekly — Fresh visa & scholarship updates"' },
+  { key: 'partners',     title: 'Partners page',            hasBadge: true, badgeHint: 'Default: "3 — Partnership tracks to choose from"' },
+  { key: 'events',       title: 'Test Prep & Events page',  hasBadge: true, badgeHint: 'Default: live count of this month\'s events' },
+  { key: 'destinations', title: 'Destinations page',        hasBadge: false },
 ];
 
 const COL_OPTIONS = [1, 2, 3, 4, 5, 6];
@@ -351,29 +356,45 @@ export default function AdminGlobalPage() {
         </div>
       </div>
 
-      {/* Page hero-image captions */}
+      {/* Page hero content — paragraph, banner image, and stat-card badge */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60">
-          <h3 className="font-jakarta font-bold text-slate-700">🖼 Page Image Captions</h3>
+          <h3 className="font-jakarta font-bold text-slate-700">🖼 Page Hero Content</h3>
           <p className="font-jakarta text-xs text-slate-400 mt-0.5">
-            The small white stat card that overlaps the hero picture on each page. About &amp; Services captions are edited in their own pages.
+            The paragraph, banner photo and small stat card on each page&apos;s hero. About &amp; Services have their own dedicated editors.
           </p>
         </div>
-        <div className="p-6 space-y-4">
-          {CAPTION_PAGES.map(({ key, title, hint }) => {
-            const badge = gs.pageHeroBadges?.[key] ?? {};
-            const setBadge = (patch: { value?: string; label?: string }) =>
-              set({ pageHeroBadges: { ...(gs.pageHeroBadges ?? {}), [key]: { ...badge, ...patch } } });
+        <div className="p-6 space-y-6">
+          {HERO_PAGES.map(({ key, title, hasBadge, badgeHint }) => {
+            const hero = gs.pageHeroBadges?.[key] ?? {};
+            const setHero = (patch: Partial<NonNullable<GlobalSettings['pageHeroBadges']>[string]>) =>
+              set({ pageHeroBadges: { ...(gs.pageHeroBadges ?? {}), [key]: { ...hero, ...patch } } });
             return (
-              <div key={key} className="grid sm:grid-cols-[140px_1fr_2fr] gap-3 items-center">
-                <div>
-                  <span className="font-jakarta text-xs font-bold text-slate-600">{title}</span>
-                  <p className="font-jakarta text-[10px] text-slate-400 mt-0.5">{hint}</p>
+              <div key={key} className="border border-slate-200 rounded-xl p-4 space-y-3">
+                <span className="font-jakarta text-xs font-bold text-slate-700">{title}</span>
+
+                <Field label="Hero Paragraph" hint="Leave empty to keep the built-in default text.">
+                  <textarea value={hero.paragraph ?? ''} onChange={e => setHero({ paragraph: e.target.value })}
+                    rows={2} className={`${inp} text-xs resize-none`} placeholder="Paragraph shown under the heading…" />
+                </Field>
+
+                <div className="grid sm:grid-cols-[1fr_1fr] gap-3">
+                  <ImagePicker value={hero.imageUrl ?? ''} onChange={url => setHero({ imageUrl: url })} token={token} label="Banner Image" />
+                  <Field label="Image Description (alt)" hint="Describes the photo for search engines & screen readers.">
+                    <input value={hero.imageAlt ?? ''} onChange={e => setHero({ imageAlt: e.target.value })} className={`${inp} text-xs py-2`} placeholder="Describe the photo…" />
+                  </Field>
                 </div>
-                <input value={badge.value ?? ''} onChange={e => setBadge({ value: e.target.value })}
-                  className={`${inp} text-xs py-2`} placeholder="Big value e.g. 24h" />
-                <input value={badge.label ?? ''} onChange={e => setBadge({ label: e.target.value })}
-                  className={`${inp} text-xs py-2`} placeholder="Caption e.g. Average response time" />
+
+                {hasBadge && (
+                  <div className="grid sm:grid-cols-2 gap-3 pt-1">
+                    <Field label="Stat Card — Value" hint={badgeHint}>
+                      <input value={hero.value ?? ''} onChange={e => setHero({ value: e.target.value })} className={`${inp} text-xs py-2`} placeholder="Big value e.g. 24h" />
+                    </Field>
+                    <Field label="Stat Card — Caption">
+                      <input value={hero.label ?? ''} onChange={e => setHero({ label: e.target.value })} className={`${inp} text-xs py-2`} placeholder="Caption e.g. Average response time" />
+                    </Field>
+                  </div>
+                )}
               </div>
             );
           })}

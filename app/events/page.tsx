@@ -52,6 +52,7 @@ export default async function EventsPage() {
         gridCols={globalSettings?.eventsCols}
         gridRows={globalSettings?.eventsRows}
         countries={countries.map(c => ({ value: c.code, label: c.name }))}
+        heroContent={globalSettings?.pageHeroBadges?.events}
       />
     </Suspense>
   );

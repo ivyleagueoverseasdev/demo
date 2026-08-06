@@ -289,10 +289,18 @@ export interface GlobalSettings {
   footerTermsUrl?:   string;  // link target of "Terms of Service"
   footerFoundedBy?:  string;  // e.g. "Founded by Our Founder · Pune, India" — empty hides it
 
-  // ── Hero-image caption badges on subpages (admin-editable) ─────────────
-  // Keyed by page: contact | news | partners. About & Services own their
-  // badge fields inside their page settings.
-  pageHeroBadges?: Record<string, { value?: string; label?: string }>;
+  // ── Hero content on subpages (admin-editable) ───────────────────────────
+  // Keyed by page: contact | news | partners | events | destinations. About
+  // & Services own their equivalent fields inside their own page settings
+  // (AboutPageSettings / ServicesPageSettings) since those pages already had
+  // dedicated admin editors before this existed.
+  pageHeroBadges?: Record<string, {
+    value?:     string;  // stat-card big number, e.g. "24h"
+    label?:     string;  // stat-card caption, e.g. "Average response time"
+    paragraph?: string;  // hero paragraph text
+    imageUrl?:  string;  // hero banner image
+    imageAlt?:  string;  // image description (alt text)
+  }>;
 }
 
 // ── Admin-added custom destination country (stored in KV) ─────────────────

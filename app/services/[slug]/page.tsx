@@ -66,22 +66,32 @@ export default async function ServiceDetailPage({ params }: Props) {
       />
 
       {/* ── Body content ── */}
-      {paragraphs.length > 0 && (
-        <section className="section bg-white">
-          <div className="container-xl max-w-3xl">
-            <div className="divider-blue mb-8" />
-            <div className="space-y-5">
-              {paragraphs.map((para, i) => (
-                <p key={i} className="font-jakarta text-slate-600 leading-relaxed" style={{ fontSize: 'clamp(0.95rem,1.5vw,1.05rem)' }}>
-                  {para}
-                </p>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <section className="section bg-white">
+        <div className="container-xl max-w-3xl">
+          {paragraphs.length > 0 && (
+            <>
+              <div className="divider-blue mb-8" />
+              <div className="space-y-5">
+                {paragraphs.map((para, i) => (
+                  <p key={i} className="font-jakarta text-slate-600 leading-relaxed" style={{ fontSize: 'clamp(0.95rem,1.5vw,1.05rem)' }}>
+                    {para}
+                  </p>
+                ))}
+              </div>
+            </>
+          )}
+          {/* Immediately after the body text (or the hero, if a service has
+              no body yet) — not buried below the separate CTA section. */}
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-1.5 font-jakarta text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors mt-8"
+          >
+            ← All Services
+          </Link>
+        </div>
+      </section>
 
-      {/* ── Back link + CTA ── */}
+      {/* ── CTA ── */}
       <section className="section text-white" style={{ background: 'linear-gradient(135deg,#0C37A0,#246DFF)' }}>
         <div className="container-xl text-center">
           <h2
@@ -93,17 +103,9 @@ export default async function ServiceDetailPage({ params }: Props) {
           <p className="font-jakarta text-white/70 mb-8 max-w-lg mx-auto">
             Book a free 30-minute session with our expert counsellors. No pressure, no commitment — just clarity.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/contact" className="btn-primary text-sm px-8 py-3.5 rounded-xl">
-              Book Free Counselling →
-            </Link>
-            <Link
-              href="/services"
-              className="font-jakarta text-sm font-semibold text-white/80 hover:text-white transition-colors underline underline-offset-4"
-            >
-              ← All Services
-            </Link>
-          </div>
+          <Link href="/contact" className="btn-primary text-sm px-8 py-3.5 rounded-xl">
+            Book Free Counselling →
+          </Link>
         </div>
       </section>
 

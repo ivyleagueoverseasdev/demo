@@ -33,7 +33,11 @@ export default function QuickEnquiry() {
     setBusy(true);
 
     try {
-      await fetch('/api/leads', {
+      // fetch() only rejects on a network-level failure — a 500 from a KV
+      // write failure resolves as an "ok" promise with res.ok === false, so
+      // res.ok must be checked explicitly or a genuinely failed submission
+      // silently shows a false "success" screen while nothing was saved.
+      const res = await fetch('/api/leads', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -44,8 +48,15 @@ export default function QuickEnquiry() {
           source:  'quick-enquiry',
         }),
       });
+      if (!res.ok) {
+        setBusy(false);
+        setErr('Something went wrong saving your request — please try again, or message us directly on WhatsApp.');
+        return;
+      }
     } catch {
-      // Silent — don't block the user experience if KV is unavailable
+      setBusy(false);
+      setErr('Network error — please check your connection and try again, or message us directly on WhatsApp.');
+      return;
     }
 
     setBusy(false);

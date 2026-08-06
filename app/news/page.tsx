@@ -43,10 +43,10 @@ export default async function NewsPage() {
             </span>
           </>
         }
-        paragraph="Visa rule changes, scholarship deadlines, and study-abroad intelligence — curated weekly by our counselling team."
+        paragraph={pb?.paragraph || 'Visa rule changes, scholarship deadlines, and study-abroad intelligence — curated weekly by our counselling team.'}
         image={{
-          src: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1200&q=80&auto=format&fit=crop',
-          alt: 'Student reading the latest study-abroad news',
+          src: pb?.imageUrl || 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1200&q=80&auto=format&fit=crop',
+          alt: pb?.imageAlt || 'Student reading the latest study-abroad news',
         }}
         badge={{ value: pb?.value || 'Weekly', label: pb?.label || 'Fresh visa & scholarship updates' }}
         blobColor="#A3E635"
