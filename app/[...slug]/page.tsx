@@ -1,5 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { getPage, resolveRedirect } from '@/lib/kv';
 
@@ -19,16 +21,60 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 // ── Minimal markdown renderer ─────────────────────────────────────────────
+// Matches the plain-text syntax the admin's Pages editor actually accepts
+// (see app/admin/pages/page.tsx) — a textarea, not a WYSIWYG. An earlier
+// version paired this exact renderer with a RichTextEditor (HTML output),
+// so any formatting an admin applied via the rich toolbar showed up as
+// literal escaped HTML tags on the live page. List items are now grouped
+// into a proper <ul> (was emitting bare <li> with no wrapper), and **bold**
+// is parsed inline, matching the same lightweight syntax used for Events.
+function parseInline(line: string): ReactNode {
+  const parts = line.split(/\*\*([^*]+)\*\*/g);
+  return parts.map((p, i) => (i % 2 === 1 ? <strong key={i} className="font-semibold text-slate-800">{p}</strong> : p));
+}
+
 function renderMarkdown(text: string) {
-  return text.split('\n').map((line, i) => {
-    if (line.startsWith('### ')) return <h3 key={i} className="font-jakarta font-bold text-slate-800 text-xl mt-6 mb-2">{line.slice(4)}</h3>;
-    if (line.startsWith('## '))  return <h2 key={i} className="font-jakarta font-bold text-primary-600 text-2xl mt-8 mb-3">{line.slice(3)}</h2>;
-    if (line.startsWith('# '))   return <h1 key={i} className="font-jakarta font-bold text-primary-600 text-3xl mt-10 mb-4">{line.slice(2)}</h1>;
-    if (line.startsWith('- '))   return <li key={i} className="font-jakarta text-slate-600 text-sm leading-7 ml-5 list-disc">{line.slice(2)}</li>;
-    if (line.startsWith('> '))   return <blockquote key={i} className="font-jakarta italic text-lg text-amber-600 pl-4 my-4 border-l-4 border-amber-400">{line.slice(2)}</blockquote>;
-    if (line.trim() === '')      return <div key={i} className="h-3" />;
-    return <p key={i} className="font-jakarta text-slate-600 text-sm leading-7 mb-2">{line}</p>;
+  const lines = text.split('\n');
+  const nodes: ReactNode[] = [];
+  let listBuffer: string[] = [];
+
+  const flushList = () => {
+    if (!listBuffer.length) return;
+    nodes.push(
+      <ul key={`ul-${nodes.length}`} className="my-3 space-y-1">
+        {listBuffer.map((item, i) => (
+          <li key={i} className="font-jakarta text-slate-600 text-sm leading-7 ml-5 list-disc">{parseInline(item)}</li>
+        ))}
+      </ul>
+    );
+    listBuffer = [];
+  };
+
+  lines.forEach((line, i) => {
+    if (line.startsWith('### ')) {
+      flushList();
+      nodes.push(<h3 key={i} className="font-jakarta font-bold text-slate-800 text-xl mt-6 mb-2">{parseInline(line.slice(4))}</h3>);
+    } else if (line.startsWith('## ')) {
+      flushList();
+      nodes.push(<h2 key={i} className="font-jakarta font-bold text-primary-600 text-2xl mt-8 mb-3">{parseInline(line.slice(3))}</h2>);
+    } else if (line.startsWith('# ')) {
+      flushList();
+      nodes.push(<h1 key={i} className="font-jakarta font-bold text-primary-600 text-3xl mt-10 mb-4">{parseInline(line.slice(2))}</h1>);
+    } else if (line.startsWith('- ')) {
+      listBuffer.push(line.slice(2));
+    } else if (line.startsWith('> ')) {
+      flushList();
+      nodes.push(<blockquote key={i} className="font-jakarta italic text-lg text-amber-600 pl-4 my-4 border-l-4 border-amber-400">{parseInline(line.slice(2))}</blockquote>);
+    } else if (line.trim() === '') {
+      flushList();
+      nodes.push(<div key={i} className="h-3" />);
+    } else {
+      flushList();
+      nodes.push(<p key={i} className="font-jakarta text-slate-600 text-sm leading-7 mb-2">{parseInline(line)}</p>);
+    }
   });
+  flushList();
+  return nodes;
 }
 
 // ── Typed block prop helpers ─────────────────────────────────────────────
@@ -59,9 +105,24 @@ export default async function DynamicPage({ params }: Props) {
 
   return (
     <div className="bg-white">
-      {/* Hero band */}
-      <section className="bg-gradient-to-br from-primary-800 to-primary-600 text-white py-20">
-        <div className="container-xl">
+      {/* Hero band — admin's "Hero Banner Image" (page.heroImageUrl) previously
+          saved to KV but was never actually rendered anywhere; it now shows
+          as the hero's background photo, matching every other hero on the site. */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-800 to-primary-600 text-white py-20">
+        {page.heroImageUrl && (
+          <>
+            <Image
+              src={page.heroImageUrl}
+              alt={page.title}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-900/85 via-primary-800/75 to-primary-600/70" />
+          </>
+        )}
+        <div className="container-xl relative z-10">
           <nav className="flex items-center gap-2 text-xs text-white/60 font-jakarta mb-8">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <span>›</span>

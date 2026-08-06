@@ -53,6 +53,40 @@ export const CORS = {
   'Access-Control-Allow-Headers': 'Content-Type,Authorization',
 } as const;
 
+/**
+ * Encode raw bytes as base64 — used by /api/upload's KV-storage fallback
+ * (for when the R2_BUCKET binding isn't configured on this Cloudflare Pages
+ * project) and decoded again by /api/media/blob/[...key] when serving it
+ * back. Chunked to avoid "Maximum call stack size exceeded" from spreading
+ * a huge Uint8Array as individual String.fromCharCode arguments at once.
+ * Uses Web-standard btoa/atob (not Node's Buffer) so it works on every Edge
+ * runtime regardless of the nodejs_compat flag.
+ */
+export function bytesToBase64(buf: ArrayBuffer): string {
+  const bytes = new Uint8Array(buf);
+  let binary = '';
+  const CHUNK = 0x8000;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(binary);
+}
+
+/**
+ * Inverse of bytesToBase64 — decodes back to raw bytes. Backed by an
+ * explicit `new ArrayBuffer(...)` (not just `new Uint8Array(length)`) so TS
+ * infers the concrete `Uint8Array<ArrayBuffer>` rather than the more
+ * general `Uint8Array<ArrayBufferLike>` — the latter isn't assignable to
+ * BodyInit/BlobPart under TS 5.7's stricter typed-array generics.
+ */
+export function base64ToBytes(base64: string): Uint8Array<ArrayBuffer> {
+  const binary = atob(base64);
+  const buffer = new ArrayBuffer(binary.length);
+  const bytes  = new Uint8Array(buffer);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
 // ── CLIENT HELPERS ────────────────────────────────────────────────────────────
 
 interface ApiCallOpts {

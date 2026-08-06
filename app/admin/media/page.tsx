@@ -138,7 +138,7 @@ function UploadZone({
       {uploading ? (
         <div className="space-y-3">
           <div className="text-3xl">⬆️</div>
-          <p className="font-jakarta font-semibold text-slate-700 text-sm">Uploading to R2…</p>
+          <p className="font-jakarta font-semibold text-slate-700 text-sm">Uploading…</p>
           <div className="w-full max-w-xs mx-auto bg-slate-100 rounded-full h-2 overflow-hidden">
             <div
               className="h-full bg-amber-500 rounded-full transition-all duration-300"
@@ -385,7 +385,7 @@ export default function MediaLibraryPage() {
       <div>
         <h1 className="font-jakarta font-extrabold text-slate-800 text-2xl">Media Library</h1>
         <p className="font-jakarta text-sm text-slate-400 mt-1">
-          Upload images to Cloudflare R2. Copy the public URL to use anywhere on the site.
+          Upload images and copy the public URL to use anywhere on the site.
         </p>
       </div>
 

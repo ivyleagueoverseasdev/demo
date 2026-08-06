@@ -60,6 +60,10 @@ export async function POST(req: NextRequest) {
       metaDescription: String(body.metaDescription ?? ''),
       layout:          (body.layout as DynamicPage['layout']) ?? 'default',
       blocks:          (body.blocks as DynamicPage['blocks']) ?? [],
+      // Was missing here — a brand-new page's hero image silently vanished
+      // on save (PUT/edit worked fine since it spreads the whole body; only
+      // POST/create rebuilt the object field-by-field and dropped it).
+      heroImageUrl:    body.heroImageUrl ? String(body.heroImageUrl) : undefined,
       published:       (body.published as boolean) ?? true,
       createdAt:       String(body.createdAt ?? new Date().toISOString()),
       updatedAt:       new Date().toISOString(),

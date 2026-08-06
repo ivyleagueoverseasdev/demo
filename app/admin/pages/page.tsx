@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useAuth, useToast } from '../_context';
 import { apiCall } from '@/lib/edge-utils';
 import ImagePicker from '@/components/admin/ImagePicker';
-import RichTextEditor from '@/components/admin/RichTextEditor';
 import { SkeletonContentRow } from '@/components/admin/SkeletonCard';
 import { useRouter } from 'next/navigation';
 import type { DynamicPage } from '@/lib/types';
@@ -231,15 +230,27 @@ function PageForm({ initial, editSlug, token, onSave, onCancel, busy }: {
           <ImagePicker value={form.heroImageUrl ?? ''} onChange={url => patch('heroImageUrl', url)} token={token} label="" />
         </section>
 
-        {/* ── Body ── */}
+        {/* ── Body — plain text. The public page (app/[...slug]/page.tsx)
+             renders this through a lightweight markdown-style parser, not
+             an HTML renderer, so a WYSIWYG editor here would silently
+             produce broken output (this was happening — any formatting
+             applied via a rich toolbar showed up as literal HTML tags on
+             the live page). A plain textarea guarantees what's typed is
+             exactly what the renderer expects. ── */}
         <section className="space-y-2">
           <h4 className="font-jakarta font-semibold text-slate-600 text-xs uppercase tracking-wide">Body Content</h4>
-          <RichTextEditor
+          <textarea
             value={body}
-            onChange={setBody}
-            placeholder="Write the page content here. Use the toolbar to add headings, bullet lists, and emphasis."
-            minHeight={300}
+            onChange={e => setBody(e.target.value)}
+            rows={14}
+            className={`${inp} resize-y leading-relaxed`}
+            placeholder={'Write the page content here.\n\nOptional formatting:\n# Page Heading\n## Section Heading\n### Sub-heading\n- Bullet point\n**bold text**\n> Highlighted note'}
           />
+          <p className="font-jakarta text-[11px] text-slate-400">
+            Plain text works fine as-is. Optional: <code className="bg-slate-100 px-1 rounded"># </code>/<code className="bg-slate-100 px-1 rounded">## </code>/<code className="bg-slate-100 px-1 rounded">### </code> for headings,{' '}
+            <code className="bg-slate-100 px-1 rounded">- </code> for a bullet, <code className="bg-slate-100 px-1 rounded">**bold**</code>,{' '}
+            <code className="bg-slate-100 px-1 rounded">&gt; </code> for a highlighted note.
+          </p>
         </section>
 
         {/* ── Publish ── */}

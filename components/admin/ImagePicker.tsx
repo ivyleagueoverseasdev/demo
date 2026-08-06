@@ -132,14 +132,19 @@ export default function ImagePicker({
   const [uploading, setUploading]  = useState(false);
   const [showLib,   setShowLib]    = useState(false);
   const [imgError,  setImgError]   = useState(false);
+  const [uploadErr, setUploadErr]  = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Reset error when value changes
   useEffect(() => { setImgError(false); }, [value]);
 
   const handleFileUpload = useCallback(async (file: File) => {
-    if (!file.type.startsWith('image/')) return;
+    if (!file.type.startsWith('image/')) {
+      setUploadErr('Please choose an image file.');
+      return;
+    }
     setUploading(true);
+    setUploadErr('');
     try {
       const fd = new FormData();
       fd.append('file', file);
@@ -148,15 +153,24 @@ export default function ImagePicker({
         headers: { Authorization: `Bearer ${token}` },
         body:    fd,
       });
-      if (!res.ok) return;
-      const { url } = await res.json() as any;
+      if (!res.ok) {
+        // Previously silently failed here — the admin would see the
+        // "Upload" spinner stop with zero feedback and no idea why.
+        const err = await res.json().catch(() => ({})) as { error?: string; details?: string };
+        setUploadErr(err.error ? `${err.error}${err.details ? ` — ${err.details}` : ''}` : `Upload failed (HTTP ${res.status})`);
+        return;
+      }
+      const { url } = await res.json() as { url: string };
       onChange(url);
-      // Persist to library
+      // Persist to library — non-fatal if this specific call fails, the
+      // image is already uploaded and set; just won't show up in Browse Library.
       await fetch('/api/media/library', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body:    JSON.stringify({ url }),
-      });
+      }).catch(() => {});
+    } catch {
+      setUploadErr('Network error during upload — please check your connection and try again.');
     } finally {
       setUploading(false);
     }
@@ -242,6 +256,11 @@ export default function ImagePicker({
         )}
         {value && imgError && (
           <p className="font-jakarta text-xs text-red-500">⚠ Image could not be loaded from this URL.</p>
+        )}
+        {uploadErr && (
+          <p className="font-jakarta text-xs text-red-500 bg-red-50 border border-red-200 rounded-lg px-2.5 py-1.5">
+            ⚠ {uploadErr}
+          </p>
         )}
       </div>
 
