@@ -191,7 +191,7 @@ export default function HowItWorks({ steps }: Props) {
           <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2.5 font-jakarta font-bold text-sm px-10 py-4 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors"
+              className="inline-flex items-center gap-2.5 font-jakarta font-bold text-sm px-10 py-4 rounded-full bg-amber-500 text-white hover:bg-amber-600 transition-colors"
               style={{ boxShadow: '0 8px 32px rgba(217,119,6,0.40)' }}
             >
               Book Your Free Session Today <span className="text-base">→</span>

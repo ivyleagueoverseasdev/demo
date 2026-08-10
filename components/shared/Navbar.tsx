@@ -559,7 +559,7 @@ export default function Navbar() {
                     💬 WhatsApp
                   </a>
                   <Link href="/contact"
-                    className="font-jakarta font-bold text-[13px] text-white px-5 py-2.5 rounded-xl hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+                    className="font-jakarta font-bold text-[13px] text-white px-5 py-2.5 rounded-full hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
                     style={{ background: 'linear-gradient(135deg,#F59E0B,#D97706)', boxShadow: '0 4px 14px rgba(245,158,11,0.38)' }}
                     onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.boxShadow = '0 6px 24px rgba(245,158,11,0.60)')}
                     onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.boxShadow = '0 4px 14px rgba(245,158,11,0.38)')}>
@@ -618,7 +618,7 @@ export default function Navbar() {
                 💬 WhatsApp
               </a>
               <Link href="/contact"
-                className="font-jakarta font-bold text-sm text-white px-5 py-2.5 rounded-xl hover:opacity-90 active:scale-95 transition-all"
+                className="font-jakarta font-bold text-sm text-white px-5 py-2.5 rounded-full hover:opacity-90 active:scale-95 transition-all"
                 style={{ background: 'linear-gradient(135deg,#F59E0B,#D97706)', boxShadow: '0 4px 14px rgba(245,158,11,0.38)' }}>
                 Book Free Session →
               </Link>

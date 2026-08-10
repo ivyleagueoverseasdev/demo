@@ -168,7 +168,7 @@ export default function DestinationsStrip({ gridCols, gridRows, countries }: {
           transition={{ duration: 0.4, delay: 0.2 }}
           className="text-center mt-10"
         >
-          <Link href="/destinations" className="btn-secondary text-sm px-8 py-3 rounded-xl">
+          <Link href="/destinations" className="btn-secondary text-sm px-8 py-3 rounded-full">
             View All Destinations
           </Link>
         </motion.div>

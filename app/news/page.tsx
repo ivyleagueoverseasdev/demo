@@ -123,7 +123,7 @@ export default async function NewsPage() {
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 font-jakarta font-bold w-full md:w-auto text-base md:text-lg py-3 px-6 md:py-4 md:px-8 rounded-xl bg-primary-600 text-white hover:bg-primary-700 transition-colors justify-center"
+            className="inline-flex items-center gap-2 font-jakarta font-bold w-full md:w-auto text-base md:text-lg py-3 px-6 md:py-4 md:px-8 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-colors justify-center"
           >
             Book Free Counselling →
           </Link>

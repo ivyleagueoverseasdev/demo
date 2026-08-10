@@ -273,14 +273,14 @@ export default async function AboutPage() {
             {s.ctaParagraph}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/contact" className="btn-primary text-sm px-8 py-3.5 rounded-xl">
+            <Link href="/contact" className="btn-primary text-sm px-8 py-3.5 rounded-full">
               Book Free Counselling →
             </Link>
             <a
               href={wa}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-8 py-3.5 rounded-xl text-white"
+              className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-8 py-3.5 rounded-full text-white"
               style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}
             >
               Chat on WhatsApp

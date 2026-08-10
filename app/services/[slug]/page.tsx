@@ -103,7 +103,7 @@ export default async function ServiceDetailPage({ params }: Props) {
           <p className="font-jakarta text-white/70 mb-8 max-w-lg mx-auto">
             Book a free 30-minute session with our expert counsellors. No pressure, no commitment — just clarity.
           </p>
-          <Link href="/contact" className="btn-primary text-sm px-8 py-3.5 rounded-xl">
+          <Link href="/contact" className="btn-primary text-sm px-8 py-3.5 rounded-full">
             Book Free Counselling →
           </Link>
         </div>

@@ -92,7 +92,7 @@ function ShimmerBtn({
   const inner = (
     <span className={`
       relative inline-flex items-center justify-center gap-2 overflow-hidden
-      font-jakarta font-bold text-[15px] px-6 py-4 rounded-xl
+      font-jakarta font-bold text-[15px] px-6 py-4 rounded-full
       transition-all duration-300 group-hover:-translate-y-0.5
       group-hover:shadow-[0_14px_40px_rgba(245,158,11,0.58)]
       ${cls}

@@ -73,7 +73,7 @@ export default function SectionBody({
                 href="https://wa.me/919158577707"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-shrink-0 inline-flex items-center gap-2 font-jakarta font-bold text-sm px-6 py-3 rounded-xl text-white transition-opacity hover:opacity-90"
+                className="flex-shrink-0 inline-flex items-center gap-2 font-jakarta font-bold text-sm px-6 py-3 rounded-full text-white transition-opacity hover:opacity-90"
                 style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}
               >
                 💬 Book via WhatsApp

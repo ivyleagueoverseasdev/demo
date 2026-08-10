@@ -46,11 +46,11 @@ export default function CTASection() {
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/contact"
-                className="inline-flex items-center justify-center gap-2 font-jakarta font-bold text-sm px-8 py-4 rounded-xl bg-amber-500 text-white hover:bg-amber-600 active:scale-95 transition-all shadow-amber">
+                className="inline-flex items-center justify-center gap-2 font-jakarta font-bold text-sm px-8 py-4 rounded-full bg-amber-500 text-white hover:bg-amber-600 active:scale-95 transition-all shadow-amber">
                 Book Free Session →
               </Link>
               <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-8 py-4 rounded-xl border-2 border-white/30 text-white hover:bg-white/10 active:scale-95 transition-all">
+                className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-8 py-4 rounded-full border-2 border-white/30 text-white hover:bg-white/10 active:scale-95 transition-all">
                 💬 WhatsApp Now
               </a>
               <a href={`tel:${COMPANY.phone}`}

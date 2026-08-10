@@ -154,7 +154,7 @@ export default function QuickEnquiry() {
                   {err && <p className="font-jakarta text-xs text-red-500">{err}</p>}
 
                   <button type="submit" disabled={busy}
-                    className="w-full btn-primary text-sm py-3.5 rounded-xl justify-center disabled:opacity-60 disabled:cursor-not-allowed">
+                    className="block w-fit mx-auto btn-primary text-sm py-3.5 px-10 rounded-full disabled:opacity-60 disabled:cursor-not-allowed">
                     {busy ? 'Syncing to CRM…' : 'Request Free Counselling →'}
                   </button>
 
@@ -165,7 +165,7 @@ export default function QuickEnquiry() {
                   </div>
 
                   <a href={COMPANY.wa} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-sm py-3.5 rounded-xl text-white"
+                    className="w-fit mx-auto flex items-center gap-2 font-jakarta font-semibold text-sm py-3.5 px-8 rounded-full text-white"
                     style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
                     💬 Chat on WhatsApp Instead
                   </a>

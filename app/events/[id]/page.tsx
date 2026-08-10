@@ -81,7 +81,7 @@ function ActionLinksBlock({ links }: { links: EventActionLink[] }) {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2.5 font-jakarta font-bold text-sm px-5 py-3 rounded-xl border transition-all hover:opacity-90 hover:shadow-md active:scale-95"
+              className="inline-flex items-center gap-2.5 font-jakarta font-bold text-sm px-5 py-3 rounded-full border transition-all hover:opacity-90 hover:shadow-md active:scale-95"
               style={{ color: cfg.color, background: cfg.bg, borderColor: `${cfg.color}30` }}
             >
               <span className="text-base leading-none">{cfg.icon}</span>
@@ -357,7 +357,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-sm py-2.5 rounded-xl border transition-all hover:opacity-90"
+                            className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-sm py-2.5 rounded-full border transition-all hover:opacity-90"
                             style={{ color: cfg2.color, background: cfg2.bg, borderColor: `${cfg2.color}30` }}
                           >
                             <span>{cfg2.icon}</span>
@@ -383,7 +383,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ id
                     href="https://wa.me/919158577707?text=Hi!%20I%20am%20interested%20in%20registering%20for%20an%20upcoming%20ILOC%20event.%20Could%20you%20please%20share%20the%20details%3F"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-sm py-3 rounded-xl text-white transition-opacity hover:opacity-90"
+                    className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-sm py-3 rounded-full text-white transition-opacity hover:opacity-90"
                     style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}
                   >
                     💬 Register via WhatsApp

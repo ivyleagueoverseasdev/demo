@@ -186,7 +186,7 @@ export default async function CountryLayout({ children, params }: Props) {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-2 font-jakarta font-bold text-sm px-8 py-3.5 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors"
+              className="inline-flex items-center justify-center gap-2 font-jakarta font-bold text-sm px-8 py-3.5 rounded-full bg-amber-500 text-white hover:bg-amber-600 transition-colors"
               style={{ boxShadow: '0 8px 30px rgba(217,119,6,0.40)' }}
             >
               Book Free {c.name} Counselling →
@@ -195,7 +195,7 @@ export default async function CountryLayout({ children, params }: Props) {
               href={COMPANY.wa}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-8 py-3.5 rounded-xl border-2 border-white/40 text-white hover:bg-white/15 transition-colors backdrop-blur-sm"
+              className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-8 py-3.5 rounded-full border-2 border-white/40 text-white hover:bg-white/15 transition-colors backdrop-blur-sm"
             >
               💬 Ask on WhatsApp
             </a>

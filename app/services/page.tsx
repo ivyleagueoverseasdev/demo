@@ -103,7 +103,7 @@ export default async function ServicesPage() {
             {s.ctaHeading}
           </h2>
           <p className="font-jakarta text-base md:text-lg text-white/70 mb-8 max-w-lg mx-auto leading-relaxed">{s.ctaParagraph}</p>
-          <Link href="/contact" className="btn-primary w-full md:w-auto text-base md:text-lg font-bold py-3 px-6 md:py-4 md:px-8 rounded-xl">
+          <Link href="/contact" className="btn-primary w-full md:w-auto text-base md:text-lg font-bold py-3 px-6 md:py-4 md:px-8 rounded-full">
             Book Free Counselling →
           </Link>
         </div>

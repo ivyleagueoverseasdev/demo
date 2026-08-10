@@ -53,7 +53,7 @@ function MagneticBtn({ href, children }: { href: string; children: React.ReactNo
   const onLeave = () => { x.set(0); y.set(0); };
   return (
     <motion.div ref={ref} style={{ x, y }} onMouseMove={onMove} onMouseLeave={onLeave}>
-      <Link href={href} className="btn-secondary text-sm px-6 py-2.5 rounded-xl inline-flex">{children}</Link>
+      <Link href={href} className="btn-secondary text-sm px-6 py-2.5 rounded-full inline-flex">{children}</Link>
     </motion.div>
   );
 }
@@ -105,7 +105,7 @@ export default function ServicesSection({ services }: Props) {
             </p>
             <div className="flex flex-wrap gap-3">
               <MagneticBtn href="/services">Explore Our Strategic Pathways</MagneticBtn>
-              <Link href="/contact" className="btn-primary text-sm px-6 py-2.5 rounded-xl">Book Free Session →</Link>
+              <Link href="/contact" className="btn-primary text-sm px-6 py-2.5 rounded-full">Book Free Session →</Link>
             </div>
           </div>
         </motion.div>

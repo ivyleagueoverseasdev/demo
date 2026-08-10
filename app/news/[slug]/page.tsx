@@ -146,7 +146,7 @@ export default async function NewsArticlePage({ params }: Props) {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <Link
                       href="/contact"
-                      className="inline-flex items-center justify-center gap-2 font-jakarta font-bold text-sm px-6 py-3 rounded-xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+                      className="inline-flex items-center justify-center gap-2 font-jakarta font-bold text-sm px-6 py-3 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-colors"
                     >
                       Book Free Session →
                     </Link>
@@ -154,7 +154,7 @@ export default async function NewsArticlePage({ params }: Props) {
                       href="https://wa.me/919158577707"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-white transition-opacity hover:opacity-90"
+                      className="inline-flex items-center justify-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-full text-white transition-opacity hover:opacity-90"
                       style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}
                     >
                       💬 Ask on WhatsApp

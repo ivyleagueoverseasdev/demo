@@ -159,7 +159,7 @@ export default function ContactPage() {
                 ))}
               </div>
               <a href={wa} target="_blank" rel="noopener noreferrer"
-                className="w-fit mx-auto flex items-center gap-2 font-jakarta font-bold text-sm py-3.5 px-8 rounded-xl text-white"
+                className="w-fit mx-auto flex items-center gap-2 font-jakarta font-bold text-sm py-3.5 px-8 rounded-full text-white"
                 style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
                 💬 Instant Response on WhatsApp
               </a>
@@ -210,7 +210,7 @@ export default function ContactPage() {
                   </div>
                   {err && <p className="font-jakarta text-xs text-red-500">{err}</p>}
                   <button type="submit" disabled={busy}
-                    className="block w-fit mx-auto btn-primary text-sm py-3.5 px-10 rounded-xl disabled:opacity-60 disabled:cursor-not-allowed">
+                    className="block w-fit mx-auto btn-primary text-sm py-3.5 px-10 rounded-full disabled:opacity-60 disabled:cursor-not-allowed">
                     {busy ? 'Syncing to CRM…' : 'Submit Request →'}
                   </button>
                   <p className="font-jakarta text-center text-xs text-slate-400">
@@ -226,7 +226,7 @@ export default function ContactPage() {
                     {f.country && <> We&apos;ll prepare a personalised plan for <strong className="text-amber-600">{f.country}</strong>.</>}
                   </p>
                   <a href={wa} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-xl text-white"
+                    className="inline-flex items-center gap-2 font-jakarta font-semibold text-sm px-6 py-3 rounded-full text-white"
                     style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
                     💬 Connect on WhatsApp for instant help
                   </a>

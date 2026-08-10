@@ -213,7 +213,7 @@ export default function TestimonialsSection({ testimonials }: Props) {
           </div>
           <Link
             href="/contact"
-            className="font-jakarta text-xs font-bold px-5 py-2.5 rounded-xl bg-homeblue-600 text-white hover:bg-homeblue-700 transition-colors flex-shrink-0"
+            className="font-jakarta text-xs font-bold px-5 py-2.5 rounded-full bg-homeblue-600 text-white hover:bg-homeblue-700 transition-colors flex-shrink-0"
           >
             Book Free Session →
           </Link>

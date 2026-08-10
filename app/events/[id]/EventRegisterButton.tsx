@@ -25,7 +25,7 @@ export default function EventRegisterButton({ ctaLabel, ctaUrl, cfg }: Props) {
   const href = ctaUrl || '/contact';
   const isExternal = href.startsWith('http');
 
-  const btnClass = 'w-full flex items-center justify-center gap-2 font-jakarta font-bold text-sm py-4 rounded-xl text-white transition-opacity hover:opacity-90 active:scale-95';
+  const btnClass = 'w-full flex items-center justify-center gap-2 font-jakarta font-bold text-sm py-4 rounded-full text-white transition-opacity hover:opacity-90 active:scale-95';
   const btnStyle = {
     background: `linear-gradient(135deg,${cfg.color},${cfg.color}CC)`,
     boxShadow:  `0 8px 28px ${cfg.color}44`,

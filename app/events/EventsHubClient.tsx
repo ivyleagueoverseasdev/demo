@@ -369,7 +369,7 @@ export default function EventsHubClient({ initialEvents, gridCols, gridRows, cou
               <p className="font-jakarta text-white/70 text-sm md:text-base max-w-lg mx-auto mb-7 leading-relaxed">
                 Book a one-on-one free counselling session — 30 minutes, zero pressure, fully personalised.
               </p>
-              <Link href="/contact" className="inline-flex items-center gap-2 font-jakarta font-bold w-full md:w-auto text-base md:text-lg py-3 px-6 md:py-4 md:px-8 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors justify-center" style={{ boxShadow: '0 8px 28px rgba(217,119,6,0.38)' }}>
+              <Link href="/contact" className="inline-flex items-center gap-2 font-jakarta font-bold w-full md:w-auto text-base md:text-lg py-3 px-6 md:py-4 md:px-8 rounded-full bg-amber-500 text-white hover:bg-amber-600 transition-colors justify-center" style={{ boxShadow: '0 8px 28px rgba(217,119,6,0.38)' }}>
                 Book Free 1-on-1 Session →
               </Link>
             </div>

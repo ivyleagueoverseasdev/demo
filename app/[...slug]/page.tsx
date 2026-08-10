@@ -172,7 +172,7 @@ export default async function DynamicPage({ params }: Props) {
                 <div key={block.id} className="my-10 bg-primary-50 rounded-2xl p-8 border border-primary-100 text-center">
                   {p.heading && <h3 className="font-jakarta font-bold text-primary-600 text-xl mb-2">{p.heading}</h3>}
                   {p.subtext && <p className="font-jakarta text-slate-500 text-sm mb-5">{p.subtext}</p>}
-                  <Link href={p.buttonHref || '/contact'} className="btn-primary text-sm px-8 py-3 rounded-xl">
+                  <Link href={p.buttonHref || '/contact'} className="btn-primary text-sm px-8 py-3 rounded-full">
                     {p.buttonLabel || 'Book Free Session →'}
                   </Link>
                 </div>

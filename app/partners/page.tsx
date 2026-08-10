@@ -167,7 +167,7 @@ export default async function PartnersIndexPage() {
           <p className="font-jakarta text-base md:text-lg text-white/70 mb-8 max-w-lg mx-auto leading-relaxed">
             Tell us a little about yourself and our partnerships team will point you in the right direction — no pressure, no obligation.
           </p>
-          <Link href="/contact" className="btn-primary w-full md:w-auto text-base md:text-lg font-bold py-3 px-6 md:py-4 md:px-8 rounded-xl">
+          <Link href="/contact" className="btn-primary w-full md:w-auto text-base md:text-lg font-bold py-3 px-6 md:py-4 md:px-8 rounded-full">
             Get in Touch →
           </Link>
         </div>

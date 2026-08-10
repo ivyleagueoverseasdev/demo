@@ -101,7 +101,7 @@ function EventCard({ event }: { event: SiteEvent }) {
         <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
           <Link
             href={`/events/${event.id}`}
-            className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-xs py-2.5 rounded-xl transition-colors text-white"
+            className="w-full flex items-center justify-center gap-2 font-jakarta font-semibold text-xs py-2.5 rounded-full transition-colors text-white"
             style={{ background: `linear-gradient(135deg,${cfg.color},${cfg.color}CC)` }}
           >
             {event.ctaLabel || 'Register'} →
