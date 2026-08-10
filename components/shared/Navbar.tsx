@@ -152,12 +152,13 @@ function NavLinks({
         const isPartners     = href === '/partners';
         const color  = PUB_TAB_COLORS[ti % PUB_TAB_COLORS.length];
         const style  = tabStyle(color, isActive(href));
+        const glowStyle = { ...style, ['--glow' as string]: color } as React.CSSProperties;
         const txtCls = isActive(href) ? 'font-bold' : 'font-semibold hover:opacity-80';
 
         if (isDestinations) {
           return (
             // Wrapper: relative so dropdown positions correctly; NO overflow-hidden here
-            <div key={href} className="relative flex items-center" style={style}
+            <div key={href} className="relative flex items-center nav-glow" style={glowStyle}
               onMouseEnter={openDest} onMouseLeave={closeDest}>
               {/* Clickable label → navigates */}
               <Link href={href}
@@ -184,7 +185,7 @@ function NavLinks({
 
         if (isPartners) {
           return (
-            <div key={href} className="relative flex items-center" style={style}
+            <div key={href} className="relative flex items-center nav-glow" style={glowStyle}
               onMouseEnter={openPart} onMouseLeave={closePart}>
               <Link href={href}
                 className={`font-jakarta ${txtCls} ${fs} pl-2.5 pr-1 py-2 transition-all`}
@@ -209,8 +210,8 @@ function NavLinks({
 
         return (
           <Link key={href} href={href}
-            className={`font-jakarta ${txtCls} ${fs} ${px} transition-all`}
-            style={style}>
+            className={`font-jakarta ${txtCls} ${fs} ${px} nav-glow transition-all`}
+            style={glowStyle}>
             {label}
           </Link>
         );

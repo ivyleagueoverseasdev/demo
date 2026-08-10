@@ -136,6 +136,42 @@
   .divider-amber { @apply w-12 h-1 rounded-full mb-4 bg-amber-500; }
   .divider-blue  { @apply w-12 h-1 rounded-full mb-4 bg-primary-600; }
 
+  /* Navbar link — glassy glow pill on hover/focus, tinted per-tab via the
+     --glow custom property (set inline per link to that tab's accent colour).
+     Fallback declarations (plain rgba) come first so browsers without
+     color-mix() support still get a glass pill, just untinted. */
+  .nav-glow {
+    position: relative;
+    isolation: isolate;
+  }
+  .nav-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: rgba(255,255,255,0.14);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--glow, #ffffff) 26%, white 14%), rgba(255,255,255,0.08));
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.30);
+    box-shadow: none;
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .nav-glow:hover::before,
+  .nav-glow:focus-visible::before {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.4);
+    box-shadow:
+      0 6px 22px color-mix(in srgb, var(--glow, #ffffff) 55%, transparent),
+      0 0 14px color-mix(in srgb, var(--glow, #ffffff) 40%, transparent),
+      inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+
   /* Input */
   .input {
     @apply w-full font-jakarta text-sm bg-white border border-slate-200 rounded-xl
