@@ -217,13 +217,6 @@
     animation: marquee var(--ticker-speed, 30s) linear infinite;
     will-change: transform;
   }
-  /* Pause on hover AND on keyboard focus of any announcement link inside —
-     :focus-within covers Tab navigation, not just mouse hover. Resumes
-     automatically the moment focus/hover leaves (no JS state needed). */
-  .ticker-row:hover .ticker-track,
-  .ticker-row:focus-within .ticker-track {
-    animation-play-state: paused;
-  }
   /* Respect prefers-reduced-motion at the CSS layer too, as a defense-in-depth
      fallback alongside the JS-level check in AnnouncementTicker.tsx (which
      also switches to a single, non-duplicated, natively-scrollable list). */

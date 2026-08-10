@@ -48,12 +48,6 @@ const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const TICKER_DEFAULT_BG   = '#D97706';
 const TICKER_DEFAULT_TEXT = '#ffffff';
 const TICKER_DEFAULT_SPEED = 30;
-// localStorage key for the dismiss (×) button. The VALUE stored is a
-// signature of the currently-active item ids, not just "true" — so if the
-// admin changes the announcements after a visitor dismissed the old ones,
-// the bar reappears automatically instead of staying hidden forever.
-const TICKER_DISMISS_KEY = 'iloc_ticker_dismissed_sig';
-
 // ── Dropdown menu — rendered outside any overflow-hidden ancestor ─────────
 // By placing it as `fixed` we escape any clipping context entirely.
 function DestDropdown({
@@ -241,8 +235,7 @@ export default function Navbar() {
   const [tickerSpeed,     setTickerSpeed]     = useState(TICKER_DEFAULT_SPEED);
   const [tickerBg,        setTickerBg]        = useState(TICKER_DEFAULT_BG);
   const [tickerText,      setTickerText]      = useState(TICKER_DEFAULT_TEXT);
-  const [tickerDismissed, setTickerDismissed] = useState(false);
-  const tickerShow = tickerItems.length > 0 && !tickerDismissed;
+  const tickerShow = tickerItems.length > 0;
 
   const pathname  = usePathname();
   const destTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -277,13 +270,6 @@ export default function Navbar() {
           ? (gs.tickerEnabled ? validTicker : [])
           : DEFAULT_TICKER_ITEMS;
         setTickerItems(nextItems);
-        // A visitor who dismissed a PREVIOUS set of announcements should see
-        // NEW ones again — the stored value is a signature of item ids, not
-        // just "true", so changing the content un-dismisses it automatically.
-        try {
-          const sig = nextItems.map(it => it.id).join(',');
-          setTickerDismissed(!!sig && localStorage.getItem(TICKER_DISMISS_KEY) === sig);
-        } catch { /* private mode / storage unavailable — never treat as dismissed */ }
         if (typeof gs?.tickerSpeedSec === 'number' && gs.tickerSpeedSec > 0) setTickerSpeed(gs.tickerSpeedSec);
         if (gs?.tickerBg)        setTickerBg(gs.tickerBg);
         if (gs?.tickerTextColor) setTickerText(gs.tickerTextColor);
@@ -320,14 +306,6 @@ export default function Navbar() {
     document.documentElement.dataset.ticker = (tickerShow && !scrolled) ? 'on' : 'off';
   }, [tickerShow, scrolled]);
 
-  function dismissTicker() {
-    try {
-      const sig = tickerItems.map(it => it.id).join(',');
-      localStorage.setItem(TICKER_DISMISS_KEY, sig);
-    } catch { /* private mode / storage unavailable — dismissal just won't persist */ }
-    setTickerDismissed(true);
-  }
-
   useEffect(() => { setMOpen(false); setDestOpen(false); setPartOpen(false); }, [pathname]);
 
   // Body scroll lock — prevents background page from scrolling while menu is open
@@ -362,19 +340,6 @@ export default function Navbar() {
         className="fixed inset-x-0 top-0 z-[100]"
         style={{ backgroundColor: bg, overflow: 'visible' }}
       >
-        {/* ── LAYER 0: SCROLLING ANNOUNCEMENT TICKER (admin-editable) ──
-            Rendered first so it sits above the info bar; collapses with the
-            rest of the header on scroll via the same `scrolled` state. */}
-        <AnnouncementTicker
-          items={tickerItems}
-          speedSec={tickerSpeed}
-          bg={tickerBg}
-          textColor={tickerText}
-          show={tickerShow}
-          collapsed={scrolled}
-          onDismiss={dismissTicker}
-        />
-
         {/* Blur + shadow layer on scroll */}
         <motion.div
           className="absolute inset-0 pointer-events-none"
@@ -626,6 +591,19 @@ export default function Navbar() {
             </div>
           </div>
         </motion.div>
+
+        {/* ── SCROLLING ANNOUNCEMENT TICKER (admin-editable) ────────────
+            Rendered last so it sits below the navigation row; collapses
+            with the rest of the header on scroll via the same `scrolled`
+            state, and scrolls continuously with no pause/dismiss control. */}
+        <AnnouncementTicker
+          items={tickerItems}
+          speedSec={tickerSpeed}
+          bg={tickerBg}
+          textColor={tickerText}
+          show={tickerShow}
+          collapsed={scrolled}
+        />
       </header>
 
       {/* ── Mobile drawer — full-screen takeover ──────────────────────────

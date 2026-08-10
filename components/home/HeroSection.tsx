@@ -455,30 +455,58 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                       </span>
                     </motion.div>
 
-                    {/* ── Cinematic heading — line-by-line word reveal ── */}
-                    <h1
-                      className="font-jakarta font-extrabold text-white text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight mb-6"
-                      style={{ color: '#ffffff' }}
-                    >
-                      {slide.headingLines.map((line, li) => {
-                        const isHighlight = slide.headingHighlight[li];
-                        const lineDelay   = headingBaseDelay + li * 0.18;
-                        return (
-                          <span key={li} className="block" style={{ color: '#ffffff' }}>
-                            {isHighlight ? (
-                              <WordReveal
-                                text={line}
-                                baseDelay={lineDelay}
-                                highlight
-                                className={slide.highlightColor}
-                              />
-                            ) : (
-                              <WordReveal text={line} baseDelay={lineDelay} className="text-white" />
-                            )}
-                          </span>
-                        );
-                      })}
-                    </h1>
+                    {/* Heading row — mobile: a small rounded thumbnail sits beside
+                        the heading so text and photo are side-by-side even on
+                        narrow screens; desktop keeps the heading alone (the large
+                        image lives in the right column further down). */}
+                    <div className="flex items-start gap-4 lg:block">
+                      <div className="lg:hidden flex-shrink-0 relative rounded-2xl overflow-hidden shadow-[0_10px_28px_rgba(0,0,0,0.45)] w-20 h-20 sm:w-24 sm:h-24">
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={`mob-thumb-${idx}`}
+                            initial={{ opacity: 0, scale: 1.08 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.45 }}
+                            className="absolute inset-0"
+                          >
+                            <Image
+                              src={slide.imageUrl}
+                              alt={slide.imageAlt}
+                              fill
+                              className="object-cover"
+                              sizes="96px"
+                            />
+                            <div className={`absolute inset-0 bg-gradient-to-t ${slide.accentGradient} to-transparent opacity-50`} />
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+
+                      {/* ── Cinematic heading — line-by-line word reveal ── */}
+                      <h1
+                        className="flex-1 min-w-0 font-jakarta font-extrabold text-white text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight mb-6"
+                        style={{ color: '#ffffff' }}
+                      >
+                        {slide.headingLines.map((line, li) => {
+                          const isHighlight = slide.headingHighlight[li];
+                          const lineDelay   = headingBaseDelay + li * 0.18;
+                          return (
+                            <span key={li} className="block" style={{ color: '#ffffff' }}>
+                              {isHighlight ? (
+                                <WordReveal
+                                  text={line}
+                                  baseDelay={lineDelay}
+                                  highlight
+                                  className={slide.highlightColor}
+                                />
+                              ) : (
+                                <WordReveal text={line} baseDelay={lineDelay} className="text-white" />
+                              )}
+                            </span>
+                          );
+                        })}
+                      </h1>
+                    </div>
                   </div>
 
                   {/* Subtext — fade up after heading */}
@@ -495,43 +523,6 @@ export default function HeroSection({ slides: slidesProp }: { slides?: HeroSlide
                   >
                     {slide.subtext}
                   </motion.p>
-
-                  {/* ── Mobile slide image — immediately after the text (heading
-                      + subtext), BEFORE trust badges/CTAs/stats/founder strip,
-                      so each slide's photo is visually connected to its copy
-                      instead of buried after several more sections. ── */}
-                  <div
-                    className="lg:hidden mb-8 relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
-                    style={{ aspectRatio: '16/10' }}
-                  >
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={`mob-${idx}`}
-                        initial={{ opacity: 0, scale: 1.06 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="absolute inset-0"
-                      >
-                        <Image
-                          src={slide.imageUrl}
-                          alt={slide.imageAlt}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width:1024px) 100vw, 0px"
-                        />
-                        <div className={`absolute inset-0 bg-gradient-to-t ${slide.accentGradient} to-transparent opacity-60`} />
-                        {/* Caption strip */}
-                        <div className="absolute bottom-0 inset-x-0 p-3">
-                          <div className="bg-black/35 backdrop-blur-md rounded-xl px-3 py-2 border border-white/10">
-                            <p className="font-jakarta text-[11px] text-white/90 font-medium leading-snug line-clamp-2">
-                              {slide.imageAlt}
-                            </p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
 
                   {/* Trust micro-badges */}
                   <motion.div
