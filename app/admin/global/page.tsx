@@ -23,7 +23,7 @@ const EMPTY: GlobalSettings = {
   mainLogoUrl:             '',
   businessNameText:        '',
   headerLogoUrl:           '',
-  headerBackgroundColor:   '#C7FBA0',
+  headerBackgroundColor:   '#65D906',
   headerVerticalPadding:   '',
   businessNameDisplayName: '',
   destinationsCols:        4,
@@ -234,7 +234,7 @@ export default function AdminGlobalPage() {
           </div>
           <Field label="Header Background Colour" hint="Navbar background on every page.">
             <div className="flex items-center gap-2">
-              <input type="color" value={gs.headerBackgroundColor || '#C7FBA0'} onChange={e => set({ headerBackgroundColor: e.target.value })}
+              <input type="color" value={gs.headerBackgroundColor || '#65D906'} onChange={e => set({ headerBackgroundColor: e.target.value })}
                 className="w-10 h-10 rounded-lg border border-slate-200 cursor-pointer" />
               <input value={gs.headerBackgroundColor ?? ''} onChange={e => set({ headerBackgroundColor: e.target.value })} className={`${inp} flex-1`} placeholder="#C7FBA0" />
             </div>

@@ -221,7 +221,7 @@ export default function Navbar() {
   const [destOpen,  setDestOpen]  = useState(false);
   const [partOpen,  setPartOpen]  = useState(false);
   const [mounted,   setMounted]   = useState(false);
-  const [headerBg,  setHeaderBg]  = useState('#C7FBA0');
+  const [headerBg,  setHeaderBg]  = useState('#65D906');
   const [logoUrl,   setLogoUrl]   = useState('/logo3.png');
   const [brandText, setBrandText] = useState('IVY LEAGUE OVERSEAS CONSULTING');
   const [contact,   setContact]   = useState<{ phone: string; email: string; wa: string }>({ phone: COMPANY.phone, email: COMPANY.email, wa: COMPANY.wa });
@@ -298,13 +298,15 @@ export default function Navbar() {
   // Keep the page's top padding (--ticker-h in globals.css / .site-main) and
   // HeroSection's negative-margin trick in sync with whether the ticker is
   // actually occupying space right now — so content never sits behind the
-  // header, and there's no leftover gap once the ticker is off/scrolled/
-  // dismissed away. A data-attribute (not an inline px value) so CSS can
-  // resolve --ticker-h to a DIFFERENT height per breakpoint — 32/34/38px —
-  // the same way --header-h already varies by breakpoint.
+  // header, and there's no leftover gap once the ticker is off. The ticker
+  // itself never collapses on scroll (see `collapsed={false}` below), so
+  // this only needs to track whether it's showing at all, not `scrolled`.
+  // A data-attribute (not an inline px value) so CSS can resolve --ticker-h
+  // to a DIFFERENT height per breakpoint — 32/34/38px — the same way
+  // --header-h already varies by breakpoint.
   useEffect(() => {
-    document.documentElement.dataset.ticker = (tickerShow && !scrolled) ? 'on' : 'off';
-  }, [tickerShow, scrolled]);
+    document.documentElement.dataset.ticker = tickerShow ? 'on' : 'off';
+  }, [tickerShow]);
 
   useEffect(() => { setMOpen(false); setDestOpen(false); setPartOpen(false); }, [pathname]);
 
@@ -326,7 +328,7 @@ export default function Navbar() {
   const openPart  = () => { if (partTimer.current) clearTimeout(partTimer.current); setPartOpen(true); };
   const closePart = () => { partTimer.current = setTimeout(() => setPartOpen(false), 150); };
 
-  const bg = mounted ? headerBg : '#C7FBA0';
+  const bg = mounted ? headerBg : '#65D906';
 
   return (
     <>
@@ -593,16 +595,17 @@ export default function Navbar() {
         </motion.div>
 
         {/* ── SCROLLING ANNOUNCEMENT TICKER (admin-editable) ────────────
-            Rendered last so it sits below the navigation row; collapses
-            with the rest of the header on scroll via the same `scrolled`
-            state, and scrolls continuously with no pause/dismiss control. */}
+            Rendered last so it sits below the navigation row. Unlike the
+            rest of the header, it never collapses on scroll — it stays
+            visible at all times, scrolling continuously with no
+            pause/dismiss control. */}
         <AnnouncementTicker
           items={tickerItems}
           speedSec={tickerSpeed}
           bg={tickerBg}
           textColor={tickerText}
           show={tickerShow}
-          collapsed={scrolled}
+          collapsed={false}
         />
       </header>
 

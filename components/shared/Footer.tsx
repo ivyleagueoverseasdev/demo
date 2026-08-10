@@ -81,7 +81,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="text-slate-700" style={{ backgroundColor: '#C7FBA0' }}>
+    <footer className="text-slate-700" style={{ backgroundColor: '#65D906' }}>
 
       {/* ── Main grid ── */}
       <div className="container-xl pt-8 pb-6 grid grid-cols-2 md:grid-cols-12 gap-8 lg:gap-12">
