@@ -115,10 +115,10 @@ export default async function AboutPage() {
       {/* ── Founder's Message — ILOC logo on the left ── */}
       <section className="w-full overflow-hidden section">
         <div className="container-xl grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
-          {/* Centred (was left-aligned on desktop) and nudged down slightly
-              per client feedback, rather than flush with the top of the
-              paragraph column. */}
-          <div className="flex justify-center mt-4 md:mt-10">
+          {/* Centred (was left-aligned on desktop) and nudged further down
+              per repeated client feedback — the earlier mt-4/mt-10 offset
+              wasn't perceptible enough, so it's now roughly double. */}
+          <div className="flex justify-center mt-8 md:mt-20">
             <div className="relative w-52 h-52 rounded-full overflow-hidden shadow-blue border border-slate-100">
               <Image
                 src={kvGlobal?.mainLogoUrl || '/logo3.png'}
